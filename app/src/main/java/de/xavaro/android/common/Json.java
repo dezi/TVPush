@@ -3,14 +3,14 @@ package de.xavaro.android.common;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONArray;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -145,6 +145,11 @@ public class Json
         return dst;
     }
 
+    public static boolean has(JSONObject json, String key)
+    {
+        return (json != null) && json.has(key);
+    }
+
     public static void put(JSONObject json, String key, Object val)
     {
         try
@@ -188,11 +193,6 @@ public class Json
         }
 
         return null;
-    }
-
-    public static boolean has(JSONObject json, String key)
-    {
-        return (json != null) && json.has(key);
     }
 
     public static float getFloat(JSONObject json, String key)
