@@ -1,15 +1,16 @@
 package de.xavaro.android.common;
 
 import android.app.UiModeManager;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.content.Context;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import static android.content.Context.UI_MODE_SERVICE;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class Simple
 {
@@ -22,7 +23,7 @@ public class Simple
 
     public static void checkFeatures(Context context)
     {
-        UiModeManager uiModeManager = (UiModeManager) context.getSystemService(UI_MODE_SERVICE);
+        UiModeManager uiModeManager = (UiModeManager) context.getSystemService(Context.UI_MODE_SERVICE);
         istv = (uiModeManager != null) && (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION);
 
         PackageManager pmManager = context.getPackageManager();
@@ -81,4 +82,14 @@ public class Simple
     }
 
     //endregion
+
+    public static String getDeviceUserName(Context context)
+    {
+        return Settings.Secure.getString(context.getContentResolver(), "bluetooth_name");
+    }
+
+    public static String getFCMToken()
+    {
+        return FirebaseInstanceId.getInstance().getToken();
+    }
 }

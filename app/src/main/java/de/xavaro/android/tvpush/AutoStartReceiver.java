@@ -7,9 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-public class AutoStart extends BroadcastReceiver
+public class AutoStartReceiver extends BroadcastReceiver
 {
-    private static final String LOGTAG = AutoStart.class.getSimpleName();
+    private static final String LOGTAG = AutoStartReceiver.class.getSimpleName();
 
     @Override
     @SuppressLint("UnsafeProtectedBroadcastReceiver")

@@ -16,6 +16,9 @@ public class ApplicationBase extends Application
 
         super.onCreate();
 
+        Log.d(LOGTAG, "onCreate: devicename=" + Simple.getDeviceUserName(this));
+        Log.d(LOGTAG, "onCreate: fcmtoken=" + Simple.getFCMToken());
+
         Simple.checkFeatures(this);
 
         RegistrationService.startService(this);

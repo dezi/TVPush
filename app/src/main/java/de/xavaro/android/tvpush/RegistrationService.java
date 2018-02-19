@@ -7,16 +7,16 @@ import android.widget.Toast;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.google.firebase.iid.FirebaseInstanceId;
-
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.SocketTimeoutException;
 
 import de.xavaro.android.common.Json;
+import de.xavaro.android.common.Simple;
 
 public class RegistrationService extends Service
 {
@@ -39,13 +39,10 @@ public class RegistrationService extends Service
     {
         if (socket != null)
         {
-            String fcm_token = FirebaseInstanceId.getInstance().getToken();
-            Log.d(LOGTAG, "requestHello: fcm_token=" + fcm_token);
-
             JSONObject helojson = new JSONObject();
 
             Json.put(helojson, "type", "HELO");
-            Json.put(helojson, "fcmtoken", fcm_token);
+            Json.put(helojson, "fcmtoken", Simple.getFCMToken());
 
             byte[] txbuf = helojson.toString().getBytes();
             DatagramPacket helo = new DatagramPacket(txbuf, txbuf.length);
@@ -156,29 +153,51 @@ public class RegistrationService extends Service
 
                 String message = new String(packet.getData(), 0, packet.getLength());
 
-                JSONObject jmess = Json.fromStringObject(message);
-                if (jmess == null) continue;
+                JSONObject jsonmess = Json.fromStringObject(message);
+                if (jsonmess == null) continue;
 
-                if (Json.equals(jmess, "type", "HELO"))
+                if (Json.equals(jsonmess, "type", "HELO"))
                 {
-                    String fcm_token = FirebaseInstanceId.getInstance().getToken();
-                    Log.d(LOGTAG, "workerThread: fcm_token=" + fcm_token);
+                    Log.d(LOGTAG, "workerThread: HELO received...");
 
-                    JSONObject mejson = new JSONObject();
+                    if (Simple.isTV())
+                    {
+                        JSONObject mejson = new JSONObject();
 
-                    Json.put(mejson, "type", "MEME");
-                    Json.put(mejson, "fcmtoken", fcm_token);
+                        Json.put(mejson, "type", "MEME");
+                        Json.put(mejson, "devicename", Simple.getDeviceUserName(this));
+                        Json.put(mejson, "fcmtoken", Simple.getFCMToken());
 
-                    byte[] txbuf = mejson.toString().getBytes();
-                    DatagramPacket meme = new DatagramPacket(txbuf, txbuf.length);
-                    meme.setAddress(multicastAddress);
-                    meme.setPort(port);
+                        byte[] txbuf = mejson.toString().getBytes();
+                        DatagramPacket meme = new DatagramPacket(txbuf, txbuf.length);
+                        meme.setAddress(multicastAddress);
+                        meme.setPort(port);
 
-                    socket.send(meme);
+                        socket.send(meme);
+                    }
                 }
+
+                if (Json.equals(jsonmess, "type", "MEME"))
+                {
+                    Log.d(LOGTAG, "workerThread: MEME received...");
+
+                    if (! Simple.isTV())
+                    {
+                        Log.d(LOGTAG, "workerThread: MEME devicename=" + Json.getString(jsonmess, "devicename"));
+                        Log.d(LOGTAG, "workerThread: MEME fcmtoken=" + Json.getString(jsonmess, "fcmtoken"));
+                    }
+                }
+            }
+            catch (SocketTimeoutException ignore)
+            {
+                //
+                // Do nothing.
+                //
             }
             catch (Exception ex)
             {
+                ex.printStackTrace();
+
                 running = false;
             }
         }
