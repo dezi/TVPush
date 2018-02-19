@@ -1,6 +1,5 @@
 package de.xavaro.android.tvpush;
 
-import android.content.Intent;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;

@@ -1,7 +1,6 @@
 package de.xavaro.android.tvpush;
 
 import android.app.Application;
-import android.content.Intent;
 import android.util.Log;
 
 public class ApplicationBase extends Application
