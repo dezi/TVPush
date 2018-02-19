@@ -1,6 +1,7 @@
 package de.xavaro.android.tvpush;
 
 import android.app.Application;
+import android.content.Intent;
 import android.util.Log;
 
 public class ApplicationBase extends Application
@@ -13,5 +14,7 @@ public class ApplicationBase extends Application
         Log.d(LOGTAG, "onCreate...");
 
         super.onCreate();
+
+        RegistrationService.startService(this);
     }
 }

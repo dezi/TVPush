@@ -1,5 +1,6 @@
 package de.xavaro.android.tvpush;
 
+import android.content.Intent;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -21,6 +22,8 @@ public class FirebaseMessageService extends FirebaseMessagingService
         Log.d(LOGTAG, "onCreate...");
 
         super.onCreate();
+
+        RegistrationService.startService(this);
     }
 
     @Override
