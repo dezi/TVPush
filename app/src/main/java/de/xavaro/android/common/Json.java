@@ -19,6 +19,7 @@ public class Json
 {
     private static final String LOGTAG = Json.class.getSimpleName();
 
+    @Nullable
     public static JSONObject fromStringObject(String jsonstr)
     {
         if (jsonstr != null)
@@ -33,9 +34,10 @@ public class Json
             }
         }
 
-        return new JSONObject();
+        return null;
     }
 
+    @Nullable
     public static JSONArray fromStringArray(String jsonstr)
     {
         if (jsonstr != null)
@@ -50,7 +52,7 @@ public class Json
             }
         }
 
-        return new JSONArray();
+        return null;
     }
 
     public static JSONObject clone(JSONObject json)
