@@ -2,10 +2,12 @@ package de.xavaro.android.tvpush;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity
 {
+    private final static String LOGTAG = MainActivity.class.getSimpleName();
 
     static
     {
@@ -17,14 +19,8 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        // Example of a call to a native method
-        TextView tv = (TextView) findViewById(R.id.sample_text);
-        tv.setText(stringFromJNI());
+        Log.d(LOGTAG, "onCreate: stringFromJNI=" + stringFromJNI());
     }
 
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
     public native String stringFromJNI();
 }
