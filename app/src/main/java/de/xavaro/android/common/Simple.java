@@ -20,6 +20,7 @@ public class Simple
     private static boolean istouch;
     private static boolean istablet;
     private static boolean iswidescreen;
+    private static boolean isspeech;
 
     public static void checkFeatures(Context context)
     {
@@ -36,6 +37,8 @@ public class Simple
         int width = getDeviceWidth(context);
         int height = getDeviceHeight(context);
         iswidescreen = (width / (float) height) > (4 / 3f);
+
+        isspeech = android.speech.SpeechRecognizer.isRecognitionAvailable(context);
     }
 
     public static boolean isTV()
@@ -56,6 +59,11 @@ public class Simple
     public static boolean isWideScreen()
     {
         return iswidescreen;
+    }
+
+    public static boolean isIsspeech()
+    {
+        return isspeech;
     }
 
     public static boolean isOnline(Context context)

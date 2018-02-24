@@ -72,7 +72,7 @@ public class RegistrationService extends Service
     {
         Log.d(LOGTAG, "onCreate...");
 
-        Toast.makeText(this, "RegistrationService created", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "RegistrationService created", Toast.LENGTH_SHORT).show();
 
         if (socket == null)
         {
@@ -91,10 +91,12 @@ public class RegistrationService extends Service
         }
     }
 
+    private SpeechRecognition recognition;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        Toast.makeText(this, "RegistrationService started", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "RegistrationService started", Toast.LENGTH_SHORT).show();
 
         if (worker == null)
         {
@@ -108,6 +110,11 @@ public class RegistrationService extends Service
             });
 
             worker.start();
+        }
+
+        if (recognition == null)
+        {
+            recognition = new SpeechRecognition(this);
         }
 
         return START_STICKY;
@@ -134,7 +141,7 @@ public class RegistrationService extends Service
             }
         }
 
-        Toast.makeText(this, "RegistrationService Stopped", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "RegistrationService Stopped", Toast.LENGTH_SHORT).show();
     }
 
     private void workerThread()
@@ -160,21 +167,18 @@ public class RegistrationService extends Service
                 {
                     Log.d(LOGTAG, "workerThread: HELO received...");
 
-                    if (Simple.isTV())
-                    {
-                        JSONObject mejson = new JSONObject();
+                    JSONObject mejson = new JSONObject();
 
-                        Json.put(mejson, "type", "MEME");
-                        Json.put(mejson, "devicename", Simple.getDeviceUserName(this));
-                        Json.put(mejson, "fcmtoken", Simple.getFCMToken());
+                    Json.put(mejson, "type", "MEME");
+                    Json.put(mejson, "devicename", Simple.getDeviceUserName(this));
+                    Json.put(mejson, "fcmtoken", Simple.getFCMToken());
 
-                        byte[] txbuf = mejson.toString().getBytes();
-                        DatagramPacket meme = new DatagramPacket(txbuf, txbuf.length);
-                        meme.setAddress(multicastAddress);
-                        meme.setPort(port);
+                    byte[] txbuf = mejson.toString().getBytes();
+                    DatagramPacket meme = new DatagramPacket(txbuf, txbuf.length);
+                    meme.setAddress(multicastAddress);
+                    meme.setPort(port);
 
-                        socket.send(meme);
-                    }
+                    socket.send(meme);
                 }
 
                 if (Json.equals(jsonmess, "type", "MEME"))
