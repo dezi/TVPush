@@ -6,12 +6,12 @@ import com.p2p.pppp_api.PPPP_APIs;
 import com.p2p.pppp_api.PPPP_Keys;
 import com.p2p.pppp_api.PPPP_Session;
 
-import de.xavaro.android.yihome.p2pcommands.QueryDeviceInfo;
+import de.xavaro.android.yihome.p2pcommands.DeviceInfo;
+import de.xavaro.android.yihome.p2pcommands.DeviceInfoQuery;
 import de.xavaro.android.yihome.p2pcommands.SendPTZDirection;
 import de.xavaro.android.yihome.p2pcommands.SendPTZHome;
 
 import static com.p2p.pppp_api.PPPP_APIs.PPPP_Check;
-import static com.p2p.pppp_api.PPPP_APIs.PPPP_Close;
 
 @SuppressWarnings({ "WeakerAccess"})
 public class P2PSession
@@ -159,6 +159,8 @@ public class P2PSession
         return (PPPP_Write == i);
     }
 
+    //region Delegate section.
+
     public boolean sendPTZDirection(int direction, int speed)
     {
         return (new SendPTZDirection(this, direction, speed)).send();
@@ -171,6 +173,47 @@ public class P2PSession
 
     public boolean queryDeviceInfo()
     {
-        return (new QueryDeviceInfo(this)).send();
+        return (new DeviceInfoQuery(this)).send();
     }
+
+    //endregion Delegate section.
+
+    //region Listener section.
+
+    //region OnDeviceInfoReceivedListener
+
+    private OnDeviceInfoReceivedListener onDeviceInfoReceivedListener;
+
+    public void setOnDeviceInfoReceivedListener(OnDeviceInfoReceivedListener listener)
+    {
+        onDeviceInfoReceivedListener = listener;
+    }
+
+    public OnDeviceInfoReceivedListener getOnDeviceInfoReceivedListener()
+    {
+        return onDeviceInfoReceivedListener;
+    }
+
+    public void onDeviceInfoReceived(DeviceInfo deviceInfo)
+    {
+        Log.d(LOGTAG, "onDeviceInfoReceived:"
+                + " version=" + deviceInfo.version
+                + " total=" + deviceInfo.total
+                + " free=" + deviceInfo.free
+        );
+
+        if (onDeviceInfoReceivedListener != null)
+        {
+            onDeviceInfoReceivedListener.onDeviceInfoReceived(deviceInfo);
+        }
+    }
+
+    public interface OnDeviceInfoReceivedListener
+    {
+        void onDeviceInfoReceived(DeviceInfo deviceInfo);
+    }
+
+    //endregion OnDeviceInfoReceivedListener
+
+    //endregion Listener section.
 }

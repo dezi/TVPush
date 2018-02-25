@@ -1,0 +1,239 @@
+package de.xavaro.android.yihome.p2pcommands;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import de.xavaro.android.yihome.AVIOCTRLDEFs;
+import de.xavaro.android.yihome.P2PSession;
+import de.xavaro.android.yihome.Packet;
+
+public class DeviceInfo
+{
+    private P2PSession session;
+
+    public DeviceInfo(P2PSession session, byte[] data)
+    {
+        this.session = session;
+
+        parse(data);
+    }
+
+    public static final int V1_SIZE = 56;
+    public static final int V2_EXTEND_SIZE = 256;
+
+    public byte alarm_ring;
+    public byte alarm_sensitivity;
+    public byte baby_crying_mode;
+    public int channel;
+    public byte check_stat;
+    public byte close_camera;
+    public byte close_light;
+    public byte day_night_mode;
+    public byte frame_rate;
+    public int free;
+    public byte hardware_version;
+    public byte interface_version;
+    public byte internet_lossrate;
+    public byte internet_visit;
+    public byte is_utc_time;
+    public byte language;
+    public byte ldc_mode;
+    public byte lossrate;
+    public byte mic_mode;
+    public AVIOCTRLDEFs.SMsgAVIoctrlPTZInfoResp pizInfo;
+    public List<Integer> presets;
+    public byte record_mode;
+    public byte reverse_mode;
+    public byte talk_mode;
+    public byte tfstat;
+    public int total;
+    public byte update_mode;
+    public byte update_progress;
+    public byte update_stat;
+    public byte update_without_tf;
+    private byte v1_alarm_ring;
+    private byte v1_alarm_sensitivity;
+    private byte v1_baby_crying_mode;
+    private byte v1_day_night_mode;
+    private byte v1_frame_rate;
+    private byte v1_is_utc_time;
+    private byte v1_ldc_mode;
+    private byte v1_mic_mode;
+    public byte v1_talk_mode;
+    private byte v1_version_type;
+    private byte v1_video_backup;
+    public byte v2_alarm_mode;
+    private byte v2_alarm_sensitivity;
+    public byte v2_beep_mode;
+    private byte v2_day_night_mode;
+    public byte v2_extend_abnormal_sound = (byte) 0;
+    public byte v2_extend_abnormal_sound_sensitivity = (byte) 0;
+    private byte v2_extend_baby_crying_mode = (byte) 0;
+    public byte v2_extend_gesture_mode = (byte) 0;
+    private byte v2_extend_mic_mode = (byte) 0;
+    public byte v2_extend_micboost_set = (byte) 0;
+    public byte v2_extend_motion_roi = (byte) 0;
+    public byte v2_extend_pgc_live = (byte) 0;
+    public byte v2_extend_safe_remove_sd = (byte) 0;
+    public byte v2_extend_upload_log = (byte) 0;
+    public byte v2_extend_version_rollback = (byte) 0;
+    private byte v2_extend_video_backup = (byte) 0;
+    public byte v2_extend_video_talkmode = (byte) 0;
+    public byte v2_extend_wifi_switch = (byte) 0;
+    public byte v2_hd_resolution;
+    private byte v2_is_extend;
+    private byte v2_is_utc_time;
+    private byte v2_ldc_mode;
+    public byte v2_silent_upgrade;
+    public byte v2_speaker_volume;
+    private byte v2_version_type;
+    public int version;
+    public byte version_type;
+    public byte video_backup;
+
+    public void parse(byte[] data)
+    {
+        interface_version = data[0];
+        lossrate = data[1];
+        tfstat = data[2];
+        internet_lossrate = data[3];
+        internet_visit = data[4];
+        check_stat = data[5];
+        update_without_tf = data[6];
+        language = data[7];
+        hardware_version = data[8];
+        version = Packet.byteArrayToInt(data, 32, session.isBigEndian);
+        channel = Packet.byteArrayToInt(data, 36, session.isBigEndian);
+        total = Packet.byteArrayToInt(data, 40, session.isBigEndian);
+        free = Packet.byteArrayToInt(data, 44, session.isBigEndian);
+        close_camera = data[48];
+        close_light = data[49];
+        update_stat = data[50];
+        update_progress = data[51];
+        record_mode = data[52];
+        update_mode = data[53];
+        reverse_mode = data[54];
+        
+        if (hardware_version != (byte) 1)
+        {
+            v1_is_utc_time = data[9];
+            v1_day_night_mode = data[10];
+            v1_alarm_sensitivity = data[11];
+            v1_version_type = data[12];
+            v1_video_backup = data[13];
+            v1_ldc_mode = data[14];
+            v1_baby_crying_mode = data[15];
+            v1_mic_mode = data[16];
+            v1_talk_mode = data[17];
+            v1_frame_rate = data[20];
+            v1_alarm_ring = data[23];
+            v2_version_type = (byte) 0;
+            v2_day_night_mode = (byte) 0;
+            v2_hd_resolution = (byte) 0;
+            v2_alarm_mode = (byte) 0;
+            v2_ldc_mode = (byte) 0;
+            v2_is_utc_time = (byte) 0;
+            v2_alarm_sensitivity = (byte) 0;
+            v2_beep_mode = (byte) 0;
+            v2_speaker_volume = (byte) 0;
+            v2_is_extend = (byte) 0;
+            v2_silent_upgrade = (byte) 0;
+            v2_extend_mic_mode = (byte) 0;
+            v2_extend_baby_crying_mode = (byte) 0;
+            v2_extend_gesture_mode = (byte) 0;
+            v2_extend_motion_roi = (byte) 0;
+            v2_extend_safe_remove_sd = (byte) 0;
+            v2_extend_version_rollback = (byte) 0;
+            v2_extend_upload_log = (byte) 0;
+            v2_extend_wifi_switch = (byte) 0;
+            v2_extend_video_backup = (byte) 0;
+            v2_extend_video_talkmode = (byte) 0;
+            v2_extend_micboost_set = (byte) 0;
+            v2_extend_pgc_live = (byte) 0;
+            v2_extend_abnormal_sound = (byte) 0;
+            v2_extend_abnormal_sound_sensitivity = (byte) 0;
+            day_night_mode = v1_day_night_mode;
+            is_utc_time = v1_is_utc_time;
+            alarm_sensitivity = v1_alarm_sensitivity;
+            version_type = v1_version_type;
+            video_backup = v1_video_backup;
+            ldc_mode = v1_ldc_mode;
+            baby_crying_mode = v1_baby_crying_mode;
+            mic_mode = v1_mic_mode;
+            talk_mode = v1_talk_mode;
+            frame_rate = v1_frame_rate;
+            alarm_ring = v1_alarm_ring;
+
+            if ((hardware_version == (byte) 2
+                    || hardware_version == (byte) 3
+                    || hardware_version == (byte) 20) && interface_version >= (byte) 8)
+            {
+                if (data.length >= 88)
+                {
+                    byte[] obj = new byte[12];
+                    System.arraycopy(data, 56, obj, 0, 12);
+                    presets = new ArrayList(Arrays.asList(AVIOCTRLDEFs.SMsgAVIoctrlPTZPresetGETResp.parseDeviceInfo(obj, session.isBigEndian)));
+                    obj = new byte[20];
+                    System.arraycopy(data, 68, obj, 0, 20);
+                    pizInfo = AVIOCTRLDEFs.SMsgAVIoctrlPTZInfoResp.parse(obj, session.isBigEndian);
+                }
+                else
+                {
+                    presets = new ArrayList<>();
+                    pizInfo = new AVIOCTRLDEFs.SMsgAVIoctrlPTZInfoResp();
+                }
+            }
+        }
+        else
+        {
+            v1_is_utc_time = (byte) 0;
+            v1_day_night_mode = (byte) 0;
+            v1_alarm_sensitivity = (byte) 0;
+            v1_version_type = (byte) 0;
+            video_backup = (byte) 0;
+            alarm_ring = (byte) 0;
+            v1_ldc_mode = (byte) 0;
+            v1_baby_crying_mode = (byte) 0;
+            v1_mic_mode = (byte) 0;
+            v1_talk_mode = (byte) 0;
+            v1_alarm_ring = (byte) 0;
+            v2_version_type = data[9];
+            v2_day_night_mode = data[10];
+            v2_hd_resolution = data[11];
+            v2_alarm_mode = data[12];
+            v2_ldc_mode = data[13];
+            v2_is_utc_time = data[14];
+            v2_alarm_sensitivity = data[15];
+            v2_beep_mode = data[16];
+            v2_speaker_volume = data[17];
+            v2_is_extend = data[18];
+            v2_silent_upgrade = data[19];
+            day_night_mode = v2_day_night_mode;
+            is_utc_time = v2_is_utc_time;
+            alarm_sensitivity = v2_alarm_sensitivity;
+            version_type = v2_version_type;
+            ldc_mode = v2_ldc_mode;
+            if (v2_is_extend > (byte) 0 && data.length >= 256)
+            {
+                v2_extend_mic_mode = data[56];
+                v2_extend_baby_crying_mode = data[57];
+                v2_extend_gesture_mode = data[58];
+                v2_extend_motion_roi = data[59];
+                v2_extend_safe_remove_sd = data[60];
+                v2_extend_version_rollback = data[61];
+                v2_extend_upload_log = data[62];
+                v2_extend_wifi_switch = data[63];
+                v2_extend_video_backup = data[64];
+                v2_extend_video_talkmode = data[65];
+                v2_extend_pgc_live = data[68];
+                v2_extend_micboost_set = data[69];
+                v2_extend_abnormal_sound = data[70];
+                v2_extend_abnormal_sound_sensitivity = data[71];
+                baby_crying_mode = v2_extend_baby_crying_mode;
+                video_backup = v2_extend_video_backup;
+                mic_mode = v2_extend_mic_mode;
+            }
+        }
+    }
+}

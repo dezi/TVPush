@@ -4,11 +4,11 @@ import de.xavaro.android.yihome.P2PCommandCodes;
 import de.xavaro.android.yihome.P2PMessage;
 import de.xavaro.android.yihome.P2PSession;
 
-public class QueryDeviceInfo
+public class DeviceInfoQuery
 {
     private P2PSession session;
 
-    public QueryDeviceInfo(P2PSession session)
+    public DeviceInfoQuery(P2PSession session)
     {
         this.session = session;
     }

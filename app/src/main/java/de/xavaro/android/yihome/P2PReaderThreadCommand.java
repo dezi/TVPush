@@ -2,6 +2,8 @@ package de.xavaro.android.yihome;
 
 import android.util.Log;
 
+import de.xavaro.android.yihome.p2pcommands.DeviceInfo;
+
 public class P2PReaderThreadCommand extends P2PReaderThread
 {
     private static final String LOGTAG = P2PReaderThreadCommand.class.getSimpleName();
@@ -38,13 +40,8 @@ public class P2PReaderThreadCommand extends P2PReaderThread
 
             if (head.commandType == AVIOCTRLDEFs.IOTYPE_USER_IPCAM_DEVINFO_RESP)
             {
-                AVIOCTRLDEFs.SMsgAVIoctrlDeviceInfoResp resp = AVIOCTRLDEFs.SMsgAVIoctrlDeviceInfoResp.parse(dataBuffer, session.isBigEndian);
-
-                Log.d(LOGTAG, "handleData: deviceInfo:"
-                    + " version=" + resp.version
-                    + " total=" + resp.total
-                    + " free=" + resp.free
-                );
+                DeviceInfo deviceInfo = new DeviceInfo(session, dataBuffer);
+                session.onDeviceInfoReceived(deviceInfo);
             }
         }
     }
