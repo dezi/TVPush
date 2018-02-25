@@ -47,7 +47,8 @@ public class P2PReaderThreadCommand extends P2PReaderThread
                 return;
             }
 
-            if (head.commandType == P2PCommandCodes.IPCAM_SET_RESOLUTION_RESP)
+            if ((head.commandType == P2PCommandCodes.IPCAM_SET_RESOLUTION_RESP)
+                || (head.commandType == P2PCommandCodes.IPCAM_GET_RESOLUTION_RESP))
             {
                 ResolutionData resolution = new ResolutionData(session, dataBuffer);
                 session.onResolutionReceived(resolution);

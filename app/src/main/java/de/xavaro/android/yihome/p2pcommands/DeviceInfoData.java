@@ -75,20 +75,20 @@ public class DeviceInfoData
     public byte v2_alarm_sensitivity;
     public byte v2_beep_mode;
     public byte v2_day_night_mode;
-    public byte v2_extend_abnormal_sound = (byte) 0;
-    public byte v2_extend_abnormal_sound_sensitivity = (byte) 0;
-    public byte v2_extend_baby_crying_mode = (byte) 0;
-    public byte v2_extend_gesture_mode = (byte) 0;
-    public byte v2_extend_mic_mode = (byte) 0;
-    public byte v2_extend_micboost_set = (byte) 0;
-    public byte v2_extend_motion_roi = (byte) 0;
-    public byte v2_extend_pgc_live = (byte) 0;
-    public byte v2_extend_safe_remove_sd = (byte) 0;
-    public byte v2_extend_upload_log = (byte) 0;
-    public byte v2_extend_version_rollback = (byte) 0;
-    public byte v2_extend_video_backup = (byte) 0;
-    public byte v2_extend_video_talkmode = (byte) 0;
-    public byte v2_extend_wifi_switch = (byte) 0;
+    public byte v2_extend_abnormal_sound;
+    public byte v2_extend_abnormal_sound_sensitivity;
+    public byte v2_extend_baby_crying_mode;
+    public byte v2_extend_gesture_mode;
+    public byte v2_extend_mic_mode;
+    public byte v2_extend_micboost_set;
+    public byte v2_extend_motion_roi;
+    public byte v2_extend_pgc_live;
+    public byte v2_extend_safe_remove_sd;
+    public byte v2_extend_upload_log;
+    public byte v2_extend_version_rollback;
+    public byte v2_extend_video_backup;
+    public byte v2_extend_video_talkmode;
+    public byte v2_extend_wifi_switch;
     public byte v2_hd_resolution;
     public byte v2_is_extend;
     public byte v2_is_utc_time;
@@ -114,10 +114,12 @@ public class DeviceInfoData
         update_without_tf = data[6];
         language = data[7];
         hardware_version = data[8];
+
         version = P2PPacker.byteArrayToInt(data, 32, session.isBigEndian);
         channel = P2PPacker.byteArrayToInt(data, 36, session.isBigEndian);
         total = P2PPacker.byteArrayToInt(data, 40, session.isBigEndian);
         free = P2PPacker.byteArrayToInt(data, 44, session.isBigEndian);
+
         close_camera = data[48];
         close_light = data[49];
         update_stat = data[50];
@@ -139,31 +141,7 @@ public class DeviceInfoData
             v1_talk_mode = data[17];
             v1_frame_rate = data[20];
             v1_alarm_ring = data[23];
-            v2_version_type = (byte) 0;
-            v2_day_night_mode = (byte) 0;
-            v2_hd_resolution = (byte) 0;
-            v2_alarm_mode = (byte) 0;
-            v2_ldc_mode = (byte) 0;
-            v2_is_utc_time = (byte) 0;
-            v2_alarm_sensitivity = (byte) 0;
-            v2_beep_mode = (byte) 0;
-            v2_speaker_volume = (byte) 0;
-            v2_is_extend = (byte) 0;
-            v2_silent_upgrade = (byte) 0;
-            v2_extend_mic_mode = (byte) 0;
-            v2_extend_baby_crying_mode = (byte) 0;
-            v2_extend_gesture_mode = (byte) 0;
-            v2_extend_motion_roi = (byte) 0;
-            v2_extend_safe_remove_sd = (byte) 0;
-            v2_extend_version_rollback = (byte) 0;
-            v2_extend_upload_log = (byte) 0;
-            v2_extend_wifi_switch = (byte) 0;
-            v2_extend_video_backup = (byte) 0;
-            v2_extend_video_talkmode = (byte) 0;
-            v2_extend_micboost_set = (byte) 0;
-            v2_extend_pgc_live = (byte) 0;
-            v2_extend_abnormal_sound = (byte) 0;
-            v2_extend_abnormal_sound_sensitivity = (byte) 0;
+
             day_night_mode = v1_day_night_mode;
             is_utc_time = v1_is_utc_time;
             alarm_sensitivity = v1_alarm_sensitivity;
@@ -194,17 +172,6 @@ public class DeviceInfoData
         }
         else
         {
-            v1_is_utc_time = (byte) 0;
-            v1_day_night_mode = (byte) 0;
-            v1_alarm_sensitivity = (byte) 0;
-            v1_version_type = (byte) 0;
-            video_backup = (byte) 0;
-            alarm_ring = (byte) 0;
-            v1_ldc_mode = (byte) 0;
-            v1_baby_crying_mode = (byte) 0;
-            v1_mic_mode = (byte) 0;
-            v1_talk_mode = (byte) 0;
-            v1_alarm_ring = (byte) 0;
             v2_version_type = data[9];
             v2_day_night_mode = data[10];
             v2_hd_resolution = data[11];
@@ -216,12 +183,14 @@ public class DeviceInfoData
             v2_speaker_volume = data[17];
             v2_is_extend = data[18];
             v2_silent_upgrade = data[19];
+
             day_night_mode = v2_day_night_mode;
             is_utc_time = v2_is_utc_time;
             alarm_sensitivity = v2_alarm_sensitivity;
             version_type = v2_version_type;
             ldc_mode = v2_ldc_mode;
-            if (v2_is_extend > (byte) 0 && data.length >= 256)
+
+            if ((v2_is_extend > (byte) 0) && (data.length >= 256))
             {
                 v2_extend_mic_mode = data[56];
                 v2_extend_baby_crying_mode = data[57];
@@ -237,6 +206,7 @@ public class DeviceInfoData
                 v2_extend_micboost_set = data[69];
                 v2_extend_abnormal_sound = data[70];
                 v2_extend_abnormal_sound_sensitivity = data[71];
+                
                 baby_crying_mode = v2_extend_baby_crying_mode;
                 video_backup = v2_extend_video_backup;
                 mic_mode = v2_extend_mic_mode;

@@ -8,6 +8,7 @@ import com.p2p.pppp_api.PPPP_Session;
 
 import de.xavaro.android.yihome.p2pcommands.DeviceInfoData;
 import de.xavaro.android.yihome.p2pcommands.DeviceInfoQuery;
+import de.xavaro.android.yihome.p2pcommands.ResolutionQuery;
 import de.xavaro.android.yihome.p2pcommands.PTZControlStopSend;
 import de.xavaro.android.yihome.p2pcommands.PTZDirectionSend;
 import de.xavaro.android.yihome.p2pcommands.PTZHomeSend;
@@ -180,6 +181,11 @@ public class P2PSession
     public boolean resolutionSend(int resolution)
     {
         return (new ResolutionSend(this, resolution)).send();
+    }
+
+    public boolean resolutionQuery()
+    {
+        return (new ResolutionQuery(this)).send();
     }
 
     public boolean ptzDirectionSend(int direction, int speed)

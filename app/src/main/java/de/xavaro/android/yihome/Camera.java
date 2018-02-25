@@ -30,6 +30,8 @@ public class Camera
 
         p2psession.ptzDirectionSend(PTZDirectionSend.DIRECTION_LEFT, 0);
 
+        p2psession.resolutionQuery();
+
         ApplicationBase.handler.postDelayed(new Runnable()
         {
             @Override

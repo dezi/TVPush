@@ -20,6 +20,10 @@ public class ResolutionData
         parse(data);
     }
 
+    public final static int RESOLUTION_720P = 1;
+    public final static int RESOLUTION_1080P = 2;
+    public final static int RESOLUTION_SUPER1080P = 3;
+
     public int resolution;
     public int reserved;
 
