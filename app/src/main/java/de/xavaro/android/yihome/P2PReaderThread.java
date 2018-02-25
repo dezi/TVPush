@@ -24,7 +24,7 @@ public class P2PReaderThread extends Thread
     @Override
     public void run()
     {
-        Log.d(LOGTAG, "run: start...");
+        Log.d(LOGTAG, "run: start channel=" + this.channel);
 
         while (session.isConnected)
         {
@@ -84,7 +84,7 @@ public class P2PReaderThread extends Thread
             }
         }
 
-        Log.d(LOGTAG, "run: done.");
+        Log.d(LOGTAG, "run: stop channel=" + this.channel);
     }
 
     public void handleData(byte[] data, int size)

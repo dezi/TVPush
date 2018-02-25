@@ -8,8 +8,9 @@ import com.p2p.pppp_api.PPPP_Session;
 
 import de.xavaro.android.yihome.p2pcommands.DeviceInfo;
 import de.xavaro.android.yihome.p2pcommands.DeviceInfoQuery;
-import de.xavaro.android.yihome.p2pcommands.SendPTZDirection;
-import de.xavaro.android.yihome.p2pcommands.SendPTZHome;
+import de.xavaro.android.yihome.p2pcommands.PTZControlStopSend;
+import de.xavaro.android.yihome.p2pcommands.PTZDirectionSend;
+import de.xavaro.android.yihome.p2pcommands.PTZHomeSend;
 
 import static com.p2p.pppp_api.PPPP_APIs.PPPP_Check;
 
@@ -124,10 +125,10 @@ public class P2PSession
     {
         if (isConnected)
         {
+            isConnected = false;
+
             int resClose = PPPP_APIs.PPPP_Close(session);
             Log.d(LOGTAG, "close: PPPP_Close=" + resClose);
-
-            isConnected = ! (resClose == 0);
         }
 
         return ! isConnected;
@@ -171,17 +172,22 @@ public class P2PSession
 
     //region Delegate section.
 
-    public boolean sendPTZDirection(int direction, int speed)
+    public boolean ptzDirectionSend(int direction, int speed)
     {
-        return (new SendPTZDirection(this, direction, speed)).send();
+        return (new PTZDirectionSend(this, direction, speed)).send();
     }
 
-    public boolean sendPTZHome()
+    public boolean ptzControlStopSend()
     {
-        return (new SendPTZHome(this)).send();
+        return (new PTZControlStopSend(this)).send();
     }
 
-    public boolean queryDeviceInfo()
+    public boolean ptzHomeSend()
+    {
+        return (new PTZHomeSend(this)).send();
+    }
+
+    public boolean deviceInfoquery()
     {
         return (new DeviceInfoQuery(this)).send();
     }

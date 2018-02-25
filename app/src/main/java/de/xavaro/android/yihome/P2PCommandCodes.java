@@ -128,7 +128,7 @@ public class P2PCommandCodes
     public static final short PANORAMA_CAPTURE_START_RSP = 16417;
 
     public static final short PTZ_DIRECTION_CTRL = 16402;
-    public static final short PTZ_DIRECTION_CTRL_STOP = 16403;
+    public static final short PTZ_CTRL_STOP = 16403;
     public static final short PTZ_HOME = 16404;
     public static final short PTZ_JUMP_TO_POINT = 16405;
     public static final short PTZ_PRESET_ADD_REQ = 16384;

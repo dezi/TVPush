@@ -4,11 +4,11 @@ import de.xavaro.android.yihome.P2PCommandCodes;
 import de.xavaro.android.yihome.P2PMessage;
 import de.xavaro.android.yihome.P2PSession;
 
-public class SendPTZHome
+public class PTZHomeSend
 {
     private P2PSession session;
 
-    public SendPTZHome(P2PSession session)
+    public PTZHomeSend(P2PSession session)
     {
         this.session = session;
     }

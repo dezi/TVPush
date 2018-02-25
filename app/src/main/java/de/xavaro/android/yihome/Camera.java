@@ -30,19 +30,20 @@ public class Camera
         Log.d(LOGTAG, "initialize: isOnline=" + p2psession.isOnline());
         Log.d(LOGTAG, "initialize: connect=" + p2psession.connect());
 
-        p2psession.queryDeviceInfo();
+        p2psession.deviceInfoquery();
 
-        p2psession.sendPTZDirection(3, 0);
+        p2psession.ptzDirectionSend(3, 0);
 
         ApplicationBase.handler.postDelayed(new Runnable()
         {
             @Override
             public void run()
             {
-                p2psession.sendPTZHome();
+                p2psession.ptzHomeSend();
             }
         }, 5000);
 
+        /*
         ApplicationBase.handler.postDelayed(new Runnable()
         {
             @Override
@@ -51,6 +52,7 @@ public class Camera
                 p2psession.close();
             }
         }, 15000);
+        */
     }
 
     /*
