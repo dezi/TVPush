@@ -2,9 +2,9 @@ package de.xavaro.android.yihome;
 
 import android.text.TextUtils;
 
-public class TNPIOCtrlHead
+public class P2PFrame
 {
-    public static final int HEADER_SIZE = 40;
+    public static final int FRAME_SIZE = 40;
 
     public byte[] authInfo;
     public int authResult;
@@ -14,7 +14,7 @@ public class TNPIOCtrlHead
     public short exHeaderSize;
     public boolean isByteOrderBig;
 
-    public TNPIOCtrlHead(short s, short s2, short s3, String str, String str2, int i, boolean z)
+    public P2PFrame(short s, short s2, short s3, String str, String str2, int i, boolean z)
     {
         this.authInfo = new byte[32];
         this.authResult = -1;
@@ -34,25 +34,27 @@ public class TNPIOCtrlHead
         this.isByteOrderBig = z;
     }
 
-    private TNPIOCtrlHead(boolean z)
+    private P2PFrame(boolean z)
     {
         this.authInfo = new byte[32];
         this.authResult = -1;
         this.isByteOrderBig = z;
     }
 
-    public static TNPIOCtrlHead parse(byte[] bArr, boolean z)
+    public static P2PFrame parse(byte[] data, boolean isBigEndian)
     {
-        TNPIOCtrlHead tNPIOCtrlHead = new TNPIOCtrlHead(z);
-        tNPIOCtrlHead.commandType = Packet.byteArrayToShort(bArr, 0, z);
-        tNPIOCtrlHead.commandNumber = Packet.byteArrayToShort(bArr, 2, z);
-        tNPIOCtrlHead.exHeaderSize = Packet.byteArrayToShort(bArr, 4, z);
-        tNPIOCtrlHead.dataSize = Packet.byteArrayToShort(bArr, 6, z);
-        tNPIOCtrlHead.authResult = Packet.byteArrayToInt(bArr, 8, z);
+        P2PFrame tNPIOCtrlHead = new P2PFrame(isBigEndian);
+
+        tNPIOCtrlHead.commandType = Packet.byteArrayToShort(data, 0, isBigEndian);
+        tNPIOCtrlHead.commandNumber = Packet.byteArrayToShort(data, 2, isBigEndian);
+        tNPIOCtrlHead.exHeaderSize = Packet.byteArrayToShort(data, 4, isBigEndian);
+        tNPIOCtrlHead.dataSize = Packet.byteArrayToShort(data, 6, isBigEndian);
+        tNPIOCtrlHead.authResult = Packet.byteArrayToInt(data, 8, isBigEndian);
+
         return tNPIOCtrlHead;
     }
 
-    public byte[] toByteArray()
+    public byte[] build()
     {
         byte[] obj = new byte[40];
 

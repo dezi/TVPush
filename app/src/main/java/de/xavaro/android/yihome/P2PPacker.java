@@ -1,6 +1,6 @@
 package de.xavaro.android.yihome;
 
-public class P2PPacket
+public class P2PPacker
 {
     public static int byteArrayToInt(byte[] bArr, int i, boolean z)
     {

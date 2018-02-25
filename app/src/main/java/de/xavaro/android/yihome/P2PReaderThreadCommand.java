@@ -2,11 +2,11 @@ package de.xavaro.android.yihome;
 
 import android.util.Log;
 
-public class TNPReaderCommandThread extends TNPReaderThread
+public class P2PReaderThreadCommand extends P2PReaderThread
 {
-    private static final String LOGTAG = TNPReaderCommandThread.class.getSimpleName();
+    private static final String LOGTAG = P2PReaderThreadCommand.class.getSimpleName();
 
-    public TNPReaderCommandThread(int sessionHandle, boolean isByteOrderBig)
+    public P2PReaderThreadCommand(int sessionHandle, boolean isByteOrderBig)
     {
         super(sessionHandle, CHANNEL_COMMAND, isByteOrderBig);
     }
@@ -14,7 +14,7 @@ public class TNPReaderCommandThread extends TNPReaderThread
     @Override
     public void handleData(byte[] data, int size)
     {
-        TNPIOCtrlHead head = TNPIOCtrlHead.parse(data, isByteOrderBig);
+        P2PFrame head = P2PFrame.parse(data, isByteOrderBig);
 
         Log.d(LOGTAG, "handleData:"
                 + " command=" + head.commandType
@@ -22,7 +22,7 @@ public class TNPReaderCommandThread extends TNPReaderThread
                 + " exsize=" + head.exHeaderSize
                 + " datasize=" + head.dataSize);
 
-        int dataOffset = TNPIOCtrlHead.HEADER_SIZE + head.exHeaderSize;
+        int dataOffset = P2PFrame.FRAME_SIZE + head.exHeaderSize;
         int dataSize = size - dataOffset;
 
         Log.d(LOGTAG, "handleData: head.authResult=" + head.authResult);

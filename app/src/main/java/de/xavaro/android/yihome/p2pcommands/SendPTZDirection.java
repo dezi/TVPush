@@ -1,10 +1,8 @@
 package de.xavaro.android.yihome.p2pcommands;
 
-import android.util.Log;
-
 import de.xavaro.android.yihome.P2PCommandCodes;
 import de.xavaro.android.yihome.P2PMessage;
-import de.xavaro.android.yihome.P2PPacket;
+import de.xavaro.android.yihome.P2PPacker;
 import de.xavaro.android.yihome.P2PSession;
 
 public class SendPTZDirection
@@ -32,8 +30,8 @@ public class SendPTZDirection
     {
         byte[] obj = new byte[8];
 
-        System.arraycopy(P2PPacket.intToByteArray(direction, session.isBigEndian), 0, obj, 0, 4);
-        System.arraycopy(P2PPacket.intToByteArray(speed, session.isBigEndian), 0, obj, 4, 4);
+        System.arraycopy(P2PPacker.intToByteArray(direction, session.isBigEndian), 0, obj, 0, 4);
+        System.arraycopy(P2PPacker.intToByteArray(speed, session.isBigEndian), 0, obj, 4, 4);
 
         return obj;
     }

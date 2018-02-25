@@ -4,9 +4,12 @@ import android.util.Log;
 
 import com.p2p.pppp_api.PPPP_APIs;
 import com.p2p.pppp_api.PPPP_Keys;
+import com.p2p.pppp_api.PPPP_Session;
 
 import de.xavaro.android.yihome.p2pcommands.SendPTZDirection;
 import de.xavaro.android.yihome.p2pcommands.SendPTZHome;
+
+import static com.p2p.pppp_api.PPPP_APIs.PPPP_Check;
 
 @SuppressWarnings({ "WeakerAccess"})
 public class P2PSession
@@ -22,6 +25,8 @@ public class P2PSession
 
     private short cmdSequence;
     private long lastLoginTime;
+
+    private PPPP_Session sessionInfo;
 
     static
     {
@@ -66,7 +71,24 @@ public class P2PSession
 
         isBigEndian = true;
 
-        return (session > 0);
+        if (session > 0)
+        {
+            sessionInfo = new PPPP_Session();
+
+            int resCheck = PPPP_Check(session, sessionInfo);
+
+            Log.d(LOGTAG, "initialize: PPPP_Check=" + resCheck);
+
+            if (resCheck == 0)
+            {
+                Log.d(LOGTAG, "initialize: getRemoteIP=" + sessionInfo.getRemoteIP());
+                Log.d(LOGTAG, "initialize: getRemotePort=" + sessionInfo.getRemotePort());
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public boolean packDatAndSend(P2PMessage p2PMessage)
@@ -86,14 +108,14 @@ public class P2PSession
         Log.d(LOGTAG, "packDatAndSend: dezihack: " + auth1);
         Log.d(LOGTAG, "packDatAndSend: dezihack: " + auth2);
 
-        TNPIOCtrlHead tNPIOCtrlHead = new TNPIOCtrlHead(p2PMessage.reqId, ++cmdSequence, (short) p2PMessage.data.length, auth1, auth2, -1, isBigEndian);
-        TNPHead tNPHead = new TNPHead((byte) 1, (byte) 3, (tNPIOCtrlHead.exHeaderSize + 40) + p2PMessage.data.length, isBigEndian);
+        P2PFrame tNPIOCtrlHead = new P2PFrame(p2PMessage.reqId, ++cmdSequence, (short) p2PMessage.data.length, auth1, auth2, -1, isBigEndian);
+        P2PHeader tNPHead = new P2PHeader((byte) 1, (byte) 3, (tNPIOCtrlHead.exHeaderSize + 40) + p2PMessage.data.length, isBigEndian);
 
         int i = tNPHead.dataSize + 8;
 
         byte[] obj = new byte[i];
-        System.arraycopy(tNPHead.toByteArray(), 0, obj, 0, 8);
-        System.arraycopy(tNPIOCtrlHead.toByteArray(), 0, obj, 8, 40);
+        System.arraycopy(tNPHead.build(), 0, obj, 0, 8);
+        System.arraycopy(tNPIOCtrlHead.build(), 0, obj, 8, 40);
         System.arraycopy(p2PMessage.data, 0, obj, tNPIOCtrlHead.exHeaderSize + 48, p2PMessage.data.length);
 
         Log.d(LOGTAG, "packDatAndSend: size=" + obj.length + " hex=" + Simple.getHexBytesToString(obj));

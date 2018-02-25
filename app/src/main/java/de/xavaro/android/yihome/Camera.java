@@ -3,13 +3,8 @@ package de.xavaro.android.yihome;
 import android.util.Log;
 
 import com.p2p.pppp_api.PPPP_APIs;
-import com.p2p.pppp_api.PPPP_Session;
 
 import de.xavaro.android.tvpush.ApplicationBase;
-
-import static com.p2p.pppp_api.PPPP_APIs.PPPP_Check;
-import static com.p2p.pppp_api.PPPP_APIs.PPPP_GetAPIVersion;
-import static com.p2p.pppp_api.PPPP_APIs.PPPP_Initialize;
 
 public class Camera
 {
@@ -46,20 +41,12 @@ public class Camera
         Log.d(LOGTAG, "initialize: isOnline=" + p2psession.isOnline());
         Log.d(LOGTAG, "initialize: connect=" + p2psession.connect());
 
-        PPPP_Session session = new PPPP_Session();
-
-        int resCheck = PPPP_Check(p2psession.session, session);
-        Log.d(LOGTAG, "initialize: PPPP_Check=" + resCheck);
-
-        Log.d(LOGTAG, "initialize: getRemoteIP=" + session.getRemoteIP());
-        Log.d(LOGTAG, "initialize: getRemotePort=" + session.getRemotePort());
-
-        TNPReaderThread t0 = new TNPReaderCommandThread(p2psession.session, isByteOrderBig);
-        TNPReaderThread t1 = new TNPReaderThread(p2psession.session, 1, isByteOrderBig);
-        TNPReaderThread t2 = new TNPReaderThread(p2psession.session, 2, isByteOrderBig);
-        TNPReaderThread t3 = new TNPReaderThread(p2psession.session, 3, isByteOrderBig);
-        TNPReaderThread t4 = new TNPReaderThread(p2psession.session, 4, isByteOrderBig);
-        TNPReaderThread t5 = new TNPReaderThread(p2psession.session, 5, isByteOrderBig);
+        P2PReaderThread t0 = new P2PReaderThreadCommand(p2psession.session, isByteOrderBig);
+        P2PReaderThread t1 = new P2PReaderThread(p2psession.session, 1, isByteOrderBig);
+        P2PReaderThread t2 = new P2PReaderThread(p2psession.session, 2, isByteOrderBig);
+        P2PReaderThread t3 = new P2PReaderThread(p2psession.session, 3, isByteOrderBig);
+        P2PReaderThread t4 = new P2PReaderThread(p2psession.session, 4, isByteOrderBig);
+        P2PReaderThread t5 = new P2PReaderThread(p2psession.session, 5, isByteOrderBig);
 
         t0.start();
         t1.start();
@@ -163,14 +150,14 @@ public class Camera
         // 010300000000002C03300003000000044735363650584255305A6E4F5A47482C37442B4D416E485162657151516F6F0000000000
         // 010300000000002C03300001000000044735363650584255305A6E4F5A47482C37442B4D416E485162657151516F6F0000000000
 
-        TNPIOCtrlHead tNPIOCtrlHead = new TNPIOCtrlHead(s, s2, (short) p2PMessage.data.length, access$1500, access$1600, -1, isByteOrderBig);
-        TNPHead tNPHead = new TNPHead((byte) 1, (byte) 3, (tNPIOCtrlHead.exHeaderSize + 40) + p2PMessage.data.length, isByteOrderBig);
+        P2PFrame tNPIOCtrlHead = new P2PFrame(s, s2, (short) p2PMessage.data.length, access$1500, access$1600, -1, isByteOrderBig);
+        P2PHeader tNPHead = new P2PHeader((byte) 1, (byte) 3, (tNPIOCtrlHead.exHeaderSize + 40) + p2PMessage.data.length, isByteOrderBig);
 
         int i = tNPHead.dataSize + 8;
 
         byte[] obj = new byte[i];
-        System.arraycopy(tNPHead.toByteArray(), 0, obj, 0, 8);
-        System.arraycopy(tNPIOCtrlHead.toByteArray(), 0, obj, 8, 40);
+        System.arraycopy(tNPHead.build(), 0, obj, 0, 8);
+        System.arraycopy(tNPIOCtrlHead.build(), 0, obj, 8, 40);
         System.arraycopy(p2PMessage.data, 0, obj, tNPIOCtrlHead.exHeaderSize + 48, p2PMessage.data.length);
 
         Log.d(LOGTAG, "packDatAndSend: size=" + obj.length + " hex=" + Simple.getHexBytesToString(obj));

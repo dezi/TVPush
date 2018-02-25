@@ -4,9 +4,9 @@ import android.util.Log;
 
 import com.p2p.pppp_api.PPPP_APIs;
 
-public class TNPReaderThread extends Thread
+public class P2PReaderThread extends Thread
 {
-    private static final String LOGTAG = TNPReaderThread.class.getSimpleName();
+    private static final String LOGTAG = P2PReaderThread.class.getSimpleName();
 
     public final static int CHANNEL_COMMAND = 0;
 
@@ -14,7 +14,7 @@ public class TNPReaderThread extends Thread
     protected int sessionHandle;
     protected boolean isByteOrderBig;
 
-    public TNPReaderThread(int sessionHandle, int channel, boolean isByteOrderBig)
+    public P2PReaderThread(int sessionHandle, int channel, boolean isByteOrderBig)
     {
         super();
 
@@ -43,7 +43,7 @@ public class TNPReaderThread extends Thread
             }
             else
             {
-                TNPHead header = TNPHead.parse(nBuffer, isByteOrderBig);
+                P2PHeader header = P2PHeader.parse(nBuffer, isByteOrderBig);
 
                 Log.d(LOGTAG, "head: read"
                         + " channel=" + channel
