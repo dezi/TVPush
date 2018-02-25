@@ -8,7 +8,7 @@ import java.util.Random;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-public class Util
+public class P2PUtil
 {
     private static char[] NonceBase = new char[]
             {

@@ -6,6 +6,7 @@ import com.p2p.pppp_api.PPPP_APIs;
 import com.p2p.pppp_api.PPPP_Keys;
 
 import de.xavaro.android.yihome.p2pcommands.SendPTZDirection;
+import de.xavaro.android.yihome.p2pcommands.SendPTZHome;
 
 @SuppressWarnings({ "WeakerAccess"})
 public class P2PSession
@@ -19,7 +20,7 @@ public class P2PSession
     private String account = "admin";
     private String password = "92DHWPDNdDDnYtz";
 
-    private int cmdSequence;
+    private short cmdSequence;
     private long lastLoginTime;
 
     static
@@ -70,32 +71,22 @@ public class P2PSession
 
     public boolean packDatAndSend(P2PMessage p2PMessage)
     {
-        short s = (short) p2PMessage.reqId;
-        short s2 = (short) ++cmdSequence;
+        String auth1 = account;
+        String auth2 = password;
 
-        String access$1500 = account;
-        String access$1600 = password;
-
-        Log.d(LOGTAG, "dezihack: " + access$1500);
-        Log.d(LOGTAG, "dezihack: " + access$1600);
+        Log.d(LOGTAG, "packDatAndSend: dezihack: " + auth1);
+        Log.d(LOGTAG, "packDatAndSend: dezihack: " + auth2);
 
         if (true)
         {
-            access$1500 = Util.genNonce(15);
-            access$1600 = Util.getPassword(access$1500, access$1600);
+            auth1 = P2PUtil.genNonce(15);
+            auth2 = P2PUtil.getPassword(auth1, auth2);
         }
 
-        Log.d(LOGTAG, "dezihack: " + access$1500);
-        Log.d(LOGTAG, "dezihack: " + access$1600);
+        Log.d(LOGTAG, "packDatAndSend: dezihack: " + auth1);
+        Log.d(LOGTAG, "packDatAndSend: dezihack: " + auth2);
 
-        // admin
-        // W6OCfaN4O6Q0BcS
-        // G566PXBU0ZnOZGH
-        // 7D+MAnHQbeqQQoo
-        // 010300000000002C03300003000000044735363650584255305A6E4F5A47482C37442B4D416E485162657151516F6F0000000000
-        // 010300000000002C03300001000000044735363650584255305A6E4F5A47482C37442B4D416E485162657151516F6F0000000000
-
-        TNPIOCtrlHead tNPIOCtrlHead = new TNPIOCtrlHead(s, s2, (short) p2PMessage.data.length, access$1500, access$1600, -1, isBigEndian);
+        TNPIOCtrlHead tNPIOCtrlHead = new TNPIOCtrlHead(p2PMessage.reqId, ++cmdSequence, (short) p2PMessage.data.length, auth1, auth2, -1, isBigEndian);
         TNPHead tNPHead = new TNPHead((byte) 1, (byte) 3, (tNPIOCtrlHead.exHeaderSize + 40) + p2PMessage.data.length, isBigEndian);
 
         int i = tNPHead.dataSize + 8;
@@ -114,10 +105,13 @@ public class P2PSession
         return (PPPP_Write == i);
     }
 
-    public void sendPTZDirection(int direction, int speed)
+    public boolean sendPTZDirection(int direction, int speed)
     {
-        SendPTZDirection req = new SendPTZDirection(this, direction, speed);
+        return (new SendPTZDirection(this, direction, speed)).send();
+    }
 
-        req.send();
+    public boolean sendPTZHome()
+    {
+        return (new SendPTZHome(this)).send();
     }
 }

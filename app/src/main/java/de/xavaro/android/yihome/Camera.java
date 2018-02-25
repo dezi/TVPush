@@ -5,6 +5,8 @@ import android.util.Log;
 import com.p2p.pppp_api.PPPP_APIs;
 import com.p2p.pppp_api.PPPP_Session;
 
+import de.xavaro.android.tvpush.ApplicationBase;
+
 import static com.p2p.pppp_api.PPPP_APIs.PPPP_Check;
 import static com.p2p.pppp_api.PPPP_APIs.PPPP_GetAPIVersion;
 import static com.p2p.pppp_api.PPPP_APIs.PPPP_Initialize;
@@ -70,11 +72,16 @@ public class Camera
 
         getDeviceInfo(p2psession.session);
 
-        //sendPTZJump(resConnect, -10, 0);
-
-        //sendPTZHome(resConnect);
-
         p2psession.sendPTZDirection(3, 0);
+
+        ApplicationBase.handler.postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                p2psession.sendPTZHome();
+            }
+        }, 5000);
 
         /*
         int resClose = PPPP_Close(resConnect);
@@ -93,25 +100,11 @@ public class Camera
         System.arraycopy(Packet.intToByteArray(1, isByteOrderBig), 0, obj, 4, 4);
 
         P2PMessage p2PMessage = new P2PMessage(
-                AVIOCTRLDEFs.IOTYPE_USER_IPCAM_SET_RESOLUTION,
+                (short) AVIOCTRLDEFs.IOTYPE_USER_IPCAM_SET_RESOLUTION,
                 obj);
 
         Log.d(LOGTAG, "setResolution: command=" + Integer.toHexString(p2PMessage.reqId));
         Log.d(LOGTAG, "setResolution: p2pmess=" + Simple.getHexBytesToString(p2PMessage.data));
-
-        packDatAndSend(session, p2PMessage);
-    }
-
-    public static void sendPTZHome(int session)
-    {
-        Log.d(LOGTAG, "sendPTZHome:");
-
-        P2PMessage p2PMessage = new P2PMessage(
-                AVIOCTRLDEFs.IOTYPE_USER_PTZ_HOME,
-                new byte[4]);
-
-        Log.d(LOGTAG, "sendPTZHome: command=" + Integer.toHexString(p2PMessage.reqId));
-        Log.d(LOGTAG, "sendPTZHome: p2pmess=" + Simple.getHexBytesToString(p2PMessage.data));
 
         packDatAndSend(session, p2PMessage);
     }
@@ -123,7 +116,7 @@ public class Camera
                 + " longitudinalProportion=" + longitudinalProportion);
 
         P2PMessage p2PMessage = new P2PMessage(
-                AVIOCTRLDEFs.IOTYPE_USER_PTZ_JUMP_TO_POINT,
+                (short) AVIOCTRLDEFs.IOTYPE_USER_PTZ_JUMP_TO_POINT,
                 AVIOCTRLDEFs.SMsgAVIoctrlPTZJumpPointSet.parseContent(transverseProportion, longitudinalProportion, isByteOrderBig));
 
         packDatAndSend(session, p2PMessage);
@@ -134,7 +127,7 @@ public class Camera
         Log.d(LOGTAG, "getDeviceInfo:");
 
         P2PMessage p2PMessage = new P2PMessage(
-                AVIOCTRLDEFs.IOTYPE_USER_IPCAM_DEVINFO_REQ,
+                (short) AVIOCTRLDEFs.IOTYPE_USER_IPCAM_DEVINFO_REQ,
                 AVIOCTRLDEFs.SMsgAVIoctrlDeviceInfoReq.parseContent());
 
         Log.d(LOGTAG, "getDeviceInfo: command=" + Integer.toHexString(p2PMessage.reqId));
@@ -156,8 +149,8 @@ public class Camera
 
         if (true)
         {
-            access$1500 = Util.genNonce(15);
-            access$1600 = Util.getPassword(access$1500, access$1600);
+            access$1500 = P2PUtil.genNonce(15);
+            access$1600 = P2PUtil.getPassword(access$1500, access$1600);
         }
 
         Log.d(LOGTAG, "dezihack: " + access$1500);
