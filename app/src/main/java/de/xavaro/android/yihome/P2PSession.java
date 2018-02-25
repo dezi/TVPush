@@ -5,8 +5,7 @@ import android.util.Log;
 import com.p2p.pppp_api.PPPP_APIs;
 import com.p2p.pppp_api.PPPP_Keys;
 
-import static com.p2p.pppp_api.PPPP_APIs.PPPP_GetAPIVersion;
-import static com.p2p.pppp_api.PPPP_APIs.PPPP_Initialize;
+import de.xavaro.android.yihome.p2pcommands.SendPTZDirection;
 
 @SuppressWarnings({ "WeakerAccess"})
 public class P2PSession
@@ -25,10 +24,10 @@ public class P2PSession
 
     static
     {
-        int resVersion = PPPP_GetAPIVersion();
+        int resVersion = PPPP_APIs.PPPP_GetAPIVersion();
         Log.d(LOGTAG, "static: PPPP_GetAPIVersion=" + resVersion);
 
-        int resInit = PPPP_Initialize("".getBytes(), 12);
+        int resInit = PPPP_APIs.PPPP_Initialize("".getBytes(), 12);
         Log.d(LOGTAG, "static: PPPP_Initialize=" + resInit);
     }
 
@@ -69,7 +68,7 @@ public class P2PSession
         return (session > 0);
     }
 
-    public void packDatAndSend(P2PMessage p2PMessage)
+    public boolean packDatAndSend(P2PMessage p2PMessage)
     {
         short s = (short) p2PMessage.reqId;
         short s2 = (short) ++cmdSequence;
@@ -111,5 +110,14 @@ public class P2PSession
         int PPPP_Write = PPPP_APIs.PPPP_Write(session, (byte) 0, obj, i);
 
         Log.d(LOGTAG, "PPPP_Write IOCTRL, ret:" + PPPP_Write + ", cmdNum:" + tNPIOCtrlHead.commandNumber + ", extSize:" + tNPIOCtrlHead.exHeaderSize + ", send(" + session + ", 0x" + Integer.toHexString(p2PMessage.reqId) + ", " + Simple.getHexBytesToString(p2PMessage.data) + ")");
+
+        return (PPPP_Write == i);
+    }
+
+    public void sendPTZDirection(int direction, int speed)
+    {
+        SendPTZDirection req = new SendPTZDirection(this, direction, speed);
+
+        req.send();
     }
 }

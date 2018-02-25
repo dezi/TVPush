@@ -74,9 +74,7 @@ public class Camera
 
         //sendPTZHome(resConnect);
 
-        //sendPanDirection(p2psession.session, 3, 0);
-
-        P2PCommands.sendPTZDirection(p2psession, 3, 0);
+        p2psession.sendPTZDirection(3, 0);
 
         /*
         int resClose = PPPP_Close(resConnect);
@@ -127,20 +125,6 @@ public class Camera
         P2PMessage p2PMessage = new P2PMessage(
                 AVIOCTRLDEFs.IOTYPE_USER_PTZ_JUMP_TO_POINT,
                 AVIOCTRLDEFs.SMsgAVIoctrlPTZJumpPointSet.parseContent(transverseProportion, longitudinalProportion, isByteOrderBig));
-
-        packDatAndSend(session, p2PMessage);
-    }
-
-    public static void sendPanDirection(int session, int direction, int speed)
-    {
-        Log.d(LOGTAG, "sendPanDirection: direction=" + direction + " speed=" + speed);
-
-        P2PMessage p2PMessage = new P2PMessage(
-                AVIOCTRLDEFs.IOTYPE_USER_PTZ_DIRECTION_CTRL,
-                AVIOCTRLDEFs.SMsgAVIoctrlPTZDireCTRL.parseContent(direction, speed, isByteOrderBig));
-
-        Log.d(LOGTAG, "sendPanDirection: command=" + Integer.toHexString(p2PMessage.reqId));
-        Log.d(LOGTAG, "sendPanDirection: p2pmess=" + Simple.getHexBytesToString(p2PMessage.data));
 
         packDatAndSend(session, p2PMessage);
     }
