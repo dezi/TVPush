@@ -6,12 +6,14 @@ import com.p2p.pppp_api.PPPP_APIs;
 import com.p2p.pppp_api.PPPP_Keys;
 import com.p2p.pppp_api.PPPP_Session;
 
-import de.xavaro.android.yihome.p2pcommands.DeviceInfo;
+import de.xavaro.android.yihome.p2pcommands.DeviceInfoData;
 import de.xavaro.android.yihome.p2pcommands.DeviceInfoQuery;
 import de.xavaro.android.yihome.p2pcommands.PTZControlStopSend;
 import de.xavaro.android.yihome.p2pcommands.PTZDirectionSend;
 import de.xavaro.android.yihome.p2pcommands.PTZHomeSend;
 import de.xavaro.android.yihome.p2pcommands.PTZJumpSend;
+import de.xavaro.android.yihome.p2pcommands.ResolutionData;
+import de.xavaro.android.yihome.p2pcommands.ResolutionSend;
 
 import static com.p2p.pppp_api.PPPP_APIs.PPPP_Check;
 
@@ -175,6 +177,11 @@ public class P2PSession
 
     //region Delegate section.
 
+    public boolean resolutionSend(int resolution)
+    {
+        return (new ResolutionSend(this, resolution)).send();
+    }
+
     public boolean ptzDirectionSend(int direction, int speed)
     {
         return (new PTZDirectionSend(this, direction, speed)).send();
@@ -218,7 +225,7 @@ public class P2PSession
         return onDeviceInfoReceivedListener;
     }
 
-    public void onDeviceInfoReceived(DeviceInfo deviceInfo)
+    public void onDeviceInfoReceived(DeviceInfoData deviceInfo)
     {
         Log.d(LOGTAG, "onDeviceInfoReceived:"
                 + " version=" + deviceInfo.version
@@ -234,10 +241,44 @@ public class P2PSession
 
     public interface OnDeviceInfoReceivedListener
     {
-        void onDeviceInfoReceived(DeviceInfo deviceInfo);
+        void onDeviceInfoReceived(DeviceInfoData deviceInfo);
     }
 
     //endregion OnDeviceInfoReceivedListener
+
+    //region OnResolutionReceivedListener
+
+    private OnResolutionReceivedListener onResolutionReceivedListener;
+
+    public void setOnResolutionReceivedListener(OnResolutionReceivedListener listener)
+    {
+        onResolutionReceivedListener = listener;
+    }
+
+    public OnResolutionReceivedListener getOnResolutionReceivedListener()
+    {
+        return onResolutionReceivedListener;
+    }
+
+    public void onResolutionReceived(ResolutionData resolution)
+    {
+        Log.d(LOGTAG, "onResolutionReceived:"
+                + " resolution=" + resolution.resolution
+                + " reserved=" + resolution.reserved
+        );
+
+        if (onResolutionReceivedListener != null)
+        {
+            onResolutionReceivedListener.onResolutionReceived(resolution);
+        }
+    }
+
+    public interface OnResolutionReceivedListener
+    {
+        void onResolutionReceived(ResolutionData resolution);
+    }
+
+    //endregion OnResolutionReceivedListener
 
     //endregion Listener section.
 }

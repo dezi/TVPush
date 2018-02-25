@@ -4,16 +4,16 @@ import de.xavaro.android.yihome.P2PSession;
 import de.xavaro.android.yihome.P2PPacker;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
-public class PTZInfo
+public class PTZInfoData
 {
     private P2PSession session;
 
-    public PTZInfo(P2PSession session)
+    public PTZInfoData(P2PSession session)
     {
         this.session = session;
     }
 
-    public PTZInfo(P2PSession session, byte[] data)
+    public PTZInfoData(P2PSession session, byte[] data)
     {
         this.session = session;
 

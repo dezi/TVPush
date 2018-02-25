@@ -5,16 +5,16 @@ import java.util.ArrayList;
 import de.xavaro.android.yihome.P2PSession;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
-public class PTZPresets
+public class PTZPresetsData
 {
     private P2PSession session;
 
-    public PTZPresets(P2PSession session)
+    public PTZPresetsData(P2PSession session)
     {
         this.session = session;
     }
 
-    public PTZPresets(P2PSession session, byte[] data)
+    public PTZPresetsData(P2PSession session, byte[] data)
     {
         this.session = session;
 

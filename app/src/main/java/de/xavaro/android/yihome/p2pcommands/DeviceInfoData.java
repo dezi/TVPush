@@ -4,22 +4,22 @@ import de.xavaro.android.yihome.P2PSession;
 import de.xavaro.android.yihome.P2PPacker;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
-public class DeviceInfo
+public class DeviceInfoData
 {
     public static final int V1_SIZE = 56;
     public static final int V2_EXTEND_SIZE = 256;
 
     private P2PSession session;
 
-    public DeviceInfo(P2PSession session)
+    public DeviceInfoData(P2PSession session)
     {
         this.session = session;
 
-        pizInfo = new PTZInfo(session);
-        presets = new PTZPresets(session);
+        pizInfo = new PTZInfoData(session);
+        presets = new PTZPresetsData(session);
     }
 
-    public DeviceInfo(P2PSession session, byte[] data)
+    public DeviceInfoData(P2PSession session, byte[] data)
     {
         this(session);
 
@@ -97,13 +97,13 @@ public class DeviceInfo
     public byte v2_speaker_volume;
     public byte v2_version_type;
 
-    public PTZInfo pizInfo;
-    public PTZPresets presets;
+    public PTZInfoData pizInfo;
+    public PTZPresetsData presets;
 
     public void parse(byte[] data)
     {
-        presets = new PTZPresets(session);
-        pizInfo = new PTZInfo(session);
+        presets = new PTZPresetsData(session);
+        pizInfo = new PTZInfoData(session);
 
         interface_version = data[0];
         lossrate = data[1];
@@ -184,11 +184,11 @@ public class DeviceInfo
                 {
                     byte[] ptzpresets = new byte[12];
                     System.arraycopy(data, 56, ptzpresets, 0, 12);
-                    presets = new PTZPresets(session, ptzpresets);
+                    presets = new PTZPresetsData(session, ptzpresets);
 
                     byte[]  ptzinfo = new byte[20];
                     System.arraycopy(data, 68, ptzinfo, 0, 20);
-                    pizInfo = new PTZInfo(session, ptzinfo);
+                    pizInfo = new PTZInfoData(session, ptzinfo);
                 }
             }
         }

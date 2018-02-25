@@ -6,6 +6,7 @@ import com.p2p.pppp_api.PPPP_APIs;
 
 import de.xavaro.android.tvpush.ApplicationBase;
 import de.xavaro.android.yihome.p2pcommands.PTZDirectionSend;
+import de.xavaro.android.yihome.p2pcommands.ResolutionSend;
 
 public class Camera
 {
@@ -24,6 +25,8 @@ public class Camera
         Log.d(LOGTAG, "initialize: connect=" + p2psession.connect());
 
         p2psession.deviceInfoquery();
+
+        p2psession.resolutionSend(ResolutionSend.RESOLUTION_1080P);
 
         p2psession.ptzDirectionSend(PTZDirectionSend.DIRECTION_LEFT, 0);
 

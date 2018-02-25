@@ -2,7 +2,8 @@ package de.xavaro.android.yihome;
 
 import android.util.Log;
 
-import de.xavaro.android.yihome.p2pcommands.DeviceInfo;
+import de.xavaro.android.yihome.p2pcommands.DeviceInfoData;
+import de.xavaro.android.yihome.p2pcommands.ResolutionData;
 
 public class P2PReaderThreadCommand extends P2PReaderThread
 {
@@ -40,9 +41,21 @@ public class P2PReaderThreadCommand extends P2PReaderThread
 
             if (head.commandType == P2PCommandCodes.IPCAM_DEVINFO_RESP)
             {
-                DeviceInfo deviceInfo = new DeviceInfo(session, dataBuffer);
+                DeviceInfoData deviceInfo = new DeviceInfoData(session, dataBuffer);
                 session.onDeviceInfoReceived(deviceInfo);
+
+                return;
             }
+
+            if (head.commandType == P2PCommandCodes.IPCAM_SET_RESOLUTION_RESP)
+            {
+                ResolutionData resolution = new ResolutionData(session, dataBuffer);
+                session.onResolutionReceived(resolution);
+
+                return;
+            }
+
+            Log.d(LOGTAG, "handleData: unhandled commandType=" + head.commandType);
         }
     }
 }

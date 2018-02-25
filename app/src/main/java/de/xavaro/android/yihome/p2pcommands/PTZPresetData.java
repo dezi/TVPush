@@ -4,16 +4,16 @@ import de.xavaro.android.yihome.P2PSession;
 import de.xavaro.android.yihome.P2PPacker;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
-public class PTZPreset
+public class PTZPresetData
 {
     private P2PSession session;
 
-    public PTZPreset(P2PSession session)
+    public PTZPresetData(P2PSession session)
     {
         this.session = session;
     }
 
-    public PTZPreset(P2PSession session, byte[] data)
+    public PTZPresetData(P2PSession session, byte[] data)
     {
         this.session = session;
 
@@ -22,7 +22,7 @@ public class PTZPreset
 
     public short opResult;
     public short presetIndex;
-    public PTZPresets presets = new PTZPresets(session);
+    public PTZPresetsData presets = new PTZPresetsData(session);
 
     public void parse(byte[] data)
     {
@@ -32,6 +32,6 @@ public class PTZPreset
         byte[] ptzpresets = new byte[data.length - 4];
         System.arraycopy(data, 4, ptzpresets, 0, ptzpresets.length);
 
-        presets = new PTZPresets(session, ptzpresets);
+        presets = new PTZPresetsData(session, ptzpresets);
     }
 }
