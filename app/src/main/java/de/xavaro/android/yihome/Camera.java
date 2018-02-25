@@ -15,6 +15,8 @@ public class Camera
 
     private static boolean isByteOrderBig = true;
 
+    private static P2PSession p2psession;
+
     static
     {
         System.loadLibrary("yihome-lib");
@@ -36,7 +38,7 @@ public class Camera
 
     public static void initialize()
     {
-        P2PSession p2psession = new P2PSession(DID);
+        p2psession = new P2PSession(DID);
 
         Log.d(LOGTAG, "initialize: device=" + DID);
         Log.d(LOGTAG, "initialize: isOnline=" + p2psession.isOnline());
@@ -72,7 +74,9 @@ public class Camera
 
         //sendPTZHome(resConnect);
 
-        sendPanDirection(p2psession.session, 3, 0);
+        //sendPanDirection(p2psession.session, 3, 0);
+
+        P2PCommands.sendPTZDirection(p2psession, 3, 0);
 
         /*
         int resClose = PPPP_Close(resConnect);

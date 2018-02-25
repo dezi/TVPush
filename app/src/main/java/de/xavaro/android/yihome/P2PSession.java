@@ -18,7 +18,7 @@ public class P2PSession
     public boolean isBigEndian;
 
     private String account = "admin";
-    private String password = "W6OCfaN4O6Q0BcS";
+    private String password = "92DHWPDNdDDnYtz";
 
     private int cmdSequence;
     private long lastLoginTime;
@@ -60,13 +60,19 @@ public class P2PSession
         session = PPPP_APIs.PPPP_ConnectByServer(targetId, magic, 0, PPPP_Keys.serverString, PPPP_Keys.licenseKey);
         Log.d(LOGTAG, "connect: PPPP_ConnectByServer=" + session);
 
+        //
+        // Todo: Should be retrieved somehow from session / connect data.
+        //
+
+        isBigEndian = true;
+
         return (session > 0);
     }
 
     public void packDatAndSend(P2PMessage p2PMessage)
     {
         short s = (short) p2PMessage.reqId;
-        short s2 = (short) cmdSequence;
+        short s2 = (short) ++cmdSequence;
 
         String access$1500 = account;
         String access$1600 = password;
