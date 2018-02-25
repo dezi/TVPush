@@ -32,7 +32,6 @@ public class Util
         return new String(cArr);
     }
 
-
     public static String getPassword(String str, String str2)
     {
         String hmacSha1 = hmacSha1(str2, "user=xiaoyiuser&nonce=" + str);

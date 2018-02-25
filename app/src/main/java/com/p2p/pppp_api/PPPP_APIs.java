@@ -6,7 +6,7 @@ public class PPPP_APIs
     public static native int PPPP_Initialize(byte[] parameter, int keyLenght);
     public static native int PPPP_DeInitialize();
 
-    public static native int PPPP_CheckDevOnline(String TargetID, String str2, int i, int[] iArr);
+    public static native int PPPP_CheckDevOnline(String TargetID, String serverString, int i, int[] iArr);
 
     public static native int PPPP_Check(int SessionHandle, PPPP_Session session);
     public static native int PPPP_Check_Buffer(int SessionHandle, byte Channel, int[] WriteSize, int[] ReadSize);

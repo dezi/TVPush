@@ -3,7 +3,6 @@ package de.xavaro.android.yihome;
 import android.util.Log;
 
 import com.p2p.pppp_api.PPPP_APIs;
-import com.p2p.pppp_api.PPPP_Keys;
 import com.p2p.pppp_api.PPPP_Session;
 
 import static com.p2p.pppp_api.PPPP_APIs.PPPP_Check;
@@ -29,10 +28,7 @@ public class Camera
     public static String cameraPassWord = "A8B5C7563090C89EE3D504CC5D68487E";
 
     public static String account = "admin";
-    public static String password = "W6OCfaN4O6Q0BcS";
-
-    public static int resConnect;
-    public static int cmdNum;
+    public static String password = "92DHWPDNdDDnYtz";
 
     //010300000000003013110001000000083369353462756E354B7952637432752C596D4A78746A726847394753473131000000000100000001
     //04010000000000301311000100000008455A777457616467324257715A37562C552F445152725076434B764255556D000000000100000001
@@ -40,43 +36,26 @@ public class Camera
 
     public static void initialize()
     {
-        int resVersion = PPPP_GetAPIVersion();
-        Log.d(LOGTAG, "initialize: PPPP_GetAPIVersion=" + resVersion);
+        P2PSession p2psession = new P2PSession(DID);
 
-        int resInit = PPPP_Initialize("".getBytes(), 12);
-        Log.d(LOGTAG, "initialize: PPPP_Initialize=" + resInit);
-
-        int[] iArr = new int[1];
-        int resCheckOnline = PPPP_APIs.PPPP_CheckDevOnline(DID, serverString, 2, iArr);
-        Log.d(LOGTAG, "initialize: PPPP_CheckDevOnline=" + resCheckOnline + " lastLoginTime=" + iArr[ 0 ]);
-
-        //resConnect = PPPP_ConnectOnlyLanSearch("TNPUSAC-663761-TLWPW");
-        //Log.d(LOGTAG, "initialize: PPPP_ConnectOnlyLanSearch=" + resConnect);
-
-        byte i = (byte) 5;
-        byte b = (byte) ((((i << 1) | 1) | 0) | 64);
-
-        cmdNum = 0;
-        resConnect = PPPP_APIs.PPPP_ConnectByServer(DID, (byte) 1, 0, serverString, licenseKey);
-        Log.d(LOGTAG, "initialize: PPPP_ConnectByServer=" + resConnect);
-
-        //resConnect = PPPP_APIs.PPPP_ConnectOnlyLanSearch(DID);
-        //Log.d(LOGTAG, "initialize: PPPP_ConnectOnlyLanSearch=" + resConnect);
+        Log.d(LOGTAG, "initialize: device=" + DID);
+        Log.d(LOGTAG, "initialize: isOnline=" + p2psession.isOnline());
+        Log.d(LOGTAG, "initialize: connect=" + p2psession.connect());
 
         PPPP_Session session = new PPPP_Session();
 
-        int resCheck = PPPP_Check(resConnect, session);
+        int resCheck = PPPP_Check(p2psession.session, session);
         Log.d(LOGTAG, "initialize: PPPP_Check=" + resCheck);
 
         Log.d(LOGTAG, "initialize: getRemoteIP=" + session.getRemoteIP());
         Log.d(LOGTAG, "initialize: getRemotePort=" + session.getRemotePort());
 
-        TNPReaderThread t0 = new TNPReaderCommandThread(resConnect, isByteOrderBig);
-        TNPReaderThread t1 = new TNPReaderThread(resConnect, 1, isByteOrderBig);
-        TNPReaderThread t2 = new TNPReaderThread(resConnect, 2, isByteOrderBig);
-        TNPReaderThread t3 = new TNPReaderThread(resConnect, 3, isByteOrderBig);
-        TNPReaderThread t4 = new TNPReaderThread(resConnect, 4, isByteOrderBig);
-        TNPReaderThread t5 = new TNPReaderThread(resConnect, 5, isByteOrderBig);
+        TNPReaderThread t0 = new TNPReaderCommandThread(p2psession.session, isByteOrderBig);
+        TNPReaderThread t1 = new TNPReaderThread(p2psession.session, 1, isByteOrderBig);
+        TNPReaderThread t2 = new TNPReaderThread(p2psession.session, 2, isByteOrderBig);
+        TNPReaderThread t3 = new TNPReaderThread(p2psession.session, 3, isByteOrderBig);
+        TNPReaderThread t4 = new TNPReaderThread(p2psession.session, 4, isByteOrderBig);
+        TNPReaderThread t5 = new TNPReaderThread(p2psession.session, 5, isByteOrderBig);
 
         t0.start();
         t1.start();
@@ -87,13 +66,13 @@ public class Camera
 
         //setResolution(resConnect, 1);
 
-        getDeviceInfo(resConnect);
+        getDeviceInfo(p2psession.session);
 
         //sendPTZJump(resConnect, -10, 0);
 
         //sendPTZHome(resConnect);
 
-        sendPanDirection(resConnect, 4, 0);
+        sendPanDirection(p2psession.session, 3, 0);
 
         /*
         int resClose = PPPP_Close(resConnect);
@@ -179,7 +158,7 @@ public class Camera
     private static void packDatAndSend(int session, P2PMessage p2PMessage)
     {
         short s = (short) p2PMessage.reqId;
-        short s2 = (short) cmdNum;
+        short s2 = (short) 1;
 
         String access$1500 = account;
         String access$1600 = password;

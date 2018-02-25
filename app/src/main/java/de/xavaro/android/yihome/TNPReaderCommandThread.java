@@ -25,6 +25,8 @@ public class TNPReaderCommandThread extends TNPReaderThread
         int dataOffset = TNPIOCtrlHead.HEADER_SIZE + head.exHeaderSize;
         int dataSize = size - dataOffset;
 
+        Log.d(LOGTAG, "handleData: head.authResult=" + head.authResult);
+
         if ((head.exHeaderSize < 0) || (head.dataSize != dataSize))
         {
             Log.d(LOGTAG, "handleData: corrupt...");
