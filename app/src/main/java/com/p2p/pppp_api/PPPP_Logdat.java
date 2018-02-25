@@ -2,6 +2,7 @@ package com.p2p.pppp_api;
 
 import android.util.Log;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class PPPP_Logdat
 {
     private static final String LOGTAG = PPPP_Logdat.class.getSimpleName();

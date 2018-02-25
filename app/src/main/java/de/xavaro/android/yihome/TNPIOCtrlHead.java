@@ -4,7 +4,8 @@ import android.text.TextUtils;
 
 public class TNPIOCtrlHead
 {
-    public static final int LEN_HEAD = 40;
+    public static final int HEADER_SIZE = 40;
+
     public byte[] authInfo;
     public int authResult;
     public short commandNumber;

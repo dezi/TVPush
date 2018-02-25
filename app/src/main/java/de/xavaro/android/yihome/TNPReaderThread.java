@@ -8,9 +8,11 @@ public class TNPReaderThread extends Thread
 {
     private static final String LOGTAG = TNPReaderThread.class.getSimpleName();
 
-    private byte channel;
-    private int sessionHandle;
-    private boolean isByteOrderBig;
+    public final static int CHANNEL_COMMAND = 0;
+
+    protected byte channel;
+    protected int sessionHandle;
+    protected boolean isByteOrderBig;
 
     public TNPReaderThread(int sessionHandle, int channel, boolean isByteOrderBig)
     {
@@ -36,6 +38,8 @@ public class TNPReaderThread extends Thread
             if ((hRes != 0) || (nSize[0] != 8))
             {
                 Log.d(LOGTAG, "head: read corrupt...");
+
+                break;
             }
             else
             {
@@ -50,6 +54,8 @@ public class TNPReaderThread extends Thread
                 if ((header.dataSize < 0) || (header.dataSize > (1024 * 1024)))
                 {
                     Log.d(LOGTAG, "head: size corrupt...");
+
+                    break;
                 }
                 else
                 {
@@ -62,15 +68,23 @@ public class TNPReaderThread extends Thread
 
                     if ((dRes != 0) || (dSize[0] != header.dataSize))
                     {
-                        Log.d(LOGTAG, "head: read corrupt...");
+                        Log.d(LOGTAG, "data: read corrupt...");
+
+                        break;
                     }
                     else
                     {
                         Log.d(LOGTAG, "data: read channel=" + channel + " res=" + dRes + " size=" + dSize[0]);
+
+                        handleData(dBuffer, dSize[0]);
                     }
                 }
             }
         }
+    }
+
+    public void handleData(byte[] data, int size)
+    {
     }
 }
 

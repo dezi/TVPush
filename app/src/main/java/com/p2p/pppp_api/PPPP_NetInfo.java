@@ -4,6 +4,7 @@ public class PPPP_NetInfo
 {
     byte[] MyLanIP = new byte[16];
     byte[] MyWanIP = new byte[16];
+
     byte NAT_Type = (byte) 0;
     byte bFlagHostResolved = (byte) 0;
     byte bFlagInternet = (byte) 0;

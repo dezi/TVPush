@@ -169,6 +169,21 @@ public class AVIOCTRLDEFs
         }
     }
 
+    public static class SMsgAVIoctrlPTZJumpPointSet
+    {
+        public static byte[] parseContent(int i, int i2, boolean z)
+        {
+            byte[] intToByteArray = Packet.intToByteArray(i, z);
+            byte[] intToByteArray2 = Packet.intToByteArray(i2, z);
+
+            byte[] obj = new byte[(intToByteArray.length + intToByteArray2.length)];
+            System.arraycopy(intToByteArray, 0, obj, 0, 4);
+            System.arraycopy(intToByteArray2, 0, obj, 4, 4);
+            return obj;
+        }
+    }
+
+
     @SuppressWarnings("unused")
     public static class SMsgAVIoctrlOnlineStatusResp
     {
@@ -210,6 +225,7 @@ public class AVIOCTRLDEFs
     {
         public static final int V1_SIZE = 56;
         public static final int V2_EXTEND_SIZE = 256;
+
         public byte alarm_ring;
         public byte alarm_sensitivity;
         public byte baby_crying_mode;
@@ -425,6 +441,7 @@ public class AVIOCTRLDEFs
             return sMsgAVIoctrlDeviceInfoResp;
         }
     }
+
     @SuppressWarnings("unused")
     public static class SMsgAVIoctrlPTZInfoResp
     {

@@ -3,6 +3,7 @@ package de.xavaro.android.yihome;
 import android.util.Log;
 
 import com.p2p.pppp_api.PPPP_APIs;
+import com.p2p.pppp_api.PPPP_Keys;
 import com.p2p.pppp_api.PPPP_Session;
 
 import static com.p2p.pppp_api.PPPP_APIs.PPPP_Check;
@@ -56,8 +57,11 @@ public class Camera
         byte b = (byte) ((((i << 1) | 1) | 0) | 64);
 
         cmdNum = 0;
-        resConnect = PPPP_APIs.PPPP_ConnectByServer(DID, b, 0, serverString, licenseKey);
+        resConnect = PPPP_APIs.PPPP_ConnectByServer(DID, (byte) 1, 0, serverString, licenseKey);
         Log.d(LOGTAG, "initialize: PPPP_ConnectByServer=" + resConnect);
+
+        //resConnect = PPPP_APIs.PPPP_ConnectOnlyLanSearch(DID);
+        //Log.d(LOGTAG, "initialize: PPPP_ConnectOnlyLanSearch=" + resConnect);
 
         PPPP_Session session = new PPPP_Session();
 
@@ -67,7 +71,7 @@ public class Camera
         Log.d(LOGTAG, "initialize: getRemoteIP=" + session.getRemoteIP());
         Log.d(LOGTAG, "initialize: getRemotePort=" + session.getRemotePort());
 
-        TNPReaderThread t0 = new TNPReaderThread(resConnect, 0, isByteOrderBig);
+        TNPReaderThread t0 = new TNPReaderCommandThread(resConnect, isByteOrderBig);
         TNPReaderThread t1 = new TNPReaderThread(resConnect, 1, isByteOrderBig);
         TNPReaderThread t2 = new TNPReaderThread(resConnect, 2, isByteOrderBig);
         TNPReaderThread t3 = new TNPReaderThread(resConnect, 3, isByteOrderBig);
@@ -83,9 +87,13 @@ public class Camera
 
         //setResolution(resConnect, 1);
 
-        //sendPanDirection(resConnect,3,0);
-
         getDeviceInfo(resConnect);
+
+        //sendPTZJump(resConnect, -10, 0);
+
+        //sendPTZHome(resConnect);
+
+        sendPanDirection(resConnect, 4, 0);
 
         /*
         int resClose = PPPP_Close(resConnect);
@@ -107,8 +115,35 @@ public class Camera
                 AVIOCTRLDEFs.IOTYPE_USER_IPCAM_SET_RESOLUTION,
                 obj);
 
-        Log.d(LOGTAG, "sendPanDirection: command=" + Integer.toHexString(p2PMessage.reqId));
-        Log.d(LOGTAG, "sendPanDirection: p2pmess=" + Simple.getHexBytesToString(p2PMessage.data));
+        Log.d(LOGTAG, "setResolution: command=" + Integer.toHexString(p2PMessage.reqId));
+        Log.d(LOGTAG, "setResolution: p2pmess=" + Simple.getHexBytesToString(p2PMessage.data));
+
+        packDatAndSend(session, p2PMessage);
+    }
+
+    public static void sendPTZHome(int session)
+    {
+        Log.d(LOGTAG, "sendPTZHome:");
+
+        P2PMessage p2PMessage = new P2PMessage(
+                AVIOCTRLDEFs.IOTYPE_USER_PTZ_HOME,
+                new byte[4]);
+
+        Log.d(LOGTAG, "sendPTZHome: command=" + Integer.toHexString(p2PMessage.reqId));
+        Log.d(LOGTAG, "sendPTZHome: p2pmess=" + Simple.getHexBytesToString(p2PMessage.data));
+
+        packDatAndSend(session, p2PMessage);
+    }
+
+    public static void sendPTZJump(int session, int transverseProportion, int longitudinalProportion)
+    {
+        Log.d(LOGTAG, "sendPTZJump:"
+                + " transverseProportion=" + transverseProportion
+                + " longitudinalProportion=" + longitudinalProportion);
+
+        P2PMessage p2PMessage = new P2PMessage(
+                AVIOCTRLDEFs.IOTYPE_USER_PTZ_JUMP_TO_POINT,
+                AVIOCTRLDEFs.SMsgAVIoctrlPTZJumpPointSet.parseContent(transverseProportion, longitudinalProportion, isByteOrderBig));
 
         packDatAndSend(session, p2PMessage);
     }
@@ -119,7 +154,7 @@ public class Camera
 
         P2PMessage p2PMessage = new P2PMessage(
                 AVIOCTRLDEFs.IOTYPE_USER_PTZ_DIRECTION_CTRL,
-                AVIOCTRLDEFs.SMsgAVIoctrlPTZDireCTRL.parseContent(direction, speed, false));
+                AVIOCTRLDEFs.SMsgAVIoctrlPTZDireCTRL.parseContent(direction, speed, isByteOrderBig));
 
         Log.d(LOGTAG, "sendPanDirection: command=" + Integer.toHexString(p2PMessage.reqId));
         Log.d(LOGTAG, "sendPanDirection: p2pmess=" + Simple.getHexBytesToString(p2PMessage.data));

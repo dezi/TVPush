@@ -3,7 +3,7 @@ package com.p2p.pppp_api;
 @SuppressWarnings({"JniMissingFunction", "unused"})
 public class PPPP_APIs
 {
-    public static native int PPPP_Initialize(byte[] serverString, int keyLenght);
+    public static native int PPPP_Initialize(byte[] parameter, int keyLenght);
     public static native int PPPP_DeInitialize();
 
     public static native int PPPP_CheckDevOnline(String TargetID, String str2, int i, int[] iArr);
@@ -15,12 +15,13 @@ public class PPPP_APIs
 
     public static native int PPPP_Listen_With_Key(String str, int i, int i2, byte b, String str2);
 
-    public static native int PPPP_Connect(String TargetID, byte b, int i, String str2);
-    public static native int PPPP_ConnectByServer(String TargetID, byte b, int i, String str2, String str3);
-    public static native int PPPP_ConnectByServerDefault(String TargetID, String str2, String str3);
-    public static native int PPPP_ConnectForDoolBell(String TargetID, byte b, int i, String str2, String str3);
     public static native int PPPP_ConnectOnlyLanSearch(String TargetID);
-    public static native int PPPP_Connect_To_With_MasterServer(String TargetID, byte b, int i, String str2, String str3);
+    public static native int PPPP_ConnectByServer(String TargetID, byte bEnableLanSearch, int UDP_Port, String serverString, String licenseKey);
+    public static native int PPPP_ConnectByServerDefault(String TargetID, String serverString, String licenseKey);
+    public static native int PPPP_ConnectForDoolBell(String TargetID, byte bEnableLanSearch, int UDP_Port, String serverString, String licenseKey);
+
+    public static native int PPPP_Connect(String TargetID, byte bEnableLanSearch, int UDP_Port, String unknown1);
+    public static native int PPPP_Connect_To_With_MasterServer(String TargetID, byte bEnableLanSearch, int UDP_Port, String unknown1, String unknown2);
 
     public static native int PPPP_Connect_Break(String str);
 
