@@ -21,6 +21,7 @@ public class P2PSession
     public int session;
     public String targetId;
     public boolean isBigEndian;
+    public boolean isConnected;
 
     private String account = "admin";
     private String password = "92DHWPDNdDDnYtz";
@@ -59,68 +60,77 @@ public class P2PSession
 
     public boolean connect()
     {
-        byte type = (byte) 5;
-        byte magic = (byte) (((type << 1) | 1) | 64);
-
-        Log.d(LOGTAG, "connect: magic=" + magic);
-
-        session = PPPP_APIs.PPPP_ConnectByServer(targetId, magic, 0, PPPP_Keys.serverString, PPPP_Keys.licenseKey);
-        Log.d(LOGTAG, "connect: PPPP_ConnectByServer=" + session);
-
-        if (session <= 0)
+        if (! isConnected)
         {
+            byte type = (byte) 5;
+            byte magic = (byte) (((type << 1) | 1) | 64);
+
+            Log.d(LOGTAG, "connect: magic=" + magic);
+
+            session = PPPP_APIs.PPPP_ConnectByServer(targetId, magic, 0, PPPP_Keys.serverString, PPPP_Keys.licenseKey);
+            Log.d(LOGTAG, "connect: PPPP_ConnectByServer=" + session);
+
+            if (session <= 0)
+            {
+                //
+                // Device not found or session cannot be created.
+                //
+
+                return false;
+            }
+
             //
-            // Device not found or session cannot be created.
+            // Todo: Should be retrieved somehow from session / connect data.
             //
 
-            return false;
+            isBigEndian = true;
+            isConnected = true;
+
+            //
+            // Retrieve basic session info.
+            //
+
+            sessionInfo = new PPPP_Session();
+
+            int resCheck = PPPP_Check(session, sessionInfo);
+
+            Log.d(LOGTAG, "initialize: PPPP_Check=" + resCheck);
+
+            if (resCheck == 0)
+            {
+                Log.d(LOGTAG, "connect: getRemoteIP=" + sessionInfo.getRemoteIP());
+                Log.d(LOGTAG, "connect: getRemotePort=" + sessionInfo.getRemotePort());
+            }
+
+            P2PReaderThread t0 = new P2PReaderThreadCommand(this);
+            P2PReaderThread t1 = new P2PReaderThread(this, (byte) 1);
+            P2PReaderThread t2 = new P2PReaderThread(this, (byte) 2);
+            P2PReaderThread t3 = new P2PReaderThread(this, (byte) 3);
+            P2PReaderThread t4 = new P2PReaderThread(this, (byte) 4);
+            P2PReaderThread t5 = new P2PReaderThread(this, (byte) 5);
+
+            t0.start();
+            t1.start();
+            t2.start();
+            t3.start();
+            t4.start();
+            t5.start();
         }
 
-        //
-        // Todo: Should be retrieved somehow from session / connect data.
-        //
-
-        isBigEndian = true;
-
-        //
-        // Retrieve basic session info.
-        //
-
-        sessionInfo = new PPPP_Session();
-
-        int resCheck = PPPP_Check(session, sessionInfo);
-
-        Log.d(LOGTAG, "initialize: PPPP_Check=" + resCheck);
-
-        if (resCheck == 0)
-        {
-            Log.d(LOGTAG, "connect: getRemoteIP=" + sessionInfo.getRemoteIP());
-            Log.d(LOGTAG, "connect: getRemotePort=" + sessionInfo.getRemotePort());
-        }
-
-        P2PReaderThread t0 = new P2PReaderThreadCommand(this);
-        P2PReaderThread t1 = new P2PReaderThread(this, (byte) 1);
-        P2PReaderThread t2 = new P2PReaderThread(this, (byte) 2);
-        P2PReaderThread t3 = new P2PReaderThread(this, (byte) 3);
-        P2PReaderThread t4 = new P2PReaderThread(this, (byte) 4);
-        P2PReaderThread t5 = new P2PReaderThread(this, (byte) 5);
-
-        t0.start();
-        t1.start();
-        t2.start();
-        t3.start();
-        t4.start();
-        t5.start();
-
-        return true;
+        return isConnected;
     }
 
     public boolean close()
     {
-        int resClose = PPPP_APIs.PPPP_Close(session);
-        Log.d(LOGTAG, "close: PPPP_Close=" + resClose);
+        if (isConnected)
+        {
+            int resClose = PPPP_APIs.PPPP_Close(session);
+            Log.d(LOGTAG, "close: PPPP_Close=" + resClose);
 
-        return (resClose == 0);
+            isConnected = ! (resClose == 0);
+        }
+
+        return ! isConnected;
     }
 
     public boolean packDatAndSend(P2PMessage p2PMessage)

@@ -24,7 +24,9 @@ public class P2PReaderThread extends Thread
     @Override
     public void run()
     {
-        while (true)
+        Log.d(LOGTAG, "run: start...");
+
+        while (session.isConnected)
         {
             byte[] nBuffer = new byte[8];
             int[] nSize = new int[1];
@@ -32,6 +34,7 @@ public class P2PReaderThread extends Thread
 
             Log.d(LOGTAG, "head: wait channel=" + channel + " size=" + nSize[0]);
             int hRes = PPPP_APIs.PPPP_Read(session.session, channel, nBuffer, nSize, -1);
+            if (! session.isConnected) break;
 
             if ((hRes != 0) || (nSize[0] != 8))
             {
@@ -63,6 +66,7 @@ public class P2PReaderThread extends Thread
 
                     Log.d(LOGTAG, "data: wait channel=" + channel + " size=" + dSize[0]);
                     int dRes = PPPP_APIs.PPPP_Read(session.session, channel, dBuffer, dSize, -1);
+                    if (! session.isConnected) break;
 
                     if ((dRes != 0) || (dSize[0] != header.dataSize))
                     {
@@ -79,6 +83,8 @@ public class P2PReaderThread extends Thread
                 }
             }
         }
+
+        Log.d(LOGTAG, "run: done.");
     }
 
     public void handleData(byte[] data, int size)

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import de.xavaro.android.yihome.P2PSession;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class PTZPresets
 {
     private P2PSession session;
@@ -34,7 +35,7 @@ public class PTZPresets
         {
             if ((data[inx] != (byte) 0) && (count < point_count))
             {
-                presets.add(Integer.valueOf(data[inx]));
+                presets.add((int) data[inx]);
             }
         }
     }

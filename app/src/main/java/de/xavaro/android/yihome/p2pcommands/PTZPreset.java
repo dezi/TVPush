@@ -3,6 +3,7 @@ package de.xavaro.android.yihome.p2pcommands;
 import de.xavaro.android.yihome.P2PSession;
 import de.xavaro.android.yihome.P2PPacker;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class PTZPreset
 {
     private P2PSession session;

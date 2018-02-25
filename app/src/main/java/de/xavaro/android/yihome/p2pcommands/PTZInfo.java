@@ -3,6 +3,7 @@ package de.xavaro.android.yihome.p2pcommands;
 import de.xavaro.android.yihome.P2PSession;
 import de.xavaro.android.yihome.P2PPacker;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class PTZInfo
 {
     private P2PSession session;
@@ -19,13 +20,15 @@ public class PTZInfo
         parse(data);
     }
 
+    public byte motionTrackState;
     public byte cruiseMode;
     public byte curiseState;
-    public int endTime;
-    public byte motionTrackState;
+
     public int panoramicCruiseStayTime;
     public int presetCruiseStayTime;
+
     public int startTime;
+    public int endTime;
 
     public void parse(byte[] data)
     {

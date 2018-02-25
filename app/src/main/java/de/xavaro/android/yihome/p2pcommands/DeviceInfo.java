@@ -1,37 +1,44 @@
 package de.xavaro.android.yihome.p2pcommands;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import de.xavaro.android.yihome.AVIOCTRLDEFs;
 import de.xavaro.android.yihome.P2PSession;
 import de.xavaro.android.yihome.P2PPacker;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class DeviceInfo
 {
+    public static final int V1_SIZE = 56;
+    public static final int V2_EXTEND_SIZE = 256;
+
     private P2PSession session;
+
+    public DeviceInfo(P2PSession session)
+    {
+        this.session = session;
+
+        pizInfo = new PTZInfo(session);
+        presets = new PTZPresets(session);
+    }
 
     public DeviceInfo(P2PSession session, byte[] data)
     {
-        this.session = session;
+        this(session);
 
         parse(data);
     }
 
-    public static final int V1_SIZE = 56;
-    public static final int V2_EXTEND_SIZE = 256;
+    public int version;
+    public int channel;
+    public int free;
+    public int total;
 
     public byte alarm_ring;
     public byte alarm_sensitivity;
     public byte baby_crying_mode;
-    public int channel;
     public byte check_stat;
     public byte close_camera;
     public byte close_light;
     public byte day_night_mode;
     public byte frame_rate;
-    public int free;
     public byte hardware_version;
     public byte interface_version;
     public byte internet_lossrate;
@@ -41,59 +48,63 @@ public class DeviceInfo
     public byte ldc_mode;
     public byte lossrate;
     public byte mic_mode;
-    public PTZInfo pizInfo;
-    public List<Integer> presets;
     public byte record_mode;
     public byte reverse_mode;
     public byte talk_mode;
     public byte tfstat;
-    public int total;
     public byte update_mode;
     public byte update_progress;
     public byte update_stat;
     public byte update_without_tf;
-    private byte v1_alarm_ring;
-    private byte v1_alarm_sensitivity;
-    private byte v1_baby_crying_mode;
-    private byte v1_day_night_mode;
-    private byte v1_frame_rate;
-    private byte v1_is_utc_time;
-    private byte v1_ldc_mode;
-    private byte v1_mic_mode;
+    public byte version_type;
+    public byte video_backup;
+
+    public byte v1_alarm_ring;
+    public byte v1_alarm_sensitivity;
+    public byte v1_baby_crying_mode;
+    public byte v1_day_night_mode;
+    public byte v1_frame_rate;
+    public byte v1_is_utc_time;
+    public byte v1_ldc_mode;
+    public byte v1_mic_mode;
     public byte v1_talk_mode;
-    private byte v1_version_type;
-    private byte v1_video_backup;
+    public byte v1_version_type;
+    public byte v1_video_backup;
+
     public byte v2_alarm_mode;
-    private byte v2_alarm_sensitivity;
+    public byte v2_alarm_sensitivity;
     public byte v2_beep_mode;
-    private byte v2_day_night_mode;
+    public byte v2_day_night_mode;
     public byte v2_extend_abnormal_sound = (byte) 0;
     public byte v2_extend_abnormal_sound_sensitivity = (byte) 0;
-    private byte v2_extend_baby_crying_mode = (byte) 0;
+    public byte v2_extend_baby_crying_mode = (byte) 0;
     public byte v2_extend_gesture_mode = (byte) 0;
-    private byte v2_extend_mic_mode = (byte) 0;
+    public byte v2_extend_mic_mode = (byte) 0;
     public byte v2_extend_micboost_set = (byte) 0;
     public byte v2_extend_motion_roi = (byte) 0;
     public byte v2_extend_pgc_live = (byte) 0;
     public byte v2_extend_safe_remove_sd = (byte) 0;
     public byte v2_extend_upload_log = (byte) 0;
     public byte v2_extend_version_rollback = (byte) 0;
-    private byte v2_extend_video_backup = (byte) 0;
+    public byte v2_extend_video_backup = (byte) 0;
     public byte v2_extend_video_talkmode = (byte) 0;
     public byte v2_extend_wifi_switch = (byte) 0;
     public byte v2_hd_resolution;
-    private byte v2_is_extend;
-    private byte v2_is_utc_time;
-    private byte v2_ldc_mode;
+    public byte v2_is_extend;
+    public byte v2_is_utc_time;
+    public byte v2_ldc_mode;
     public byte v2_silent_upgrade;
     public byte v2_speaker_volume;
-    private byte v2_version_type;
-    public int version;
-    public byte version_type;
-    public byte video_backup;
+    public byte v2_version_type;
+
+    public PTZInfo pizInfo;
+    public PTZPresets presets;
 
     public void parse(byte[] data)
     {
+        presets = new PTZPresets(session);
+        pizInfo = new PTZInfo(session);
+
         interface_version = data[0];
         lossrate = data[1];
         tfstat = data[2];
@@ -173,16 +184,11 @@ public class DeviceInfo
                 {
                     byte[] ptzpresets = new byte[12];
                     System.arraycopy(data, 56, ptzpresets, 0, 12);
-                    presets = new ArrayList(Arrays.asList(AVIOCTRLDEFs.SMsgAVIoctrlPTZPresetGETResp.parseDeviceInfo(obj, session.isBigEndian)));
+                    presets = new PTZPresets(session, ptzpresets);
 
                     byte[]  ptzinfo = new byte[20];
                     System.arraycopy(data, 68, ptzinfo, 0, 20);
                     pizInfo = new PTZInfo(session, ptzinfo);
-                }
-                else
-                {
-                    presets = new ArrayList<>();
-                    pizInfo = new PTZInfo(session);
                 }
             }
         }
