@@ -6,7 +6,7 @@ import java.util.List;
 
 import de.xavaro.android.yihome.AVIOCTRLDEFs;
 import de.xavaro.android.yihome.P2PSession;
-import de.xavaro.android.yihome.Packet;
+import de.xavaro.android.yihome.P2PPacker;
 
 public class DeviceInfo
 {
@@ -41,7 +41,7 @@ public class DeviceInfo
     public byte ldc_mode;
     public byte lossrate;
     public byte mic_mode;
-    public AVIOCTRLDEFs.SMsgAVIoctrlPTZInfoResp pizInfo;
+    public PTZInfo pizInfo;
     public List<Integer> presets;
     public byte record_mode;
     public byte reverse_mode;
@@ -103,10 +103,10 @@ public class DeviceInfo
         update_without_tf = data[6];
         language = data[7];
         hardware_version = data[8];
-        version = Packet.byteArrayToInt(data, 32, session.isBigEndian);
-        channel = Packet.byteArrayToInt(data, 36, session.isBigEndian);
-        total = Packet.byteArrayToInt(data, 40, session.isBigEndian);
-        free = Packet.byteArrayToInt(data, 44, session.isBigEndian);
+        version = P2PPacker.byteArrayToInt(data, 32, session.isBigEndian);
+        channel = P2PPacker.byteArrayToInt(data, 36, session.isBigEndian);
+        total = P2PPacker.byteArrayToInt(data, 40, session.isBigEndian);
+        free = P2PPacker.byteArrayToInt(data, 44, session.isBigEndian);
         close_camera = data[48];
         close_light = data[49];
         update_stat = data[50];
@@ -171,17 +171,18 @@ public class DeviceInfo
             {
                 if (data.length >= 88)
                 {
-                    byte[] obj = new byte[12];
-                    System.arraycopy(data, 56, obj, 0, 12);
+                    byte[] ptzpresets = new byte[12];
+                    System.arraycopy(data, 56, ptzpresets, 0, 12);
                     presets = new ArrayList(Arrays.asList(AVIOCTRLDEFs.SMsgAVIoctrlPTZPresetGETResp.parseDeviceInfo(obj, session.isBigEndian)));
-                    obj = new byte[20];
-                    System.arraycopy(data, 68, obj, 0, 20);
-                    pizInfo = AVIOCTRLDEFs.SMsgAVIoctrlPTZInfoResp.parse(obj, session.isBigEndian);
+
+                    byte[]  ptzinfo = new byte[20];
+                    System.arraycopy(data, 68, ptzinfo, 0, 20);
+                    pizInfo = new PTZInfo(session, ptzinfo);
                 }
                 else
                 {
                     presets = new ArrayList<>();
-                    pizInfo = new AVIOCTRLDEFs.SMsgAVIoctrlPTZInfoResp();
+                    pizInfo = new PTZInfo(session);
                 }
             }
         }

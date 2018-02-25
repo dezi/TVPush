@@ -38,7 +38,7 @@ public class P2PReaderThreadCommand extends P2PReaderThread
             byte[] dataBuffer = new byte[ dataSize ];
             System.arraycopy(data, dataOffset, dataBuffer, 0, dataSize);
 
-            if (head.commandType == AVIOCTRLDEFs.IOTYPE_USER_IPCAM_DEVINFO_RESP)
+            if (head.commandType == P2PCommandCodes.IPCAM_DEVINFO_RESP)
             {
                 DeviceInfo deviceInfo = new DeviceInfo(session, dataBuffer);
                 session.onDeviceInfoReceived(deviceInfo);
