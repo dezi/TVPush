@@ -8,19 +8,17 @@ public class P2PReaderThread extends Thread
 {
     private static final String LOGTAG = P2PReaderThread.class.getSimpleName();
 
-    public final static int CHANNEL_COMMAND = 0;
+    public final static byte CHANNEL_COMMAND = 0;
 
+    protected P2PSession session;
     protected byte channel;
-    protected int sessionHandle;
-    protected boolean isByteOrderBig;
 
-    public P2PReaderThread(int sessionHandle, int channel, boolean isByteOrderBig)
+    public P2PReaderThread(P2PSession session, byte channel)
     {
         super();
 
-        this.channel = (byte) channel;
-        this.sessionHandle = sessionHandle;
-        this.isByteOrderBig = isByteOrderBig;
+        this.session = session;
+        this.channel = channel;
     }
 
     @Override
@@ -33,7 +31,7 @@ public class P2PReaderThread extends Thread
             nSize[0] = 8;
 
             Log.d(LOGTAG, "head: wait channel=" + channel + " size=" + nSize[0]);
-            int hRes = PPPP_APIs.PPPP_Read(sessionHandle, channel, nBuffer, nSize, -1);
+            int hRes = PPPP_APIs.PPPP_Read(session.session, channel, nBuffer, nSize, -1);
 
             if ((hRes != 0) || (nSize[0] != 8))
             {
@@ -43,7 +41,7 @@ public class P2PReaderThread extends Thread
             }
             else
             {
-                P2PHeader header = P2PHeader.parse(nBuffer, isByteOrderBig);
+                P2PHeader header = P2PHeader.parse(nBuffer, session.isBigEndian);
 
                 Log.d(LOGTAG, "head: read"
                         + " channel=" + channel
@@ -64,7 +62,7 @@ public class P2PReaderThread extends Thread
                     dSize[0] = header.dataSize;
 
                     Log.d(LOGTAG, "data: wait channel=" + channel + " size=" + dSize[0]);
-                    int dRes = PPPP_APIs.PPPP_Read(sessionHandle, channel, dBuffer, dSize, -1);
+                    int dRes = PPPP_APIs.PPPP_Read(session.session, channel, dBuffer, dSize, -1);
 
                     if ((dRes != 0) || (dSize[0] != header.dataSize))
                     {

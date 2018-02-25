@@ -6,18 +6,20 @@ import com.p2p.pppp_api.PPPP_APIs;
 import com.p2p.pppp_api.PPPP_Keys;
 import com.p2p.pppp_api.PPPP_Session;
 
+import de.xavaro.android.yihome.p2pcommands.QueryDeviceInfo;
 import de.xavaro.android.yihome.p2pcommands.SendPTZDirection;
 import de.xavaro.android.yihome.p2pcommands.SendPTZHome;
 
 import static com.p2p.pppp_api.PPPP_APIs.PPPP_Check;
+import static com.p2p.pppp_api.PPPP_APIs.PPPP_Close;
 
 @SuppressWarnings({ "WeakerAccess"})
 public class P2PSession
 {
     private static final String LOGTAG = P2PSession.class.getSimpleName();
 
-    public String targetId;
     public int session;
+    public String targetId;
     public boolean isBigEndian;
 
     private String account = "admin";
@@ -65,30 +67,60 @@ public class P2PSession
         session = PPPP_APIs.PPPP_ConnectByServer(targetId, magic, 0, PPPP_Keys.serverString, PPPP_Keys.licenseKey);
         Log.d(LOGTAG, "connect: PPPP_ConnectByServer=" + session);
 
+        if (session <= 0)
+        {
+            //
+            // Device not found or session cannot be created.
+            //
+
+            return false;
+        }
+
         //
         // Todo: Should be retrieved somehow from session / connect data.
         //
 
         isBigEndian = true;
 
-        if (session > 0)
+        //
+        // Retrieve basic session info.
+        //
+
+        sessionInfo = new PPPP_Session();
+
+        int resCheck = PPPP_Check(session, sessionInfo);
+
+        Log.d(LOGTAG, "initialize: PPPP_Check=" + resCheck);
+
+        if (resCheck == 0)
         {
-            sessionInfo = new PPPP_Session();
-
-            int resCheck = PPPP_Check(session, sessionInfo);
-
-            Log.d(LOGTAG, "initialize: PPPP_Check=" + resCheck);
-
-            if (resCheck == 0)
-            {
-                Log.d(LOGTAG, "initialize: getRemoteIP=" + sessionInfo.getRemoteIP());
-                Log.d(LOGTAG, "initialize: getRemotePort=" + sessionInfo.getRemotePort());
-
-                return true;
-            }
+            Log.d(LOGTAG, "connect: getRemoteIP=" + sessionInfo.getRemoteIP());
+            Log.d(LOGTAG, "connect: getRemotePort=" + sessionInfo.getRemotePort());
         }
 
-        return false;
+        P2PReaderThread t0 = new P2PReaderThreadCommand(this);
+        P2PReaderThread t1 = new P2PReaderThread(this, (byte) 1);
+        P2PReaderThread t2 = new P2PReaderThread(this, (byte) 2);
+        P2PReaderThread t3 = new P2PReaderThread(this, (byte) 3);
+        P2PReaderThread t4 = new P2PReaderThread(this, (byte) 4);
+        P2PReaderThread t5 = new P2PReaderThread(this, (byte) 5);
+
+        t0.start();
+        t1.start();
+        t2.start();
+        t3.start();
+        t4.start();
+        t5.start();
+
+        return true;
+    }
+
+    public boolean close()
+    {
+        int resClose = PPPP_APIs.PPPP_Close(session);
+        Log.d(LOGTAG, "close: PPPP_Close=" + resClose);
+
+        return (resClose == 0);
     }
 
     public boolean packDatAndSend(P2PMessage p2PMessage)
@@ -135,5 +167,10 @@ public class P2PSession
     public boolean sendPTZHome()
     {
         return (new SendPTZHome(this)).send();
+    }
+
+    public boolean queryDeviceInfo()
+    {
+        return (new QueryDeviceInfo(this)).send();
     }
 }

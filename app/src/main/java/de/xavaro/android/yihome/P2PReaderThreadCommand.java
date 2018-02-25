@@ -6,15 +6,15 @@ public class P2PReaderThreadCommand extends P2PReaderThread
 {
     private static final String LOGTAG = P2PReaderThreadCommand.class.getSimpleName();
 
-    public P2PReaderThreadCommand(int sessionHandle, boolean isByteOrderBig)
+    public P2PReaderThreadCommand(P2PSession session)
     {
-        super(sessionHandle, CHANNEL_COMMAND, isByteOrderBig);
+        super(session, CHANNEL_COMMAND);
     }
 
     @Override
     public void handleData(byte[] data, int size)
     {
-        P2PFrame head = P2PFrame.parse(data, isByteOrderBig);
+        P2PFrame head = P2PFrame.parse(data, session.isBigEndian);
 
         Log.d(LOGTAG, "handleData:"
                 + " command=" + head.commandType
@@ -38,7 +38,7 @@ public class P2PReaderThreadCommand extends P2PReaderThread
 
             if (head.commandType == AVIOCTRLDEFs.IOTYPE_USER_IPCAM_DEVINFO_RESP)
             {
-                AVIOCTRLDEFs.SMsgAVIoctrlDeviceInfoResp resp = AVIOCTRLDEFs.SMsgAVIoctrlDeviceInfoResp.parse(dataBuffer, isByteOrderBig);
+                AVIOCTRLDEFs.SMsgAVIoctrlDeviceInfoResp resp = AVIOCTRLDEFs.SMsgAVIoctrlDeviceInfoResp.parse(dataBuffer, session.isBigEndian);
 
                 Log.d(LOGTAG, "handleData: deviceInfo:"
                     + " version=" + resp.version
