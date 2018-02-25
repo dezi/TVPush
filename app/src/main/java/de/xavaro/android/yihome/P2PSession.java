@@ -11,6 +11,7 @@ import de.xavaro.android.yihome.p2pcommands.DeviceInfoQuery;
 import de.xavaro.android.yihome.p2pcommands.PTZControlStopSend;
 import de.xavaro.android.yihome.p2pcommands.PTZDirectionSend;
 import de.xavaro.android.yihome.p2pcommands.PTZHomeSend;
+import de.xavaro.android.yihome.p2pcommands.PTZJumpSend;
 
 import static com.p2p.pppp_api.PPPP_APIs.PPPP_Check;
 
@@ -34,6 +35,8 @@ public class P2PSession
 
     static
     {
+        System.loadLibrary("PPPP_API");
+
         int resVersion = PPPP_APIs.PPPP_GetAPIVersion();
         Log.d(LOGTAG, "static: PPPP_GetAPIVersion=" + resVersion);
 
@@ -175,6 +178,11 @@ public class P2PSession
     public boolean ptzDirectionSend(int direction, int speed)
     {
         return (new PTZDirectionSend(this, direction, speed)).send();
+    }
+
+    public boolean ptzJumpSend(int transverseProportion, int longitudinalProportion)
+    {
+        return (new PTZJumpSend(this, transverseProportion, longitudinalProportion)).send();
     }
 
     public boolean ptzControlStopSend()

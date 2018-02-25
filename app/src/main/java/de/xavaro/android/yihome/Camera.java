@@ -5,20 +5,13 @@ import android.util.Log;
 import com.p2p.pppp_api.PPPP_APIs;
 
 import de.xavaro.android.tvpush.ApplicationBase;
+import de.xavaro.android.yihome.p2pcommands.PTZDirectionSend;
 
 public class Camera
 {
     private static final String LOGTAG = Camera.class.getSimpleName();
 
-    private static boolean isByteOrderBig = true;
-
     private static P2PSession p2psession;
-
-    static
-    {
-        System.loadLibrary("yihome-lib");
-        System.loadLibrary("PPPP_API");
-    }
 
     public static String DID = "TNPUSAC-663761-TLWPW";
 
@@ -32,7 +25,7 @@ public class Camera
 
         p2psession.deviceInfoquery();
 
-        p2psession.ptzDirectionSend(3, 0);
+        p2psession.ptzDirectionSend(PTZDirectionSend.DIRECTION_LEFT, 0);
 
         ApplicationBase.handler.postDelayed(new Runnable()
         {
@@ -69,19 +62,6 @@ public class Camera
 
         Log.d(LOGTAG, "setResolution: command=" + Integer.toHexString(p2PMessage.reqId));
         Log.d(LOGTAG, "setResolution: p2pmess=" + Simple.getHexBytesToString(p2PMessage.data));
-
-        packDatAndSend(session, p2PMessage);
-    }
-
-    public static void sendPTZJump(int session, int transverseProportion, int longitudinalProportion)
-    {
-        Log.d(LOGTAG, "sendPTZJump:"
-                + " transverseProportion=" + transverseProportion
-                + " longitudinalProportion=" + longitudinalProportion);
-
-        P2PMessage p2PMessage = new P2PMessage(
-                (short) AVIOCTRLDEFs.IOTYPE_USER_PTZ_JUMP_TO_POINT,
-                AVIOCTRLDEFs.SMsgAVIoctrlPTZJumpPointSet.parseContent(transverseProportion, longitudinalProportion, isByteOrderBig));
 
         packDatAndSend(session, p2PMessage);
     }

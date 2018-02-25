@@ -7,6 +7,11 @@ import de.xavaro.android.yihome.P2PSession;
 
 public class PTZDirectionSend
 {
+    public final static int DIRECTION_UP = 1;
+    public final static int DIRECTION_DOWN = 2;
+    public final static int DIRECTION_LEFT = 3;
+    public final static int DIRECTION_RIGHT = 4;
+
     public int direction;
     public int speed;
 
@@ -28,11 +33,11 @@ public class PTZDirectionSend
 
     public byte[] build()
     {
-        byte[] obj = new byte[8];
+        byte[] data = new byte[8];
 
-        System.arraycopy(P2PPacker.intToByteArray(direction, session.isBigEndian), 0, obj, 0, 4);
-        System.arraycopy(P2PPacker.intToByteArray(speed, session.isBigEndian), 0, obj, 4, 4);
+        System.arraycopy(P2PPacker.intToByteArray(direction, session.isBigEndian), 0, data, 0, 4);
+        System.arraycopy(P2PPacker.intToByteArray(speed, session.isBigEndian), 0, data, 4, 4);
 
-        return obj;
+        return data;
     }
 }
