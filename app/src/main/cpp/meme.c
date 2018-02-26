@@ -32,12 +32,12 @@ void getDeviceInfo()
 
     fd = fopen("./back.bin", "r");
 
-    if (fd == NULL)
+    if (! fd)
     {
         fd = fopen("/etc/back.bin", "r");
     }
 
-    if (fd != NULL)
+    if (fd)
     {
         char backbin[256];
 
@@ -72,12 +72,12 @@ void getHackInfo()
 
     fd = fopen("./hackinfo", "r");
 
-    if (fd == NULL)
+    if (! fd)
     {
         fd = fopen("//home/yi-hack-v3/.hackinfo", "r");
     }
 
-    if (fd != NULL)
+    if (fd)
     {
         char line[1024];
 
@@ -110,12 +110,12 @@ void getCustomInfo()
 
     fd = fopen("./meme.txt", "r");
 
-    if (fd == NULL)
+    if (! fd)
     {
         fd = fopen("/etc/meme.txt", "r");
     }
 
-    if (fd != NULL)
+    if (fd)
     {
         char line[1024];
 
@@ -169,12 +169,12 @@ void getCloudInfo()
 
     fd = fopen("./log.txt", "r");
 
-    if (fd == NULL)
+    if (! fd)
     {
         fd = fopen("/tmp/log.txt", "r");
     }
 
-    if (fd != NULL)
+    if (fd)
     {
         char line[1024];
 
