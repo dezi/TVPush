@@ -26,18 +26,22 @@ char dpw[ 32 ];
 
 int exitloop;
 
+void strtrim(char *str)
+{
+    while ((strlen(str) > 0) && ((str[ strlen(str) - 1 ] == '\n') || (str[ strlen(str) - 1 ] == '\r')))
+    {
+        str[ strlen(str) - 1 ] = 0;
+    }
+}
+
 void getDeviceInfo()
 {
-    FILE *fd;
+    FILE *fd = NULL;
 
-    fd = fopen("./back.bin", "r");
+    if (fd == NULL) fd = fopen("/etc/back.bin", "r");
+    if (fd == NULL) fd = fopen("./back.bin", "r");
 
-    if (! fd)
-    {
-        fd = fopen("/etc/back.bin", "r");
-    }
-
-    if (fd)
+    if (fd != NULL)
     {
         char backbin[256];
 
@@ -58,26 +62,14 @@ void getDeviceInfo()
     }
 }
 
-void strtrim(char *str)
-{
-    while ((strlen(str) > 0) && ((str[ strlen(str) - 1 ] == '\n') || (str[ strlen(str) - 1 ] == '\r')))
-    {
-        str[ strlen(str) - 1 ] = 0;
-    }
-}
-
 void getHackInfo()
 {
-    FILE *fd;
+    FILE *fd = NULL;
 
-    fd = fopen("./hackinfo", "r");
+    if (fd == NULL) fd = fopen("/home/yi-hack-v3/.hackinfo", "r");
+    if (fd == NULL) fd = fopen("./hackinfo", "r");
 
-    if (! fd)
-    {
-        fd = fopen("//home/yi-hack-v3/.hackinfo", "r");
-    }
-
-    if (fd)
+    if (fd != NULL)
     {
         char line[1024];
 
@@ -106,16 +98,12 @@ void getHackInfo()
 
 void getCustomInfo()
 {
-    FILE *fd;
+    FILE *fd = NULL;
 
-    fd = fopen("./meme.txt", "r");
+    if (fd == NULL) fd = fopen("/etc/meme.txt", "r");
+    if (fd == NULL) fd = fopen("./meme.txt", "r");
 
-    if (! fd)
-    {
-        fd = fopen("/etc/meme.txt", "r");
-    }
-
-    if (fd)
+    if (fd != NULL)
     {
         char line[1024];
 
@@ -165,16 +153,12 @@ void getCustomInfo()
 
 void getCloudInfo()
 {
-    FILE *fd;
+    FILE *fd = NULL;
 
-    fd = fopen("./log.txt", "r");
+    if (fd == NULL) fd = fopen("/tmp/log.txt", "r");
+    if (fd == NULL) fd = fopen("./log.txt", "r");
 
-    if (! fd)
-    {
-        fd = fopen("/tmp/log.txt", "r");
-    }
-
-    if (fd)
+    if (fd != NULL)
     {
         char line[1024];
 
@@ -189,9 +173,9 @@ void getCloudInfo()
                 break;
             }
         }
-    }
 
-    fclose(fd);
+        fclose(fd);
+    }
 }
 
 void formatMEME()
