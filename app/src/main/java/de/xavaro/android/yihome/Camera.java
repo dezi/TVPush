@@ -15,6 +15,7 @@ public class Camera
     private static P2PSession p2psession;
 
     public static String DID = "TNPUSAC-663761-TLWPW";
+    public static String DIDx = "45USYXZP50Z0SV170721";
 
     public static void initialize()
     {

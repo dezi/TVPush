@@ -1,0 +1,362 @@
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <string.h>
+#include <stdio.h>
+
+#define HELO_PORT 42742
+#define HELO_GROUP "239.255.255.250"
+
+#define MSGBUFSIZE 1024
+
+char messbuff[ MSGBUFSIZE ];
+char memebuff[ MSGBUFSIZE ];
+
+char nam[ 256 ];
+char nck[ 256 ];
+char loc[ 256 ];
+char mod[ 256 ];
+char ver[ 256 ];
+
+char did[ 32 ];
+char cid[ 32 ];
+char cpw[ 32 ];
+char dpw[ 32 ];
+
+int exitloop;
+
+void getDeviceInfo()
+{
+    FILE *fd;
+
+    fd = fopen("./back.bin", "r");
+
+    if (fd == NULL)
+    {
+        fd = fopen("/etc/back.bin", "r");
+    }
+
+    if (fd != NULL)
+    {
+        char backbin[256];
+
+        long xfer = fread(backbin, 1, sizeof(backbin), fd);
+
+        if (xfer > 0)
+        {
+            strncpy(did, backbin + 4, sizeof(did));
+            strncpy(cid, backbin + 4 + 32, sizeof(cid));
+            strncpy(cpw, backbin + 4 + 64, sizeof(cpw));
+
+            printf("did=%s\n", did);
+            printf("cid=%s\n", cid);
+            printf("cpw=%s\n", cpw);
+        }
+
+        fclose(fd);
+    }
+}
+
+void strtrim(char *str)
+{
+    while ((strlen(str) > 0) && ((str[ strlen(str) - 1 ] == '\n') || (str[ strlen(str) - 1 ] == '\r')))
+    {
+        str[ strlen(str) - 1 ] = 0;
+    }
+}
+
+void getHackInfo()
+{
+    FILE *fd;
+
+    fd = fopen("./hackinfo", "r");
+
+    if (fd == NULL)
+    {
+        fd = fopen("//home/yi-hack-v3/.hackinfo", "r");
+    }
+
+    if (fd != NULL)
+    {
+        char line[1024];
+
+        while (fgets(line, sizeof(line), fd))
+        {
+            strtrim(line);
+
+            if (strncmp(line, "CAMERA=", 7) == 0)
+            {
+                strncpy(mod, line + 7, sizeof(mod));
+
+                printf("mod=%s\n", mod);
+            }
+
+            if (strncmp(line, "VERSION=", 8) == 0)
+            {
+                strncpy(ver, line + 8, sizeof(ver));
+
+                printf("ver=%s\n", ver);
+            }
+        }
+
+        fclose(fd);
+    }
+}
+
+void getCustomInfo()
+{
+    FILE *fd;
+
+    fd = fopen("./meme.txt", "r");
+
+    if (fd == NULL)
+    {
+        fd = fopen("/etc/meme.txt", "r");
+    }
+
+    if (fd != NULL)
+    {
+        char line[1024];
+
+        while (fgets(line, sizeof(line), fd))
+        {
+            strtrim(line);
+
+            if (strncmp(line, "name=", 5) == 0)
+            {
+                strncpy(nam, line + 5, sizeof(nam));
+
+                printf("nam=%s\n", nam);
+            }
+
+            if (strncmp(line, "nick=", 5) == 0)
+            {
+                strncpy(nck, line + 5, sizeof(nck));
+
+                printf("nck=%s\n", nck);
+            }
+
+            if (strncmp(line, "location=", 9) == 0)
+            {
+                strncpy(loc, line + 9, sizeof(loc));
+
+                printf("loc=%s\n", loc);
+            }
+
+            if (strncmp(line, "model=", 6) == 0)
+            {
+                strncpy(mod, line + 6, sizeof(mod));
+
+                printf("mod=%s\n", mod);
+            }
+
+            if (strncmp(line, "version=", 8) == 0)
+            {
+                strncpy(ver, line + 8, sizeof(ver));
+
+                printf("ver=%s\n", ver);
+            }
+        }
+
+        fclose(fd);
+    }
+}
+
+void getCloudInfo()
+{
+    FILE *fd;
+
+    fd = fopen("./log.txt", "r");
+
+    if (fd == NULL)
+    {
+        fd = fopen("/tmp/log.txt", "r");
+    }
+
+    if (fd != NULL)
+    {
+        char line[1024];
+
+        while (fgets(line, sizeof(line), fd))
+        {
+            if (strncmp(line, "inpwd=", 6) == 0)
+            {
+                strncpy(dpw, line + 6, 15);
+
+                printf("dpw=%s\n", dpw);
+
+                break;
+            }
+        }
+    }
+
+    fclose(fd);
+}
+
+void formatMEME()
+{
+    strcpy(memebuff, "{");
+    strcat(memebuff, "\n");
+
+    strcat(memebuff, "  \"type\": \"MEME\",");
+    strcat(memebuff, "\n");
+
+    if (strlen(nam) > 0)
+    {
+        strcat(memebuff, "  \"device_name\": \"");
+        strcat(memebuff, nam);
+        strcat(memebuff, "\",");
+        strcat(memebuff, "\n");
+    }
+
+    if (strlen(nck) > 0)
+    {
+        strcat(memebuff, "  \"device_nick\": \"");
+        strcat(memebuff, nck);
+        strcat(memebuff, "\",");
+        strcat(memebuff, "\n");
+    }
+
+    if (strlen(loc) > 0)
+    {
+        strcat(memebuff, "  \"device_location\": \"");
+        strcat(memebuff, loc);
+        strcat(memebuff, "\",");
+        strcat(memebuff, "\n");
+    }
+
+    if (strlen(mod) > 0)
+    {
+        strcat(memebuff, "  \"device_model\": \"");
+        strcat(memebuff, mod);
+        strcat(memebuff, "\",");
+        strcat(memebuff, "\n");
+    }
+
+    if (strlen(ver) > 0)
+    {
+        strcat(memebuff, "  \"device_version\": \"");
+        strcat(memebuff, ver);
+        strcat(memebuff, "\",");
+        strcat(memebuff, "\n");
+    }
+
+    strcat(memebuff, "  \"p2p_id\": \"");
+    strcat(memebuff, did);
+    strcat(memebuff, "\",");
+    strcat(memebuff, "\n");
+
+    strcat(memebuff, "  \"p2p_pw\": \"");
+    strcat(memebuff, dpw);
+    strcat(memebuff, "\",");
+    strcat(memebuff, "\n");
+
+    strcat(memebuff, "  \"cloud_id\": \"");
+    strcat(memebuff, cid);
+    strcat(memebuff, "\",");
+    strcat(memebuff, "\n");
+
+    strcat(memebuff, "  \"cloud_pw\": \"");
+    strcat(memebuff, cpw);
+    strcat(memebuff, "\"");
+    strcat(memebuff, "\n");
+
+    strcat(memebuff, "}");
+}
+
+void responder()
+{
+    struct sockaddr_in addr;
+    unsigned int addrlen = sizeof(addr);
+    struct ip_mreq mreq;
+    int yes = 1;
+    int sockfd;
+
+    if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
+    {
+        perror("Create socket failed.");
+        return;
+    }
+
+    if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) < 0)
+    {
+        perror("Reusing Addr failed.");
+        return;
+    }
+
+    memset(&addr, 0, sizeof(addr));
+
+    addr.sin_family = AF_INET;
+    addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    addr.sin_port = htons(HELO_PORT);
+
+    if (bind(sockfd, (struct sockaddr *) &addr, sizeof(addr)) < 0)
+    {
+        perror("Bind to socket failed.");
+        return;
+    }
+
+    mreq.imr_multiaddr.s_addr = inet_addr(HELO_GROUP);
+    mreq.imr_interface.s_addr = htonl(INADDR_ANY);
+
+    if (setsockopt(sockfd, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) < 0)
+    {
+        perror("Join multicast failed.");
+        return;
+    }
+
+    while (! exitloop)
+    {
+        memset(messbuff, 0, sizeof(messbuff));
+
+        if (recvfrom(sockfd, messbuff, MSGBUFSIZE, 0, (struct sockaddr *) &addr, &addrlen) < 0)
+        {
+            perror("Receive from socket failed.");
+            continue;
+        }
+
+        puts(messbuff);
+        puts("\n");
+
+        if (strstr(messbuff, "\"type\":") && strstr(messbuff, "\"HELO\""))
+        {
+            formatMEME();
+
+            if (sendto(sockfd, memebuff, strlen(memebuff), 0,(struct sockaddr *) &addr, sizeof(addr)) < 0)
+            {
+                perror("Send to socket failed.");
+                continue;
+            }
+        }
+    }
+}
+
+int main(int argc, char *argv[])
+{
+    memset(nam, 0, sizeof(nam));
+    memset(nck, 0, sizeof(nck));
+    memset(loc, 0, sizeof(loc));
+    memset(mod, 0, sizeof(mod));
+    memset(ver, 0, sizeof(ver));
+
+    memset(did, 0, sizeof(did));
+    memset(dpw, 0, sizeof(dpw));
+
+    memset(cid, 0, sizeof(cid));
+    memset(cpw, 0, sizeof(cpw));
+
+    getHackInfo();
+    getCustomInfo();
+    getDeviceInfo();
+    getCloudInfo();
+
+    formatMEME();
+
+    puts(memebuff);
+    puts("\n");
+
+    responder();
+
+    return 0;
+}

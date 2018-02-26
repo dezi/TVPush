@@ -29,7 +29,10 @@ public class P2PSession
     public boolean isConnected;
 
     private String account = "admin";
-    private String password = "92DHWPDNdDDnYtz";
+    private String password = "lkFMC9ffDXzwH9x";
+    private String password1 = "superkey_abcdefg9876543210";
+    private String password3 = "IBNj3F4L37HiSGpwBgD6";
+    private String password2 = "62sfYuHop5bQUqkc";
 
     private short cmdSequence;
     private long lastLoginTime;

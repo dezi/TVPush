@@ -30,6 +30,8 @@ public class P2PReaderThreadCommand extends P2PReaderThread
 
         Log.d(LOGTAG, "handleData: head.authResult=" + head.authResult);
 
+        if (head.authResult != 0) return;
+
         if ((head.exHeaderSize < 0) || (head.dataSize != dataSize))
         {
             Log.d(LOGTAG, "handleData: corrupt...");

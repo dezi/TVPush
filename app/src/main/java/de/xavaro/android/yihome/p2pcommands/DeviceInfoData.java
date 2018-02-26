@@ -206,7 +206,7 @@ public class DeviceInfoData
                 v2_extend_micboost_set = data[69];
                 v2_extend_abnormal_sound = data[70];
                 v2_extend_abnormal_sound_sensitivity = data[71];
-                
+
                 baby_crying_mode = v2_extend_baby_crying_mode;
                 video_backup = v2_extend_video_backup;
                 mic_mode = v2_extend_mic_mode;

@@ -160,6 +160,8 @@ public class RegistrationService extends Service
 
                 String message = new String(packet.getData(), 0, packet.getLength());
 
+                Log.d(LOGTAG, "####" + message);
+
                 JSONObject jsonmess = Json.fromStringObject(message);
                 if (jsonmess == null) continue;
 
@@ -179,6 +181,8 @@ public class RegistrationService extends Service
                     meme.setPort(port);
 
                     socket.send(meme);
+
+                    Log.d(LOGTAG, "workerThread: MEME=" + mejson.toString(2));
                 }
 
                 if (Json.equals(jsonmess, "type", "MEME"))
