@@ -135,6 +135,7 @@ char loc[ 256 ];
 char mod[ 256 ];
 char ver[ 256 ];
 char uid[ 256 ];
+char cat[ 256 ];
 
 char did[ 32 ];
 char cid[ 32 ];
@@ -454,10 +455,15 @@ void formatMessage(char *type, int credentials)
     {
         catMESS("  \"device_version\": \"");
         escMESS(ver);
-        catMESS("\"");
-        if (credentials) catMESS(",");
+        catMESS("\",");
         catMESS("\n");
     }
+
+    catMESS("  \"device_category\": \"");
+    escMESS(cat);
+    catMESS("\"");
+    if (credentials) catMESS("\",");
+    catMESS("\n");
 
     if (credentials)
     {
@@ -640,12 +646,15 @@ int main(int argc, char *argv[])
     memset(mod, 0, sizeof(mod));
     memset(ver, 0, sizeof(ver));
     memset(uid, 0, sizeof(uid));
+    memset(cat, 0, sizeof(cat));
 
     memset(did, 0, sizeof(did));
     memset(dpw, 0, sizeof(dpw));
 
     memset(cid, 0, sizeof(cid));
     memset(cpw, 0, sizeof(cpw));
+
+    strcpy(cat, "p2pcamera");
 
     getCustomInfo();
 
