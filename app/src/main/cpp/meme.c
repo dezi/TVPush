@@ -2,8 +2,12 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <time.h>
+
+#include "json.h"
 
 #define HELO_PORT 42742
 #define HELO_GROUP "239.255.255.250"
@@ -143,9 +147,9 @@ void strtrim(char *str)
 
 void getDeviceInfo()
 {
-    FILE *fd = fopen("/etc/back.bin", "r");
+    FILE *fd = fopen("/etc/back.bin", "rb");
 
-    if (fd == NULL) fd = fopen("./back.bin", "r");
+    if (fd == NULL) fd = fopen("./back.bin", "rb");
 
     if (fd != NULL)
     {
@@ -170,9 +174,9 @@ void getDeviceInfo()
 
 void getHackInfo()
 {
-    FILE *fd = fopen("/home/yi-hack-v3/.hackinfo", "r");
+    FILE *fd = fopen("/home/yi-hack-v3/.hackinfo", "rb");
 
-    if (fd == NULL) fd = fopen("./hackinfo", "r");
+    if (fd == NULL) fd = fopen("./hackinfo", "rb");
 
     if (fd != NULL)
     {
@@ -203,9 +207,9 @@ void getHackInfo()
 
 void getCustomInfo()
 {
-    FILE *fd = fopen("/etc/meme.txt", "r");
+    FILE *fd = fopen("/etc/meme.txt", "rb");
 
-    if (fd == NULL) fd = fopen("./meme.txt", "r");
+    if (fd == NULL) fd = fopen("./meme.txt", "rb");
 
     if (fd != NULL)
     {
@@ -249,7 +253,33 @@ void getCustomInfo()
 
                 printf("ver=%s\n", ver);
             }
+
+            if (strncmp(line, "uuid=", 5) == 0)
+            {
+                strncpy(uid, line + 5, sizeof(uid));
+
+                printf("uid=%s\n", uid);
+            }
         }
+
+        fclose(fd);
+    }
+}
+
+void putCustomInfo()
+{
+    FILE *fd = fopen("/etc/meme.txt", "wb");
+
+    if (fd == NULL) fd = fopen("./meme.txt", "wb");
+
+    if (fd != NULL)
+    {
+        if (strlen(nam)) fprintf(fd, "name=%s\n", nam);
+        if (strlen(nck)) fprintf(fd, "nick=%s\n", nck);
+        if (strlen(loc)) fprintf(fd, "location=%s\n", loc);
+        if (strlen(mod)) fprintf(fd, "model=%s\n", mod);
+        if (strlen(ver)) fprintf(fd, "version=%s\n", ver);
+        if (strlen(uid)) fprintf(fd, "uuid=%s\n", uid);
 
         fclose(fd);
     }
@@ -257,9 +287,9 @@ void getCustomInfo()
 
 void getCloudInfo()
 {
-    FILE *fd = fopen("/tmp/log.txt", "r");
+    FILE *fd = fopen("/tmp/log.txt", "rb");
 
-    if (fd == NULL) fd = fopen("./log.txt", "r");
+    if (fd == NULL) fd = fopen("./log.txt", "rb");
 
     if (fd != NULL)
     {
@@ -283,17 +313,36 @@ void getCloudInfo()
 
 void getUUID()
 {
-    FILE *fd = fopen("/proc/sys/kernel/random/uuid", "r");
+    FILE *fd = fopen("/proc/sys/kernel/random/uuid", "rb");
 
     if (fd != NULL)
     {
         if (fgets(uid, sizeof(uid), fd) > 0)
         {
-            printf("uid=%s\n", uid);
+            strtrim(uid);
         }
 
         fclose(fd);
     }
+    else
+    {
+        //
+        // Insecure, only for testing on OSX.
+        //
+        // e5e6f68d-3b0c-4a5d-a766-146d31ffebad
+        //
+
+        srand((unsigned int) time(NULL));
+
+        snprintf(uid, sizeof(uid), "%04x%04x-%04x-%04x-%04x-%04x%04x%04x",
+                 rand() & 0xffff, rand() & 0xffff,
+                 rand() & 0xffff,
+                 rand() & 0xffff,
+                 rand() & 0xffff,
+                 rand() & 0xffff, rand() & 0xffff, rand() & 0xffff);
+    }
+
+    printf("uid=%s\n", uid);
 }
 
 void formatMEME()
@@ -365,6 +414,8 @@ void formatMEME()
     strcat(memebuff, "\n");
 
     strcat(memebuff, "}");
+
+    getStringValue(memebuff, "p2p_pw");
 }
 
 void responder()
@@ -419,7 +470,6 @@ void responder()
         }
 
         puts(messbuff);
-        puts("\n");
 
         if (strstr(messbuff, "\"type\":") && strstr(messbuff, "\"HELO\""))
         {
@@ -449,16 +499,22 @@ int main(int argc, char *argv[])
     memset(cid, 0, sizeof(cid));
     memset(cpw, 0, sizeof(cpw));
 
-    getUUID();
-    getHackInfo();
     getCustomInfo();
+
+    getHackInfo();
     getDeviceInfo();
     getCloudInfo();
+
+    if (strlen(uid) == 0)
+    {
+        getUUID();
+
+        putCustomInfo();
+    }
 
     formatMEME();
 
     puts(memebuff);
-    puts("\n");
 
     responder();
 
