@@ -283,68 +283,6 @@ void getCloudInfo()
     }
 }
 
-/*
-/opt/hisi-linux/x86-arm/arm-hisiv400-linux/libexec/gcc/arm-hisiv400-linux-gnueabi/4.8.3/collect2 \
-    --sysroot=/opt/hisi-linux/x86-arm/arm-hisiv400-linux/target \
-    --eh-frame-hdr -X -m armelf_linux_eabi \
-    --dynamic-linker=/lib/ld-uClibc.so.0 \
-    -L/opt/hisi-linux/x86-arm/arm-hisiv400-linux/bin/../lib/gcc/arm-hisiv400-linux-gnueabi/4.8.3 \
-    -L/opt/hisi-linux/x86-arm/arm-hisiv400-linux/bin/../lib/gcc \
-    -L/opt/hisi-linux/x86-arm/arm-hisiv400-linux/bin/../lib/gcc/arm-hisiv400-linux-gnueabi/4.8.3/../../../../arm-hisiv400-linux-gnueabi/lib \
-    -L/opt/hisi-linux/x86-arm/arm-hisiv400-linux/bin/../target/lib \
-    -L/opt/hisi-linux/x86-arm/arm-hisiv400-linux/bin/../target/usr/lib \
-    -o meme meme.o
-*/
-
-/*
-/opt/hisi-linux/x86-arm/arm-hisiv400-linux/libexec/gcc/arm-hisiv400-linux-gnueabi/4.8.3/collect2 \
-    --sysroot=/opt/hisi-linux/x86-arm/arm-hisiv400-linux/target \
-    --eh-frame-hdr -X -m armelf_linux_eabi \
-    --dynamic-linker=/lib/ld-uClibc.so.0 \
-    --entry main \
-    /home/dezi/yi/rootfs_uclibc/lib/libuClibc-0.9.33.2.so \
-    /home/dezi/yi/rootfs_uclibc/lib/ld-uClibc.so.0 \
-    -o meme meme.o
-*/
-
-/*
-/opt/hisi-linux/x86-arm/arm-hisiv400-linux/bin/arm-hisiv400-linux-gnueabi-ld \
-    --sysroot=/opt/hisi-linux/x86-arm/arm-hisiv400-linux/target \
-    --eh-frame-hdr -X -m armelf_linux_eabi \
-    --dynamic-linker=/lib/ld-uClibc.so.0 \
-    --entry main \
-    /home/dezi/yi/rootfs_uclibc/lib/libuClibc-0.9.33.2.so \
-    /home/dezi/yi/rootfs_uclibc/lib/ld-uClibc.so.0 \
-    -o meme meme.o
-*/
-
-void *memcpy(void *dst, const void *src, size_t len)
-{
-    size_t i;
-
-    char *d = dst;
-    const char *s = src;
-
-    for (i = 0; i < len; i++) d[i] = s[i];
-
-    return dst;
-}
-
-void *memset(void *dst, int c, size_t n)
-{
-    if (n)
-    {
-        char *d = dst;
-
-        do
-        {
-            *d++ = c;
-        } while (--n);
-    }
-
-    return dst;
-}
-
 void formatMEME()
 {
     strcpy(memebuff, "{");
