@@ -60,6 +60,27 @@ int strncmp(register const char *s1, register const char *s2, register size_t n)
     return 0;
 }
 
+char *strncpy(char *dst, const char *src, register size_t n)
+{
+    if (n != 0)
+    {
+        register char *d = dst;
+        register const char *s = src;
+
+        do
+        {
+            if ((*d++ = *s++) == 0)
+            {
+                while (--n != 0) *d++ = 0;
+
+                break;
+            }
+        } while (--n != 0);
+    }
+    
+    return dst;
+}
+
 void strtrim(char *str)
 {
     while ((strlen(str) > 0) && ((str[ strlen(str) - 1 ] == '\n') || (str[ strlen(str) - 1 ] == '\r')))
