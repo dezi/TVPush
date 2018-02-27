@@ -35,13 +35,14 @@ public class RegistrationService extends Service
         context.startService(serviceIntent);
     }
 
-    public static void requestHello()
+    public static void requestHello(Context context)
     {
         if (socket != null)
         {
             JSONObject helojson = new JSONObject();
 
             Json.put(helojson, "type", "HELO");
+            Json.put(helojson, "device_name", Simple.getDeviceUserName(context));
             Json.put(helojson, "fcmtoken", Simple.getFCMToken());
 
             byte[] txbuf = helojson.toString().getBytes();
@@ -160,19 +161,19 @@ public class RegistrationService extends Service
 
                 String message = new String(packet.getData(), 0, packet.getLength());
 
-                Log.d(LOGTAG, "####" + message);
+                //Log.d(LOGTAG, "####" + message);
 
                 JSONObject jsonmess = Json.fromStringObject(message);
                 if (jsonmess == null) continue;
 
                 if (Json.equals(jsonmess, "type", "HELO"))
                 {
-                    Log.d(LOGTAG, "workerThread: HELO received...");
+                    Log.d(LOGTAG, "workerThread: HELO from=" + Json.getString(jsonmess, "device_name"));
 
                     JSONObject mejson = new JSONObject();
 
                     Json.put(mejson, "type", "MEME");
-                    Json.put(mejson, "devicename", Simple.getDeviceUserName(this));
+                    Json.put(mejson, "device_name", Simple.getDeviceUserName(this));
                     Json.put(mejson, "fcmtoken", Simple.getFCMToken());
 
                     byte[] txbuf = mejson.toString().getBytes();
@@ -181,19 +182,14 @@ public class RegistrationService extends Service
                     meme.setPort(port);
 
                     socket.send(meme);
-
-                    Log.d(LOGTAG, "workerThread: MEME=" + mejson.toString(2));
                 }
 
                 if (Json.equals(jsonmess, "type", "MEME"))
                 {
-                    Log.d(LOGTAG, "workerThread: MEME received...");
+                    String devicename = Json.getString(jsonmess, "device_name");
+                    if (devicename == null) devicename = Json.getString(jsonmess, "devicename");
 
-                    if (! Simple.isTV())
-                    {
-                        Log.d(LOGTAG, "workerThread: MEME devicename=" + Json.getString(jsonmess, "devicename"));
-                        Log.d(LOGTAG, "workerThread: MEME fcmtoken=" + Json.getString(jsonmess, "fcmtoken"));
-                    }
+                    Log.d(LOGTAG, "workerThread: MEME from=" + devicename);
                 }
             }
             catch (SocketTimeoutException ignore)

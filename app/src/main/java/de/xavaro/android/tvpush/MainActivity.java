@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                RegistrationService.requestHello();
+                RegistrationService.requestHello(view.getContext());
             }
         });
 

@@ -13,6 +13,10 @@
 #define HELO_PORT 42742
 #define HELO_GROUP "239.255.255.250"
 
+#define true 1
+#define false 0
+#define null NULL
+
 /*
 
  Reading:
@@ -150,9 +154,9 @@ void getDeviceInfo()
 {
     FILE *fd = fopen("/etc/back.bin", "rb");
 
-    if (fd == NULL) fd = fopen("./back.bin", "rb");
+    if (fd == null) fd = fopen("./back.bin", "rb");
 
-    if (fd != NULL)
+    if (fd != null)
     {
         char backbin[256];
 
@@ -177,9 +181,9 @@ void getHackInfo()
 {
     FILE *fd = fopen("/home/yi-hack-v3/.hackinfo", "rb");
 
-    if (fd == NULL) fd = fopen("./hackinfo", "rb");
+    if (fd == null) fd = fopen("./hackinfo", "rb");
 
-    if (fd != NULL)
+    if (fd != null)
     {
         char line[1024];
 
@@ -210,9 +214,9 @@ void getCustomInfo()
 {
     FILE *fd = fopen("/etc/meme.txt", "rb");
 
-    if (fd == NULL) fd = fopen("./meme.txt", "rb");
+    if (fd == null) fd = fopen("./meme.txt", "rb");
 
-    if (fd != NULL)
+    if (fd != null)
     {
         char line[1024];
 
@@ -271,9 +275,9 @@ void putCustomInfo()
 {
     FILE *fd = fopen("/etc/meme.txt", "wb");
 
-    if (fd == NULL) fd = fopen("./meme.txt", "wb");
+    if (fd == null) fd = fopen("./meme.txt", "wb");
 
-    if (fd != NULL)
+    if (fd != null)
     {
         if (strlen(nam)) fprintf(fd, "name=%s\n", nam);
         if (strlen(nck)) fprintf(fd, "nick=%s\n", nck);
@@ -290,9 +294,9 @@ void getCloudInfo()
 {
     FILE *fd = fopen("/tmp/log.txt", "rb");
 
-    if (fd == NULL) fd = fopen("./log.txt", "rb");
+    if (fd == null) fd = fopen("./log.txt", "rb");
 
-    if (fd != NULL)
+    if (fd != null)
     {
         char line[1024];
 
@@ -316,7 +320,7 @@ void getUUID()
 {
     FILE *fd = fopen("/proc/sys/kernel/random/uuid", "rb");
 
-    if (fd != NULL)
+    if (fd != null)
     {
         if (fgets(uid, sizeof(uid), fd) > 0)
         {
@@ -333,7 +337,7 @@ void getUUID()
         // e5e6f68d-3b0c-4a5d-a766-146d31ffebad
         //
 
-        srand((unsigned int) time(NULL));
+        srand((unsigned int) time(null));
 
         snprintf(uid, sizeof(uid), "%04x%04x-%04x-%04x-%04x-%04x%04x%04x",
                  rand() & 0xffff, rand() & 0xffff,
@@ -346,12 +350,12 @@ void getUUID()
     printf("uid=%s\n", uid);
 }
 
-void catMEME(char *str)
+void catMESS(char *str)
 {
     strncat(memebuff, str, MSGBUFSIZE);
 }
 
-void escMEME(char *str)
+void escMESS(char *str)
 {
     int size = strlen(memebuff);
 
@@ -393,77 +397,91 @@ void escMEME(char *str)
     memebuff[ size ] = 0;
 }
 
-void formatMEME()
+void formatMessage(char *type, int credentials)
 {
     memset(memebuff, 0, MSGBUFSIZE);
 
-    catMEME("{");
-    catMEME("\n");
+    catMESS("{");
+    catMESS("\n");
 
-    catMEME("  \"type\": \"MEME\",");
-    catMEME("\n");
+    catMESS("  \"type\": \"");
+    escMESS(type);
+    catMESS("\",");
+    catMESS("\n");
+
+    if (strlen(uid) > 0)
+    {
+        catMESS("  \"device_uuid\": \"");
+        escMESS(uid);
+        catMESS("\",");
+        catMESS("\n");
+    }
 
     if (strlen(nam) > 0)
     {
-        catMEME("  \"device_name\": \"");
-        escMEME(nam);
-        catMEME("\",");
-        catMEME("\n");
+        catMESS("  \"device_name\": \"");
+        escMESS(nam);
+        catMESS("\",");
+        catMESS("\n");
     }
 
     if (strlen(nck) > 0)
     {
-        catMEME("  \"device_nick\": \"");
-        escMEME(nck);
-        catMEME("\",");
-        catMEME("\n");
+        catMESS("  \"device_nick\": \"");
+        escMESS(nck);
+        catMESS("\",");
+        catMESS("\n");
     }
 
     if (strlen(loc) > 0)
     {
-        catMEME("  \"device_location\": \"");
-        escMEME(loc);
-        catMEME("\",");
-        catMEME("\n");
+        catMESS("  \"device_location\": \"");
+        escMESS(loc);
+        catMESS("\",");
+        catMESS("\n");
     }
 
     if (strlen(mod) > 0)
     {
-        catMEME("  \"device_model\": \"");
-        escMEME(mod);
-        catMEME("\",");
-        catMEME("\n");
+        catMESS("  \"device_model\": \"");
+        escMESS(mod);
+        catMESS("\",");
+        catMESS("\n");
     }
 
     if (strlen(ver) > 0)
     {
-        catMEME("  \"device_version\": \"");
-        escMEME(ver);
-        catMEME("\",");
-        catMEME("\n");
+        catMESS("  \"device_version\": \"");
+        escMESS(ver);
+        catMESS("\"");
+        if (credentials) catMESS(",");
+        catMESS("\n");
     }
 
-    catMEME("  \"p2p_id\": \"");
-    escMEME(did);
-    catMEME("\",");
-    catMEME("\n");
+    if (credentials)
+    {
+        catMESS("  \"p2p_id\": \"");
+        escMESS(did);
+        catMESS("\",");
+        catMESS("\n");
 
-    catMEME("  \"p2p_pw\": \"");
-    escMEME(dpw);
-    catMEME("\",");
-    catMEME("\n");
+        catMESS("  \"p2p_pw\": \"");
+        escMESS(dpw);
+        catMESS("\",");
+        catMESS("\n");
 
-    catMEME("  \"cloud_id\": \"");
-    escMEME(cid);
-    catMEME("\",");
-    catMEME("\n");
+        catMESS("  \"cloud_id\": \"");
+        escMESS(cid);
+        catMESS("\",");
+        catMESS("\n");
 
-    catMEME("  \"cloud_pw\": \"");
-    escMEME(cpw);
-    catMEME("\"");
-    catMEME("\n");
+        catMESS("  \"cloud_pw\": \"");
+        escMESS(cpw);
+        catMESS("\"");
+        catMESS("\n");
+    }
 
-    catMEME("}");
+    catMESS("}");
 }
 
 void responder()
@@ -502,7 +520,7 @@ void responder()
     tv.tv_sec = 10;
     tv.tv_usec = 0;
 
-    if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (const char*) &tv, sizeof tv) < 0)
+    if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (const char *) &tv, sizeof tv) < 0)
     {
         perror("Set timeout failed.");
     }
@@ -516,6 +534,18 @@ void responder()
         perror("Join multicast failed.");
         return;
     }
+
+    formatMessage("HELO", false);
+
+    addr.sin_addr.s_addr = inet_addr(HELO_GROUP);
+    addr.sin_port = htons(HELO_PORT);
+
+    if (sendto(sockfd, memebuff, strlen(memebuff), 0, (struct sockaddr *) &addr, sizeof(addr)) < 0)
+    {
+        perror("Send to broadcast socket failed.");
+    }
+
+    printf("send: %s (%s) => %s \n", "HELO", inet_ntoa(addr.sin_addr), nam);
 
     while (! exitloop)
     {
@@ -535,24 +565,25 @@ void responder()
 
         char *type = jsonGetStringValue(messbuff, "type");
         char *name = jsonGetStringValue(messbuff, "devicename");
-        if (name == NULL) name = jsonGetStringValue(messbuff, "device_name");
+        if (name == null) name = jsonGetStringValue(messbuff, "device_name");
 
-        printf("msg: %s => %s (%s)\n", type, name, inet_ntoa(addr.sin_addr));
+        printf("recv: %s (%s) => %s\n", type, inet_ntoa(addr.sin_addr), name);
 
-        if ((type != NULL) && (strcmp(type, "HELO") == 0))
+        if ((type != null) && (strcmp(type, "HELO") == 0))
         {
-            formatMEME();
+            formatMessage("MEME", false);
 
-            if (sendto(sockfd, memebuff, strlen(memebuff), 0, (struct sockaddr *) &addr,
-                       sizeof(addr)) < 0)
+            if (sendto(sockfd, memebuff, strlen(memebuff), 0, (struct sockaddr *) &addr, sizeof(addr)) < 0)
             {
                 perror("Send to socket failed.");
                 continue;
             }
+
+            printf("send: %s (%s) => %s\n", "MEME", inet_ntoa(addr.sin_addr), name);
         }
 
-        if (type != NULL) free(type);
-        if (name != NULL) free(name);
+        if (type != null) free(type);
+        if (name != null) free(name);
     }
 }
 
@@ -583,10 +614,6 @@ int main(int argc, char *argv[])
 
         putCustomInfo();
     }
-
-    formatMEME();
-
-    puts(memebuff);
 
     responder();
 
