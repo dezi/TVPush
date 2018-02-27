@@ -255,6 +255,21 @@ void *memcpy(void *dst, const void *src, size_t len)
     return dst;
 }
 
+void *memset(void *dst, int c, size_t n)
+{
+    if (n)
+    {
+        char *d = dst;
+
+        do
+        {
+            *d++ = c;
+        } while (--n);
+    }
+
+    return dst;
+}
+
 void formatMEME()
 {
     strcpy(memebuff, "{");
