@@ -26,6 +26,15 @@ char dpw[ 32 ];
 
 int exitloop;
 
+size_t strlen(const char *str)
+{
+    register const char *s;
+
+    for (s = str; *s; ++s);
+    
+    return (s - str);
+}
+
 void strtrim(char *str)
 {
     while ((strlen(str) > 0) && ((str[ strlen(str) - 1 ] == '\n') || (str[ strlen(str) - 1 ] == '\r')))
