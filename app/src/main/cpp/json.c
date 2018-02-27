@@ -3,8 +3,6 @@
 //
 
 #include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
 
 #define DBG 0
 #define BS 1024
@@ -33,7 +31,7 @@ char *parseDat(const char json[], const char *path)
     char *fund = NULL;
     char *last = NULL;
 
-    strlcpy(cpth, "", BS);
+    strcpy(cpth, "");
 
     while (json[jnx])
     {
@@ -70,9 +68,9 @@ char *parseDat(const char json[], const char *path)
                 // Push last key onto path.
                 //
 
-                if (strlen(cpth) > 0) strlcat(cpth, "|", BS);
+                if (strlen(cpth) > 0) strncat(cpth, "|", BS);
 
-                strlcat(cpth, last, BS);
+                strncat(cpth, last, BS);
 
                 free(last);
                 last = NULL;
