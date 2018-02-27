@@ -9,6 +9,7 @@ import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.view.ViewGroup;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
@@ -21,6 +22,9 @@ public class Simple
     private static boolean istablet;
     private static boolean iswidescreen;
     private static boolean isspeech;
+
+    public static final int MP = ViewGroup.LayoutParams.MATCH_PARENT;
+    public static final int WC = ViewGroup.LayoutParams.WRAP_CONTENT;
 
     public static void checkFeatures(Context context)
     {

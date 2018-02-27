@@ -1,16 +1,17 @@
 package de.xavaro.android.tvpush;
 
-import android.content.Context;
-import android.content.Intent;
-import android.media.AudioManager;
-import android.os.Bundle;
-import android.os.Handler;
+import android.support.annotation.Nullable;
+
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
-import android.support.annotation.Nullable;
-import android.util.Log;
+import android.media.AudioManager;
+import android.content.Context;
+import android.content.Intent;
 import android.widget.Toast;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -20,12 +21,13 @@ public class SpeechRecognition implements RecognitionListener
 {
     private static final String LOGTAG = SpeechRecognition.class.getSimpleName();
 
+    private Handler handler = new Handler();
     private SpeechRecognizer recognizer;
     private Intent recognizerIntent;
-    private AudioManager audioManager;
     private Context context;
-    private Handler handler = new Handler();
+
     private boolean lockStart;
+    private boolean isEnabled;
 
     public SpeechRecognition(Context context)
     {
@@ -35,19 +37,11 @@ public class SpeechRecognition implements RecognitionListener
         {
             Log.d(LOGTAG, "SpeechRecognizer: init.");
 
-            audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            turnBeepOn();
 
             recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
             recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
             recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 30 * 1000);
-
-            if (! Simple.isTV())
-            {
-                turnBeepOn();
-                turnBeepOff();
-            }
-
-            startListening();
         }
         else
         {
@@ -55,9 +49,11 @@ public class SpeechRecognition implements RecognitionListener
         }
     }
 
-    private void startListening()
+    public void startListening()
     {
         Log.d(LOGTAG, "startListening:");
+
+        isEnabled = true;
 
         if (recognizer == null)
         {
@@ -67,12 +63,30 @@ public class SpeechRecognition implements RecognitionListener
             recognizer.setRecognitionListener(this);
         }
 
-        if (! lockStart)
+        if (!lockStart)
         {
             lockStart = true;
 
             recognizer.startListening(recognizerIntent);
         }
+
+        handler.postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                turnBeepOff();
+            }
+        }, 1000);
+    }
+
+    public void stopListening()
+    {
+        turnBeepOn();
+
+        isEnabled = false;
+
+        recognizer.stopListening();
     }
 
     private final Runnable startListeningRunnable = new Runnable()
@@ -166,7 +180,7 @@ public class SpeechRecognition implements RecognitionListener
 
         lockStart = false;
 
-        if (restart)
+        if (restart && isEnabled)
         {
             handler.removeCallbacks(startListeningRunnable);
             handler.postDelayed(startListeningRunnable, millis);
@@ -209,11 +223,21 @@ public class SpeechRecognition implements RecognitionListener
             {
                 turnBeepOn();
             }
+
+            if (text.equalsIgnoreCase("mach den ton an"))
+            {
+                turnBeepOn();
+            }
+
+            if (text.equalsIgnoreCase("spracherkennung aus"))
+            {
+                stopListening();
+            }
         }
 
         lockStart = false;
 
-        startListening();
+        if (isEnabled) startListening();
     }
 
     @Nullable
@@ -258,25 +282,19 @@ public class SpeechRecognition implements RecognitionListener
 
     private void turnBeepOff()
     {
-        audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_MUTE, 0);
-        /*
-        audioManager.adjustStreamVolume(AudioManager.STREAM_RING, AudioManager.ADJUST_MUTE, 0);
-        audioManager.adjustStreamVolume(AudioManager.STREAM_SYSTEM, AudioManager.ADJUST_MUTE, 0);
-        audioManager.adjustStreamVolume(AudioManager.STREAM_DTMF, AudioManager.ADJUST_MUTE, 0);
-        audioManager.adjustStreamVolume(AudioManager.STREAM_NOTIFICATION, AudioManager.ADJUST_MUTE, 0);
-        audioManager.adjustStreamVolume(AudioManager.STREAM_ALARM, AudioManager.ADJUST_MUTE, 0);
-        */
+        if (! Simple.isTV())
+        {
+            AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_MUTE, 0);
+        }
     }
 
     private void turnBeepOn()
     {
-        audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_UNMUTE, 0);
-        /*
-        audioManager.adjustStreamVolume(AudioManager.STREAM_NOTIFICATION, AudioManager.ADJUST_UNMUTE, 0);
-        audioManager.adjustStreamVolume(AudioManager.STREAM_ALARM, AudioManager.ADJUST_UNMUTE, 0);
-        audioManager.adjustStreamVolume(AudioManager.STREAM_RING, AudioManager.ADJUST_UNMUTE, 0);
-        audioManager.adjustStreamVolume(AudioManager.STREAM_SYSTEM, AudioManager.ADJUST_UNMUTE, 0);
-        audioManager.adjustStreamVolume(AudioManager.STREAM_DTMF, AudioManager.ADJUST_UNMUTE, 0);
-        */
+        if (! Simple.isTV())
+        {
+            AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_UNMUTE, 0);
+        }
     }
 }

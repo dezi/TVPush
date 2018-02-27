@@ -12,20 +12,26 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import de.xavaro.android.common.Simple;
+
 public class MainActivity extends AppCompatActivity
 {
     private final static String LOGTAG = MainActivity.class.getSimpleName();
     private final IntentFilter intentFilter = new IntentFilter();
+
     WifiP2pManager.Channel mChannel;
     WifiP2pManager mManager;
     WifiReceiver receiver;
 
+    private SpeechRecognition recognition;
+    private TextView voiceButton;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -72,12 +78,13 @@ public class MainActivity extends AppCompatActivity
         topframe.setBackgroundColor(0x88880000);
         setContentView(topframe);
 
-        TextView button = new TextView(this);
-        button.setText("HELO");
-        button.setTextColor(Color.WHITE);
-        button.setPadding(50, 50, 50, 50);
+        TextView heloButton = new TextView(this);
+        heloButton.setText("HELO");
+        heloButton.setTextSize(36);
+        heloButton.setTextColor(Color.WHITE);
+        heloButton.setPadding(50, 50, 50, 50);
 
-        button.setOnClickListener(new View.OnClickListener()
+        heloButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
@@ -86,7 +93,45 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        topframe.addView(button);
+        topframe.addView(heloButton, new FrameLayout.LayoutParams(Simple.WC, Simple.WC, Gravity.TOP + Gravity.START));
+
+        voiceButton = new TextView(this);
+        voiceButton.setText("VOICE ON");
+        voiceButton.setTextSize(36);
+        voiceButton.setTextColor(Color.WHITE);
+        voiceButton.setPadding(50, 50, 50, 50);
+
+        voiceButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                speechClick();
+            }
+        });
+
+        topframe.addView(voiceButton, new FrameLayout.LayoutParams(Simple.WC, Simple.WC, Gravity.BOTTOM + Gravity.END));
+    }
+
+    private void speechClick()
+    {
+        if (recognition == null)
+        {
+            recognition = new SpeechRecognition(this);
+        }
+
+        String text = voiceButton.getText().toString();
+
+        if (text.equals("VOICE ON"))
+        {
+            voiceButton.setText("VOICE OFF");
+            recognition.startListening();
+        }
+        else
+        {
+            voiceButton.setText("VOICE ON");
+            recognition.stopListening();
+        }
     }
 
     @Override
