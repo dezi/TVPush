@@ -3,6 +3,8 @@
 //
 
 #include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #define DBG 0
 #define BS 1024
