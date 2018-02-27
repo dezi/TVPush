@@ -348,7 +348,7 @@ void getUUID()
 
 void catMEME(char *str)
 {
-    strlcat(memebuff, str, MSGBUFSIZE);
+    strncat(memebuff, str, MSGBUFSIZE);
 }
 
 void escMEME(char *str)
