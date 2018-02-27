@@ -14,17 +14,17 @@
 
     https://www.gitbook.com/book/hi3518/hisilicon-sdk-install/details
 
- Download:
-
-    https://app.box.com/s/cibs7n1mgvhqaqjlidtveegu1uajt5yr/folder/18989615567
-
- Prerequisite:
+  Prerequisite:
 
     Install Virtual Box i386 with 32 gigabyte disk
 
     Install Debian into Virtual Box
 
     Do not install any GCC into Debian!
+
+ Download SDK:
+
+    https://app.box.com/s/cibs7n1mgvhqaqjlidtveegu1uajt5yr/folder/18989615567
 
  Install SDK:
 
@@ -97,9 +97,9 @@
  Compile:
 
      /opt/hisi-linux/x86-arm/arm-hisiv400-linux/target/bin/arm-hisiv400-linux-gcc \
-        -c ~/TVPush/app/src/main/cpp/meme.c -o meme.o
+        -Wall -c ~/TVPush/app/src/main/cpp/meme.c -o meme.o
 
- Link:
+ Link with libuClibc:
 
      /opt/hisi-linux/x86-arm/arm-hisiv400-linux/bin/arm-hisiv400-linux-gnueabi-ld \
         --sysroot=/opt/hisi-linux/x86-arm/arm-hisiv400-linux/target \
@@ -111,6 +111,7 @@
         -o meme meme.o
 
  Done!
+
 */
 
 #define MSGBUFSIZE 1024
@@ -141,16 +142,15 @@ void strtrim(char *str)
 
 void getDeviceInfo()
 {
-    FILE *fd = NULL;
+    FILE *fd = fopen("/etc/back.bin", "r");
 
-    if (fd == NULL) fd = fopen("/etc/back.bin", "r");
     if (fd == NULL) fd = fopen("./back.bin", "r");
 
     if (fd != NULL)
     {
         char backbin[256];
 
-        long xfer = fread(backbin, 1, sizeof(backbin), fd);
+        size_t xfer = fread(backbin, 1, sizeof(backbin), fd);
 
         if (xfer > 0)
         {
@@ -169,9 +169,8 @@ void getDeviceInfo()
 
 void getHackInfo()
 {
-    FILE *fd = NULL;
+    FILE *fd = fopen("/home/yi-hack-v3/.hackinfo", "r");
 
-    if (fd == NULL) fd = fopen("/home/yi-hack-v3/.hackinfo", "r");
     if (fd == NULL) fd = fopen("./hackinfo", "r");
 
     if (fd != NULL)
@@ -203,9 +202,8 @@ void getHackInfo()
 
 void getCustomInfo()
 {
-    FILE *fd = NULL;
+    FILE *fd = fopen("/etc/meme.txt", "r");
 
-    if (fd == NULL) fd = fopen("/etc/meme.txt", "r");
     if (fd == NULL) fd = fopen("./meme.txt", "r");
 
     if (fd != NULL)
@@ -258,9 +256,8 @@ void getCustomInfo()
 
 void getCloudInfo()
 {
-    FILE *fd = NULL;
+    FILE *fd = fopen("/tmp/log.txt", "r");
 
-    if (fd == NULL) fd = fopen("/tmp/log.txt", "r");
     if (fd == NULL) fd = fopen("./log.txt", "r");
 
     if (fd != NULL)
