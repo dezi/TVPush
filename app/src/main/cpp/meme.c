@@ -103,15 +103,13 @@
 
             sudo mv rootfs_uclibc /opt/hisi-linux/x86-arm/arm-hisiv400-linux/
 
- Compile:
+ Compile and link with uClibc:
 
      /opt/hisi-linux/x86-arm/arm-hisiv400-linux/target/bin/arm-hisiv400-linux-gcc \
         -Wall -std=gnu99 -c ~/TVPush/app/src/main/cpp/meme.c -o meme.o
 
      /opt/hisi-linux/x86-arm/arm-hisiv400-linux/target/bin/arm-hisiv400-linux-gcc \
         -Wall -std=gnu99 -c ~/TVPush/app/src/main/cpp/json.c -o json.o
-
- Link with uClibc:
 
      /opt/hisi-linux/x86-arm/arm-hisiv400-linux/bin/arm-hisiv400-linux-gnueabi-ld \
         --sysroot=/opt/hisi-linux/x86-arm/arm-hisiv400-linux/target \
@@ -564,11 +562,37 @@ void responder()
             continue;
         }
 
-        // puts(messbuff);
+        if (strlen(messbuff) == 4)
+        {
+            printf("recv: %s (%s)\n",messbuff, inet_ntoa(addr.sin_addr));
+
+            if (strcmp(messbuff, "PING") == 0)
+            {
+                strcpy(memebuff, "PONG");
+
+                if (sendto(sockfd, memebuff, strlen(memebuff), 0, (struct sockaddr *) &addr, sizeof(addr)) < 0)
+                {
+                    perror("Send to socket failed.");
+                    continue;
+                }
+
+                printf("send: %s (%s)\n", "PONG", inet_ntoa(addr.sin_addr));
+            }
+
+            if (strcmp(messbuff, "PONG") == 0)
+            {
+                //
+                // Received a pong...
+                //
+            }
+
+            continue;
+        }
 
         char *type = jsonGetStringValue(messbuff, "type");
-        char *name = jsonGetStringValue(messbuff, "devicename");
-        if (name == null) name = jsonGetStringValue(messbuff, "device_name");
+        char *name = jsonGetStringValue(messbuff, "device_name");
+
+        if (name == null) name = jsonGetStringValue(messbuff, "devicename");
 
         printf("recv: %s (%s) => %s\n", type, inet_ntoa(addr.sin_addr), name);
 
@@ -582,10 +606,25 @@ void responder()
             if (sendto(sockfd, memebuff, strlen(memebuff), 0, (struct sockaddr *) &addr, sizeof(addr)) < 0)
             {
                 perror("Send to socket failed.");
-                continue;
             }
+            else
+            {
+                printf("send: %s (%s) => %s\n", "MEME", inet_ntoa(addr.sin_addr), name);
+            }
+        }
 
-            printf("send: %s (%s) => %s\n", "MEME", inet_ntoa(addr.sin_addr), name);
+        if ((type != null) && (strcmp(type, "GAUT") == 0))
+        {
+            formatMessage("SAUT", true);
+
+            if (sendto(sockfd, memebuff, strlen(memebuff), 0, (struct sockaddr *) &addr, sizeof(addr)) < 0)
+            {
+                perror("Send to socket failed.");
+            }
+            else
+            {
+                printf("send: %s (%s) => %s\n", "SAUT", inet_ntoa(addr.sin_addr), name);
+            }
         }
 
         if (type != null) free(type);
