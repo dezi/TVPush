@@ -35,6 +35,15 @@ size_t strlen(const char *str)
     return (s - str);
 }
 
+char *strcpy(register char *to, register const char *from)
+{
+    char *save = to;
+
+    for (; *to = *from; ++from, ++to);
+    
+    return save;
+}
+
 char *strcat(register char *s, register const char *append)
 {
     char *save = s;
@@ -77,7 +86,7 @@ char *strncpy(char *dst, const char *src, register size_t n)
             }
         } while (--n != 0);
     }
-    
+
     return dst;
 }
 
