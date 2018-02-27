@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <errno.h>
 #include <time.h>
 
 #include "json.h"
@@ -467,11 +468,8 @@ void formatMEME()
 
 void responder()
 {
-    struct sockaddr_in addr;
-    socklen_t addrlen = sizeof(addr);
-    struct ip_mreq mreq;
-    int yes = 1;
     int sockfd;
+    int yes = 1;
 
     if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
     {
@@ -485,6 +483,9 @@ void responder()
         return;
     }
 
+    struct sockaddr_in addr;
+    socklen_t addrlen = sizeof(addr);
+
     memset(&addr, 0, sizeof(addr));
 
     addr.sin_family = AF_INET;
@@ -497,6 +498,16 @@ void responder()
         return;
     }
 
+    struct timeval tv;
+    tv.tv_sec = 10;
+    tv.tv_usec = 0;
+
+    if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (const char*) &tv, sizeof tv) < 0)
+    {
+        perror("Set timeout failed.");
+    }
+
+    struct ip_mreq mreq;
     mreq.imr_multiaddr.s_addr = inet_addr(HELO_GROUP);
     mreq.imr_interface.s_addr = htonl(INADDR_ANY);
 
@@ -512,7 +523,11 @@ void responder()
 
         if (recvfrom(sockfd, messbuff, MSGBUFSIZE, 0, (struct sockaddr *) &addr, &addrlen) < 0)
         {
-            perror("Receive from socket failed.");
+            if (errno != EAGAIN)
+            {
+                perror("Receive from socket failed.");
+            }
+
             continue;
         }
 
@@ -522,7 +537,7 @@ void responder()
         char *name = jsonGetStringValue(messbuff, "devicename");
         if (name == NULL) name = jsonGetStringValue(messbuff, "device_name");
 
-        printf("msg: %s => %s\n", type, name);
+        printf("msg: %s => %s (%s)\n", type, name, inet_ntoa(addr.sin_addr));
 
         if ((type != NULL) && (strcmp(type, "HELO") == 0))
         {
