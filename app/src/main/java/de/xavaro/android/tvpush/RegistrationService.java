@@ -12,9 +12,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
-import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
 
 import de.xavaro.android.common.Json;
@@ -27,7 +25,6 @@ public class RegistrationService extends Service
 
     private static final int port = 42742;
     private static InetAddress multicastAddress;
-    private static InetSocketAddress localAddress;
     private static MulticastSocket socket;
 
     private boolean running = false;
@@ -89,6 +86,10 @@ public class RegistrationService extends Service
                 socket.setReuseAddress(true);
                 socket.setSoTimeout(15000);
                 socket.joinGroup(multicastAddress);
+
+                Log.d(LOGTAG, "onCreate: getReceiveBufferSize=" + socket.getReceiveBufferSize());
+
+                requestHello(this);
             }
             catch (Exception ignore)
             {
@@ -165,7 +166,7 @@ public class RegistrationService extends Service
 
                 String message = new String(packet.getData(), 0, packet.getLength());
 
-                Log.d(LOGTAG, "####" + message);
+                //Log.d(LOGTAG, "####" + message);
 
                 JSONObject jsonmess = Json.fromStringObject(message);
                 if (jsonmess == null) continue;
@@ -211,15 +212,12 @@ public class RegistrationService extends Service
 
                         socket.send(gaut);
 
-                        Json.put(mejson, "workerThread:  sent GAUT ip=", packet.getAddress());
-                        Json.put(mejson, "workerThread:  sent GAUT port=", packet.getPort());
+                        Log.d(LOGTAG, "workerThread: GAUT to=" + deviceName);
                     }
                 }
 
                 if (Json.equals(jsonmess, "type", "SAUT"))
                 {
-                    Log.d(LOGTAG, "workerThread: SAUT from=" + packet.getAddress());
-
                     String deviceName = Json.getString(jsonmess, "device_name");
                     if (deviceName == null) deviceName = Json.getString(jsonmess, "devicename");
                     Log.d(LOGTAG, "workerThread: SAUT from=" + deviceName);

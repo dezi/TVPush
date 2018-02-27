@@ -5,6 +5,7 @@ import android.util.Log;
 
 import de.xavaro.android.p2pcamera.P2PBarcode;
 import de.xavaro.android.p2pcamera.P2PCamera;
+import de.xavaro.android.p2pcamera.P2PCameras;
 import de.xavaro.android.p2pcamera.p2pcommands.PTZDirectionSend;
 import de.xavaro.android.p2pcamera.p2pcommands.ResolutionSend;
 
@@ -23,7 +24,35 @@ public class CameraTest
         Log.d(LOGTAG, "#####" + new String(Base64.decode("RGV6aSBIb21l", 0)));
         Log.d(LOGTAG, "#####" + P2PBarcode.EncodeBarcodeString(false, "Dezi Home", "1234abcd", null));
 
-        p2pcamera = new P2PCamera(DID, DPW);
+        ApplicationBase.handler.postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                delayedInit("Dezi's Domcam #1");
+            }
+        }, 5000);
+    }
+
+    private static void delayedInit(String name)
+    {
+        String uuid = P2PCameras.findCameraByName(name);
+
+        if (uuid == null)
+        {
+            Log.d(LOGTAG, "delayedInit: not fund=" + name);
+
+            return;
+        }
+
+        String did = P2PCameras.getP2PDeviceId(uuid);
+        String dpw = P2PCameras.getP2PDevicePw(uuid);
+
+        Log.d(LOGTAG, "delayedInit: fund=" + name + " did=" + did + " dpw=" + dpw);
+
+        if ((did == null) || (dpw == null)) return;
+
+        p2pcamera = new P2PCamera(uuid, did, dpw);
 
         p2pcamera.connectCamera();
 
@@ -54,5 +83,4 @@ public class CameraTest
             }
         }, 15000);
     }
-
 }

@@ -14,11 +14,15 @@ public class P2PCamera
 {
     private static final String LOGTAG = P2PCamera.class.getSimpleName();
 
+    public String targetUUID;
     public String targetId;
+
     private P2PSession session;
 
-    public P2PCamera(String targetId, String targetPw)
+    public P2PCamera(String targetUUID, String targetId, String targetPw)
     {
+        this.targetUUID = targetUUID;
+
         this.targetId = targetId;
 
         session = new P2PSession(targetId, targetPw);
