@@ -357,7 +357,7 @@ void formatMEME()
 void responder()
 {
     struct sockaddr_in addr;
-    unsigned int addrlen = sizeof(addr);
+    socklen_t addrlen = sizeof(addr);
     struct ip_mreq mreq;
     int yes = 1;
     int sockfd;
