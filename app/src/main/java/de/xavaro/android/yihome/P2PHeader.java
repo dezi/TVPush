@@ -47,7 +47,7 @@ public class P2PHeader
 
         tNPHead.version = data[0];
         tNPHead.ioType = data[1];
-        tNPHead.dataSize = Packet.byteArrayToInt(data, 4, isBigEndian);
+        tNPHead.dataSize = P2PPacker.byteArrayToInt(data, 4, isBigEndian);
 
         return tNPHead;
     }
@@ -60,7 +60,7 @@ public class P2PHeader
         obj[1] = this.ioType;
 
         System.arraycopy(this.reserved, 0, obj, 2, 2);
-        System.arraycopy(Packet.intToByteArray(this.dataSize, this.isBigEndian), 0, obj, 4, 4);
+        System.arraycopy(P2PPacker.intToByteArray(this.dataSize, this.isBigEndian), 0, obj, 4, 4);
 
         return obj;
     }

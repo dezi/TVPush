@@ -10,7 +10,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class P2PUtil
 {
-    private static char[] NonceBase = new char[]
+    private static char[] niceChars = new char[]
             {
                     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
                     'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
@@ -22,7 +22,7 @@ public class P2PUtil
                     '4', '5', '6', '7', '8', '9'
             };
 
-    public String a(String str)
+    public String getSecretHash(String str)
     {
         String b = "KXLiUdAsO81ycDyEJAeETC$KklXdz3AC";
 
@@ -39,35 +39,60 @@ public class P2PUtil
         }
     }
 
-    public static String genNonce(int i)
+    public static String genNonce(int length)
     {
-        char[] cArr = new char[i];
-        for (int i2 = 0; i2 < i; i2++)
+        Random rnd = new Random();
+
+        char[] cArr = new char[length];
+
+        for (int inx = 0; inx < length; inx++)
         {
-            cArr[i2] = NonceBase[Math.abs(new Random().nextInt()) % NonceBase.length];
+            cArr[inx] = niceChars[Math.abs(rnd.nextInt()) % niceChars.length];
         }
+
         return new String(cArr);
     }
 
-    public static String getPassword(String str, String str2)
+    public static String getPassword(String key, String data)
     {
-        String hmacSha1 = hmacSha1(str2, "user=xiaoyiuser&nonce=" + str);
+        String hmacSha1 = hmacSha1(key, "user=xiaoyiuser&nonce=" + data);
         return hmacSha1.length() > 15 ? hmacSha1.substring(0, 15) : hmacSha1;
     }
 
-    private static String hmacSha1(String str, String str2)
+    private static String hmacSha1(String key, String data)
     {
-        String str3 = "";
         try
         {
-            Key secretKeySpec = new SecretKeySpec(str.getBytes("UTF-8"), "HmacSHA1");
+            Key secretKeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "HmacSHA1");
             Mac instance = Mac.getInstance("HmacSHA1");
             instance.init(secretKeySpec);
-            return new String(Base64.encode(instance.doFinal(str2.getBytes("UTF-8")), 0));
+
+            return new String(Base64.encode(instance.doFinal(data.getBytes("UTF-8")), 0));
         }
         catch (Exception e)
         {
-            return str3;
+            return "";
         }
+    }
+
+    public static String getHexBytesToString(byte[] bytes)
+    {
+        return getHexBytesToString(bytes, 0, bytes.length);
+    }
+
+    public static String getHexBytesToString(byte[] bytes, int offset, int length)
+    {
+        char[] hexArray = "0123456789ABCDEF".toCharArray();
+        char[] hexChars = new char[ length << 1 ];
+
+        for (int inx = offset; inx < (length + offset); inx++)
+        {
+            //noinspection PointlessArithmeticExpression
+            hexChars[ ((inx - offset) << 1) + 0 ] = hexArray[ (bytes[ inx ] >> 4) & 0x0f ];
+            //noinspection PointlessBitwiseExpression
+            hexChars[ ((inx - offset) << 1) + 1 ] = hexArray[ (bytes[ inx ] >> 0) & 0x0f ];
+        }
+
+        return String.valueOf(hexChars);
     }
 }

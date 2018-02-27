@@ -15,7 +15,7 @@ public class P2PReaderThreadCommand extends P2PReaderThread
     }
 
     @Override
-    public void handleData(byte[] data, int size)
+    public boolean handleData(byte[] data, int size)
     {
         P2PFrame head = P2PFrame.parse(data, session.isBigEndian);
 
@@ -30,11 +30,13 @@ public class P2PReaderThreadCommand extends P2PReaderThread
 
         Log.d(LOGTAG, "handleData: head.authResult=" + head.authResult);
 
-        if (head.authResult != 0) return;
+        if (head.authResult != 0) return false;
 
         if ((head.exHeaderSize < 0) || (head.dataSize != dataSize))
         {
             Log.d(LOGTAG, "handleData: corrupt...");
+
+            return false;
         }
         else
         {
@@ -46,7 +48,7 @@ public class P2PReaderThreadCommand extends P2PReaderThread
                 DeviceInfoData deviceInfo = new DeviceInfoData(session, dataBuffer);
                 session.onDeviceInfoReceived(deviceInfo);
 
-                return;
+                return true;
             }
 
             if ((head.commandType == P2PCommandCodes.IPCAM_SET_RESOLUTION_RESP)
@@ -55,10 +57,12 @@ public class P2PReaderThreadCommand extends P2PReaderThread
                 ResolutionData resolution = new ResolutionData(session, dataBuffer);
                 session.onResolutionReceived(resolution);
 
-                return;
+                return true;
             }
 
             Log.d(LOGTAG, "handleData: unhandled commandType=" + head.commandType);
         }
+
+        return true;
     }
 }

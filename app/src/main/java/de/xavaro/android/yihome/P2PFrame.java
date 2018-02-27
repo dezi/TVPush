@@ -45,11 +45,11 @@ public class P2PFrame
     {
         P2PFrame tNPIOCtrlHead = new P2PFrame(isBigEndian);
 
-        tNPIOCtrlHead.commandType = Packet.byteArrayToShort(data, 0, isBigEndian);
-        tNPIOCtrlHead.commandNumber = Packet.byteArrayToShort(data, 2, isBigEndian);
-        tNPIOCtrlHead.exHeaderSize = Packet.byteArrayToShort(data, 4, isBigEndian);
-        tNPIOCtrlHead.dataSize = Packet.byteArrayToShort(data, 6, isBigEndian);
-        tNPIOCtrlHead.authResult = Packet.byteArrayToInt(data, 8, isBigEndian);
+        tNPIOCtrlHead.commandType = P2PPacker.byteArrayToShort(data, 0, isBigEndian);
+        tNPIOCtrlHead.commandNumber = P2PPacker.byteArrayToShort(data, 2, isBigEndian);
+        tNPIOCtrlHead.exHeaderSize = P2PPacker.byteArrayToShort(data, 4, isBigEndian);
+        tNPIOCtrlHead.dataSize = P2PPacker.byteArrayToShort(data, 6, isBigEndian);
+        tNPIOCtrlHead.authResult = P2PPacker.byteArrayToInt(data, 8, isBigEndian);
 
         return tNPIOCtrlHead;
     }
@@ -58,10 +58,10 @@ public class P2PFrame
     {
         byte[] obj = new byte[40];
 
-        System.arraycopy(Packet.shortToByteArray(this.commandType, this.isByteOrderBig), 0, obj, 0, 2);
-        System.arraycopy(Packet.shortToByteArray(this.commandNumber, this.isByteOrderBig), 0, obj, 2, 2);
-        System.arraycopy(Packet.shortToByteArray(this.exHeaderSize, this.isByteOrderBig), 0, obj, 4, 2);
-        System.arraycopy(Packet.shortToByteArray(this.dataSize, this.isByteOrderBig), 0, obj, 6, 2);
+        System.arraycopy(P2PPacker.shortToByteArray(this.commandType, this.isByteOrderBig), 0, obj, 0, 2);
+        System.arraycopy(P2PPacker.shortToByteArray(this.commandNumber, this.isByteOrderBig), 0, obj, 2, 2);
+        System.arraycopy(P2PPacker.shortToByteArray(this.exHeaderSize, this.isByteOrderBig), 0, obj, 4, 2);
+        System.arraycopy(P2PPacker.shortToByteArray(this.dataSize, this.isByteOrderBig), 0, obj, 6, 2);
         System.arraycopy(this.authInfo, 0, obj, 8, 32);
 
         return obj;

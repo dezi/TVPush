@@ -24,15 +24,14 @@ public class P2PSession
     private static final String LOGTAG = P2PSession.class.getSimpleName();
 
     public int session;
+
     public String targetId;
+    public String targetPw;
+
     public boolean isBigEndian;
     public boolean isConnected;
-
-    private String account = "admin";
-    private String password = "lkFMC9ffDXzwH9x";
-    private String password1 = "superkey_abcdefg9876543210";
-    private String password3 = "IBNj3F4L37HiSGpwBgD6";
-    private String password2 = "62sfYuHop5bQUqkc";
+    public boolean isFreetouse;
+    public boolean isCorrupted;
 
     private short cmdSequence;
     private long lastLoginTime;
@@ -50,9 +49,10 @@ public class P2PSession
         Log.d(LOGTAG, "static: PPPP_Initialize=" + resInit);
     }
 
-    public P2PSession(String targetId)
+    public P2PSession(String targetId, String targetPw)
     {
         this.targetId = targetId;
+        this.targetPw = targetPw;
     }
 
     public boolean isOnline()
@@ -95,6 +95,7 @@ public class P2PSession
 
             isBigEndian = true;
             isConnected = true;
+            isCorrupted = false;
 
             //
             // Retrieve basic session info.
@@ -125,100 +126,119 @@ public class P2PSession
             t3.start();
             t4.start();
             t5.start();
+
+            onConnectStateChanged(isConnected);
         }
 
         return isConnected;
     }
 
-    public boolean close()
+    public boolean disconnect()
     {
         if (isConnected)
         {
-            isConnected = false;
-
             int resClose = PPPP_APIs.PPPP_Close(session);
             Log.d(LOGTAG, "close: PPPP_Close=" + resClose);
+
+            if (resClose == 0)
+            {
+                isConnected = false;
+
+                onConnectStateChanged(isConnected);
+            }
         }
 
         return ! isConnected;
     }
 
+    public void forceDisconnect()
+    {
+        synchronized (this)
+        {
+            if (isConnected)
+            {
+                int resClose = PPPP_APIs.PPPP_ForceClose(session);
+                Log.d(LOGTAG, "close: PPPP_ForceClose=" + resClose);
+
+                if (resClose == 0)
+                {
+                    isConnected = false;
+
+                    onConnectStateChanged(isConnected);
+                }
+            }
+        }
+    }
+
     public boolean packDatAndSend(P2PMessage p2PMessage)
     {
-        String auth1 = account;
-        String auth2 = password;
+        String auth1 = "admin";
+        String auth2 = targetPw;
 
-        Log.d(LOGTAG, "packDatAndSend: dezihack: " + auth1);
         Log.d(LOGTAG, "packDatAndSend: dezihack: " + auth2);
 
-        if (true)
+        if (! isFreetouse)
         {
             auth1 = P2PUtil.genNonce(15);
-            auth2 = P2PUtil.getPassword(auth1, auth2);
+            auth2 = P2PUtil.getPassword(auth2, auth1);
         }
 
         Log.d(LOGTAG, "packDatAndSend: dezihack: " + auth1);
         Log.d(LOGTAG, "packDatAndSend: dezihack: " + auth2);
 
-        P2PFrame tNPIOCtrlHead = new P2PFrame(p2PMessage.reqId, ++cmdSequence, (short) p2PMessage.data.length, auth1, auth2, -1, isBigEndian);
-        P2PHeader tNPHead = new P2PHeader((byte) 1, (byte) 3, (tNPIOCtrlHead.exHeaderSize + 40) + p2PMessage.data.length, isBigEndian);
+        P2PFrame p2pFrame = new P2PFrame(p2PMessage.reqId, ++cmdSequence, (short) p2PMessage.data.length, auth1, auth2, -1, isBigEndian);
+        P2PHeader p2pHead = new P2PHeader((byte) 1, (byte) 3, (p2pFrame.exHeaderSize + 40) + p2PMessage.data.length, isBigEndian);
 
-        int i = tNPHead.dataSize + 8;
+        byte[] data = new byte[p2pHead.dataSize + 8];
 
-        byte[] obj = new byte[i];
-        System.arraycopy(tNPHead.build(), 0, obj, 0, 8);
-        System.arraycopy(tNPIOCtrlHead.build(), 0, obj, 8, 40);
-        System.arraycopy(p2PMessage.data, 0, obj, tNPIOCtrlHead.exHeaderSize + 48, p2PMessage.data.length);
+        System.arraycopy(p2pHead.build(), 0, data, 0, 8);
+        System.arraycopy(p2pFrame.build(), 0, data, 8, 40);
+        System.arraycopy(p2PMessage.data, 0, data, p2pFrame.exHeaderSize + 48, p2PMessage.data.length);
 
-        Log.d(LOGTAG, "packDatAndSend: size=" + obj.length + " hex=" + Simple.getHexBytesToString(obj));
+        //Log.d(LOGTAG, "packDatAndSend: size=" + obj.length + " hex=" + P2PUtil.getHexBytesToString(obj));
 
-        int PPPP_Write = PPPP_APIs.PPPP_Write(session, (byte) 0, obj, i);
+        int PPPP_Write = PPPP_APIs.PPPP_Write(session, (byte) 0, data, data.length);
 
-        Log.d(LOGTAG, "PPPP_Write IOCTRL, ret:" + PPPP_Write + ", cmdNum:" + tNPIOCtrlHead.commandNumber + ", extSize:" + tNPIOCtrlHead.exHeaderSize + ", send(" + session + ", 0x" + Integer.toHexString(p2PMessage.reqId) + ", " + Simple.getHexBytesToString(p2PMessage.data) + ")");
+        //Log.d(LOGTAG, "PPPP_Write IOCTRL, ret:" + PPPP_Write + ", cmdNum:" + p2pFrame.commandNumber + ", extSize:" + p2pFrame.exHeaderSize + ", send(" + session + ", 0x" + Integer.toHexString(p2PMessage.reqId) + ", " + P2PUtil.getHexBytesToString(p2PMessage.data) + ")");
 
-        return (PPPP_Write == i);
+        return (PPPP_Write == data.length);
     }
-
-    //region Delegate section.
-
-    public boolean resolutionSend(int resolution)
-    {
-        return (new ResolutionSend(this, resolution)).send();
-    }
-
-    public boolean resolutionQuery()
-    {
-        return (new ResolutionQuery(this)).send();
-    }
-
-    public boolean ptzDirectionSend(int direction, int speed)
-    {
-        return (new PTZDirectionSend(this, direction, speed)).send();
-    }
-
-    public boolean ptzJumpSend(int transverseProportion, int longitudinalProportion)
-    {
-        return (new PTZJumpSend(this, transverseProportion, longitudinalProportion)).send();
-    }
-
-    public boolean ptzControlStopSend()
-    {
-        return (new PTZControlStopSend(this)).send();
-    }
-
-    public boolean ptzHomeSend()
-    {
-        return (new PTZHomeSend(this)).send();
-    }
-
-    public boolean deviceInfoquery()
-    {
-        return (new DeviceInfoQuery(this)).send();
-    }
-
-    //endregion Delegate section.
 
     //region Listener section.
+
+    //region OnConnectStateChangedListener
+
+    private OnConnectStateChangedListener onConnectStateChangedListener;
+
+    public void OnConnectStateChangedListener(OnConnectStateChangedListener listener)
+    {
+        onConnectStateChangedListener = listener;
+    }
+
+    public OnConnectStateChangedListener getOnConnectStateChangedListener()
+    {
+        return onConnectStateChangedListener;
+    }
+
+    public void onConnectStateChanged(boolean isConnected)
+    {
+        Log.d(LOGTAG, "onConnectStateChanged:"
+                + " camera=" + targetId
+                + " connected=" + isConnected
+        );
+
+        if (onConnectStateChangedListener != null)
+        {
+            onConnectStateChangedListener.onConnectStateChanged(isConnected);
+        }
+    }
+
+    public interface OnConnectStateChangedListener
+    {
+        void onConnectStateChanged(boolean isConnected);
+    }
+
+    //endregion OnConnectStateChangedListener
 
     //region OnDeviceInfoReceivedListener
 

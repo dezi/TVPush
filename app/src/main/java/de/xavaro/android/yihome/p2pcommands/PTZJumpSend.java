@@ -4,7 +4,6 @@ import de.xavaro.android.yihome.P2PCommandCodes;
 import de.xavaro.android.yihome.P2PMessage;
 import de.xavaro.android.yihome.P2PPacker;
 import de.xavaro.android.yihome.P2PSession;
-import de.xavaro.android.yihome.Packet;
 
 public class PTZJumpSend
 {

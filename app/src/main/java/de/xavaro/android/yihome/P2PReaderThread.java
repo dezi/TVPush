@@ -39,6 +39,7 @@ public class P2PReaderThread extends Thread
             if ((hRes != 0) || (nSize[0] != 8))
             {
                 Log.d(LOGTAG, "head: read corrupt...");
+                session.isCorrupted = true;
 
                 break;
             }
@@ -55,6 +56,7 @@ public class P2PReaderThread extends Thread
                 if ((header.dataSize < 0) || (header.dataSize > (1024 * 1024)))
                 {
                     Log.d(LOGTAG, "head: size corrupt...");
+                    session.isCorrupted = true;
 
                     break;
                 }
@@ -71,6 +73,7 @@ public class P2PReaderThread extends Thread
                     if ((dRes != 0) || (dSize[0] != header.dataSize))
                     {
                         Log.d(LOGTAG, "data: read corrupt...");
+                        session.isCorrupted = true;
 
                         break;
                     }
@@ -78,17 +81,28 @@ public class P2PReaderThread extends Thread
                     {
                         Log.d(LOGTAG, "data: read channel=" + channel + " res=" + dRes + " size=" + dSize[0]);
 
-                        handleData(dBuffer, dSize[0]);
+                        if (! handleData(dBuffer, dSize[0]))
+                        {
+                            session.isCorrupted = true;
+
+                            break;
+                        }
                     }
                 }
             }
         }
 
         Log.d(LOGTAG, "run: stop channel=" + this.channel);
+
+        if (session.isCorrupted)
+        {
+            session.forceDisconnect();
+        }
     }
 
-    public void handleData(byte[] data, int size)
+    public boolean handleData(byte[] data, int size)
     {
+        return true;
     }
 }
 
