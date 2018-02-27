@@ -118,7 +118,7 @@
 
 */
 
-#define MSGBUFSIZE 1024
+#define MSGBUFSIZE 4096
 
 char messbuff[ MSGBUFSIZE ];
 char memebuff[ MSGBUFSIZE ];
@@ -345,77 +345,124 @@ void getUUID()
     printf("uid=%s\n", uid);
 }
 
+void catMEME(char *str)
+{
+    strlcat(memebuff, str, MSGBUFSIZE);
+}
+
+void escMEME(char *str)
+{
+    int size = strlen(memebuff);
+
+    for (int inx = 0; str[ inx ];  inx++)
+    {
+        if ((str[ inx ] == '"') || (str[ inx ] == '\\'))
+        {
+            if ((size + 1) < MSGBUFSIZE) memebuff[ size++ ] = '\\';
+            if ((size + 1) < MSGBUFSIZE) memebuff[ size++ ] = str[ inx ];
+            continue;
+        }
+        else
+        {
+            if (str[ inx ] == '\t')
+            {
+                if ((size + 1) < MSGBUFSIZE) memebuff[size++] = '\\';
+                if ((size + 1) < MSGBUFSIZE) memebuff[size++] = 't';
+                continue;
+            }
+
+            if (str[ inx ] == '\n')
+            {
+                if ((size + 1) < MSGBUFSIZE) memebuff[size++] = '\\';
+                if ((size + 1) < MSGBUFSIZE) memebuff[size++] = 'n';
+                continue;
+            }
+
+            if (str[ inx ] == '\r')
+            {
+                if ((size + 1) < MSGBUFSIZE) memebuff[size++] = '\\';
+                if ((size + 1) < MSGBUFSIZE) memebuff[size++] = 'r';
+                continue;
+            }
+        }
+
+        if ((size + 1) < MSGBUFSIZE) memebuff[ size++ ] = str[ inx ];
+    }
+
+    memebuff[ size ] = 0;
+}
+
 void formatMEME()
 {
-    strcpy(memebuff, "{");
-    strcat(memebuff, "\n");
+    memset(memebuff, 0, MSGBUFSIZE);
 
-    strcat(memebuff, "  \"type\": \"MEME\",");
-    strcat(memebuff, "\n");
+    catMEME("{");
+    catMEME("\n");
+
+    catMEME("  \"type\": \"MEME\",");
+    catMEME("\n");
 
     if (strlen(nam) > 0)
     {
-        strcat(memebuff, "  \"device_name\": \"");
-        strcat(memebuff, nam);
-        strcat(memebuff, "\",");
-        strcat(memebuff, "\n");
+        catMEME("  \"device_name\": \"");
+        escMEME(nam);
+        catMEME("\",");
+        catMEME("\n");
     }
 
     if (strlen(nck) > 0)
     {
-        strcat(memebuff, "  \"device_nick\": \"");
-        strcat(memebuff, nck);
-        strcat(memebuff, "\",");
-        strcat(memebuff, "\n");
+        catMEME("  \"device_nick\": \"");
+        escMEME(nck);
+        catMEME("\",");
+        catMEME("\n");
     }
 
     if (strlen(loc) > 0)
     {
-        strcat(memebuff, "  \"device_location\": \"");
-        strcat(memebuff, loc);
-        strcat(memebuff, "\",");
-        strcat(memebuff, "\n");
+        catMEME("  \"device_location\": \"");
+        escMEME(loc);
+        catMEME("\",");
+        catMEME("\n");
     }
 
     if (strlen(mod) > 0)
     {
-        strcat(memebuff, "  \"device_model\": \"");
-        strcat(memebuff, mod);
-        strcat(memebuff, "\",");
-        strcat(memebuff, "\n");
+        catMEME("  \"device_model\": \"");
+        escMEME(mod);
+        catMEME("\",");
+        catMEME("\n");
     }
 
     if (strlen(ver) > 0)
     {
-        strcat(memebuff, "  \"device_version\": \"");
-        strcat(memebuff, ver);
-        strcat(memebuff, "\",");
-        strcat(memebuff, "\n");
+        catMEME("  \"device_version\": \"");
+        escMEME(ver);
+        catMEME("\",");
+        catMEME("\n");
     }
 
-    strcat(memebuff, "  \"p2p_id\": \"");
-    strcat(memebuff, did);
-    strcat(memebuff, "\",");
-    strcat(memebuff, "\n");
+    catMEME("  \"p2p_id\": \"");
+    escMEME(did);
+    catMEME("\",");
+    catMEME("\n");
 
-    strcat(memebuff, "  \"p2p_pw\": \"");
-    strcat(memebuff, dpw);
-    strcat(memebuff, "\",");
-    strcat(memebuff, "\n");
+    catMEME("  \"p2p_pw\": \"");
+    escMEME(dpw);
+    catMEME("\",");
+    catMEME("\n");
 
-    strcat(memebuff, "  \"cloud_id\": \"");
-    strcat(memebuff, cid);
-    strcat(memebuff, "\",");
-    strcat(memebuff, "\n");
+    catMEME("  \"cloud_id\": \"");
+    escMEME(cid);
+    catMEME("\",");
+    catMEME("\n");
 
-    strcat(memebuff, "  \"cloud_pw\": \"");
-    strcat(memebuff, cpw);
-    strcat(memebuff, "\"");
-    strcat(memebuff, "\n");
+    catMEME("  \"cloud_pw\": \"");
+    escMEME(cpw);
+    catMEME("\"");
+    catMEME("\n");
 
-    strcat(memebuff, "}");
-
-    getStringValue(memebuff, "p2p_pw");
+    catMEME("}");
 }
 
 void responder()
@@ -469,18 +516,28 @@ void responder()
             continue;
         }
 
-        puts(messbuff);
+        // puts(messbuff);
 
-        if (strstr(messbuff, "\"type\":") && strstr(messbuff, "\"HELO\""))
+        char *type = jsonGetStringValue(messbuff, "type");
+        char *name = jsonGetStringValue(messbuff, "devicename");
+        if (name == NULL) name = jsonGetStringValue(messbuff, "device_name");
+
+        printf("msg: %s => %s\n", type, name);
+
+        if ((type != NULL) && (strcmp(type, "HELO") == 0))
         {
             formatMEME();
 
-            if (sendto(sockfd, memebuff, strlen(memebuff), 0,(struct sockaddr *) &addr, sizeof(addr)) < 0)
+            if (sendto(sockfd, memebuff, strlen(memebuff), 0, (struct sockaddr *) &addr,
+                       sizeof(addr)) < 0)
             {
                 perror("Send to socket failed.");
                 continue;
             }
         }
+
+        if (type != NULL) free(type);
+        if (name != NULL) free(name);
     }
 }
 

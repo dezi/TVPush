@@ -6,87 +6,108 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "json.h"
+#define DBG 0
+#define BS 1024
 
+char *parseDat(const char json[], const char *path);
 char *parseQuoted(const char json[], int *jnx);
 char *parseUnQuoted(const char json[], int *jnx);
-char *parseDat(const char json[], const char *path);
+void  parseSpace(const char json[], int *jnx);
 
-char *getStringValue(const char json[], const char path[])
+int isTerminator(char ccc);
+int isSpace(char ccc);
+
+char *jsonGetStringValue(const char json[], const char path[])
 {
     char *result = parseDat(json, path);
 
     return result;
 }
 
-int isSpace(char ccc)
-{
-    return (ccc == ' ') || (ccc == '\t') || (ccc == '\r') || (ccc == '\n');
-}
-
-void skipSpace(const char json[], int *jnx)
-{
-    while (isSpace(json[*jnx]))
-    {
-        (*jnx)++;
-    }
-}
-
 char *parseDat(const char json[], const char *path)
 {
     int jnx = 0;
     char ccc;
+
+    char *cpth = malloc(BS);
+    char *fund = NULL;
     char *last = NULL;
+
+    strlcpy(cpth, "", BS);
 
     while (json[jnx])
     {
-        skipSpace(json, &jnx);
+        parseSpace(json, &jnx);
 
         ccc = json[jnx++];
 
-        if (ccc == '{')
+        if ((ccc == '{') || (ccc == '['))
         {
             continue;
         }
 
-        if (ccc == '}')
+        if ((ccc == '}') || (ccc == ']') || (ccc == ','))
         {
-            continue;
-        }
+            //
+            // Pop last key from path.
+            //
 
-        if (ccc == '[')
-        {
-            continue;
-        }
+            int inx = strlen(cpth) - 1;
 
-        if (ccc == ']')
-        {
+            while ((inx >= 0) && cpth[ inx ] != '|')
+            {
+                cpth[ inx-- ] = 0;
+            }
+
             continue;
         }
 
         if (ccc == ':')
         {
-            continue;
-        }
+            if (last != NULL)
+            {
+                //
+                // Push last key onto path.
+                //
 
-        if (ccc == ',')
-        {
+                if (strlen(cpth) > 0) strlcat(cpth, "|", BS);
+
+                strlcat(cpth, last, BS);
+
+                free(last);
+                last = NULL;
+            }
+
             continue;
         }
 
         if (ccc == '"')
         {
+            if (last != NULL) free(last);
             last = parseQuoted(json, &jnx);
         }
         else
         {
+            if (last != NULL) free(last);
             last = parseUnQuoted(json, &jnx);
         }
 
-        puts(last);
+        if (DBG) puts(last);
+
+        if (strcmp(path, cpth) == 0)
+        {
+            fund = last;
+            last = NULL;
+
+            break;
+        }
     }
 
-    return NULL;
+    if (last != NULL) free(last);
+
+    free(cpth);
+
+    return fund;
 }
 
 char *parseQuoted(const char json[], int *jnx)
@@ -123,6 +144,10 @@ char *parseQuoted(const char json[], int *jnx)
         {
             ccc = json[tnx++];
             if (! ccc) break;
+
+            if (ccc == 'n') ccc = '\n';
+            if (ccc == 'r') ccc = '\r';
+            if (ccc == 't') ccc = '\t';
         }
 
         buffer[ size++ ] = ccc;
@@ -146,7 +171,7 @@ char *parseUnQuoted(const char json[], int *jnx)
 
     size = 0;
 
-    while ((! isSpace(ccc = json[tnx++])) && ccc)
+    while ((! isTerminator(ccc = json[tnx++])) && ccc)
     {
         if (ccc == '\\')
         {
@@ -163,7 +188,7 @@ char *parseUnQuoted(const char json[], int *jnx)
 
     size = 0;
 
-    while ((! isSpace(ccc = json[tnx++])) && ccc)
+    while ((! isTerminator(ccc = json[tnx++])) && ccc)
     {
         if (ccc == '\\')
         {
@@ -185,3 +210,23 @@ char *parseUnQuoted(const char json[], int *jnx)
     return buffer;
 }
 
+void parseSpace(const char json[], int *jnx)
+{
+    while (isSpace(json[*jnx]))
+    {
+        (*jnx)++;
+    }
+}
+
+int isSpace(char ccc)
+{
+    return (ccc == ' ') || (ccc == '\t') || (ccc == '\r') || (ccc == '\n');
+}
+
+int isTerminator(char ccc)
+{
+    return isSpace(ccc) ||
+           (ccc == '{') || (ccc == '}') ||
+           (ccc == '[') || (ccc == ']') ||
+           (ccc == ',') || (ccc == ':');
+}
