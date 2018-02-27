@@ -78,7 +78,7 @@
 
      Check /opt/hisi-linux/x86-arm/arm-hisiv400-linux/
 
-     Install uclibc Stuff
+     Install uClibc Stuff
 
             ▾ Hi3518E_SDK_V1.0.4.0/
               ▸ drv/
@@ -99,7 +99,7 @@
      /opt/hisi-linux/x86-arm/arm-hisiv400-linux/target/bin/arm-hisiv400-linux-gcc \
         -Wall -c ~/TVPush/app/src/main/cpp/meme.c -o meme.o
 
- Link with libuClibc:
+ Link with uClibc:
 
      /opt/hisi-linux/x86-arm/arm-hisiv400-linux/bin/arm-hisiv400-linux-gnueabi-ld \
         --sysroot=/opt/hisi-linux/x86-arm/arm-hisiv400-linux/target \
