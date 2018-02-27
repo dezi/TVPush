@@ -31,16 +31,19 @@ size_t strlen(const char *str)
     register const char *s;
 
     for (s = str; *s; ++s);
-    
+
     return (s - str);
 }
 
-void strtrim(char *str)
+char *strcat(register char *s, register const char *append)
 {
-    while ((strlen(str) > 0) && ((str[ strlen(str) - 1 ] == '\n') || (str[ strlen(str) - 1 ] == '\r')))
-    {
-        str[ strlen(str) - 1 ] = 0;
-    }
+    char *save = s;
+
+    for (; *s; ++s);
+
+    while (*s++ = *append++);
+
+    return save;
 }
 
 int strncmp(register const char *s1, register const char *s2, register size_t n)
@@ -56,6 +59,15 @@ int strncmp(register const char *s1, register const char *s2, register size_t n)
 
     return 0;
 }
+
+void strtrim(char *str)
+{
+    while ((strlen(str) > 0) && ((str[ strlen(str) - 1 ] == '\n') || (str[ strlen(str) - 1 ] == '\r')))
+    {
+        str[ strlen(str) - 1 ] = 0;
+    }
+}
+
 
 void getDeviceInfo()
 {
