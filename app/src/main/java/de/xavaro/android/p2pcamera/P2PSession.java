@@ -1,4 +1,4 @@
-package de.xavaro.android.yihome;
+package de.xavaro.android.p2pcamera;
 
 import android.util.Log;
 
@@ -6,15 +6,8 @@ import com.p2p.pppp_api.PPPP_APIs;
 import com.p2p.pppp_api.PPPP_Keys;
 import com.p2p.pppp_api.PPPP_Session;
 
-import de.xavaro.android.yihome.p2pcommands.DeviceInfoData;
-import de.xavaro.android.yihome.p2pcommands.DeviceInfoQuery;
-import de.xavaro.android.yihome.p2pcommands.ResolutionQuery;
-import de.xavaro.android.yihome.p2pcommands.PTZControlStopSend;
-import de.xavaro.android.yihome.p2pcommands.PTZDirectionSend;
-import de.xavaro.android.yihome.p2pcommands.PTZHomeSend;
-import de.xavaro.android.yihome.p2pcommands.PTZJumpSend;
-import de.xavaro.android.yihome.p2pcommands.ResolutionData;
-import de.xavaro.android.yihome.p2pcommands.ResolutionSend;
+import de.xavaro.android.p2pcamera.p2pcommands.DeviceInfoData;
+import de.xavaro.android.p2pcamera.p2pcommands.ResolutionData;
 
 import static com.p2p.pppp_api.PPPP_APIs.PPPP_Check;
 

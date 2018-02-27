@@ -1,9 +1,9 @@
-package de.xavaro.android.yihome;
+package de.xavaro.android.p2pcamera;
 
 import android.util.Log;
 
-import de.xavaro.android.yihome.p2pcommands.DeviceInfoData;
-import de.xavaro.android.yihome.p2pcommands.ResolutionData;
+import de.xavaro.android.p2pcamera.p2pcommands.DeviceInfoData;
+import de.xavaro.android.p2pcamera.p2pcommands.ResolutionData;
 
 public class P2PReaderThreadCommand extends P2PReaderThread
 {

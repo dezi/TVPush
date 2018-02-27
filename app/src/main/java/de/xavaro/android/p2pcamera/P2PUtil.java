@@ -1,4 +1,4 @@
-package de.xavaro.android.yihome;
+package de.xavaro.android.p2pcamera;
 
 import android.util.Base64;
 

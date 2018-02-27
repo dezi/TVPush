@@ -1,14 +1,14 @@
-package de.xavaro.android.yihome;
+package de.xavaro.android.p2pcamera;
 
 import android.util.Log;
 
-import de.xavaro.android.yihome.p2pcommands.DeviceInfoQuery;
-import de.xavaro.android.yihome.p2pcommands.PTZControlStopSend;
-import de.xavaro.android.yihome.p2pcommands.PTZDirectionSend;
-import de.xavaro.android.yihome.p2pcommands.PTZHomeSend;
-import de.xavaro.android.yihome.p2pcommands.PTZJumpSend;
-import de.xavaro.android.yihome.p2pcommands.ResolutionQuery;
-import de.xavaro.android.yihome.p2pcommands.ResolutionSend;
+import de.xavaro.android.p2pcamera.p2pcommands.DeviceInfoQuery;
+import de.xavaro.android.p2pcamera.p2pcommands.PTZControlStopSend;
+import de.xavaro.android.p2pcamera.p2pcommands.PTZDirectionSend;
+import de.xavaro.android.p2pcamera.p2pcommands.PTZHomeSend;
+import de.xavaro.android.p2pcamera.p2pcommands.PTZJumpSend;
+import de.xavaro.android.p2pcamera.p2pcommands.ResolutionQuery;
+import de.xavaro.android.p2pcamera.p2pcommands.ResolutionSend;
 
 public class P2PCamera
 {

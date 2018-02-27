@@ -1,16 +1,16 @@
-package de.xavaro.android.yihome;
+package de.xavaro.android.tvpush;
 
+import android.util.Base64;
 import android.util.Log;
 
-import com.p2p.pppp_api.PPPP_APIs;
+import de.xavaro.android.p2pcamera.P2PBarcode;
+import de.xavaro.android.p2pcamera.P2PCamera;
+import de.xavaro.android.p2pcamera.p2pcommands.PTZDirectionSend;
+import de.xavaro.android.p2pcamera.p2pcommands.ResolutionSend;
 
-import de.xavaro.android.tvpush.ApplicationBase;
-import de.xavaro.android.yihome.p2pcommands.PTZDirectionSend;
-import de.xavaro.android.yihome.p2pcommands.ResolutionSend;
-
-public class Camera
+public class CameraTest
 {
-    private static final String LOGTAG = Camera.class.getSimpleName();
+    private static final String LOGTAG = CameraTest.class.getSimpleName();
 
     private static P2PCamera p2pcamera;
 
@@ -19,6 +19,10 @@ public class Camera
 
     public static void initialize()
     {
+        Log.d(LOGTAG, "#####" + Base64.encodeToString("1234abcd".getBytes(), 2));
+        Log.d(LOGTAG, "#####" + new String(Base64.decode("RGV6aSBIb21l", 0)));
+        Log.d(LOGTAG, "#####" + P2PBarcode.EncodeBarcodeString(false, "Dezi Home", "1234abcd", null));
+
         p2pcamera = new P2PCamera(DID, DPW);
 
         p2pcamera.connectCamera();
@@ -50,4 +54,5 @@ public class Camera
             }
         }, 15000);
     }
+
 }

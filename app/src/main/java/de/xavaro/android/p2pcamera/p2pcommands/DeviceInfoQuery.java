@@ -1,8 +1,8 @@
-package de.xavaro.android.yihome.p2pcommands;
+package de.xavaro.android.p2pcamera.p2pcommands;
 
-import de.xavaro.android.yihome.P2PCommandCodes;
-import de.xavaro.android.yihome.P2PMessage;
-import de.xavaro.android.yihome.P2PSession;
+import de.xavaro.android.p2pcamera.P2PCommandCodes;
+import de.xavaro.android.p2pcamera.P2PMessage;
+import de.xavaro.android.p2pcamera.P2PSession;
 
 public class DeviceInfoQuery
 {
