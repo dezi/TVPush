@@ -8,6 +8,111 @@
 #define HELO_PORT 42742
 #define HELO_GROUP "239.255.255.250"
 
+/*
+
+ Reading:
+
+    https://www.gitbook.com/book/hi3518/hisilicon-sdk-install/details
+
+ Download:
+
+    https://app.box.com/s/cibs7n1mgvhqaqjlidtveegu1uajt5yr/folder/18989615567
+
+ Prerequisite:
+
+    Install Virtual Box i386 with 32 gigabyte disk
+
+    Install Debian into Virtual Box
+
+    Do not install any GCC into Debian!
+
+ Install SDK:
+
+     Get and unpack Hi3518E_V200R001C01SPC040.zip (ignore errors)
+
+      ▾ Hi3518E V200R001C01SPC040/
+        ▸ 00.hardware/
+        ▾ 01.software/
+          ▾ board/
+            ▸ document_cn/
+            ▸ document_en/
+            ▸ Hi3518E_SDK_V1.0.4.0.tgz
+
+     Inside unpack Hi3518E_SDK_V1.0.4.0.tgz
+
+      ▾ Hi3518E V200R001C01SPC040/
+        ▸ 00.hardware/
+        ▾ 01.software/
+          ▾ board/
+            ▸ document_cn/
+            ▸ document_en/
+            ▾ Hi3518E_SDK_V1.0.4.0/
+              ▸ drv/
+              ▸ mpp/
+              ▸ osdrv/
+              ▸ package/
+              ▸ scripts/
+                sdk.cleanup*
+                sdk.unpack*
+
+     Inside call "bash sdk.unpack"
+
+             ▾ Hi3518E_SDK_V1.0.4.0/
+              ▸ drv/
+              ▸ mpp/
+              ▾ osdrv/
+                ▾ opensource/
+                  ▸ busybox/
+                  ▸ kernel/
+                  ▾ toolchain/
+                    ▸ arm-hisiv300-linux/
+                    ▾ arm-hisiv400-linux/
+                      ▸ runtime_lib/
+                        arm-hisiv400-linux.tar.bz2
+                        cross.v400.install*
+
+            chmod 777 cross.v400.install
+            sudo ./cross.v400.install
+
+            sudo dpkg --add-architecture i386
+
+     Check /opt/hisi-linux/x86-arm/arm-hisiv400-linux/
+
+     Install uclibc Stuff
+
+            ▾ Hi3518E_SDK_V1.0.4.0/
+              ▸ drv/
+              ▸ mpp/
+              ▸ osdrv/
+              ▾ package/
+                drv.tgz
+                mpp.tgz
+                osdrv.tgz
+                rootfs_uclibc.tgz
+
+     Inside unpack rootfs_uclibc.tgz
+
+            sudo mv rootfs_uclibc /opt/hisi-linux/x86-arm/arm-hisiv400-linux/
+
+ Compile:
+
+     /opt/hisi-linux/x86-arm/arm-hisiv400-linux/target/bin/arm-hisiv400-linux-gcc \
+        -c ~/TVPush/app/src/main/cpp/meme.c -o meme.o
+
+ Link:
+
+     /opt/hisi-linux/x86-arm/arm-hisiv400-linux/bin/arm-hisiv400-linux-gnueabi-ld \
+        --sysroot=/opt/hisi-linux/x86-arm/arm-hisiv400-linux/target \
+        --eh-frame-hdr -X -m armelf_linux_eabi \
+        --dynamic-linker=/lib/ld-uClibc.so.0 \
+        --entry main \
+        /opt/hisi-linux/x86-arm/arm-hisiv400-linux/rootfs_uclibc/lib/libuClibc-0.9.33.2.so \
+        /opt/hisi-linux/x86-arm/arm-hisiv400-linux/rootfs_uclibc/lib/ld-uClibc.so.0 \
+        -o meme meme.o
+
+ Done!
+*/
+
 #define MSGBUFSIZE 1024
 
 char messbuff[ MSGBUFSIZE ];
@@ -26,70 +131,6 @@ char dpw[ 32 ];
 
 int exitloop;
 
-size_t strlen(const char *str)
-{
-    register const char *s;
-
-    for (s = str; *s; ++s);
-
-    return (s - str);
-}
-
-char *strcpy(register char *to, register const char *from)
-{
-    char *save = to;
-
-    for (; *to = *from; ++from, ++to);
-
-    return save;
-}
-
-char *strcat(register char *s, register const char *append)
-{
-    char *save = s;
-
-    for (; *s; ++s);
-
-    while (*s++ = *append++);
-
-    return save;
-}
-
-int strncmp(register const char *s1, register const char *s2, register size_t n)
-{
-    if (n == 0) return 0;
-
-    do
-    {
-        if (*s1 != *s2++) return (*(unsigned char *)s1 - *(unsigned char *)--s2);
-        if (*s1++ == 0) break;
-
-    } while (--n != 0);
-
-    return 0;
-}
-
-char *strncpy(char *dst, const char *src, register size_t n)
-{
-    if (n != 0)
-    {
-        register char *d = dst;
-        register const char *s = src;
-
-        do
-        {
-            if ((*d++ = *s++) == 0)
-            {
-                while (--n != 0) *d++ = 0;
-
-                break;
-            }
-        } while (--n != 0);
-    }
-
-    return dst;
-}
-
 void strtrim(char *str)
 {
     while ((strlen(str) > 0) && ((str[ strlen(str) - 1 ] == '\n') || (str[ strlen(str) - 1 ] == '\r')))
@@ -97,7 +138,6 @@ void strtrim(char *str)
         str[ strlen(str) - 1 ] = 0;
     }
 }
-
 
 void getDeviceInfo()
 {
@@ -242,6 +282,41 @@ void getCloudInfo()
         fclose(fd);
     }
 }
+
+/*
+/opt/hisi-linux/x86-arm/arm-hisiv400-linux/libexec/gcc/arm-hisiv400-linux-gnueabi/4.8.3/collect2 \
+    --sysroot=/opt/hisi-linux/x86-arm/arm-hisiv400-linux/target \
+    --eh-frame-hdr -X -m armelf_linux_eabi \
+    --dynamic-linker=/lib/ld-uClibc.so.0 \
+    -L/opt/hisi-linux/x86-arm/arm-hisiv400-linux/bin/../lib/gcc/arm-hisiv400-linux-gnueabi/4.8.3 \
+    -L/opt/hisi-linux/x86-arm/arm-hisiv400-linux/bin/../lib/gcc \
+    -L/opt/hisi-linux/x86-arm/arm-hisiv400-linux/bin/../lib/gcc/arm-hisiv400-linux-gnueabi/4.8.3/../../../../arm-hisiv400-linux-gnueabi/lib \
+    -L/opt/hisi-linux/x86-arm/arm-hisiv400-linux/bin/../target/lib \
+    -L/opt/hisi-linux/x86-arm/arm-hisiv400-linux/bin/../target/usr/lib \
+    -o meme meme.o
+*/
+
+/*
+/opt/hisi-linux/x86-arm/arm-hisiv400-linux/libexec/gcc/arm-hisiv400-linux-gnueabi/4.8.3/collect2 \
+    --sysroot=/opt/hisi-linux/x86-arm/arm-hisiv400-linux/target \
+    --eh-frame-hdr -X -m armelf_linux_eabi \
+    --dynamic-linker=/lib/ld-uClibc.so.0 \
+    --entry main \
+    /home/dezi/yi/rootfs_uclibc/lib/libuClibc-0.9.33.2.so \
+    /home/dezi/yi/rootfs_uclibc/lib/ld-uClibc.so.0 \
+    -o meme meme.o
+*/
+
+/*
+/opt/hisi-linux/x86-arm/arm-hisiv400-linux/bin/arm-hisiv400-linux-gnueabi-ld \
+    --sysroot=/opt/hisi-linux/x86-arm/arm-hisiv400-linux/target \
+    --eh-frame-hdr -X -m armelf_linux_eabi \
+    --dynamic-linker=/lib/ld-uClibc.so.0 \
+    --entry main \
+    /home/dezi/yi/rootfs_uclibc/lib/libuClibc-0.9.33.2.so \
+    /home/dezi/yi/rootfs_uclibc/lib/ld-uClibc.so.0 \
+    -o meme meme.o
+*/
 
 void *memcpy(void *dst, const void *src, size_t len)
 {
