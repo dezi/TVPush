@@ -106,7 +106,10 @@
  Compile:
 
      /opt/hisi-linux/x86-arm/arm-hisiv400-linux/target/bin/arm-hisiv400-linux-gcc \
-        -Wall -c ~/TVPush/app/src/main/cpp/meme.c -o meme.o
+        -Wall -std=gnu99 -c ~/TVPush/app/src/main/cpp/meme.c -o meme.o
+
+     /opt/hisi-linux/x86-arm/arm-hisiv400-linux/target/bin/arm-hisiv400-linux-gcc \
+        -Wall -std=gnu99 -c ~/TVPush/app/src/main/cpp/json.c -o json.o
 
  Link with uClibc:
 
@@ -117,7 +120,7 @@
         --entry main \
         /opt/hisi-linux/x86-arm/arm-hisiv400-linux/rootfs_uclibc/lib/libuClibc-0.9.33.2.so \
         /opt/hisi-linux/x86-arm/arm-hisiv400-linux/rootfs_uclibc/lib/ld-uClibc.so.0 \
-        -o meme meme.o
+        meme.o json.o -o meme
 
  Done!
 
@@ -572,6 +575,9 @@ void responder()
         if ((type != null) && (strcmp(type, "HELO") == 0))
         {
             formatMessage("MEME", false);
+
+            addr.sin_addr.s_addr = inet_addr(HELO_GROUP);
+            addr.sin_port = htons(HELO_PORT);
 
             if (sendto(sockfd, memebuff, strlen(memebuff), 0, (struct sockaddr *) &addr, sizeof(addr)) < 0)
             {
