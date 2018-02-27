@@ -124,6 +124,7 @@ char nck[ 256 ];
 char loc[ 256 ];
 char mod[ 256 ];
 char ver[ 256 ];
+char uid[ 256 ];
 
 char did[ 32 ];
 char cid[ 32 ];
@@ -280,6 +281,21 @@ void getCloudInfo()
     }
 }
 
+void getUUID()
+{
+    FILE *fd = fopen("/proc/sys/kernel/random/uuid", "r");
+
+    if (fd != NULL)
+    {
+        if (fgets(uid, sizeof(uid), fd) > 0)
+        {
+            printf("uid=%s\n", uid);
+        }
+
+        fclose(fd);
+    }
+}
+
 void formatMEME()
 {
     strcpy(memebuff, "{");
@@ -425,6 +441,7 @@ int main(int argc, char *argv[])
     memset(loc, 0, sizeof(loc));
     memset(mod, 0, sizeof(mod));
     memset(ver, 0, sizeof(ver));
+    memset(uid, 0, sizeof(uid));
 
     memset(did, 0, sizeof(did));
     memset(dpw, 0, sizeof(dpw));
@@ -432,6 +449,7 @@ int main(int argc, char *argv[])
     memset(cid, 0, sizeof(cid));
     memset(cpw, 0, sizeof(cpw));
 
+    getUUID();
     getHackInfo();
     getCustomInfo();
     getDeviceInfo();
