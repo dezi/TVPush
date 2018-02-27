@@ -12,11 +12,14 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
+import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
 
 import de.xavaro.android.common.Json;
 import de.xavaro.android.common.Simple;
+import de.xavaro.android.p2pcamera.P2PCameras;
 
 public class RegistrationService extends Service
 {
@@ -24,6 +27,7 @@ public class RegistrationService extends Service
 
     private static final int port = 42742;
     private static InetAddress multicastAddress;
+    private static InetSocketAddress localAddress;
     private static MulticastSocket socket;
 
     private boolean running = false;
@@ -161,7 +165,7 @@ public class RegistrationService extends Service
 
                 String message = new String(packet.getData(), 0, packet.getLength());
 
-                //Log.d(LOGTAG, "####" + message);
+                Log.d(LOGTAG, "####" + message);
 
                 JSONObject jsonmess = Json.fromStringObject(message);
                 if (jsonmess == null) continue;
@@ -186,10 +190,46 @@ public class RegistrationService extends Service
 
                 if (Json.equals(jsonmess, "type", "MEME"))
                 {
-                    String devicename = Json.getString(jsonmess, "device_name");
-                    if (devicename == null) devicename = Json.getString(jsonmess, "devicename");
+                    String deviceName = Json.getString(jsonmess, "device_name");
+                    if (deviceName == null) deviceName = Json.getString(jsonmess, "devicename");
 
-                    Log.d(LOGTAG, "workerThread: MEME from=" + devicename);
+                    Log.d(LOGTAG, "workerThread: MEME from=" + deviceName);
+
+                    String deviceCategory = Json.getString(jsonmess, "device_category");
+
+                    if ((deviceCategory != null) && deviceCategory.equalsIgnoreCase("p2pcamera"))
+                    {
+                        JSONObject mejson = new JSONObject();
+
+                        Json.put(mejson, "type", "GAUT");
+                        Json.put(mejson, "device_name", Simple.getDeviceUserName(this));
+
+                        byte[] txbuf = mejson.toString().getBytes();
+                        DatagramPacket gaut = new DatagramPacket(txbuf, txbuf.length);
+                        gaut.setAddress(packet.getAddress());
+                        gaut.setPort(packet.getPort());
+
+                        socket.send(gaut);
+
+                        Json.put(mejson, "workerThread:  sent GAUT ip=", packet.getAddress());
+                        Json.put(mejson, "workerThread:  sent GAUT port=", packet.getPort());
+                    }
+                }
+
+                if (Json.equals(jsonmess, "type", "SAUT"))
+                {
+                    Log.d(LOGTAG, "workerThread: SAUT from=" + packet.getAddress());
+
+                    String deviceName = Json.getString(jsonmess, "device_name");
+                    if (deviceName == null) deviceName = Json.getString(jsonmess, "devicename");
+                    Log.d(LOGTAG, "workerThread: SAUT from=" + deviceName);
+
+                    String deviceCategory = Json.getString(jsonmess, "device_category");
+
+                    if ((deviceCategory != null) && deviceCategory.equalsIgnoreCase("p2pcamera"))
+                    {
+                        P2PCameras.addCamera(jsonmess);
+                    }
                 }
             }
             catch (SocketTimeoutException ignore)

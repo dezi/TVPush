@@ -462,7 +462,7 @@ void formatMessage(char *type, int credentials)
     catMESS("  \"device_category\": \"");
     escMESS(cat);
     catMESS("\"");
-    if (credentials) catMESS("\",");
+    if (credentials) catMESS(",");
     catMESS("\n");
 
     if (credentials)
