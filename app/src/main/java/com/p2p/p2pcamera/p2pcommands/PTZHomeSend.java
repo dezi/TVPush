@@ -1,8 +1,8 @@
-package de.xavaro.android.p2pcamera.p2pcommands;
+package com.p2p.p2pcamera.p2pcommands;
 
-import de.xavaro.android.p2pcamera.P2PCommandCodes;
-import de.xavaro.android.p2pcamera.P2PMessage;
-import de.xavaro.android.p2pcamera.P2PSession;
+import com.p2p.p2pcamera.P2PCommandCodes;
+import com.p2p.p2pcamera.P2PMessage;
+import com.p2p.p2pcamera.P2PSession;
 
 public class PTZHomeSend
 {

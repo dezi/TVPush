@@ -1,4 +1,4 @@
-package de.xavaro.android.p2pcamera;
+package com.p2p.p2pcamera;
 
 import android.util.Log;
 
@@ -6,8 +6,8 @@ import com.p2p.pppp_api.PPPP_APIs;
 import com.p2p.pppp_api.PPPP_Keys;
 import com.p2p.pppp_api.PPPP_Session;
 
-import de.xavaro.android.p2pcamera.p2pcommands.DeviceInfoData;
-import de.xavaro.android.p2pcamera.p2pcommands.ResolutionData;
+import com.p2p.p2pcamera.p2pcommands.DeviceInfoData;
+import com.p2p.p2pcamera.p2pcommands.ResolutionData;
 
 import static com.p2p.pppp_api.PPPP_APIs.PPPP_Check;
 

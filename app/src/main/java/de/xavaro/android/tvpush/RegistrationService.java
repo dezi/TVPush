@@ -15,9 +15,10 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketTimeoutException;
 
+import com.p2p.p2pcamera.P2PCameras;
+
 import de.xavaro.android.common.Json;
 import de.xavaro.android.common.Simple;
-import de.xavaro.android.p2pcamera.P2PCameras;
 
 public class RegistrationService extends Service
 {

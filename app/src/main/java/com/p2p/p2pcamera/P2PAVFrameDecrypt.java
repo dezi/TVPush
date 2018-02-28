@@ -1,6 +1,4 @@
-package de.xavaro.android.p2pcamera;
-
-import android.util.Log;
+package com.p2p.p2pcamera;
 
 import java.security.Key;
 

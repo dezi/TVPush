@@ -1,9 +1,9 @@
-package de.xavaro.android.p2pcamera;
+package com.p2p.p2pcamera;
 
 import android.util.Log;
 
-import de.xavaro.android.p2pcamera.p2pcommands.DeviceInfoData;
-import de.xavaro.android.p2pcamera.p2pcommands.ResolutionData;
+import com.p2p.p2pcamera.p2pcommands.DeviceInfoData;
+import com.p2p.p2pcamera.p2pcommands.ResolutionData;
 
 public class P2PReaderThreadContl extends P2PReaderThread
 {

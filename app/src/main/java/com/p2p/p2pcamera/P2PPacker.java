@@ -1,4 +1,4 @@
-package de.xavaro.android.p2pcamera;
+package com.p2p.p2pcamera;
 
 public class P2PPacker
 {

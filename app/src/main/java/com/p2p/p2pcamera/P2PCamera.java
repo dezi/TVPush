@@ -1,15 +1,15 @@
-package de.xavaro.android.p2pcamera;
+package com.p2p.p2pcamera;
 
 import android.util.Log;
 
-import de.xavaro.android.p2pcamera.p2pcommands.DeviceInfoQuery;
-import de.xavaro.android.p2pcamera.p2pcommands.PTZControlStopSend;
-import de.xavaro.android.p2pcamera.p2pcommands.PTZDirectionSend;
-import de.xavaro.android.p2pcamera.p2pcommands.PTZHomeSend;
-import de.xavaro.android.p2pcamera.p2pcommands.PTZJumpSend;
-import de.xavaro.android.p2pcamera.p2pcommands.ResolutionQuery;
-import de.xavaro.android.p2pcamera.p2pcommands.ResolutionSend;
-import de.xavaro.android.p2pcamera.p2pcommands.StartRealtimeSend;
+import com.p2p.p2pcamera.p2pcommands.DeviceInfoQuery;
+import com.p2p.p2pcamera.p2pcommands.PTZControlStopSend;
+import com.p2p.p2pcamera.p2pcommands.PTZDirectionSend;
+import com.p2p.p2pcamera.p2pcommands.PTZHomeSend;
+import com.p2p.p2pcamera.p2pcommands.PTZJumpSend;
+import com.p2p.p2pcamera.p2pcommands.ResolutionQuery;
+import com.p2p.p2pcamera.p2pcommands.ResolutionSend;
+import com.p2p.p2pcamera.p2pcommands.StartRealtimeSend;
 
 public class P2PCamera
 {

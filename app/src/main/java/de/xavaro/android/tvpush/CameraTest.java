@@ -3,11 +3,9 @@ package de.xavaro.android.tvpush;
 import android.util.Base64;
 import android.util.Log;
 
-import de.xavaro.android.p2pcamera.P2PBarcode;
-import de.xavaro.android.p2pcamera.P2PCamera;
-import de.xavaro.android.p2pcamera.P2PCameras;
-import de.xavaro.android.p2pcamera.p2pcommands.PTZDirectionSend;
-import de.xavaro.android.p2pcamera.p2pcommands.ResolutionSend;
+import com.p2p.p2pcamera.P2PBarcode;
+import com.p2p.p2pcamera.P2PCamera;
+import com.p2p.p2pcamera.P2PCameras;
 
 public class CameraTest
 {

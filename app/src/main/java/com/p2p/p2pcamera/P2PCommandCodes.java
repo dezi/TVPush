@@ -1,4 +1,4 @@
-package de.xavaro.android.p2pcamera;
+package com.p2p.p2pcamera;
 
 @SuppressWarnings("WeakerAccess")
 public class P2PCommandCodes

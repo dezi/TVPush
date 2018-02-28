@@ -1,8 +1,8 @@
-package de.xavaro.android.p2pcamera.p2pcommands;
+package com.p2p.p2pcamera.p2pcommands;
 
 import java.util.ArrayList;
 
-import de.xavaro.android.p2pcamera.P2PSession;
+import com.p2p.p2pcamera.P2PSession;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class PTZPresetsData

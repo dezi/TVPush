@@ -1,7 +1,7 @@
-package de.xavaro.android.p2pcamera.p2pcommands;
+package com.p2p.p2pcamera.p2pcommands;
 
-import de.xavaro.android.p2pcamera.P2PPacker;
-import de.xavaro.android.p2pcamera.P2PSession;
+import com.p2p.p2pcamera.P2PPacker;
+import com.p2p.p2pcamera.P2PSession;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class ResolutionData
