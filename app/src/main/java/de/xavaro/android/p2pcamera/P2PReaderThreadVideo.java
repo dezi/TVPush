@@ -2,9 +2,6 @@ package de.xavaro.android.p2pcamera;
 
 import android.util.Log;
 
-import de.xavaro.android.p2pcamera.p2pcommands.DeviceInfoData;
-import de.xavaro.android.p2pcamera.p2pcommands.ResolutionData;
-
 public class P2PReaderThreadVideo extends P2PReaderThread
 {
     private static final String LOGTAG = P2PReaderThreadVideo.class.getSimpleName();
@@ -21,10 +18,10 @@ public class P2PReaderThreadVideo extends P2PReaderThread
 
         if (session.isEncrypted && aVFrame.isIFrame())
         {
-            P2PAVFrame.decryptIframe(aVFrame, session.targetPw + "0");
-        }
+            session.p2pAVFrameDecrypt.decryptIframe(aVFrame);
 
-        Log.d(LOGTAG, "handleData: " + aVFrame.toFrameString());
+            Log.d(LOGTAG, "handleData: " + aVFrame.toFrameString());
+        }
 
         return true;
     }

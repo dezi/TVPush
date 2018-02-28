@@ -1,12 +1,5 @@
 package de.xavaro.android.p2pcamera;
 
-import android.util.Log;
-
-import java.security.Key;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-
 public class P2PAVFrame
 {
     private static final String LOGTAG = P2PAVFrame.class.getSimpleName();
@@ -146,87 +139,6 @@ public class P2PAVFrame
         this.panState = new PanState(this.onlineNum);
     }
 
-    public static void decryptIframe(P2PAVFrame aVFrame, String key)
-    {
-        Log.d(LOGTAG, "decryptIframe: key=" + key);
-
-        if (aVFrame.frmData.length >= 36)
-        {
-            byte[] obj = new byte[16];
-
-            System.arraycopy(aVFrame.frmData, 4, obj, 0, 16);
-            System.arraycopy(decrypt(obj, key), 0, aVFrame.frmData, 4, 16);
-            System.arraycopy(aVFrame.frmData, 20, obj, 0, 16);
-            System.arraycopy(decrypt(obj, key), 0, aVFrame.frmData, 20, 16);
-        }
-    }
-
-    public static byte[] decrypt(byte[] bArr, String str)
-    {
-        try
-        {
-            if (cp == null || !str.equals(cp.password))
-            {
-                cp = getCipher(str);
-            }
-            return cp.cipher.doFinal(bArr);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-
-            byte[] obj = new byte[bArr.length];
-
-            System.arraycopy(bArr, 0, obj, 0, bArr.length);
-
-            return obj;
-        }
-    }
-
-    private static CipherPair cp = null;
-
-    static class CipherPair
-    {
-        public Cipher cipher;
-        public String password;
-
-        public CipherPair(String str, Cipher cipher)
-        {
-            this.password = str;
-            this.cipher = cipher;
-        }
-    }
-
-    private static CipherPair getCipher(String str)
-    {
-        Cipher instance;
-        Exception e;
-        try
-        {
-            Key secretKeySpec = new SecretKeySpec(str.getBytes("ASCII"), "AES");
-            instance = Cipher.getInstance("AES/ECB/NoPadding");
-            try
-            {
-                instance.init(2, secretKeySpec);
-            }
-            catch (Exception e2)
-            {
-                e = e2;
-                e.printStackTrace();
-                return new CipherPair(str, instance);
-            }
-        }
-        catch (Exception e3)
-        {
-            Exception exception = e3;
-            instance = null;
-            e = exception;
-            e.printStackTrace();
-            return new CipherPair(str, instance);
-        }
-        return new CipherPair(str, instance);
-    }
-
     public static int getSamplerate(byte b)
     {
         switch (b >>> 2)
@@ -353,9 +265,12 @@ public class P2PAVFrame
     public String toFrameString()
     {
         return "AVFrame: "
-                + (isIFrame() ? "I" : "P") + " frame, "
-                + getFrmNo() + "-" + getTimeStamp() + "-" + getFrmSize()
-                + ", [" + getVideoWidth() + "-" + getVideoHeight() + "]";
+                + (isIFrame() ? "I" : "P")
+                + " [" + getVideoWidth() + "x" + getVideoHeight() + "]"
+                + " #" + getFrmNo()
+                + " " + getTimeStamp()
+                + " " + getFrmSize()
+                ;
     }
 
     public String toString()

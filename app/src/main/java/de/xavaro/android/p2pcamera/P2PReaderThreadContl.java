@@ -5,11 +5,11 @@ import android.util.Log;
 import de.xavaro.android.p2pcamera.p2pcommands.DeviceInfoData;
 import de.xavaro.android.p2pcamera.p2pcommands.ResolutionData;
 
-public class P2PReaderThreadCtrol extends P2PReaderThread
+public class P2PReaderThreadContl extends P2PReaderThread
 {
-    private static final String LOGTAG = P2PReaderThreadCtrol.class.getSimpleName();
+    private static final String LOGTAG = P2PReaderThreadContl.class.getSimpleName();
 
-    public P2PReaderThreadCtrol(P2PSession session)
+    public P2PReaderThreadContl(P2PSession session)
     {
         super(session, CHANNEL_COMMAND);
     }

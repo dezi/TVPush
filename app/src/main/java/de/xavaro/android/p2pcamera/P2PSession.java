@@ -32,12 +32,14 @@ public class P2PSession
 
     private PPPP_Session sessionInfo;
 
-    P2PReaderThread t0;
-    P2PReaderThread t1;
-    P2PReaderThread t2;
-    P2PReaderThread t3;
-    P2PReaderThread t4;
-    P2PReaderThread t5;
+    private P2PReaderThread t0;
+    private P2PReaderThread t1;
+    private P2PReaderThread t2;
+    private P2PReaderThread t3;
+    private P2PReaderThread t4;
+    private P2PReaderThread t5;
+
+    public P2PAVFrameDecrypt p2pAVFrameDecrypt;
 
     static
     {
@@ -54,6 +56,8 @@ public class P2PSession
     {
         this.targetId = targetId;
         this.targetPw = targetPw;
+
+        p2pAVFrameDecrypt = new P2PAVFrameDecrypt(targetPw + "0");
     }
 
     public boolean isOnline()
@@ -96,6 +100,7 @@ public class P2PSession
 
             isBigEndian = true;
             isEncrypted = true;
+
             isConnected = true;
             isCorrupted = false;
 
@@ -115,7 +120,7 @@ public class P2PSession
                 Log.d(LOGTAG, "connect: getRemotePort=" + sessionInfo.getRemotePort());
             }
 
-            t0 = new P2PReaderThreadCtrol(this);
+            t0 = new P2PReaderThreadContl(this);
             t1 = new P2PReaderThreadAudio(this, (byte) 1);
             t2 = new P2PReaderThreadVideo(this, (byte) 2);
             t3 = new P2PReaderThreadVideo(this, (byte) 3);
