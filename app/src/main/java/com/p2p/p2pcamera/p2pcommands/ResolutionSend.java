@@ -1,6 +1,5 @@
 package com.p2p.p2pcamera.p2pcommands;
 
-import com.p2p.p2pcamera.P2PCommandCodes;
 import com.p2p.p2pcamera.P2PMessage;
 import com.p2p.p2pcamera.P2PPacker;
 import com.p2p.p2pcamera.P2PSession;
@@ -23,7 +22,7 @@ public class ResolutionSend
 
     public boolean send()
     {
-        P2PMessage p2PMessage = new P2PMessage(P2PCommandCodes.IPCAM_SET_RESOLUTION, build());
+        P2PMessage p2PMessage = new P2PMessage(CommandCodes.IPCAM_SET_RESOLUTION, build());
 
         return session.packDatAndSend(p2PMessage);
     }

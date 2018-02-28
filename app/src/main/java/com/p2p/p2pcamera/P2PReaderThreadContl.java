@@ -3,6 +3,7 @@ package com.p2p.p2pcamera;
 import android.util.Log;
 
 import com.p2p.p2pcamera.p2pcommands.DeviceInfoData;
+import com.p2p.p2pcamera.p2pcommands.CommandCodes;
 import com.p2p.p2pcamera.p2pcommands.ResolutionData;
 
 public class P2PReaderThreadContl extends P2PReaderThread
@@ -43,7 +44,7 @@ public class P2PReaderThreadContl extends P2PReaderThread
             byte[] dataBuffer = new byte[ dataSize ];
             System.arraycopy(data, dataOffset, dataBuffer, 0, dataSize);
 
-            if (head.commandType == P2PCommandCodes.IPCAM_DEVINFO_RESP)
+            if (head.commandType == CommandCodes.IPCAM_DEVINFO_RESP)
             {
                 DeviceInfoData deviceInfo = new DeviceInfoData(session, dataBuffer);
                 session.onDeviceInfoReceived(deviceInfo);
@@ -51,8 +52,8 @@ public class P2PReaderThreadContl extends P2PReaderThread
                 return true;
             }
 
-            if ((head.commandType == P2PCommandCodes.IPCAM_SET_RESOLUTION_RESP)
-                || (head.commandType == P2PCommandCodes.IPCAM_GET_RESOLUTION_RESP))
+            if ((head.commandType == CommandCodes.IPCAM_SET_RESOLUTION_RESP)
+                || (head.commandType == CommandCodes.IPCAM_GET_RESOLUTION_RESP))
             {
                 ResolutionData resolution = new ResolutionData(session, dataBuffer);
                 session.onResolutionReceived(resolution);

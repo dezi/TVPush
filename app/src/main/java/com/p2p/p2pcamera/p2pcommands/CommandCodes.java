@@ -1,12 +1,14 @@
-package com.p2p.p2pcamera;
+package com.p2p.p2pcamera.p2pcommands;
 
 @SuppressWarnings("WeakerAccess")
-public class P2PCommandCodes
+public class CommandCodes
 {
     public static final short IPCAM_HEART = 110;
 
     public static final short IPCAM_AUDIOSTART = 768;
     public static final short IPCAM_AUDIOSTOP = 769;
+    public static final short IPCAM_DEVINFO_REQ = 816;
+    public static final short IPCAM_DEVINFO_RESP = 817;
 
     public static final short IPCAM_CANCEL_UPDATE_PHONE_REQ = 4872;
     public static final short IPCAM_CANCEL_UPDATE_PHONE_RESP = 4878;
@@ -16,8 +18,6 @@ public class P2PCommandCodes
     public static final short IPCAM_CLOSE_CAMERA_RESP = 4876;
     public static final short IPCAM_CLOSE_LIGHT_REQ = 4869;
     public static final short IPCAM_CLOSE_LIGHT_RESP = 4877;
-    public static final short IPCAM_DEVINFO_REQ = 816;
-    public static final short IPCAM_DEVINFO_RESP = 817;
     public static final short IPCAM_GET_IPC_INFO = 4939;
     public static final short IPCAM_GET_IPC_INFO_RESP = 4940;
     public static final short IPCAM_GET_MOTION_DETECT = 4903;
@@ -120,12 +120,12 @@ public class P2PCommandCodes
     public static final short IPCAM_UPDATE_PHONE_REQ = 4866;
     public static final short IPCAM_UPDATE_PHONE_RSP = 4879;
 
-    public static final short PANORAMA_CAPTURE_ABROT = 16418;
-    public static final short PANORAMA_CAPTURE_ABROT_RSP = 16419;
+    public static final short PANORAMA_CAPTURE_ABORT = 16418;
+    public static final short PANORAMA_CAPTURE_ABORT_RESP = 16419;
     public static final short PANORAMA_CAPTURE_SCHEDULE_POLLING = 16420;
-    public static final short PANORAMA_CAPTURE_SCHEDULE_POLLING_RSP = 16421;
+    public static final short PANORAMA_CAPTURE_SCHEDULE_POLLING_RESP = 16421;
     public static final short PANORAMA_CAPTURE_START = 16416;
-    public static final short PANORAMA_CAPTURE_START_RSP = 16417;
+    public static final short PANORAMA_CAPTURE_START_RESP = 16417;
 
     public static final short PTZ_DIRECTION_CTRL = 16402;
     public static final short PTZ_CTRL_STOP = 16403;
@@ -138,8 +138,8 @@ public class P2PCommandCodes
     public static final short PTZ_PRESET_DEL_RESP = 16387;
     public static final short PTZ_SET_CRUISE_PERIOD_REQ = 16393;
     public static final short PTZ_SET_CRUISE_PERIOD_RESP = 16394;
-    public static final short PTZ_SET_CURISE_STAY_TIME_REQ = 16391;
-    public static final short PTZ_SET_CURISE_STAY_TIME_RESP = 16392;
+    public static final short PTZ_SET_CRUISE_STAY_TIME_REQ = 16391;
+    public static final short PTZ_SET_CRUISE_STAY_TIME_RESP = 16392;
     public static final short PTZ_SET_MOTION_TRACK_REQ = 16395;
     public static final short PTZ_SET_MOTION_TRACK_RESP = 16396;
     public static final short SET_PTZ_CRUISE_REQ = 16400;

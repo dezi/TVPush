@@ -1,6 +1,5 @@
 package com.p2p.p2pcamera.p2pcommands;
 
-import com.p2p.p2pcamera.P2PCommandCodes;
 import com.p2p.p2pcamera.P2PMessage;
 import com.p2p.p2pcamera.P2PPacker;
 import com.p2p.p2pcamera.P2PSession;
@@ -26,7 +25,7 @@ public class PTZDirectionSend
 
     public boolean send()
     {
-        P2PMessage p2PMessage = new P2PMessage(P2PCommandCodes.PTZ_DIRECTION_CTRL, build());
+        P2PMessage p2PMessage = new P2PMessage(CommandCodes.PTZ_DIRECTION_CTRL, build());
 
         return session.packDatAndSend(p2PMessage);
     }
