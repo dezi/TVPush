@@ -32,37 +32,38 @@ public class P2PAVFrame
     public static final int IPC_FRAME_FLAG_MD = 2;
     public static final int IPC_FRAME_FLAG_PBFRAME = 0;
 
+    public static final int MEDIA_CODEC_UNKNOWN = 0;
+
+    public static final int MEDIA_CODEC_VIDEO_H263 = 77;
+    public static final int MEDIA_CODEC_VIDEO_H264 = 78;
+    public static final int MEDIA_CODEC_VIDEO_MJPEG = 79;
+    public static final int MEDIA_CODEC_VIDEO_MPEG4 = 76;
+
     public static final int MEDIA_CODEC_AUDIO_AAC = 138;
     public static final int MEDIA_CODEC_AUDIO_ADPCM = 139;
     public static final int MEDIA_CODEC_AUDIO_G726 = 143;
     public static final int MEDIA_CODEC_AUDIO_MP3 = 142;
     public static final int MEDIA_CODEC_AUDIO_PCM = 140;
     public static final int MEDIA_CODEC_AUDIO_SPEEX = 141;
-    public static final int MEDIA_CODEC_UNKNOWN = 0;
-    public static final int MEDIA_CODEC_VIDEO_H263 = 77;
-    public static final int MEDIA_CODEC_VIDEO_H264 = 78;
-    public static final int MEDIA_CODEC_VIDEO_MJPEG = 79;
-    public static final int MEDIA_CODEC_VIDEO_MPEG4 = 76;
 
-    private short codec_id = (short) 0;
+    private short codec_id;
     private byte cover_state;
-    private byte flags = (byte) -1;
-    public byte[] frmData = null;
-    private short frmNo = (short) -1;
-    private int frmSize = 0;
-    private byte frmState = (byte) 0;
+    private byte flags;
+    private short frmNo;
+    private int frmSize;
     private byte inloss;
-    private byte isDay = (byte) 1;
-    public byte liveFlag;
-    private long oldfrmNo;
-    private byte onlineNum = (byte) 0;
+    private byte isDay;
+    private byte liveFlag;
+    private byte onlineNum;
     private byte outloss;
-    public PanState panState = new PanState((byte) 0);
-    private int timestamp = 0;
-    private int timestamp_ms = 0;
-    public byte useCount;
-    private int videoHeight = 0;
-    private int videoWidth = 0;
+    private int timestamp;
+    private int timestamp_ms;
+    private byte useCount;
+    private int videoHeight;
+    private int videoWidth;
+
+    public byte[] frmData;
+    public PanState panState;
 
     public static class PanState
     {
@@ -147,9 +148,9 @@ public class P2PAVFrame
         this.panState = new PanState(this.onlineNum);
     }
 
-    public static int getSamplerate(byte b)
+    public int getSamplerate()
     {
-        switch (b >>> 2)
+        switch (flags >>> 2)
         {
             case 0:
                 return 16000;
@@ -172,6 +173,37 @@ public class P2PAVFrame
         return 16000;
     }
 
+    public String getCodecName()
+    {
+        switch (codec_id)
+        {
+            case MEDIA_CODEC_UNKNOWN:
+                return "UNKNOWN";
+            case MEDIA_CODEC_VIDEO_H263:
+                return "VIDEO_H263";
+            case MEDIA_CODEC_VIDEO_H264:
+                return "VIDEO_H264";
+            case MEDIA_CODEC_VIDEO_MJPEG:
+                return "VIDEO_MJPEG";
+            case MEDIA_CODEC_VIDEO_MPEG4:
+                return "VIDEO_MPEG4";
+            case MEDIA_CODEC_AUDIO_AAC:
+                return "AUDIO_AAC";
+            case MEDIA_CODEC_AUDIO_ADPCM:
+                return "AUDIO_ADPCM";
+            case MEDIA_CODEC_AUDIO_G726:
+                return "AUDIO_G726";
+            case MEDIA_CODEC_AUDIO_MP3:
+                return "AUDIO_MP3";
+            case MEDIA_CODEC_AUDIO_PCM:
+                return "AUDIO_PCM";
+            case MEDIA_CODEC_AUDIO_SPEEX:
+                return "AUDIO_SPEEX";
+        }
+
+        return "UNKNOWN";
+    }
+
     public short getCodecId()
     {
         return this.codec_id;
@@ -192,19 +224,9 @@ public class P2PAVFrame
         return this.frmSize;
     }
 
-    public byte getFrmState()
-    {
-        return this.frmState;
-    }
-
     public byte getInloss()
     {
         return this.inloss;
-    }
-
-    public long getOldfrmNo()
-    {
-        return this.oldfrmNo;
     }
 
     public byte getOnlineNum()
@@ -274,8 +296,7 @@ public class P2PAVFrame
 
     public String toFrameString()
     {
-        return "AVFrame: "
-                + (isIFrame() ? "I" : "P")
+        return (isIFrame() ? "I" : "P")
                 + " [" + getVideoWidth() + "x" + getVideoHeight() + "]"
                 + " #" + getFrmNo()
                 + " " + getTimeStamp()
@@ -285,24 +306,20 @@ public class P2PAVFrame
 
     public String toString()
     {
-        StringBuffer stringBuffer = new StringBuffer();
-
-        stringBuffer.append("codec_id:" + this.codec_id);
-        stringBuffer.append(", flags:" + this.flags);
-        stringBuffer.append(", liveFlag:" + this.liveFlag);
-        stringBuffer.append(", onlineNum:" + this.onlineNum);
-        stringBuffer.append(", useCount:" + this.useCount);
-        stringBuffer.append(", frmNo:" + this.frmNo);
-        stringBuffer.append(", videoWidth:" + this.videoWidth);
-        stringBuffer.append(", videoHeight:" + this.videoHeight);
-        stringBuffer.append(", timestamp:" + this.timestamp);
-        stringBuffer.append(", isDay:" + this.isDay);
-        stringBuffer.append(", cover_state:" + this.cover_state);
-        stringBuffer.append(", outloss:" + this.outloss);
-        stringBuffer.append(", inloss:" + this.inloss);
-        stringBuffer.append(", timestamp_ms:" + this.timestamp_ms);
-        stringBuffer.append(", frmSize:" + this.frmSize);
-
-        return stringBuffer.toString();
+        return "codec_id=" + this.codec_id +
+                " flags=" + this.flags +
+                " liveFlag=" + this.liveFlag +
+                " onlineNum=" + this.onlineNum +
+                " useCount=" + this.useCount +
+                " frmNo=" + this.frmNo +
+                " videoWidth=" + this.videoWidth +
+                " videoHeight=" + this.videoHeight +
+                " timestamp=" + this.timestamp +
+                " isDay=" + this.isDay +
+                " cover_state=" + this.cover_state +
+                " outloss=" + this.outloss +
+                " inloss=" + this.inloss +
+                " timestamp_ms=" + this.timestamp_ms +
+                " frmSize=" + this.frmSize;
     }
 }
