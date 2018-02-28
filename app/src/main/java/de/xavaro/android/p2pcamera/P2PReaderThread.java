@@ -3,9 +3,15 @@ package de.xavaro.android.p2pcamera;
 import android.util.Log;
 
 import com.p2p.pppp_api.PPPP_APIs;
+import com.p2p.pppp_api.PPPP_Errors;
 
 public class P2PReaderThread extends Thread
 {
+    protected static final int MAX_AUDIO_BUFFER_SIZE = 5120;
+    protected static final int MAX_COMMAND_BUFFER_SIZE = 102400;
+    protected static final int MAX_VIDEO_IFRAME_BUFFER_SIZE = 1048576;
+    protected static final int MAX_VIDEO_PFRAME_BUFFER_SIZE = 307200;
+
     private static final String LOGTAG = P2PReaderThread.class.getSimpleName();
 
     public final static byte CHANNEL_COMMAND = 0;
@@ -32,13 +38,22 @@ public class P2PReaderThread extends Thread
             int[] nSize = new int[1];
             nSize[0] = 8;
 
-            Log.d(LOGTAG, "head: wait channel=" + channel + " size=" + nSize[0]);
+            if (channel == CHANNEL_COMMAND) Log.d(LOGTAG, "head: wait channel=" + channel + " size=" + nSize[0]);
+
             int hRes = PPPP_APIs.PPPP_Read(session.session, channel, nBuffer, nSize, -1);
+
             if (! session.isConnected) break;
+
+            if (hRes == PPPP_Errors.ERROR_PPPP_SESSION_CLOSED_CALLED)
+            {
+                Log.d(LOGTAG, "run: closed channel=" + this.channel);
+
+                break;
+            }
 
             if ((hRes != 0) || (nSize[0] != 8))
             {
-                Log.d(LOGTAG, "head: read corrupt...");
+                Log.d(LOGTAG, "run: read corrupt channel=" + this.channel + " hRes=" + hRes + " nSize=" + nSize[0]);
                 session.isCorrupted = true;
 
                 break;
@@ -47,11 +62,14 @@ public class P2PReaderThread extends Thread
             {
                 P2PHeader header = P2PHeader.parse(nBuffer, session.isBigEndian);
 
-                Log.d(LOGTAG, "head: read"
-                        + " channel=" + channel
-                        + " ioType=" + header.ioType
-                        + " version=" + header.version
-                        + " datasize=" + header.dataSize);
+                if (channel == CHANNEL_COMMAND)
+                {
+                    Log.d(LOGTAG, "head: read"
+                            + " channel=" + channel
+                            + " ioType=" + header.ioType
+                            + " version=" + header.version
+                            + " datasize=" + header.dataSize);
+                }
 
                 if ((header.dataSize < 0) || (header.dataSize > (1024 * 1024)))
                 {
@@ -66,20 +84,32 @@ public class P2PReaderThread extends Thread
                     int[] dSize = new int[1];
                     dSize[0] = header.dataSize;
 
-                    Log.d(LOGTAG, "data: wait channel=" + channel + " size=" + dSize[0]);
+                    if (channel == CHANNEL_COMMAND) Log.d(LOGTAG, "data: wait channel=" + channel + " size=" + dSize[0]);
+
                     int dRes = PPPP_APIs.PPPP_Read(session.session, channel, dBuffer, dSize, -1);
+
                     if (! session.isConnected) break;
+
+                    if (dRes == PPPP_Errors.ERROR_PPPP_SESSION_CLOSED_CALLED)
+                    {
+                        Log.d(LOGTAG, "run: closed channel=" + this.channel);
+
+                        break;
+                    }
 
                     if ((dRes != 0) || (dSize[0] != header.dataSize))
                     {
-                        Log.d(LOGTAG, "data: read corrupt...");
+                        Log.d(LOGTAG, "data: read corrupt channel=" + this.channel);
                         session.isCorrupted = true;
 
                         break;
                     }
                     else
                     {
-                        Log.d(LOGTAG, "data: read channel=" + channel + " res=" + dRes + " size=" + dSize[0]);
+                        if (channel == CHANNEL_COMMAND)
+                        {
+                            Log.d(LOGTAG, "data: read channel=" + channel + " res=" + dRes + " size=" + dSize[0]);
+                        }
 
                         if (! handleData(dBuffer, dSize[0]))
                         {

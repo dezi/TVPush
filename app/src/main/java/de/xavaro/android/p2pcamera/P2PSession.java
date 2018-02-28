@@ -25,11 +25,19 @@ public class P2PSession
     public boolean isConnected;
     public boolean isFreetouse;
     public boolean isCorrupted;
+    public boolean isEncrypted;
 
     private short cmdSequence;
     private long lastLoginTime;
 
     private PPPP_Session sessionInfo;
+
+    P2PReaderThread t0;
+    P2PReaderThread t1;
+    P2PReaderThread t2;
+    P2PReaderThread t3;
+    P2PReaderThread t4;
+    P2PReaderThread t5;
 
     static
     {
@@ -87,6 +95,7 @@ public class P2PSession
             //
 
             isBigEndian = true;
+            isEncrypted = true;
             isConnected = true;
             isCorrupted = false;
 
@@ -106,12 +115,12 @@ public class P2PSession
                 Log.d(LOGTAG, "connect: getRemotePort=" + sessionInfo.getRemotePort());
             }
 
-            P2PReaderThread t0 = new P2PReaderThreadCommand(this);
-            P2PReaderThread t1 = new P2PReaderThread(this, (byte) 1);
-            P2PReaderThread t2 = new P2PReaderThread(this, (byte) 2);
-            P2PReaderThread t3 = new P2PReaderThread(this, (byte) 3);
-            P2PReaderThread t4 = new P2PReaderThread(this, (byte) 4);
-            P2PReaderThread t5 = new P2PReaderThread(this, (byte) 5);
+            t0 = new P2PReaderThreadCtrol(this);
+            t1 = new P2PReaderThreadAudio(this, (byte) 1);
+            t2 = new P2PReaderThreadVideo(this, (byte) 2);
+            t3 = new P2PReaderThreadVideo(this, (byte) 3);
+            t4 = new P2PReaderThreadVideo(this, (byte) 4);
+            t5 = new P2PReaderThreadVideo(this, (byte) 5);
 
             t0.start();
             t1.start();
@@ -128,16 +137,26 @@ public class P2PSession
 
     public boolean disconnect()
     {
-        if (isConnected)
+        synchronized (this)
         {
-            int resClose = PPPP_APIs.PPPP_Close(session);
-            Log.d(LOGTAG, "close: PPPP_Close=" + resClose);
-
-            if (resClose == 0)
+            if (isConnected)
             {
-                isConnected = false;
+                t0.interrupt();
+                t1.interrupt();
+                t2.interrupt();
+                t3.interrupt();
+                t4.interrupt();
+                t5.interrupt();
 
-                onConnectStateChanged(isConnected);
+                int resClose = PPPP_APIs.PPPP_Close(session);
+                Log.d(LOGTAG, "disconnect: PPPP_Close=" + resClose);
+
+                if (resClose == 0)
+                {
+                    isConnected = false;
+
+                    onConnectStateChanged(isConnected);
+                }
             }
         }
 
@@ -150,8 +169,15 @@ public class P2PSession
         {
             if (isConnected)
             {
+                t0.interrupt();
+                t1.interrupt();
+                t2.interrupt();
+                t3.interrupt();
+                t4.interrupt();
+                t5.interrupt();
+
                 int resClose = PPPP_APIs.PPPP_ForceClose(session);
-                Log.d(LOGTAG, "close: PPPP_ForceClose=" + resClose);
+                Log.d(LOGTAG, "forceDisconnect: PPPP_ForceClose=" + resClose);
 
                 if (resClose == 0)
                 {

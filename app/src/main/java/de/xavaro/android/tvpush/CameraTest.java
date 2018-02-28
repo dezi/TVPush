@@ -56,13 +56,15 @@ public class CameraTest
 
         p2pcamera.connectCamera();
 
-        p2pcamera.deviceInfoquery();
-
-        p2pcamera.resolutionSend(ResolutionSend.RESOLUTION_1080P);
-
-        p2pcamera.ptzDirectionSend(PTZDirectionSend.DIRECTION_LEFT, 0);
+        p2pcamera.deviceInfoQuery();
 
         p2pcamera.resolutionQuery();
+
+        p2pcamera.resolutionSend(P2PCamera.RESOLUTION_1080P);
+
+        p2pcamera.ptzDirectionSend(P2PCamera.PTZ_DIRECTION_LEFT, 0);
+
+        p2pcamera.startRealtimeSend(P2PCamera.STARTREALTIME_RESOLUTION_PREVIEW);
 
         ApplicationBase.handler.postDelayed(new Runnable()
         {
@@ -73,6 +75,7 @@ public class CameraTest
             }
         }, 5000);
 
+        /*
         ApplicationBase.handler.postDelayed(new Runnable()
         {
             @Override
@@ -82,5 +85,6 @@ public class CameraTest
                 p2pcamera = null;
             }
         }, 15000);
+        */
     }
 }

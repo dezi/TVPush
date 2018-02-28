@@ -9,6 +9,7 @@ import de.xavaro.android.p2pcamera.p2pcommands.PTZHomeSend;
 import de.xavaro.android.p2pcamera.p2pcommands.PTZJumpSend;
 import de.xavaro.android.p2pcamera.p2pcommands.ResolutionQuery;
 import de.xavaro.android.p2pcamera.p2pcommands.ResolutionSend;
+import de.xavaro.android.p2pcamera.p2pcommands.StartRealtimeSend;
 
 public class P2PCamera
 {
@@ -56,24 +57,31 @@ public class P2PCamera
 
     //region Delegate section.
 
+    public final static int RESOLUTION_720P = 1;
+    public final static int RESOLUTION_1080P = 2;
+    public final static int RESOLUTION_SUPER1080P = 3;
+
     public boolean resolutionSend(int resolution)
     {
         return (new ResolutionSend(session, resolution)).send();
     }
 
-    public boolean resolutionQuery()
+    public final static byte STARTREALTIME_RESOLUTION_PREVIEW = 0;
+    public final static byte STARTREALTIME_RESOLUTION_HIGH = 1;
+
+    public boolean startRealtimeSend(byte resolution)
     {
-        return (new ResolutionQuery(session)).send();
+        return (new StartRealtimeSend(session, (byte) 1, resolution, (byte) 1)).send();
     }
+
+    public final static int PTZ_DIRECTION_UP = 1;
+    public final static int PTZ_DIRECTION_DOWN = 2;
+    public final static int PTZ_DIRECTION_LEFT = 3;
+    public final static int PTZ_DIRECTION_RIGHT = 4;
 
     public boolean ptzDirectionSend(int direction, int speed)
     {
         return (new PTZDirectionSend(session, direction, speed)).send();
-    }
-
-    public boolean ptzJumpSend(int transverseProportion, int longitudinalProportion)
-    {
-        return (new PTZJumpSend(session, transverseProportion, longitudinalProportion)).send();
     }
 
     public boolean ptzControlStopSend()
@@ -86,7 +94,17 @@ public class P2PCamera
         return (new PTZHomeSend(session)).send();
     }
 
-    public boolean deviceInfoquery()
+    public boolean ptzJumpSend(int transverseProportion, int longitudinalProportion)
+    {
+        return (new PTZJumpSend(session, transverseProportion, longitudinalProportion)).send();
+    }
+
+    public boolean resolutionQuery()
+    {
+        return (new ResolutionQuery(session)).send();
+    }
+
+    public boolean deviceInfoQuery()
     {
         return (new DeviceInfoQuery(session)).send();
     }
