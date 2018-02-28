@@ -22,6 +22,7 @@ public class SpeechRecognition implements RecognitionListener
     private static final String LOGTAG = SpeechRecognition.class.getSimpleName();
 
     private Handler handler = new Handler();
+
     private SpeechRecognizer recognizer;
     private Intent recognizerIntent;
     private Context context;
@@ -41,7 +42,6 @@ public class SpeechRecognition implements RecognitionListener
 
             recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
             recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
-            recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 30 * 1000);
         }
         else
         {

@@ -133,6 +133,7 @@ public class RegistrationService extends Service
             {
                 if (worker != null)
                 {
+                    worker.interrupt();
                     worker.join();
                 }
             }
@@ -154,13 +155,11 @@ public class RegistrationService extends Service
         {
             try
             {
-                byte[] rxbuf = new byte[ 8192 ];
+                byte[] rxbuf = new byte[ 8 * 1024 ];
                 DatagramPacket packet = new DatagramPacket(rxbuf, rxbuf.length);
                 socket.receive(packet);
 
                 String message = new String(packet.getData(), 0, packet.getLength());
-
-                //Log.d(LOGTAG, "####" + message);
 
                 JSONObject jsonmess = Json.fromStringObject(message);
                 if (jsonmess == null) continue;
