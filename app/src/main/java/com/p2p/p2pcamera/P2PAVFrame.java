@@ -9,8 +9,8 @@ public class P2PAVFrame
     public static final int AUDIO_CHANNEL_MONO = 0;
     public static final int AUDIO_CHANNEL_STERO = 1;
 
-    public static final int AUDIO_DATABITS_16 = 1;
     public static final int AUDIO_DATABITS_8 = 0;
+    public static final int AUDIO_DATABITS_16 = 1;
 
     public static final int AUDIO_SAMPLE_8K = 0;
     public static final int AUDIO_SAMPLE_11K = 1;
@@ -125,48 +125,50 @@ public class P2PAVFrame
 
     public P2PAVFrame(byte[] data, int size, boolean isBigEndian)
     {
-        this.codec_id = P2PPacker.byteArrayToShort(data, 0, isBigEndian);
-        this.flags = data[2];
-        this.liveFlag = data[3];
-        this.onlineNum = data[4];
-        this.useCount = data[5];
-        this.frmNo = P2PPacker.byteArrayToShort(data, 6, isBigEndian);
-        this.videoWidth = P2PPacker.byteArrayToShort(data, 8, isBigEndian);
-        this.videoHeight = P2PPacker.byteArrayToShort(data, 10,  isBigEndian);
-        this.timestamp = P2PPacker.byteArrayToInt(data, 12, isBigEndian);
-        this.isDay = data[16];
-        this.cover_state = data[17];
-        this.outloss = data[18];
-        this.inloss = data[19];
-        this.timestamp_ms = P2PPacker.byteArrayToInt(data, 20, isBigEndian);
+        codec_id = P2PPacker.byteArrayToShort(data, 0, isBigEndian);
+        flags = data[2];
+        liveFlag = data[3];
+        onlineNum = data[4];
+        useCount = data[5];
+        frmNo = P2PPacker.byteArrayToShort(data, 6, isBigEndian);
+        videoWidth = P2PPacker.byteArrayToShort(data, 8, isBigEndian);
+        videoHeight = P2PPacker.byteArrayToShort(data, 10,  isBigEndian);
+        timestamp = P2PPacker.byteArrayToInt(data, 12, isBigEndian);
+        isDay = data[16];
+        cover_state = data[17];
+        outloss = data[18];
+        inloss = data[19];
+        timestamp_ms = P2PPacker.byteArrayToInt(data, 20, isBigEndian);
 
-        this.frmSize = size - FRAMEINFO_SIZE;
-        this.frmData = new byte[this.frmSize];
+        frmSize = size - FRAMEINFO_SIZE;
+        frmData = new byte[frmSize];
 
-        System.arraycopy(data, 24, this.frmData, 0, this.frmSize);
+        System.arraycopy(data, FRAMEINFO_SIZE, frmData, 0, frmSize);
 
-        this.panState = new PanState(this.onlineNum);
+        panState = new PanState(onlineNum);
     }
 
     public int getSamplerate()
     {
         switch (flags >>> 2)
         {
-            case 0:
+            case AUDIO_SAMPLE_8K:
                 return 16000;
-            case 1:
+            case AUDIO_SAMPLE_11K:
                 return 11025;
-            case 2:
+            case AUDIO_SAMPLE_12K:
                 return 12000;
-            case 4:
+            case AUDIO_SAMPLE_16K:
+                return 16000;
+            case AUDIO_SAMPLE_22K:
                 return 22050;
-            case 5:
+            case AUDIO_SAMPLE_24K:
                 return 24000;
-            case 6:
+            case AUDIO_SAMPLE_32K:
                 return 32000;
-            case 7:
+            case AUDIO_SAMPLE_44K:
                 return 44100;
-            case 8:
+            case AUDIO_SAMPLE_48K:
                 return 48000;
         }
 
@@ -206,120 +208,137 @@ public class P2PAVFrame
 
     public short getCodecId()
     {
-        return this.codec_id;
+        return codec_id;
     }
 
     public byte getFlags()
     {
-        return this.flags;
+        return flags;
     }
 
     public short getFrmNo()
     {
-        return this.frmNo;
+        return frmNo;
     }
 
     public int getFrmSize()
     {
-        return this.frmSize;
+        return frmSize;
     }
 
     public byte getInloss()
     {
-        return this.inloss;
+        return inloss;
     }
 
     public byte getOnlineNum()
     {
-        return this.onlineNum;
+        return onlineNum;
     }
 
     public byte getOutloss()
     {
-        return this.outloss;
+        return outloss;
     }
 
     public int getTimeStamp()
     {
-        return this.timestamp;
+        return timestamp;
     }
 
     public int getTimestamp_ms()
     {
-        return this.timestamp_ms;
+        return timestamp_ms;
     }
 
     public int getVideoHeight()
     {
-        return this.videoHeight;
+        return videoHeight;
     }
 
     public int getVideoWidth()
     {
-        return this.videoWidth;
+        return videoWidth;
     }
 
     public boolean isCovered()
     {
-        return this.cover_state == 1;
+        return cover_state == 1;
     }
 
     public boolean isDay()
     {
-        return this.isDay == 1;
+        return isDay == 1;
+    }
+
+    public boolean isVideo()
+    {
+        switch (codec_id)
+        {
+            case MEDIA_CODEC_VIDEO_H263:
+            case MEDIA_CODEC_VIDEO_H264:
+            case MEDIA_CODEC_VIDEO_MJPEG:
+            case MEDIA_CODEC_VIDEO_MPEG4:
+                return true;
+        }
+
+        return false;
+    }
+
+    public boolean isAudio()
+    {
+        switch (codec_id)
+        {
+            case MEDIA_CODEC_AUDIO_AAC:
+            case MEDIA_CODEC_AUDIO_ADPCM:
+            case MEDIA_CODEC_AUDIO_G726:
+            case MEDIA_CODEC_AUDIO_MP3:
+            case MEDIA_CODEC_AUDIO_PCM:
+            case MEDIA_CODEC_AUDIO_SPEEX:
+                return true;
+        }
+
+        return false;
     }
 
     public boolean isIFrame()
     {
-        return (this.flags & 1) == 1;
-    }
-
-    public void setInloss(byte b)
-    {
-        this.inloss = b;
-    }
-
-    public void setOutloss(byte b)
-    {
-        this.outloss = b;
-    }
-
-    public void setTimestamp(int i)
-    {
-        this.timestamp = i;
-    }
-
-    public void setTimestamp_ms(int i)
-    {
-        this.timestamp_ms = i;
+        return (flags & 1) == 1;
     }
 
     public String toFrameString()
     {
-        return (isIFrame() ? "I" : "P")
-                + " [" + getVideoWidth() + "x" + getVideoHeight() + "]"
-                + " #" + getFrmNo()
-                + " " + getTimeStamp()
-                + " " + getFrmSize()
-                ;
+        String spec = getCodecName();
+
+        if (isVideo())
+        {
+            spec += " " + (isIFrame() ? "I" : "P") + " [" + getVideoWidth() + "x" + getVideoHeight() + "]";
+        }
+
+        if (isAudio())
+        {
+            spec += " " + getSamplerate();
+        }
+
+        return spec + " #" + getFrmNo() + " " + getTimeStamp() + " " + getFrmSize();
     }
 
     public String toString()
     {
-        return "codec_id=" + this.codec_id +
-                " flags=" + this.flags +
-                " liveFlag=" + this.liveFlag +
-                " onlineNum=" + this.onlineNum +
-                " useCount=" + this.useCount +
-                " frmNo=" + this.frmNo +
-                " videoWidth=" + this.videoWidth +
-                " videoHeight=" + this.videoHeight +
-                " timestamp=" + this.timestamp +
-                " isDay=" + this.isDay +
-                " cover_state=" + this.cover_state +
-                " outloss=" + this.outloss +
-                " inloss=" + this.inloss +
-                " timestamp_ms=" + this.timestamp_ms +
-                " frmSize=" + this.frmSize;
+        return "codec_id=" + codec_id +
+                " flags=" + flags +
+                " liveFlag=" + liveFlag +
+                " onlineNum=" + onlineNum +
+                " useCount=" + useCount +
+                " frmNo=" + frmNo +
+                " videoWidth=" + videoWidth +
+                " videoHeight=" + videoHeight +
+                " timestamp=" + timestamp +
+                " isDay=" + isDay +
+                " cover_state=" + cover_state +
+                " outloss=" + outloss +
+                " inloss=" + inloss +
+                " timestamp_ms=" + timestamp_ms +
+                " frmSize=" + frmSize;
     }
 }

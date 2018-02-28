@@ -104,4 +104,21 @@ public class Simple
     {
         return FirebaseInstanceId.getInstance().getToken();
     }
+
+    public static String getHexBytesToString(byte[] bytes, int offset, int length)
+    {
+        char[] hexArray = "0123456789ABCDEF".toCharArray();
+        char[] hexChars = new char[ length << 1 ];
+
+        for (int inx = offset; inx < (length + offset); inx++)
+        {
+            //noinspection PointlessArithmeticExpression
+            hexChars[ ((inx - offset) << 1) + 0 ] = hexArray[ (bytes[ inx ] >> 4) & 0x0f ];
+            //noinspection PointlessBitwiseExpression
+            hexChars[ ((inx - offset) << 1) + 1 ] = hexArray[ (bytes[ inx ] >> 0) & 0x0f ];
+        }
+
+        return String.valueOf(hexChars);
+    }
+
 }

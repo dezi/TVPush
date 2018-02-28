@@ -3,7 +3,7 @@ package com.p2p.p2pcamera.p2pcommands;
 import com.p2p.p2pcamera.P2PMessage;
 import com.p2p.p2pcamera.P2PSession;
 
-public class StartRealtimeSend
+public class StartVideoSend
 {
     public final static byte RESOLUTION_PREVIEW = 0;
     public final static byte RESOLUTION_HIGH = 1;
@@ -14,7 +14,7 @@ public class StartRealtimeSend
 
     private P2PSession session;
 
-    public StartRealtimeSend(P2PSession session, byte usecount, byte resolution, byte unknown)
+    public StartVideoSend(P2PSession session, byte usecount, byte resolution, byte unknown)
     {
         this.session = session;
         this.usecount = usecount;

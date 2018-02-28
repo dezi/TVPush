@@ -1,42 +1,30 @@
 package de.xavaro.android.tvpush;
 
-import android.graphics.Canvas;
-import android.media.MediaCodec;
-import android.media.MediaExtractor;
-import android.media.MediaFormat;
-import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
-import android.graphics.drawable.ColorDrawable;
-import android.view.Surface;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.TextView;
+import java.nio.ByteBuffer;
+
+import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
-import android.view.WindowManager;
-import android.view.Display;
-import android.view.Gravity;
-import android.view.View;
+import android.graphics.drawable.ColorDrawable;
+import android.media.MediaCodec;
+import android.media.MediaCodec.BufferInfo;
+import android.media.MediaExtractor;
+import android.media.MediaFormat;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
+import android.view.Display;
+import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.WindowManager;
 
-import com.p2p.p2pcamera.P2PVideoView;
+import com.p2p.p2pcamera.P2PReaderThread;
 
-import java.nio.ByteBuffer;
-
-import de.xavaro.android.common.Simple;
-
-public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback
+public class DecodeActivity extends Activity implements SurfaceHolder.Callback
 {
-    private final static String LOGTAG = MainActivity.class.getSimpleName();
-
-    private SpeechRecognition recognition;
-    private TextView voiceButton;
-    private SurfaceView surfaceView;
-    private P2PVideoView videoSurface;
+    private static final String LOGTAG = DecodeActivity.class.getSimpleName();
 
     private static final String SAMPLE = Environment.getExternalStorageDirectory() + "/video.mp4";
     private PlayerThread mPlayer = null;
@@ -75,98 +63,15 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             getWindow().setLayout((int) (width * 0.4), (int) (height * 0.4));
         }
 
-        Log.d(LOGTAG, "onCreate: stringFromJNI=" + stringFromJNI());
-
-        FrameLayout topframe = new FrameLayout(this);
-        topframe.setBackgroundColor(0x88880000);
-        setContentView(topframe);
-
-        TextView heloButton = new TextView(this);
-        heloButton.setText("HELO");
-        heloButton.setTextSize(36);
-        heloButton.setTextColor(Color.WHITE);
-        heloButton.setPadding(50, 50, 50, 50);
-
-        heloButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                RegistrationService.requestHello(view.getContext());
-            }
-        });
-
-        topframe.addView(heloButton, new FrameLayout.LayoutParams(Simple.WC, Simple.WC, Gravity.TOP + Gravity.START));
-
-        voiceButton = new TextView(this);
-        voiceButton.setText("VOICE ON");
-        voiceButton.setTextSize(36);
-        voiceButton.setTextColor(Color.WHITE);
-        voiceButton.setPadding(50, 50, 50, 50);
-
-        voiceButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                speechClick();
-            }
-        });
-
-        topframe.addView(voiceButton, new FrameLayout.LayoutParams(Simple.WC, Simple.WC, Gravity.BOTTOM + Gravity.END));
-
-        surfaceView = new SurfaceView(this);
-        surfaceView.getHolder().addCallback(this);
-
-        videoSurface = new P2PVideoView(this);
-
-        topframe.addView(videoSurface, new FrameLayout.LayoutParams(640, 360, Gravity.TOP + Gravity.END));
-
-        ApplicationBase.handler.postDelayed(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                CameraTest.initialize(videoSurface);
-            }
-        }, 1000);
-
+        SurfaceView sv = new SurfaceView(this);
+        sv.getHolder().addCallback(this);
+        setContentView(sv);
     }
 
-    private void speechClick()
+    protected void onDestroy()
     {
-        if (recognition == null)
-        {
-            recognition = new SpeechRecognition(this);
-        }
-
-        String text = voiceButton.getText().toString();
-
-        if (text.equals("VOICE ON"))
-        {
-            voiceButton.setText("VOICE OFF");
-            recognition.startListening();
-        }
-        else
-        {
-            voiceButton.setText("VOICE ON");
-            recognition.stopListening();
-        }
+        super.onDestroy();
     }
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-    }
-
-    public native String stringFromJNI();
 
     @Override
     public void surfaceCreated(SurfaceHolder holder)
@@ -174,23 +79,22 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     @Override
-    public void surfaceChanged(final SurfaceHolder holder, int format, int width, int height)
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height)
     {
-        Log.d(LOGTAG, "surfaceChanged: width=" + width + " height=" + height);
-
-        /*
         if (mPlayer == null)
         {
-            mPlayer = new PlayerThread(holder.getSurface());
-            mPlayer.start();
+            //mPlayer = new PlayerThread(holder.getSurface());
+            //mPlayer.start();
         }
-        */
-
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder)
     {
+        if (mPlayer != null)
+        {
+            mPlayer.interrupt();
+        }
     }
 
     private class PlayerThread extends Thread
@@ -236,7 +140,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
                 decoder.start();
 
-                MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
+                ByteBuffer[] inputBuffers = decoder.getInputBuffers();
+                ByteBuffer[] outputBuffers = decoder.getOutputBuffers();
+                BufferInfo info = new BufferInfo();
                 boolean isEOS = false;
                 long startMs = System.currentTimeMillis();
 
@@ -247,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         int inIndex = decoder.dequeueInputBuffer(10000);
                         if (inIndex >= 0)
                         {
-                            ByteBuffer buffer = decoder.getInputBuffer(inIndex);
+                            ByteBuffer buffer = inputBuffers[inIndex];
                             int sampleSize = extractor.readSampleData(buffer, 0);
                             if (sampleSize < 0)
                             {
@@ -260,8 +166,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                             }
                             else
                             {
-                                //decoder.queueInputBuffer(inIndex, 0, sampleSize, extractor.getSampleTime(), 0);
-                                decoder.queueInputBuffer(inIndex, 0, sampleSize, 0, 0);
+                                decoder.queueInputBuffer(inIndex, 0, sampleSize, extractor.getSampleTime(), 0);
                                 extractor.advance();
                             }
                         }
@@ -271,6 +176,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
                     switch (outIndex)
                     {
+                        case MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED:
+                            Log.d("DecodeActivity", "INFO_OUTPUT_BUFFERS_CHANGED");
+                            outputBuffers = decoder.getOutputBuffers();
+                            break;
                         case MediaCodec.INFO_OUTPUT_FORMAT_CHANGED:
                             Log.d("DecodeActivity", "New format " + decoder.getOutputFormat());
                             break;
@@ -278,8 +187,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                             Log.d("DecodeActivity", "dequeueOutputBuffer timed out!");
                             break;
                         default:
-                            if (outIndex < 0) break;
-                            ByteBuffer buffer = decoder.getOutputBuffer(outIndex);
+                            ByteBuffer buffer = outputBuffers[outIndex];
                             Log.v("DecodeActivity", "We can't use this buffer but render it due to the API limit, " + buffer);
 
                             MediaFormat format = decoder.getOutputFormat();
@@ -322,5 +230,4 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             }
         }
     }
-
 }

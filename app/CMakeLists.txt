@@ -26,6 +26,21 @@ add_library(libPPPP_API SHARED IMPORTED)
 set_target_properties(libPPPP_API PROPERTIES IMPORTED_LOCATION
 ${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libPPPP_API.so)
 
+add_library(libfaad SHARED IMPORTED)
+
+set_target_properties(libfaad PROPERTIES IMPORTED_LOCATION
+${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libfaad.so)
+
+add_library(libvideodecoder SHARED IMPORTED)
+
+set_target_properties(libvideodecoder PROPERTIES IMPORTED_LOCATION
+${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libvideodecoder.so)
+
+add_library(libvideodraw SHARED IMPORTED)
+
+set_target_properties(libvideodraw PROPERTIES IMPORTED_LOCATION
+${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libvideodraw.so)
+
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
 # default, you only need to specify the name of the public NDK library
@@ -45,6 +60,9 @@ find_library( # Sets the name of the path variable.
 
 target_link_libraries( # Specifies the target library.
                        native-lib
+                       libfaad
+                       libvideodraw
+                       libvideodecoder
                        libPPPP_API
                        # Links the target library to the log library
                        # included in the NDK.

@@ -1,6 +1,9 @@
 package com.p2p.p2pcamera;
 
+import android.media.MediaCodec;
 import android.util.Log;
+import android.view.Surface;
+import android.view.SurfaceView;
 
 import com.p2p.pppp_api.PPPP_APIs;
 import com.p2p.pppp_api.PPPP_Keys;
@@ -8,6 +11,8 @@ import com.p2p.pppp_api.PPPP_Session;
 
 import com.p2p.p2pcamera.p2pcommands.DeviceInfoData;
 import com.p2p.p2pcamera.p2pcommands.ResolutionData;
+
+import java.util.ArrayList;
 
 import static com.p2p.pppp_api.PPPP_APIs.PPPP_Check;
 
@@ -39,10 +44,19 @@ public class P2PSession
     private P2PReaderThread t4;
     private P2PReaderThread t5;
 
+    private P2PReaderThreadH264Dec t6;
+
     public P2PAVFrameDecrypt p2pAVFrameDecrypt;
+
+    public final ArrayList<P2PAVFrame> decodeFrames = new ArrayList<>();
+
+    public P2PVideoView surface;
 
     static
     {
+        System.loadLibrary("faad");
+        System.loadLibrary("videodraw");
+        System.loadLibrary("videodecoder");
         System.loadLibrary("PPPP_API");
 
         int resVersion = PPPP_APIs.PPPP_GetAPIVersion();
@@ -127,12 +141,15 @@ public class P2PSession
             t4 = new P2PReaderThreadVideo(this, (byte) 4);
             t5 = new P2PReaderThreadVideo(this, (byte) 5);
 
+            t6 = new P2PReaderThreadH264Dec(this);
+
             t0.start();
             t1.start();
             t2.start();
             t3.start();
             t4.start();
             t5.start();
+            t6.start();
 
             onConnectStateChanged(isConnected);
         }
@@ -152,6 +169,7 @@ public class P2PSession
                 t3.interrupt();
                 t4.interrupt();
                 t5.interrupt();
+                t6.interrupt();
 
                 int resClose = PPPP_APIs.PPPP_Close(session);
                 Log.d(LOGTAG, "disconnect: PPPP_Close=" + resClose);
@@ -180,6 +198,7 @@ public class P2PSession
                 t3.interrupt();
                 t4.interrupt();
                 t5.interrupt();
+                t6.interrupt();
 
                 int resClose = PPPP_APIs.PPPP_ForceClose(session);
                 Log.d(LOGTAG, "forceDisconnect: PPPP_ForceClose=" + resClose);

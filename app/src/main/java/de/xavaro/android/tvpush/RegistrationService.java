@@ -91,6 +91,8 @@ public class RegistrationService extends Service
                 Log.d(LOGTAG, "onCreate: getReceiveBufferSize=" + socket.getReceiveBufferSize());
 
                 requestHello(this);
+                requestHello(this);
+                requestHello(this);
             }
             catch (Exception ignore)
             {

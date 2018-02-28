@@ -15,6 +15,7 @@ public class PPPP_Logdat
         logString("*");
         logBoolean(true);
 
+        logObject(new Object());
         logIntArray(new int[1]);
         logByteArray(new byte[1]);
         logByteArray(new byte[1], 1);
@@ -33,6 +34,11 @@ public class PPPP_Logdat
     public static void logLong(long longus)
     {
         Log.d(LOGTAG, "logLong=" + Long.toString(longus));
+    }
+
+    public static void logObject(Object str)
+    {
+        Log.d(LOGTAG, "logObject=" + str);
     }
 
     public static void logString(String str)

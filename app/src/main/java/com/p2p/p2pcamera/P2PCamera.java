@@ -1,6 +1,8 @@
 package com.p2p.p2pcamera;
 
 import android.util.Log;
+import android.view.Surface;
+import android.view.SurfaceView;
 
 import com.p2p.p2pcamera.p2pcommands.DeviceInfoQuery;
 import com.p2p.p2pcamera.p2pcommands.PTZControlStopSend;
@@ -9,7 +11,10 @@ import com.p2p.p2pcamera.p2pcommands.PTZHomeSend;
 import com.p2p.p2pcamera.p2pcommands.PTZJumpSend;
 import com.p2p.p2pcamera.p2pcommands.ResolutionQuery;
 import com.p2p.p2pcamera.p2pcommands.ResolutionSend;
-import com.p2p.p2pcamera.p2pcommands.StartRealtimeSend;
+import com.p2p.p2pcamera.p2pcommands.StartAudioSend;
+import com.p2p.p2pcamera.p2pcommands.StartVideoSend;
+import com.p2p.p2pcamera.p2pcommands.StopAudioSend;
+import com.p2p.p2pcamera.p2pcommands.StopVideoSend;
 
 public class P2PCamera
 {
@@ -20,13 +25,15 @@ public class P2PCamera
 
     private P2PSession session;
 
-    public P2PCamera(String targetUUID, String targetId, String targetPw)
+    public P2PCamera(String targetUUID, String targetId, String targetPw, P2PVideoView surface)
     {
         this.targetUUID = targetUUID;
 
         this.targetId = targetId;
 
         session = new P2PSession(targetId, targetPw);
+
+        session.surface = surface;
     }
 
     public boolean isOnline()
@@ -69,9 +76,24 @@ public class P2PCamera
     public final static byte STARTREALTIME_RESOLUTION_PREVIEW = 0;
     public final static byte STARTREALTIME_RESOLUTION_HIGH = 1;
 
-    public boolean startRealtimeSend(byte resolution)
+    public boolean startVideoSend(byte resolution)
     {
-        return (new StartRealtimeSend(session, (byte) 1, resolution, (byte) 1)).send();
+        return (new StartVideoSend(session, (byte) 1, resolution, (byte) 1)).send();
+    }
+
+    public boolean stopVideoSend()
+    {
+        return (new StopVideoSend(session)).send();
+    }
+
+    public boolean startAudioSend()
+    {
+        return (new StartAudioSend(session)).send();
+    }
+
+    public boolean stopAudioSend()
+    {
+        return (new StopAudioSend(session)).send();
     }
 
     public final static int PTZ_DIRECTION_UP = 1;

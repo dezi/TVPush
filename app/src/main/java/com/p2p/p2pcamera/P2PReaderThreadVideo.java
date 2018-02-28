@@ -19,8 +19,16 @@ public class P2PReaderThreadVideo extends P2PReaderThread
         if (session.isEncrypted && aVFrame.isIFrame())
         {
             session.p2pAVFrameDecrypt.decryptIframe(aVFrame);
+        }
 
-            Log.d(LOGTAG, "handleData: " + aVFrame.getCodecName() + " " + aVFrame.toFrameString());
+        if (aVFrame.isIFrame() || ((aVFrame.getFrmNo() % 13) == 0))
+        {
+            //Log.d(LOGTAG, "handleData: channel=" + channel + " " + aVFrame.toFrameString());
+        }
+
+        synchronized (session.decodeFrames)
+        {
+            session.decodeFrames.add(aVFrame);
         }
 
         return true;

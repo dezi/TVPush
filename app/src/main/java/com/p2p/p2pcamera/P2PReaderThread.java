@@ -32,6 +32,8 @@ public class P2PReaderThread extends Thread
     {
         Log.d(LOGTAG, "run: start channel=" + this.channel);
 
+        onStart();
+
         while (session.isConnected)
         {
             byte[] nBuffer = new byte[8];
@@ -122,12 +124,24 @@ public class P2PReaderThread extends Thread
             }
         }
 
-        Log.d(LOGTAG, "run: stop channel=" + this.channel);
-
         if (session.isCorrupted)
         {
             session.forceDisconnect();
         }
+
+        onStop();
+
+        Log.d(LOGTAG, "run: stop channel=" + this.channel);
+    }
+
+    public boolean onStart()
+    {
+        return true;
+    }
+
+    public boolean onStop()
+    {
+        return true;
     }
 
     public boolean handleData(byte[] data, int size)

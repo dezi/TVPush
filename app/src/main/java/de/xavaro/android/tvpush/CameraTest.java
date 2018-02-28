@@ -2,22 +2,28 @@ package de.xavaro.android.tvpush;
 
 import android.util.Base64;
 import android.util.Log;
+import android.view.Surface;
+import android.view.SurfaceView;
 
 import com.p2p.p2pcamera.P2PBarcode;
 import com.p2p.p2pcamera.P2PCamera;
 import com.p2p.p2pcamera.P2PCameras;
+import com.p2p.p2pcamera.P2PVideoView;
 
 public class CameraTest
 {
     private static final String LOGTAG = CameraTest.class.getSimpleName();
 
     private static P2PCamera p2pcamera;
+    private static P2PVideoView surface;
 
     public static String DID = "TNPUSAC-663761-TLWPW";
     public static String DPW = "IHQPekEX41IaZ4T";
 
-    public static void initialize()
+    public static void initialize(P2PVideoView surfaceparam)
     {
+        surface = surfaceparam;
+
         Log.d(LOGTAG, "#####" + Base64.encodeToString("1234abcd".getBytes(), 2));
         Log.d(LOGTAG, "#####" + new String(Base64.decode("RGV6aSBIb21l", 0)));
         Log.d(LOGTAG, "#####" + P2PBarcode.EncodeBarcodeString(false, "Dezi Home", "1234abcd", null));
@@ -29,7 +35,7 @@ public class CameraTest
             {
                 delayedInit("Dezi's Domcam #1");
             }
-        }, 5000);
+        }, 2000);
     }
 
     private static void delayedInit(String name)
@@ -50,20 +56,21 @@ public class CameraTest
 
         if ((did == null) || (dpw == null)) return;
 
-        p2pcamera = new P2PCamera(uuid, did, dpw);
+        p2pcamera = new P2PCamera(uuid, did, dpw, surface);
 
         p2pcamera.connectCamera();
 
-        p2pcamera.deviceInfoQuery();
+        //p2pcamera.deviceInfoQuery();
+        //p2pcamera.resolutionQuery();
 
-        p2pcamera.resolutionQuery();
+        //p2pcamera.resolutionSend(P2PCamera.RESOLUTION_1080P);
 
-        p2pcamera.resolutionSend(P2PCamera.RESOLUTION_1080P);
+        //p2pcamera.ptzDirectionSend(P2PCamera.PTZ_DIRECTION_LEFT, 0);
 
-        p2pcamera.ptzDirectionSend(P2PCamera.PTZ_DIRECTION_LEFT, 0);
+        p2pcamera.startVideoSend(P2PCamera.STARTREALTIME_RESOLUTION_PREVIEW);
+        //p2pcamera.startAudioSend();
 
-        p2pcamera.startRealtimeSend(P2PCamera.STARTREALTIME_RESOLUTION_PREVIEW);
-
+        /*
         ApplicationBase.handler.postDelayed(new Runnable()
         {
             @Override
@@ -72,6 +79,7 @@ public class CameraTest
                 p2pcamera.ptzHomeSend();
             }
         }, 5000);
+        */
 
         /*
         ApplicationBase.handler.postDelayed(new Runnable()
