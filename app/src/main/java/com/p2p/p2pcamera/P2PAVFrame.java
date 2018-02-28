@@ -4,10 +4,15 @@ public class P2PAVFrame
 {
     private static final String LOGTAG = P2PAVFrame.class.getSimpleName();
 
+    public static final int FRAMEINFO_SIZE = 24;
+
     public static final int AUDIO_CHANNEL_MONO = 0;
     public static final int AUDIO_CHANNEL_STERO = 1;
+
     public static final int AUDIO_DATABITS_16 = 1;
     public static final int AUDIO_DATABITS_8 = 0;
+
+    public static final int AUDIO_SAMPLE_8K = 0;
     public static final int AUDIO_SAMPLE_11K = 1;
     public static final int AUDIO_SAMPLE_12K = 2;
     public static final int AUDIO_SAMPLE_16K = 3;
@@ -16,16 +21,17 @@ public class P2PAVFrame
     public static final int AUDIO_SAMPLE_32K = 6;
     public static final int AUDIO_SAMPLE_44K = 7;
     public static final int AUDIO_SAMPLE_48K = 8;
-    public static final int AUDIO_SAMPLE_8K = 0;
-    public static final int FRAMEINFO_SIZE = 24;
+
     public static final byte FRM_STATE_COMPLETE = (byte) 0;
     public static final byte FRM_STATE_INCOMPLETE = (byte) 1;
     public static final byte FRM_STATE_LOSED = (byte) 2;
     public static final byte FRM_STATE_UNKOWN = (byte) -1;
+
     public static final int IPC_FRAME_FLAG_IFRAME = 1;
     public static final int IPC_FRAME_FLAG_IO = 3;
     public static final int IPC_FRAME_FLAG_MD = 2;
     public static final int IPC_FRAME_FLAG_PBFRAME = 0;
+
     public static final int MEDIA_CODEC_AUDIO_AAC = 138;
     public static final int MEDIA_CODEC_AUDIO_ADPCM = 139;
     public static final int MEDIA_CODEC_AUDIO_G726 = 143;
@@ -37,6 +43,7 @@ public class P2PAVFrame
     public static final int MEDIA_CODEC_VIDEO_H264 = 78;
     public static final int MEDIA_CODEC_VIDEO_MJPEG = 79;
     public static final int MEDIA_CODEC_VIDEO_MPEG4 = 76;
+
     private short codec_id = (short) 0;
     private byte cover_state;
     private byte flags = (byte) -1;
@@ -79,9 +86,9 @@ public class P2PAVFrame
             return (state & b) == b;
         }
 
-        public boolean isCruiseState()
+        public boolean isPresetState()
         {
-            return isState(CRUISE_STATE);
+            return isState(PRESET_STATE);
         }
 
         public boolean isMoveTrackState()
@@ -89,9 +96,9 @@ public class P2PAVFrame
             return isState(MOVETRACK_STATE);
         }
 
-        public boolean isPanMoving()
+        public boolean isCruiseState()
         {
-            return isState(MOVING_STATE);
+            return isState(CRUISE_STATE);
         }
 
         public boolean isPanoramaCapturingState()
@@ -99,9 +106,9 @@ public class P2PAVFrame
             return isState(PANORAMA_CAPTURING_STATE);
         }
 
-        public boolean isPresetState()
+        public boolean isYBorderState()
         {
-            return isState(PRESET_STATE);
+            return isState(Y_BORDER_STATE);
         }
 
         public boolean isXBorderState()
@@ -109,9 +116,9 @@ public class P2PAVFrame
             return isState(X_BORDER_STATE);
         }
 
-        public boolean isYBorderState()
+        public boolean isPanMoving()
         {
-            return isState(Y_BORDER_STATE);
+            return isState(MOVING_STATE);
         }
     }
 
@@ -132,8 +139,9 @@ public class P2PAVFrame
         this.inloss = data[19];
         this.timestamp_ms = P2PPacker.byteArrayToInt(data, 20, isBigEndian);
 
-        this.frmSize = size - 24;
+        this.frmSize = size - FRAMEINFO_SIZE;
         this.frmData = new byte[this.frmSize];
+
         System.arraycopy(data, 24, this.frmData, 0, this.frmSize);
 
         this.panState = new PanState(this.onlineNum);
@@ -143,6 +151,8 @@ public class P2PAVFrame
     {
         switch (b >>> 2)
         {
+            case 0:
+                return 16000;
             case 1:
                 return 11025;
             case 2:
@@ -157,9 +167,9 @@ public class P2PAVFrame
                 return 44100;
             case 8:
                 return 48000;
-            default:
-                return 16000;
         }
+
+        return 16000;
     }
 
     public short getCodecId()
