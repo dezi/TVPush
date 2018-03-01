@@ -54,10 +54,11 @@ public class P2PVideoStillImage
         return P2PVideoRenderUtils.saveTexture(this.texture, this.width, this.height);
     }
 
-    public void setTexture(int i)
+    public void setTexture(int texture)
     {
         P2PVideoRenderUtils.clearTexture(this.texture);
-        this.texture = i;
+
+        this.texture = texture;
     }
 
     public void swap(P2PVideoStillImage photo)

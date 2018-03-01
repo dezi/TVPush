@@ -15,13 +15,15 @@ public class P2PReaderThreadCodec extends Thread
     private P2PSession session;
     private DecoderBase decoder;
     private boolean haveIFrame;
-    private int[] mYUVTextures;
+
 
     private int lastCodec;
     private int lastWidth;
     private int lastHeight;
 
-    private P2PVideoStillImage lastStill;
+    private int[] mYUVTextures;
+    private YUVFilter mYUVFilter;
+    private P2PVideoStillImage mYUVImage;
 
     public P2PReaderThreadCodec(P2PSession session)
     {
@@ -79,7 +81,11 @@ public class P2PReaderThreadCodec extends Thread
         mYUVTextures = new int[3];
         GLES20.glGenTextures(mYUVTextures.length, mYUVTextures, 0);
 
-        mYUVTextures = new int[3];
+        /*
+        mYUVFilter = new YUVFilter();
+        mYUVFilter.initial();
+        mYUVFilter.setYuvTextures(mYUVTextures);
+        */
 
         Log.d(LOGTAG, "onStart: done.");
 
@@ -91,8 +97,17 @@ public class P2PReaderThreadCodec extends Thread
         decoder.releaseDecoder();
         decoder = null;
 
-        GLES20.glDeleteTextures(mYUVTextures.length, mYUVTextures, 0);
-        mYUVTextures = null;
+        if (mYUVFilter != null)
+        {
+            mYUVFilter.release();
+            mYUVFilter = null;
+        }
+
+        if (mYUVTextures != null)
+        {
+            GLES20.glDeleteTextures(mYUVTextures.length, mYUVTextures, 0);
+            mYUVTextures = null;
+        }
 
         Log.d(LOGTAG, "onStop: done.");
 
@@ -134,7 +149,7 @@ public class P2PReaderThreadCodec extends Thread
                 {
                     if (decoder.decodeDecoder(avFrame.frmData, avFrame.getFrmSize(), (long) avFrame.getTimeStamp()))
                     {
-                        if (decoder.toTextureDecoder(this.mYUVTextures[0], this.mYUVTextures[1], this.mYUVTextures[2]) >= 0)
+                        if (decoder.toTextureDecoder(mYUVTextures[0], mYUVTextures[1], mYUVTextures[2]) >= 0)
                         {
                             Log.d(LOGTAG, "handleData:"
                                     + " " + lastCodec
@@ -144,16 +159,21 @@ public class P2PReaderThreadCodec extends Thread
                             );
                         }
 
-                        if (lastStill == null)
+                        if (mYUVImage == null)
                         {
-                            lastStill = P2PVideoStillImage.create(lastWidth, lastHeight);
+                            mYUVImage = P2PVideoStillImage.create(lastWidth, lastHeight);
                         }
                         else
                         {
-                            lastStill.updateSize(lastWidth, lastHeight);
+                            mYUVImage.updateSize(lastWidth, lastHeight);
                         }
 
-                        session.surface.setStillImage(lastStill);
+                        if (mYUVFilter != null)
+                        {
+                            mYUVFilter.process(null, mYUVImage);
+                        }
+
+                        session.surface.setStillImage(mYUVImage);
                         session.surface.requestRender();
                     }
                 }
