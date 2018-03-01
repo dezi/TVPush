@@ -11,7 +11,7 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
 {
     private final String LOGTAG = P2PVideoFrameRenderer.class.getSimpleName();
 
-    private P2PVideoRenderProgram renderContext;
+    private P2PVideoShader renderContext;
     private P2PVideoStillImage image;
 
     public void setStillImage(P2PVideoStillImage image)
@@ -24,6 +24,9 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
         Log.d(LOGTAG, "onSurfaceCreated.");
 
         renderContext = createProgram();
+
+        YUVFilter mYUVFilter = new YUVFilter();
+        mYUVFilter.initial();
     }
 
     public void onSurfaceChanged(GL10 gl10, int i, int i2)
@@ -48,28 +51,46 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
     private static final float[] POS_VERTICES = new float[]{-1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 1.0f};
     private static final float[] TEX_VERTICES = new float[]{0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f};
 
-    private static final String FRAGMENT_SHADER = ""
-        + "precision mediump float;"
-        + "uniform sampler2D tex_sampler;\nuniform float alpha;\nvarying vec2 v_texcoord;\nvoid main() {\nvec4 color = texture2D(tex_sampler, v_texcoord);\ngl_FragColor = color;\n}\n";
+    private static final String FRAGMENT_SHADER_SOURCE = ""
+            + "precision mediump float;"
+            + "uniform sampler2D tex_sampler;"
+            + "uniform float alpha;"
+            + "varying vec2 v_texcoord;"
+            + "void main()"
+            + "{"
+            + "  vec4 color = texture2D(tex_sampler, v_texcoord);"
+            + "  gl_FragColor = color;"
+            + "}"
+            ;
 
-    private static final String VERTEX_SHADER    = "attribute vec4 a_position;\nattribute vec2 a_texcoord;\nuniform mat4 u_model_view; \nvarying vec2 v_texcoord;\nvoid main() {\n  gl_Position = u_model_view*a_position;\n  v_texcoord = a_texcoord;\n}\n";
+    private static final String VERTEX_SHADER_SOURCE = ""
+            + "attribute vec4 a_position;"
+            + "attribute vec2 a_texcoord;"
+            + "uniform mat4 u_model_view; "
+            + "varying vec2 v_texcoord;"
+            + "void main()"
+            + "{"
+            + "  gl_Position = u_model_view*a_position;"
+            + "  v_texcoord = a_texcoord;"
+            + "}"
+            ;
 
-    private P2PVideoRenderProgram createProgram()
+    private P2PVideoShader createProgram()
     {
-        int vertexShader = P2PVideoRenderUtils.loadShader(35633, VERTEX_SHADER);
+        int vertexShader = P2PVideoRenderUtils.loadShader(35633, VERTEX_SHADER_SOURCE);
 
         if (vertexShader == 0)
         {
-            throw new RuntimeException("Could not load vertex shader: " + VERTEX_SHADER);
+            throw new RuntimeException("Could not load vertex shader: " + VERTEX_SHADER_SOURCE);
         }
 
         Log.d(LOGTAG, "createProgram: VERTEX_SHADER created.");
 
-        int fragentShader = P2PVideoRenderUtils.loadShader(35632, FRAGMENT_SHADER);
+        int fragentShader = P2PVideoRenderUtils.loadShader(35632, FRAGMENT_SHADER_SOURCE);
 
         if (fragentShader == 0)
         {
-            throw new RuntimeException("Could not load fragment shader: " + FRAGMENT_SHADER);
+            throw new RuntimeException("Could not load fragment shader: " + FRAGMENT_SHADER_SOURCE);
         }
 
         Log.d(LOGTAG, "createProgram: FRAGMENT_SHADER created.");
@@ -97,7 +118,7 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
             }
         }
 
-        P2PVideoRenderProgram renderContext = new P2PVideoRenderProgram();
+        P2PVideoShader renderContext = new P2PVideoShader();
 
         renderContext.shaderProgram = programm;
 

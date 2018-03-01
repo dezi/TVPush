@@ -1,11 +1,11 @@
 package com.p2p.p2pcamera;
 
-import android.content.Context;
 import android.opengl.GLES20;
 
 public class YUVFilter extends GlslFilter
 {
     private final String YUV_FRAGMENT_SHADER_STRING = "precision mediump float;\nvarying vec2 textureCoordinate;\nuniform sampler2D y_tex;\nuniform sampler2D u_tex;\nuniform sampler2D v_tex;\nvoid main() {\n  float y = texture2D(y_tex, textureCoordinate).r;\n  float u = texture2D(u_tex, textureCoordinate).r - 0.5;\n  float v = texture2D(v_tex, textureCoordinate).r - 0.5;\n  gl_FragColor = vec4(y + 1.403 * v,                       y - 0.344 * u - 0.714 * v,                       y + 1.77 * u, 1.0);\n}\n";
+
     int texUHandle;
     int texVHandle;
     int texYHandle;
@@ -13,12 +13,13 @@ public class YUVFilter extends GlslFilter
 
     public String fragmentShader()
     {
-        return "precision mediump float;\nvarying vec2 textureCoordinate;\nuniform sampler2D y_tex;\nuniform sampler2D u_tex;\nuniform sampler2D v_tex;\nvoid main() {\n  float y = texture2D(y_tex, textureCoordinate).r;\n  float u = texture2D(u_tex, textureCoordinate).r - 0.5;\n  float v = texture2D(v_tex, textureCoordinate).r - 0.5;\n  gl_FragColor = vec4(y + 1.403 * v,                       y - 0.344 * u - 0.714 * v,                       y + 1.77 * u, 1.0);\n}\n";
+        return YUV_FRAGMENT_SHADER_STRING;
     }
 
     protected void prepareParams()
     {
         super.prepareParams();
+
         this.texYHandle = GLES20.glGetUniformLocation(this.shaderProgram, "y_tex");
         this.texUHandle = GLES20.glGetUniformLocation(this.shaderProgram, "u_tex");
         this.texVHandle = GLES20.glGetUniformLocation(this.shaderProgram, "v_tex");

@@ -20,7 +20,7 @@ public class P2PVideoRenderUtils
     private static final String FRAGMENT_SHADER  = "precision mediump float;\nuniform sampler2D tex_sampler;\nuniform float alpha;\nvarying vec2 v_texcoord;\nvoid main() {\nvec4 color = texture2D(tex_sampler, v_texcoord);\ngl_FragColor = color;\n}\n";
     private static final String VERTEX_SHADER    = "attribute vec4 a_position;\nattribute vec2 a_texcoord;\nuniform mat4 u_model_view; \nvarying vec2 v_texcoord;\nvoid main() {\n  gl_Position = u_model_view*a_position;\n  v_texcoord = a_texcoord;\n}\n";
 
-    public static void renderTexture(P2PVideoRenderProgram renderContext, int i, int i2, int i3)
+    public static void renderTexture(P2PVideoShader renderContext, int i, int i2, int i3)
     {
         GLES20.glUseProgram(renderContext.shaderProgram);
 
@@ -60,12 +60,12 @@ public class P2PVideoRenderUtils
         checkGlError("glDrawArrays");
     }
 
-    public static P2PVideoRenderProgram createProgram()
+    public static P2PVideoShader createProgram()
     {
         return createProgram(POS_VERTICES, TEX_VERTICES);
     }
 
-    private static P2PVideoRenderProgram createProgram(float[] fArr, float[] fArr2)
+    private static P2PVideoShader createProgram(float[] fArr, float[] fArr2)
     {
         int loadShader1 = loadShader(35633, VERTEX_SHADER);
 
@@ -108,7 +108,7 @@ public class P2PVideoRenderUtils
             }
         }
 
-        P2PVideoRenderProgram renderContext = new P2PVideoRenderProgram();
+        P2PVideoShader renderContext = new P2PVideoShader();
 
         renderContext.texSamplerHandle = GLES20.glGetUniformLocation(glCreateProgram, "tex_sampler");
         renderContext.alphaHandle = GLES20.glGetUniformLocation(glCreateProgram, "alpha");

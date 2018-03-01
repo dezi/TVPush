@@ -2,7 +2,7 @@ package com.p2p.p2pcamera;
 
 import java.nio.FloatBuffer;
 
-public class P2PVideoRenderProgram
+public class P2PVideoShader
 {
     public float alpha = 1.0f;
 
