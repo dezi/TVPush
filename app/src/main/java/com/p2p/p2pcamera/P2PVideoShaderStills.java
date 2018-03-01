@@ -9,7 +9,9 @@ public class P2PVideoShaderStills extends P2PVideoShader
     private static final float[] POS_VERTICES = new float[]{-1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f};
     private static final float[] TEX_VERTICES = new float[]{0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f};
 
-    private final String YUV_FRAGMENT_SHADER_SOURCE = ""
+    final float[] mTextureMat = new float[]{1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+
+    private static final String YUV_FRAGMENT_SHADER_SOURCE = ""
             + "precision mediump float;"
             + "varying vec2 textureCoordinate;"
             + "uniform sampler2D y_tex;"
@@ -43,6 +45,8 @@ public class P2PVideoShaderStills extends P2PVideoShader
     public int texYHandle;
 
     public int[] textures;
+
+    private int[] frameBufferObjectId = new int[]{0};
 
     public P2PVideoShaderStills()
     {
@@ -114,34 +118,108 @@ public class P2PVideoShaderStills extends P2PVideoShader
 
     protected void updateParams()
     {
-        GlslFilter.checkGlError("setYuvTextures");
+        P2PVideoRenderUtils.checkGlError("setYuvTextures");
 
         GLES20.glActiveTexture(33984);
-        GLES20.glBindTexture(GlslFilter.GL_TEXTURE_2D, textures[0]);
-        GLES20.glTexParameterf(GlslFilter.GL_TEXTURE_2D, 10241, 9729.0f);
-        GLES20.glTexParameterf(GlslFilter.GL_TEXTURE_2D, 10240, 9729.0f);
-        GLES20.glTexParameterf(GlslFilter.GL_TEXTURE_2D, 10242, 33071.0f);
-        GLES20.glTexParameterf(GlslFilter.GL_TEXTURE_2D, 10243, 33071.0f);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[0]);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, 10241, 9729.0f);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, 10240, 9729.0f);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, 10242, 33071.0f);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, 10243, 33071.0f);
         GLES20.glUniform1i(texYHandle, 0);
 
-        GlslFilter.checkGlError("glBindTexture y");
+        P2PVideoRenderUtils.checkGlError("glBindTexture y");
 
         GLES20.glActiveTexture(33985);
-        GLES20.glBindTexture(GlslFilter.GL_TEXTURE_2D, textures[1]);
-        GLES20.glTexParameterf(GlslFilter.GL_TEXTURE_2D, 10240, 9729.0f);
-        GLES20.glTexParameterf(GlslFilter.GL_TEXTURE_2D, 10242, 33071.0f);
-        GLES20.glTexParameterf(GlslFilter.GL_TEXTURE_2D, 10243, 33071.0f);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[1]);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, 10240, 9729.0f);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, 10242, 33071.0f);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, 10243, 33071.0f);
         GLES20.glUniform1i(texUHandle, 1);
 
-        GlslFilter.checkGlError("glBindTexture u");
+        P2PVideoRenderUtils.checkGlError("glBindTexture u");
 
         GLES20.glActiveTexture(33986);
-        GLES20.glBindTexture(GlslFilter.GL_TEXTURE_2D, textures[2]);
-        GLES20.glTexParameterf(GlslFilter.GL_TEXTURE_2D, 10240, 9729.0f);
-        GLES20.glTexParameterf(GlslFilter.GL_TEXTURE_2D, 10242, 33071.0f);
-        GLES20.glTexParameterf(GlslFilter.GL_TEXTURE_2D, 10243, 33071.0f);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[2]);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, 10240, 9729.0f);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, 10242, 33071.0f);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, 10243, 33071.0f);
         GLES20.glUniform1i(texVHandle, 2);
 
-        GlslFilter.checkGlError("glBindTexture v");
+        P2PVideoRenderUtils.checkGlError("glBindTexture v");
+    }
+
+    private void process(P2PVideoStillImage photo, P2PVideoStillImage photo2)
+    {
+        if (program == 0)
+        {
+            return;
+        }
+
+        if (photo2 == null)
+        {
+            GLES20.glBindFramebuffer(36160, 0);
+        }
+        else
+        {
+            if (this.frameBufferObjectId[0] == 0)
+            {
+                GLES20.glGenFramebuffers(1, this.frameBufferObjectId, 0);
+            }
+
+            GLES20.glActiveTexture(33984);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, photo2.texture());
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, 10240, 9729);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, 10241, 9729);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, 10242, 33071);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, 10243, 33071);
+            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, 6408, photo2.width(), photo2.height(), 0, 6408, 5121, null);
+            GLES20.glBindFramebuffer(36160, this.frameBufferObjectId[0]);
+            GLES20.glFramebufferTexture2D(36160, 36064, GLES20.GL_TEXTURE_2D, photo2.texture(), 0);
+
+            P2PVideoRenderUtils.checkGlError("glBindFramebuffer");
+        }
+
+        GLES20.glUseProgram(program);
+        P2PVideoRenderUtils.checkGlError("glUseProgram");
+        GLES20.glViewport(0, 0, photo2.width(), photo2.height());
+        P2PVideoRenderUtils.checkGlError("glViewport");
+        GLES20.glDisable(3042);
+        GLES20.glVertexAttribPointer(this.texCoordHandle, 2, 5126, false, 0, this.texVertices);
+        GLES20.glEnableVertexAttribArray(this.texCoordHandle);
+        GLES20.glVertexAttribPointer(this.posCoordHandle, 3, 5126, false, 0, this.posVertices);
+        GLES20.glEnableVertexAttribArray(this.posCoordHandle);
+        P2PVideoRenderUtils.checkGlError("vertex attribute setup");
+
+        if (photo != null && this.texSamplerHandle >= 0)
+        {
+            GLES20.glActiveTexture(33984);
+            P2PVideoRenderUtils.checkGlError("glActiveTexture");
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, photo.texture());
+            P2PVideoRenderUtils.checkGlError("glBindTexture");
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, 10240, 9729);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, 10241, 9729);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, 10242, 33071);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, 10243, 33071);
+            GLES20.glUniform1i(this.texSamplerHandle, 0);
+            P2PVideoRenderUtils.checkGlError("texSamplerHandle");
+        }
+
+        GLES20.glUniformMatrix4fv(this.texCoordMatHandle, 1, false, this.mTextureMat, 0);
+        P2PVideoRenderUtils.checkGlError("texCoordMatHandle");
+        GLES20.glUniformMatrix4fv(this.modelViewMatHandle, 1, false, this.mModelViewMat, 0);
+        P2PVideoRenderUtils.checkGlError("modelViewMatHandle");
+
+        updateParams();
+
+        GLES20.glDrawArrays(6, 0, 4);
+        P2PVideoRenderUtils.checkGlError("glDrawArrays");
+        GLES20.glFinish();
+        if (photo2 != null)
+        {
+            GLES20.glFramebufferTexture2D(36160, 36064, GLES20.GL_TEXTURE_2D, 0, 0);
+            GLES20.glBindFramebuffer(36160, 0);
+        }
+        P2PVideoRenderUtils.checkGlError("after process");
     }
 }

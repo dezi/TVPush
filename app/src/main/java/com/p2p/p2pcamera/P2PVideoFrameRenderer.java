@@ -42,9 +42,11 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
         Log.d(LOGTAG, "onSurfaceChanged.");
     }
 
+    private int modcount;
+
     public void onDrawFrame(GL10 gl10)
     {
-        Log.d(LOGTAG, "onDrawFrame.");
+        if ((modcount++ % 30) == 0) Log.d(LOGTAG, "onDrawFrame.");
 
         if ((image != null) && (frameShader != null))
         {
