@@ -11,7 +11,7 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
 {
     private final String LOGTAG = P2PVideoFrameRenderer.class.getSimpleName();
 
-    private P2PVideoRenderContext renderContext;
+    private P2PVideoRenderProgram renderContext;
     private P2PVideoStillImage image;
 
     public void setStillImage(P2PVideoStillImage image)
@@ -22,8 +22,6 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
     public void onSurfaceCreated(GL10 gl10, EGLConfig eGLConfig)
     {
         Log.d(LOGTAG, "onSurfaceCreated.");
-
-        GLES20.glEnable(GLES20.GL_TEXTURE_2D);
 
         renderContext = createProgram();
     }
@@ -50,11 +48,13 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
     private static final float[] POS_VERTICES = new float[]{-1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 1.0f};
     private static final float[] TEX_VERTICES = new float[]{0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f};
 
-    private static final String FRAGMENT_SHADER  = "precision mediump float;\nuniform sampler2D tex_sampler;\nuniform float alpha;\nvarying vec2 v_texcoord;\nvoid main() {\nvec4 color = texture2D(tex_sampler, v_texcoord);\ngl_FragColor = color;\n}\n";
+    private static final String FRAGMENT_SHADER = ""
+        + "precision mediump float;"
+        + "uniform sampler2D tex_sampler;\nuniform float alpha;\nvarying vec2 v_texcoord;\nvoid main() {\nvec4 color = texture2D(tex_sampler, v_texcoord);\ngl_FragColor = color;\n}\n";
 
     private static final String VERTEX_SHADER    = "attribute vec4 a_position;\nattribute vec2 a_texcoord;\nuniform mat4 u_model_view; \nvarying vec2 v_texcoord;\nvoid main() {\n  gl_Position = u_model_view*a_position;\n  v_texcoord = a_texcoord;\n}\n";
 
-    private P2PVideoRenderContext createProgram()
+    private P2PVideoRenderProgram createProgram()
     {
         int vertexShader = P2PVideoRenderUtils.loadShader(35633, VERTEX_SHADER);
 
@@ -97,7 +97,7 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
             }
         }
 
-        P2PVideoRenderContext renderContext = new P2PVideoRenderContext();
+        P2PVideoRenderProgram renderContext = new P2PVideoRenderProgram();
 
         renderContext.shaderProgram = programm;
 

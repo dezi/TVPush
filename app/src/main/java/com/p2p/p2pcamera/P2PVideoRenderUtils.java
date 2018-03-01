@@ -20,16 +20,9 @@ public class P2PVideoRenderUtils
     private static final String FRAGMENT_SHADER  = "precision mediump float;\nuniform sampler2D tex_sampler;\nuniform float alpha;\nvarying vec2 v_texcoord;\nvoid main() {\nvec4 color = texture2D(tex_sampler, v_texcoord);\ngl_FragColor = color;\n}\n";
     private static final String VERTEX_SHADER    = "attribute vec4 a_position;\nattribute vec2 a_texcoord;\nuniform mat4 u_model_view; \nvarying vec2 v_texcoord;\nvoid main() {\n  gl_Position = u_model_view*a_position;\n  v_texcoord = a_texcoord;\n}\n";
 
-    public static void renderTexture(P2PVideoRenderContext renderContext, int i, int i2, int i3)
+    public static void renderTexture(P2PVideoRenderProgram renderContext, int i, int i2, int i3)
     {
         GLES20.glUseProgram(renderContext.shaderProgram);
-
-        if (GLES20.glGetError() != 0)
-        {
-            createProgram();
-
-            checkGlError("createProgram");
-        }
 
         GLES20.glViewport(0, 0, i2, i3);
 
@@ -67,12 +60,12 @@ public class P2PVideoRenderUtils
         checkGlError("glDrawArrays");
     }
 
-    public static P2PVideoRenderContext createProgram()
+    public static P2PVideoRenderProgram createProgram()
     {
         return createProgram(POS_VERTICES, TEX_VERTICES);
     }
 
-    private static P2PVideoRenderContext createProgram(float[] fArr, float[] fArr2)
+    private static P2PVideoRenderProgram createProgram(float[] fArr, float[] fArr2)
     {
         int loadShader1 = loadShader(35633, VERTEX_SHADER);
 
@@ -115,7 +108,7 @@ public class P2PVideoRenderUtils
             }
         }
 
-        P2PVideoRenderContext renderContext = new P2PVideoRenderContext();
+        P2PVideoRenderProgram renderContext = new P2PVideoRenderProgram();
 
         renderContext.texSamplerHandle = GLES20.glGetUniformLocation(glCreateProgram, "tex_sampler");
         renderContext.alphaHandle = GLES20.glGetUniformLocation(glCreateProgram, "alpha");
@@ -142,20 +135,23 @@ public class P2PVideoRenderUtils
         return asFloatBuffer;
     }
 
-    public static int loadShader(int type, String str)
+    public static int loadShader(int type, String source)
     {
         int glCreateShader = GLES20.glCreateShader(type);
 
         if (glCreateShader != 0)
         {
-            GLES20.glShaderSource(glCreateShader, str);
+            GLES20.glShaderSource(glCreateShader, source);
             GLES20.glCompileShader(glCreateShader);
+
             int[] iArr = new int[1];
             GLES20.glGetShaderiv(glCreateShader, 35713, iArr, 0);
+
             if (iArr[0] == 0)
             {
                 String glGetShaderInfoLog = GLES20.glGetShaderInfoLog(glCreateShader);
                 GLES20.glDeleteShader(glCreateShader);
+
                 throw new RuntimeException("Could not compile shader " + type + ":" + glGetShaderInfoLog);
             }
         }
