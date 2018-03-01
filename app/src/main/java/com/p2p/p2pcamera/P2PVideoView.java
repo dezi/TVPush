@@ -14,6 +14,7 @@ public class P2PVideoView extends GLSurfaceView
     private static final String LOGTAG = P2PVideoView.class.getSimpleName();
 
     private FrameRenderer renderer;
+    private P2PVideoRenderUtils.RenderContext renderContext;
 
     public P2PVideoView(Context context)
     {
@@ -50,13 +51,22 @@ public class P2PVideoView extends GLSurfaceView
         return (am != null) && (am.getDeviceConfigurationInfo().reqGlEsVersion >= 131072);
     }
 
+    private P2PVideoStillImage image;
+
+    public void setStillImage(P2PVideoStillImage image)
+    {
+        this.image = image;
+    }
+
     class FrameRenderer implements Renderer
     {
         private final String LOGTAG = P2PVideoView.class.getSimpleName();
 
-        public void onDrawFrame(GL10 gl10)
+        public void onSurfaceCreated(GL10 gl10, EGLConfig eGLConfig)
         {
-            Log.d(LOGTAG, "onDrawFrame.");
+            Log.d(LOGTAG, "onSurfaceCreated.");
+
+            renderContext = P2PVideoRenderUtils.createProgram();
         }
 
         public void onSurfaceChanged(GL10 gl10, int i, int i2)
@@ -64,9 +74,16 @@ public class P2PVideoView extends GLSurfaceView
             Log.d(LOGTAG, "onSurfaceChanged.");
         }
 
-        public void onSurfaceCreated(GL10 gl10, EGLConfig eGLConfig)
+        public void onDrawFrame(GL10 gl10)
         {
-            Log.d(LOGTAG, "onSurfaceCreated.");
+            Log.d(LOGTAG, "onDrawFrame.");
+
+            if (image != null)
+            {
+                //setRenderMatrix(image.width(), image.height());
+
+                P2PVideoRenderUtils.renderTexture(renderContext, image.texture(), image.width(), image.height());
+            }
         }
     }
 }

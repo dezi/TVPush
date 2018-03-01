@@ -89,5 +89,4 @@ public class P2PVideoStillImage
     {
         return this.width;
     }
-
 }

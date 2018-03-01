@@ -15,10 +15,13 @@ public class P2PReaderThreadCodec extends Thread
     private P2PSession session;
     private DecoderBase decoder;
     private boolean haveIFrame;
+    private int[] mYUVTextures;
+
     private int lastCodec;
     private int lastWidth;
     private int lastHeight;
-    private int[] mYUVTextures;
+
+    private P2PVideoStillImage lastStill;
 
     public P2PReaderThreadCodec(P2PSession session)
     {
@@ -141,6 +144,16 @@ public class P2PReaderThreadCodec extends Thread
                             );
                         }
 
+                        if (lastStill == null)
+                        {
+                            lastStill = P2PVideoStillImage.create(lastWidth, lastHeight);
+                        }
+                        else
+                        {
+                            lastStill.updateSize(lastWidth, lastHeight);
+                        }
+
+                        session.surface.setStillImage(lastStill);
                         session.surface.requestRender();
                     }
                 }
