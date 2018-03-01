@@ -140,6 +140,8 @@ public class P2PReaderThreadCodec extends Thread
                                     + " " + session.decodeFrames.size()
                             );
                         }
+
+                        session.surface.requestRender();
                     }
                 }
             }
@@ -152,71 +154,5 @@ public class P2PReaderThreadCodec extends Thread
         }
 
         return true;
-    }
-
-    private byte[] yuv2rgb(byte[] yuyv_image, int width, int height)
-    {
-        byte[] rgb_image = new byte[width * height * 3];
-
-        int y;
-        int cr;
-        int cb;
-
-        double r;
-        double g;
-        double b;
-
-        int i, j;
-
-        for (i = 0, j = 0; i < width * height * 3; i += 6, j += 4)
-        {
-            y = yuyv_image[j];
-            cb = yuyv_image[j + 1];
-            cr = yuyv_image[j + 3];
-
-            r = y + (1.4065 * (cr - 128));
-            g = y - (0.3455 * (cb - 128)) - (0.7169 * (cr - 128));
-            b = y + (1.7790 * (cb - 128));
-
-            //This prevents colour distortions in your rgb image
-            if (r < 0) r = 0;
-            else
-                if (r > 255) r = 255;
-            if (g < 0) g = 0;
-            else
-                if (g > 255) g = 255;
-            if (b < 0) b = 0;
-            else
-                if (b > 255) b = 255;
-
-            rgb_image[i] = (byte) r;
-            rgb_image[i + 1] = (byte) g;
-            rgb_image[i + 2] = (byte) b;
-
-            //second pixel
-            y = yuyv_image[j + 2];
-            cb = yuyv_image[j + 1];
-            cr = yuyv_image[j + 3];
-
-            r = y + (1.4065 * (cr - 128));
-            g = y - (0.3455 * (cb - 128)) - (0.7169 * (cr - 128));
-            b = y + (1.7790 * (cb - 128));
-
-            if (r < 0) r = 0;
-            else
-                if (r > 255) r = 255;
-            if (g < 0) g = 0;
-            else
-                if (g > 255) g = 255;
-            if (b < 0) b = 0;
-            else
-                if (b > 255) b = 255;
-
-            rgb_image[i + 3] = (byte) r;
-            rgb_image[i + 4] = (byte) g;
-            rgb_image[i + 5] = (byte) b;
-        }
-
-        return rgb_image;
     }
 }

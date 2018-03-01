@@ -22,29 +22,30 @@ public class P2PAVFrame
     public static final int AUDIO_SAMPLE_44K = 7;
     public static final int AUDIO_SAMPLE_48K = 8;
 
-    public static final byte FRM_STATE_COMPLETE = (byte) 0;
-    public static final byte FRM_STATE_INCOMPLETE = (byte) 1;
-    public static final byte FRM_STATE_LOSED = (byte) 2;
-    public static final byte FRM_STATE_UNKOWN = (byte) -1;
+    public static final byte FRM_STATE_COMPLETE = 0;
+    public static final byte FRM_STATE_INCOMPLETE = 1;
+    public static final byte FRM_STATE_LOSED = 2;
+    public static final byte FRM_STATE_UNKOWN = -1;
 
-    public static final int IPC_FRAME_FLAG_IFRAME = 1;
-    public static final int IPC_FRAME_FLAG_IO = 3;
-    public static final int IPC_FRAME_FLAG_MD = 2;
     public static final int IPC_FRAME_FLAG_PBFRAME = 0;
+    public static final int IPC_FRAME_FLAG_IFRAME = 1;
+    public static final int IPC_FRAME_FLAG_MD = 2;
+    public static final int IPC_FRAME_FLAG_IO = 3;
 
-    public static final int MEDIA_CODEC_UNKNOWN = 0;
+    public static final short MEDIA_CODEC_UNKNOWN = 0;
 
-    public static final int MEDIA_CODEC_VIDEO_H263 = 77;
-    public static final int MEDIA_CODEC_VIDEO_H264 = 78;
-    public static final int MEDIA_CODEC_VIDEO_MJPEG = 79;
-    public static final int MEDIA_CODEC_VIDEO_MPEG4 = 76;
+    public static final short MEDIA_CODEC_VIDEO_H263 = 77;
+    public static final short MEDIA_CODEC_VIDEO_H264 = 78;
+    public static final short MEDIA_CODEC_VIDEO_MJPEG = 79;
+    public static final short MEDIA_CODEC_VIDEO_MPEG4 = 76;
+    public static final short MEDIA_CODEC_VIDEO_H265 = 81;
 
-    public static final int MEDIA_CODEC_AUDIO_AAC = 138;
-    public static final int MEDIA_CODEC_AUDIO_ADPCM = 139;
-    public static final int MEDIA_CODEC_AUDIO_G726 = 143;
-    public static final int MEDIA_CODEC_AUDIO_MP3 = 142;
-    public static final int MEDIA_CODEC_AUDIO_PCM = 140;
-    public static final int MEDIA_CODEC_AUDIO_SPEEX = 141;
+    public static final short MEDIA_CODEC_AUDIO_AAC = 138;
+    public static final short MEDIA_CODEC_AUDIO_ADPCM = 139;
+    public static final short MEDIA_CODEC_AUDIO_G726 = 143;
+    public static final short MEDIA_CODEC_AUDIO_MP3 = 142;
+    public static final short MEDIA_CODEC_AUDIO_PCM = 140;
+    public static final short MEDIA_CODEC_AUDIO_SPEEX = 141;
 
     private short codec_id;
     private byte cover_state;
@@ -189,6 +190,8 @@ public class P2PAVFrame
                 return "VIDEO_MJPEG";
             case MEDIA_CODEC_VIDEO_MPEG4:
                 return "VIDEO_MPEG4";
+            case MEDIA_CODEC_VIDEO_H265:
+                return "VIDEO_H265";
             case MEDIA_CODEC_AUDIO_AAC:
                 return "AUDIO_AAC";
             case MEDIA_CODEC_AUDIO_ADPCM:
