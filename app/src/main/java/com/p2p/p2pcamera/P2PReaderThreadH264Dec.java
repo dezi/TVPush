@@ -7,7 +7,7 @@ import com.decoder.util.H264Decoder;
 
 public class P2PReaderThreadH264Dec extends Thread
 {
-    private static final String LOGTAG = P2PReaderThreadDecoder.class.getSimpleName();
+    private static final String LOGTAG = P2PReaderThreadH264Dec.class.getSimpleName();
 
     static final int MAX_FRAMEBUF = 4000000;
 
@@ -15,6 +15,8 @@ public class P2PReaderThreadH264Dec extends Thread
     private H264Decoder decoder;
     private boolean haveIFrame;
     private byte[] yuvbuf;
+    private int lastWidth;
+    private int lastHeight;
 
     public P2PReaderThreadH264Dec(P2PSession session)
     {
@@ -65,6 +67,9 @@ public class P2PReaderThreadH264Dec extends Thread
 
     public boolean onStart()
     {
+        lastWidth = 0;
+        lastHeight = 0;
+
         decoder = new H264Decoder(0);
         yuvbuf = new byte[MAX_FRAMEBUF];
 
@@ -99,25 +104,46 @@ public class P2PReaderThreadH264Dec extends Thread
                         + " size=" + aVFrame.getFrmSize());
                 */
 
-                if (decoder.consumeNalUnitsFromDirectBuffer(aVFrame.frmData, aVFrame.getFrmSize(), (long) aVFrame.getFrmNo()) > 0)
+                if (((lastWidth != 0) || (lastHeight != 0)) &&
+                        ((lastWidth != aVFrame.getVideoWidth()) || (lastHeight != aVFrame.getVideoHeight())))
                 {
-                    int width = decoder.getWidth();
-                    int height = decoder.getHeight();
-                    int size = decoder.getOutputByteSize();
+                    decoder.nativeDestroy();
+                    decoder = new H264Decoder(0);
 
-                    Log.d(LOGTAG, "handleData:"
-                            + " width=" + width
-                            + " height=" + height
-                            + " size=" + size
-                            + " avail=" + yuvbuf.length
-                            + " ready=" + decoder.isFrameReady());
+                    Log.d(LOGTAG, "handleData: decoder recreated...");
 
-                    /*
-                    if ((size <= yuvbuf.length) && (decoder.getYUVData(yuvbuf, yuvbuf.length) != -1))
+                    haveIFrame = aVFrame.isIFrame();
+                }
+
+                lastWidth = aVFrame.getVideoWidth();
+                lastHeight = aVFrame.getVideoHeight();
+
+                if (haveIFrame)
+                {
+                    if (decoder.consumeNalUnitsFromDirectBuffer(aVFrame.frmData, aVFrame.getFrmSize(), (long) aVFrame.getFrmNo()) > 0)
                     {
-                        //session.surface.mRenderer.setFrame(this.yuvbuf, width, height);
+                        int width = decoder.getWidth();
+                        int height = decoder.getHeight();
+                        int size = decoder.getOutputByteSize();
+
+                        Log.d(LOGTAG, "handleData: "
+                                + width + "x" + height
+                                + " " + aVFrame.getFrmNo()
+                                + " " + size
+                                + " " + decoder.isFrameReady()
+                                + " " + session.decodeFrames.size()
+                        );
+
+                        if (decoder.isFrameReady() && (size <= yuvbuf.length) && ((aVFrame.getFrmNo() % 2) == 1))
+                        {
+                            long xfer = decoder.getYUVData(yuvbuf, yuvbuf.length);
+
+                            if (xfer != -1)
+                            {
+                                //session.surface.mRenderer.setFrame(this.yuvbuf, width, height);
+                            }
+                        }
                     }
-                    */
                 }
             }
         }

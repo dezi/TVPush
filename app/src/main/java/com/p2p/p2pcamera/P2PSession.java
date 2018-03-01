@@ -56,6 +56,9 @@ public class P2PSession
     {
         System.loadLibrary("faad");
         System.loadLibrary("videodraw");
+        System.loadLibrary("ijkffmpeg");
+        System.loadLibrary("h265decoder");
+        System.loadLibrary("mi_decoder");
         System.loadLibrary("videodecoder");
         System.loadLibrary("PPPP_API");
 
