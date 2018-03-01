@@ -1,24 +1,26 @@
 package com.p2p.p2pcamera;
 
+import android.opengl.GLES20;
 import android.util.Log;
-import javax.microedition.khronos.egl.EGL10;
 
-import com.decoder.util.H264Decoder;
+import com.decoder.xiaomi.AntsDecoder;
+import com.decoder.xiaomi.DecoderBase;
 
-public class P2PReaderThreadH264Dec extends Thread
+public class P2PReaderThreadCodec extends Thread
 {
-    private static final String LOGTAG = P2PReaderThreadH264Dec.class.getSimpleName();
+    private static final String LOGTAG = P2PReaderThreadCodec.class.getSimpleName();
 
     static final int MAX_FRAMEBUF = 4000000;
 
     private P2PSession session;
-    private H264Decoder decoder;
+    private DecoderBase decoder;
     private boolean haveIFrame;
-    private byte[] yuvbuf;
+    private int lastCodec;
     private int lastWidth;
     private int lastHeight;
+    private int[] mYUVTextures;
 
-    public P2PReaderThreadH264Dec(P2PSession session)
+    public P2PReaderThreadCodec(P2PSession session)
     {
         super();
 
@@ -67,11 +69,14 @@ public class P2PReaderThreadH264Dec extends Thread
 
     public boolean onStart()
     {
+        lastCodec = 0;
         lastWidth = 0;
         lastHeight = 0;
 
-        decoder = new H264Decoder(0);
-        yuvbuf = new byte[MAX_FRAMEBUF];
+        mYUVTextures = new int[3];
+        GLES20.glGenTextures(mYUVTextures.length, mYUVTextures, 0);
+
+        mYUVTextures = new int[3];
 
         Log.d(LOGTAG, "onStart: done.");
 
@@ -80,68 +85,60 @@ public class P2PReaderThreadH264Dec extends Thread
 
     public boolean onStop()
     {
-        decoder.nativeDestroy();
+        decoder.releaseDecoder();
         decoder = null;
-        yuvbuf = null;
+
+        GLES20.glDeleteTextures(mYUVTextures.length, mYUVTextures, 0);
+        mYUVTextures = null;
 
         Log.d(LOGTAG, "onStop: done.");
 
         return true;
     }
 
-    public boolean handleData(P2PAVFrame aVFrame)
+    public boolean handleData(P2PAVFrame avFrame)
     {
         try
         {
-            if ((decoder != null) && aVFrame.isIFrame() || haveIFrame)
+            if (avFrame.isIFrame() || haveIFrame)
             {
                 haveIFrame = true;
 
-                /*
-                Log.d(LOGTAG, "handleData:"
-                        + " width=" + aVFrame.getVideoWidth()
-                        + " height=" + aVFrame.getVideoHeight()
-                        + " size=" + aVFrame.getFrmSize());
-                */
-
-                if (((lastWidth != 0) || (lastHeight != 0)) &&
-                        ((lastWidth != aVFrame.getVideoWidth()) || (lastHeight != aVFrame.getVideoHeight())))
+                if ((decoder == null)
+                        || (lastCodec != avFrame.getCodecId())
+                        || (lastWidth != avFrame.getVideoWidth())
+                        || (lastHeight != avFrame.getVideoHeight()))
                 {
-                    decoder.nativeDestroy();
-                    decoder = new H264Decoder(0);
+                    if (decoder != null)
+                    {
+                        Log.d(LOGTAG, "handleData: releaseDecoder codec=" + lastCodec);
 
-                    Log.d(LOGTAG, "handleData: decoder recreated...");
+                        decoder.releaseDecoder();
+                    }
 
-                    haveIFrame = aVFrame.isIFrame();
+                    decoder = new AntsDecoder(avFrame.getCodecId());
+
+                    Log.d(LOGTAG, "handleData: createDecoder codec=" + avFrame.getCodecId());
+
+                    haveIFrame = avFrame.isIFrame();
                 }
 
-                lastWidth = aVFrame.getVideoWidth();
-                lastHeight = aVFrame.getVideoHeight();
+                lastCodec = avFrame.getCodecId();
+                lastWidth = avFrame.getVideoWidth();
+                lastHeight = avFrame.getVideoHeight();
 
                 if (haveIFrame)
                 {
-                    if (decoder.consumeNalUnitsFromDirectBuffer(aVFrame.frmData, aVFrame.getFrmSize(), (long) aVFrame.getFrmNo()) > 0)
+                    if (decoder.decodeDecoder(avFrame.frmData, avFrame.getFrmSize(), (long) avFrame.getTimeStamp()))
                     {
-                        int width = decoder.getWidth();
-                        int height = decoder.getHeight();
-                        int size = decoder.getOutputByteSize();
-
-                        Log.d(LOGTAG, "handleData: "
-                                + width + "x" + height
-                                + " " + aVFrame.getFrmNo()
-                                + " " + size
-                                + " " + decoder.isFrameReady()
-                                + " " + session.decodeFrames.size()
-                        );
-
-                        if (decoder.isFrameReady() && (size <= yuvbuf.length) && ((aVFrame.getFrmNo() % 2) == 1))
+                        if (decoder.toTextureDecoder(this.mYUVTextures[0], this.mYUVTextures[1], this.mYUVTextures[2]) >= 0)
                         {
-                            long xfer = decoder.getYUVData(yuvbuf, yuvbuf.length);
-
-                            if (xfer != -1)
-                            {
-                                //session.surface.mRenderer.setFrame(this.yuvbuf, width, height);
-                            }
+                            Log.d(LOGTAG, "handleData:"
+                                    + " " + lastCodec
+                                    + " " + lastWidth + "x" + lastHeight
+                                    + " " + avFrame.getFrmNo()
+                                    + " " + session.decodeFrames.size()
+                            );
                         }
                     }
                 }

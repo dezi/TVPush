@@ -1,7 +1,5 @@
 package com.p2p.p2pcamera;
 
-import android.util.Log;
-
 public class P2PReaderThreadVideo extends P2PReaderThread
 {
     private static final String LOGTAG = P2PReaderThreadVideo.class.getSimpleName();
@@ -14,21 +12,18 @@ public class P2PReaderThreadVideo extends P2PReaderThread
     @Override
     public boolean handleData(byte[] data, int size)
     {
-        P2PAVFrame aVFrame = new P2PAVFrame(data, size, session.isBigEndian);
+        P2PAVFrame avFrame = new P2PAVFrame(data, size, session.isBigEndian);
 
-        if (session.isEncrypted && aVFrame.isIFrame())
+        if (session.isEncrypted && avFrame.isIFrame())
         {
-            session.p2pAVFrameDecrypt.decryptIframe(aVFrame);
+            session.p2pAVFrameDecrypt.decryptIframe(avFrame);
         }
 
-        if (aVFrame.isIFrame() || ((aVFrame.getFrmNo() % 13) == 0))
-        {
-            //Log.d(LOGTAG, "handleData: channel=" + channel + " " + aVFrame.toFrameString());
-        }
+        //Log.d(LOGTAG, "handleData: channel=" + channel + " " + avFrame.toFrameString());
 
         synchronized (session.decodeFrames)
         {
-            session.decodeFrames.add(aVFrame);
+            session.decodeFrames.add(avFrame);
         }
 
         return true;

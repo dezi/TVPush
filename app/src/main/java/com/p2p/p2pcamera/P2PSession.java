@@ -1,9 +1,6 @@
 package com.p2p.p2pcamera;
 
-import android.media.MediaCodec;
 import android.util.Log;
-import android.view.Surface;
-import android.view.SurfaceView;
 
 import com.p2p.pppp_api.PPPP_APIs;
 import com.p2p.pppp_api.PPPP_Keys;
@@ -44,7 +41,7 @@ public class P2PSession
     private P2PReaderThread t4;
     private P2PReaderThread t5;
 
-    private P2PReaderThreadH264Dec t6;
+    private P2PReaderThreadCodec t6;
 
     public P2PAVFrameDecrypt p2pAVFrameDecrypt;
 
@@ -144,7 +141,7 @@ public class P2PSession
             t4 = new P2PReaderThreadVideo(this, (byte) 4);
             t5 = new P2PReaderThreadVideo(this, (byte) 5);
 
-            t6 = new P2PReaderThreadH264Dec(this);
+            t6 = new P2PReaderThreadCodec(this);
 
             t0.start();
             t1.start();

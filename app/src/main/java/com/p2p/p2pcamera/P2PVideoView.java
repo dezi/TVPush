@@ -1,20 +1,23 @@
 package com.p2p.p2pcamera;
 
+import android.app.ActivityManager;
 import android.content.Context;
+import android.opengl.GLES20;
+import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
-import android.widget.FrameLayout;
+import android.util.Log;
 
-import com.video.draw.EGLConfigChooser;
-import com.video.draw.EGLContextFactory;
-import com.video.draw.EGLWindowSurfaceFactory;
-import com.video.draw.GLSurface;
-import com.video.draw.Renderer;
+import java.nio.IntBuffer;
 
-public class P2PVideoView extends FrameLayout
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+
+public class P2PVideoView extends GLSurfaceView
 {
-    public GLSurface mGlSurface;
-    public Renderer mRenderer;
-    
+    private static final String LOGTAG = P2PVideoView.class.getSimpleName();
+
+    private FrameRenderer renderer;
+
     public P2PVideoView(Context context)
     {
         super(context);
@@ -27,46 +30,46 @@ public class P2PVideoView extends FrameLayout
         init(context);
     }
 
-    public P2PVideoView(Context context, AttributeSet attributeSet, int defStyleAttr)
-    {
-        super(context, attributeSet, defStyleAttr);
-        init(context);
-    }
-
     private void init(Context context)
     {
-        setBackgroundColor(0x88008800);
-
-        mGlSurface = new GLSurface(context);
-
-        mGlSurface.setEGLConfigChooser(new EGLConfigChooser(8, 8, 8, 8, 0, 0));
-        mGlSurface.setEGLWindowSurfaceFactory(new EGLWindowSurfaceFactory());
-        mGlSurface.setEGLContextFactory(new EGLContextFactory());
-        mGlSurface.getHolder().setFormat(-1);
-        mGlSurface.setEGLContextClientVersion(2);
-
-        mRenderer = new Renderer();
-        mGlSurface.setRenderer(mRenderer);
-
-        mGlSurface.setDebugFlags(3);
-        mGlSurface.setRenderMode(0);
-
-        mRenderer.setListener(new Renderer.FrameListener()
+        if (supportsOpenGLES2(context))
         {
-            public void onNewFrame()
-            {
-                mGlSurface.requestRender();
-            }
+            renderer = new FrameRenderer();
+            setEGLContextClientVersion(2);
+            setEGLConfigChooser(new P2PVideoConfigChooser.ComponentSizeChooser(8, 8, 8, 8, 0, 0));
+            getHolder().setFormat(1);
+            setRenderer(renderer);
+            setRenderMode(0);
 
-            public void onSurfaceChanged()
-            {
-            }
+            return;
+        }
 
-            public void onSurfaceCreate()
-            {
-            }
-        });
+        throw new RuntimeException("Device does not support gles 2.0!");
+    }
 
-        addView(mGlSurface);
+    private boolean supportsOpenGLES2(Context context)
+    {
+        ActivityManager am = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE));
+        return (am != null) && (am.getDeviceConfigurationInfo().reqGlEsVersion >= 131072);
+    }
+
+    class FrameRenderer implements Renderer
+    {
+        private final String LOGTAG = P2PVideoView.class.getSimpleName();
+
+        public void onDrawFrame(GL10 gl10)
+        {
+            Log.d(LOGTAG, "onDrawFrame.");
+        }
+
+        public void onSurfaceChanged(GL10 gl10, int i, int i2)
+        {
+            Log.d(LOGTAG, "onSurfaceChanged.");
+        }
+
+        public void onSurfaceCreated(GL10 gl10, EGLConfig eGLConfig)
+        {
+            Log.d(LOGTAG, "onSurfaceCreated.");
+        }
     }
 }
