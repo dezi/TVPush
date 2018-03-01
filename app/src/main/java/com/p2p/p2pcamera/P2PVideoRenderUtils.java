@@ -22,7 +22,7 @@ public class P2PVideoRenderUtils
 
     public static void renderTexture(P2PVideoShader renderContext, int i, int i2, int i3)
     {
-        GLES20.glUseProgram(renderContext.shaderProgram);
+        GLES20.glUseProgram(renderContext.program);
 
         GLES20.glViewport(0, 0, i2, i3);
 
@@ -58,11 +58,6 @@ public class P2PVideoRenderUtils
         GLES20.glFinish();
 
         checkGlError("glDrawArrays");
-    }
-
-    public static P2PVideoShader createProgram()
-    {
-        return createProgram(POS_VERTICES, TEX_VERTICES);
     }
 
     private static P2PVideoShader createProgram(float[] fArr, float[] fArr2)
@@ -117,7 +112,7 @@ public class P2PVideoRenderUtils
         renderContext.modelViewMatHandle = GLES20.glGetUniformLocation(glCreateProgram, "u_model_view");
         renderContext.texVertices = createVerticesBuffer(fArr2);
         renderContext.posVertices = createVerticesBuffer(fArr);
-        renderContext.shaderProgram = glCreateProgram;
+        renderContext.program = glCreateProgram;
 
         return renderContext;
     }

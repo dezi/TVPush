@@ -11,7 +11,7 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
 {
     private final String LOGTAG = P2PVideoFrameRenderer.class.getSimpleName();
 
-    private P2PVideoShader renderContext;
+    private P2PVideoShaderFrames frameShader;
     private P2PVideoStillImage image;
 
     public void setStillImage(P2PVideoStillImage image)
@@ -23,7 +23,7 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
     {
         Log.d(LOGTAG, "onSurfaceCreated.");
 
-        renderContext = createProgram();
+        frameShader = new P2PVideoShaderFrames();
 
         YUVFilter mYUVFilter = new YUVFilter();
         mYUVFilter.initial();
@@ -42,7 +42,7 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
         {
             //setRenderMatrix(image.width(), image.height());
 
-            P2PVideoRenderUtils.renderTexture(renderContext, image.texture(), image.width(), image.height());
+            P2PVideoRenderUtils.renderTexture(frameShader, image.texture(), image.width(), image.height());
         }
     }
 
@@ -120,7 +120,7 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
 
         P2PVideoShader renderContext = new P2PVideoShader();
 
-        renderContext.shaderProgram = programm;
+        renderContext.program = programm;
 
         renderContext.alphaHandle = GLES20.glGetUniformLocation(programm, "alpha");
         renderContext.texCoordHandle = GLES20.glGetAttribLocation(programm, "a_texcoord");
