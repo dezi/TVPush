@@ -11,8 +11,18 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
 {
     private final String LOGTAG = P2PVideoFrameRenderer.class.getSimpleName();
 
-    private P2PVideoShaderFrames frameShader;
+    public P2PVideoShaderFrames frameShader;
+    public P2PVideoShaderStills stillShader;
+
     private P2PVideoStillImage image;
+
+    public void setYUVTextureIds(int[] yuvTextureIds)
+    {
+        if (stillShader != null)
+        {
+            stillShader.setYuvTextures(yuvTextureIds);
+        }
+    }
 
     public void setStillImage(P2PVideoStillImage image)
     {
@@ -24,9 +34,7 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
         Log.d(LOGTAG, "onSurfaceCreated.");
 
         frameShader = new P2PVideoShaderFrames();
-
-        YUVFilter mYUVFilter = new YUVFilter();
-        mYUVFilter.initial();
+        stillShader = new P2PVideoShaderStills();
     }
 
     public void onSurfaceChanged(GL10 gl10, int i, int i2)
@@ -38,7 +46,7 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
     {
         Log.d(LOGTAG, "onDrawFrame.");
 
-        if (image != null)
+        if ((image != null) && (frameShader != null))
         {
             //setRenderMatrix(image.width(), image.height());
 

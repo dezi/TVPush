@@ -119,11 +119,6 @@ public class P2PVideoRenderUtils
 
     public static FloatBuffer createVerticesBuffer(float[] fArr)
     {
-        if (fArr.length != 8)
-        {
-            throw new RuntimeException("Number of vertices should be four.");
-        }
-
         FloatBuffer asFloatBuffer = ByteBuffer.allocateDirect(fArr.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
         asFloatBuffer.put(fArr).position(0);
 

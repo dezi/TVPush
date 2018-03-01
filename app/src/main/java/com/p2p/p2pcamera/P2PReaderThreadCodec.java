@@ -16,13 +16,11 @@ public class P2PReaderThreadCodec extends Thread
     private DecoderBase decoder;
     private boolean haveIFrame;
 
-
     private int lastCodec;
     private int lastWidth;
     private int lastHeight;
 
     private int[] mYUVTextures;
-    private YUVFilter mYUVFilter;
     private P2PVideoStillImage mYUVImage;
 
     public P2PReaderThreadCodec(P2PSession session)
@@ -81,11 +79,7 @@ public class P2PReaderThreadCodec extends Thread
         mYUVTextures = new int[3];
         GLES20.glGenTextures(mYUVTextures.length, mYUVTextures, 0);
 
-        /*
-        mYUVFilter = new YUVFilter();
-        mYUVFilter.initial();
-        mYUVFilter.setYuvTextures(mYUVTextures);
-        */
+        session.surface.setYUVTextureIds(mYUVTextures);
 
         Log.d(LOGTAG, "onStart: done.");
 
@@ -96,12 +90,6 @@ public class P2PReaderThreadCodec extends Thread
     {
         decoder.releaseDecoder();
         decoder = null;
-
-        if (mYUVFilter != null)
-        {
-            mYUVFilter.release();
-            mYUVFilter = null;
-        }
 
         if (mYUVTextures != null)
         {
@@ -166,11 +154,6 @@ public class P2PReaderThreadCodec extends Thread
                         else
                         {
                             mYUVImage.updateSize(lastWidth, lastHeight);
-                        }
-
-                        if (mYUVFilter != null)
-                        {
-                            mYUVFilter.process(null, mYUVImage);
                         }
 
                         session.surface.setStillImage(mYUVImage);

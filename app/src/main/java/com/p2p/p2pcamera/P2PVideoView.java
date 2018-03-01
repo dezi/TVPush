@@ -52,4 +52,9 @@ public class P2PVideoView extends GLSurfaceView
     {
         renderer.setStillImage(image);
     }
+
+    public void setYUVTextureIds(int[] yuvTextureIds)
+    {
+        renderer.setYUVTextureIds(yuvTextureIds);
+    }
 }
