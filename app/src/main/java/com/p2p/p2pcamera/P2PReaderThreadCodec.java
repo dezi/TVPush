@@ -132,22 +132,29 @@ public class P2PReaderThreadCodec extends Thread
                         }
                         else
                         {
+                            session.surface.setDecoder(decoder);
+                            rgbImage.updateSize(lastWidth, lastHeight);
+                            session.surface.requestRender();
+
+                            if (session.decodeFrames.size() > 2)
+                            {
+                                Log.d(LOGTAG, "handleData:"
+                                        + " " + lastCodec
+                                        + " " + lastWidth + "x" + lastHeight
+                                        + " " + avFrame.getFrmNo()
+                                        + " " + session.decodeFrames.size()
+                                );
+                            }
+
+                            /*
                             if (decoder.toTextureDecoder(yuvTextures[0], yuvTextures[1], yuvTextures[2]) >= 0)
                             {
-                                if (session.decodeFrames.size() > 2)
-                                {
-                                    Log.d(LOGTAG, "handleData:"
-                                            + " " + lastCodec
-                                            + " " + lastWidth + "x" + lastHeight
-                                            + " " + avFrame.getFrmNo()
-                                            + " " + session.decodeFrames.size()
-                                    );
-                                }
 
                                 rgbImage.updateSize(lastWidth, lastHeight);
 
                                 session.surface.requestRender();
                             }
+                            */
                         }
                     }
                 }

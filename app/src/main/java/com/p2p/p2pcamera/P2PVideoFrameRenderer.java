@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
+import com.decoder.xiaomi.DecoderBase;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -15,8 +17,14 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
     private P2PVideoShaderFrames frameShader;
 
     private P2PVideoGLImage rgbImage;
+    private DecoderBase decoder;
 
     private int modcount;
+
+    public void setDecoder(DecoderBase decoder)
+    {
+        this.decoder = decoder;
+    }
 
     public int[] getYUVTextures()
     {
@@ -58,7 +66,7 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
         {
             if (yuvShader != null)
             {
-                if (yuvShader.process(rgbImage))
+                if (yuvShader.process(rgbImage, decoder))
                 {
                     Bitmap bm = rgbImage.save();
                 }

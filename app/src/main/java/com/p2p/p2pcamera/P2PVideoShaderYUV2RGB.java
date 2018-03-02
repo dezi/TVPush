@@ -3,6 +3,8 @@ package com.p2p.p2pcamera;
 import android.opengl.GLES20;
 import android.util.Log;
 
+import com.decoder.xiaomi.DecoderBase;
+
 public class P2PVideoShaderYUV2RGB extends P2PVideoShader
 {
     private final String LOGTAG = P2PVideoShader.class.getSimpleName();
@@ -116,7 +118,7 @@ public class P2PVideoShaderYUV2RGB extends P2PVideoShader
         return yuvTextures;
     }
 
-    public boolean process(P2PVideoGLImage rgb)
+    public boolean process(P2PVideoGLImage rgb, DecoderBase decoder)
     {
         if (program == 0)
         {
@@ -135,6 +137,13 @@ public class P2PVideoShaderYUV2RGB extends P2PVideoShader
         if ((rgb.getTexture() == 0) || (rgb.getWidth() == 0) || (rgb.getHeight() == 0))
         {
             Log.d(LOGTAG, "process: RGB image not yet ready.");
+
+            return false;
+        }
+
+        if (decoder.toTextureDecoder(yuvTextures[0], yuvTextures[1], yuvTextures[2]) < 0)
+        {
+            Log.d(LOGTAG, "process: decoder fucked up.");
 
             return false;
         }

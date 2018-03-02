@@ -5,6 +5,8 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 
+import com.decoder.xiaomi.DecoderBase;
+
 public class P2PVideoView extends GLSurfaceView
 {
     private static final String LOGTAG = P2PVideoView.class.getSimpleName();
@@ -55,5 +57,10 @@ public class P2PVideoView extends GLSurfaceView
     public int[] getYUVTextures()
     {
         return renderer.getYUVTextures();
+    }
+
+    public void setDecoder(DecoderBase decoder)
+    {
+        renderer.setDecoder(decoder);
     }
 }
