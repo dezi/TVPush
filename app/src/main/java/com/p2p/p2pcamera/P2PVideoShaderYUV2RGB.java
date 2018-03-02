@@ -116,27 +116,27 @@ public class P2PVideoShaderYUV2RGB extends P2PVideoShader
         return yuvTextures;
     }
 
-    public void process(P2PVideoGLImage rgb)
+    public boolean process(P2PVideoGLImage rgb)
     {
         if (program == 0)
         {
             Log.d(LOGTAG, "process: program failed.");
 
-            return;
+            return false;
         }
 
         if (rgb == null)
         {
             Log.d(LOGTAG, "process: no RGB image given.");
 
-            return;
+            return false;
         }
 
         if ((rgb.getTexture() == 0) || (rgb.getWidth() == 0) || (rgb.getHeight() == 0))
         {
             Log.d(LOGTAG, "process: RGB image not yet ready.");
 
-            return;
+            return false;
         }
 
         //Log.d(LOGTAG, " rgb tex=" + rgb.getTexture() + " wid=" + rgb.getWidth() + " hei=" + rgb.getHeight());
@@ -230,5 +230,7 @@ public class P2PVideoShaderYUV2RGB extends P2PVideoShader
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 
         checkGlError("after process");
+
+        return true;
     }
 }

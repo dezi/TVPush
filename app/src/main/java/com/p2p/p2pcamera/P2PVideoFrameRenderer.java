@@ -1,5 +1,6 @@
 package com.p2p.p2pcamera;
 
+import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
@@ -57,7 +58,10 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
         {
             if (yuvShader != null)
             {
-                yuvShader.process(rgbImage);
+                if (yuvShader.process(rgbImage))
+                {
+                    Bitmap bm = rgbImage.save();
+                }
             }
 
             if (frameShader != null)
