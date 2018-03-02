@@ -54,6 +54,6 @@ public class P2PVideoView extends GLSurfaceView
 
     public void setYUVTextureIds(int[] yuvTextureIds)
     {
-        renderer.setYUVTextureIds(yuvTextureIds);
+        renderer.setYUVTextures(yuvTextureIds);
     }
 }

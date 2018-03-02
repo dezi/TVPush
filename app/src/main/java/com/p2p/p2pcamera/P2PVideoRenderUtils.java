@@ -224,25 +224,46 @@ public class P2PVideoRenderUtils
         return bitmap;
     }
 
-    public static void checkGlError(String str)
+    public static boolean checkGlError(String str)
     {
         int glGetError = GLES20.glGetError();
 
         if (glGetError != 0)
         {
-            Log.e(LOGTAG, str + ": glError " + getEGLErrorString(glGetError));
+            Log.e(LOGTAG, str + ": glError=" + getGLErrorString(glGetError));
 
             for (StackTraceElement stackTraceElement : Thread.getAllStackTraces().get(Thread.currentThread()))
             {
                 Log.e(LOGTAG, "SS: " + stackTraceElement.toString());
             }
+
+            return true;
         }
+
+        return false;
     }
 
-    public static String getEGLErrorString(int glErr)
+    public static String getGLErrorString(int glErr)
     {
         switch (glErr)
         {
+            case 0x0500:
+                return "GL_INVALID_ENUM";
+            case 0x0501:
+                return "GL_INVALID_VALUE";
+            case 0x0502:
+                return "GL_INVALID_OPERATION";
+            case 0x0503:
+                return "GL_STACK_OVERFLOW";
+            case 0x0504:
+                return "GL_STACK_UNDERFLOW";
+            case 0x0505:
+                return "GL_OUT_OF_MEMORY";
+            case 0x0506:
+                return "GL_INVALID_FRAMEBUFFER_OPERATION";
+            case 0x0507:
+                return "GL_CONTEXT_LOST";
+
             case 12288:
                 return "EGL_SUCCESS";
             case 12289:
@@ -275,6 +296,6 @@ public class P2PVideoRenderUtils
                 return "EGL_CONTEXT_LOST";
         }
 
-        return Integer.toString(glErr);
+        return "DEZI_UNKNOWN_ERROR_" + Integer.toString(glErr);
     }
 }

@@ -6,7 +6,17 @@ public class P2PVideoGLImage
 {
     private int width;
     private int height;
-    private int texture = -1;
+    private int texture;
+
+    public P2PVideoGLImage()
+    {
+        this(P2PVideoRenderUtils.createTexture(), 0, 0);
+    }
+
+    public P2PVideoGLImage(int width, int height)
+    {
+        this(P2PVideoRenderUtils.createTexture(), width, height);
+    }
 
     public P2PVideoGLImage(int texture, int width, int height)
     {
@@ -15,16 +25,16 @@ public class P2PVideoGLImage
         this.height = height;
     }
 
-    public static P2PVideoGLImage create(int width, int height)
+    public P2PVideoGLImage(Bitmap bitmap)
     {
-        return new P2PVideoGLImage(P2PVideoRenderUtils.createTexture(), width, height);
-    }
+        if (bitmap != null)
+        {
+            this.width = bitmap.getWidth();
+            this.height = bitmap.getHeight();
 
-    public static P2PVideoGLImage create(Bitmap bitmap)
-    {
-        return (bitmap != null) ? new P2PVideoGLImage(P2PVideoRenderUtils.createTexture(bitmap), bitmap.getWidth(), bitmap.getHeight()) : null;
+            this.texture = P2PVideoRenderUtils.createTexture(bitmap);
+        }
     }
-
 
     public int getWidth()
     {
@@ -48,7 +58,7 @@ public class P2PVideoGLImage
         this.texture = texture;
     }
 
-    public void clear()
+    public void release()
     {
         P2PVideoRenderUtils.clearTexture(texture);
         texture = -1;

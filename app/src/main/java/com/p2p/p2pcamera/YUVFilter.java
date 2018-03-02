@@ -33,7 +33,7 @@ public class YUVFilter extends GlslFilter
     protected void updateParams()
     {
         super.updateParams();
-        GlslFilter.checkGlError("setYuvTextures");
+        GlslFilter.checkGlError("setYUVTextures");
         GLES20.glActiveTexture(33984);
         GLES20.glBindTexture(GlslFilter.GL_TEXTURE_2D, this.textures[0]);
         GLES20.glTexParameterf(GlslFilter.GL_TEXTURE_2D, 10241, 9729.0f);

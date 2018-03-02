@@ -119,7 +119,7 @@ public class RegistrationService extends Service
             worker.start();
         }
 
-        return START_STICKY;
+        return START_NOT_STICKY; //START_STICKY;
     }
 
     @Override

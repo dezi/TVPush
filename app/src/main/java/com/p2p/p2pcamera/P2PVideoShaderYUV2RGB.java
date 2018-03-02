@@ -9,7 +9,7 @@ public class P2PVideoShaderYUV2RGB extends P2PVideoShader
     private static final float[] POS_VERTICES = new float[]{-1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f};
     private static final float[] TEX_VERTICES = new float[]{0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f};
 
-    final float[] mTextureMat = new float[]{1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+    private final float[] mTextureMat = new float[]{1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
 
     private static final String YUV_FRAGMENT_SHADER_SOURCE = ""
             + "precision mediump float;"
@@ -40,175 +40,172 @@ public class P2PVideoShaderYUV2RGB extends P2PVideoShader
             + "}"
             ;
 
-    public int texUHandle;
-    public int texVHandle;
-    public int texYHandle;
+    private int texUHandle;
+    private int texVHandle;
+    private int texYHandle;
 
-    public int[] textures;
-
-    private int[] frameBufferObjectId = new int[]{0};
+    private int[] textures;
 
     public P2PVideoShaderYUV2RGB()
     {
-        int loadShader1 = P2PVideoRenderUtils.loadShader(GLES20.GL_VERTEX_SHADER, VERTEX_SHADER_SOURCE);
+        int vertexShader = P2PVideoRenderUtils.loadShader(GLES20.GL_VERTEX_SHADER, VERTEX_SHADER_SOURCE);
 
-        if (loadShader1 == 0)
+        if (vertexShader == 0)
         {
-            throw new RuntimeException("Could not load vertex shader: " + VERTEX_SHADER_SOURCE);
+            throw new RuntimeException(LOGTAG + ": Could not load vertex shader: " + VERTEX_SHADER_SOURCE);
         }
 
-        int loadShader2 = P2PVideoRenderUtils.loadShader(35632, YUV_FRAGMENT_SHADER_SOURCE);
+        int fragmentShader = P2PVideoRenderUtils.loadShader(35632, YUV_FRAGMENT_SHADER_SOURCE);
 
-        if (loadShader2 == 0)
+        if (fragmentShader == 0)
         {
-            throw new RuntimeException("Could not load fragment shader: " + YUV_FRAGMENT_SHADER_SOURCE);
+            throw new RuntimeException(LOGTAG + ": Could not load fragment shader: " + YUV_FRAGMENT_SHADER_SOURCE);
         }
 
         program = GLES20.glCreateProgram();
-        
-        if (program != 0)
+
+        if (program == 0)
         {
-            GLES20.glAttachShader(program, loadShader1);
-            P2PVideoRenderUtils.checkGlError("glAttachShader");
-
-            GLES20.glAttachShader(program, loadShader2);
-            P2PVideoRenderUtils.checkGlError("glAttachShader");
-
-            GLES20.glLinkProgram(program);
-
-            int[] iArr = new int[1];
-            GLES20.glGetProgramiv(program, 35714, iArr, 0);
-            
-            if (iArr[0] != 1)
-            {
-                String glGetProgramInfoLog = GLES20.glGetProgramInfoLog(program);
-                GLES20.glDeleteProgram(program);
-                program = 0;
-                throw new RuntimeException("Could not link program: " + glGetProgramInfoLog);
-            }
-
-            texSamplerHandle = GLES20.glGetUniformLocation(program, "inputImageTexture");
-            texCoordHandle = GLES20.glGetAttribLocation(program, "a_texcoord");
-            posCoordHandle = GLES20.glGetAttribLocation(program, "a_position");
-            texCoordMatHandle = GLES20.glGetUniformLocation(program, "u_texture_mat");
-            modelViewMatHandle = GLES20.glGetUniformLocation(program, "u_model_view");
-
-            texVertices = P2PVideoRenderUtils.createVerticesBuffer(TEX_VERTICES);
-            posVertices = P2PVideoRenderUtils.createVerticesBuffer(POS_VERTICES);
-
-            prepareParams();
+            throw new RuntimeException(LOGTAG + ": Could not create program");
         }
-        else
+
+        GLES20.glAttachShader(program, vertexShader);
+        checkGlError("glAttachShader");
+
+        GLES20.glAttachShader(program, fragmentShader);
+        checkGlError("glAttachShader");
+
+        GLES20.glLinkProgram(program);
+
+        int[] iArr = new int[1];
+        GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, iArr, 0);
+
+        if (iArr[0] != GLES20.GL_TRUE)
         {
-            throw new RuntimeException("Could not create program");
+            String glGetProgramInfoLog = GLES20.glGetProgramInfoLog(program);
+            GLES20.glDeleteProgram(program);
+
+            program = 0;
+
+            throw new RuntimeException(LOGTAG + ":Could not link program: " + glGetProgramInfoLog);
         }
+
+        GLES20.glGenFramebuffers(1, iArr, 0);
+        checkGlError("glGenFramebuffers");
+        frameBufferHandle = iArr[0];
+
+        texCoordHandle = GLES20.glGetAttribLocation(program, "a_texcoord");
+        posCoordHandle = GLES20.glGetAttribLocation(program, "a_position");
+        texCoordMatHandle = GLES20.glGetUniformLocation(program, "u_texture_mat");
+        modelViewMatHandle = GLES20.glGetUniformLocation(program, "u_model_view");
+
+        texYHandle = GLES20.glGetUniformLocation(program, "y_tex");
+        texUHandle = GLES20.glGetUniformLocation(program, "u_tex");
+        texVHandle = GLES20.glGetUniformLocation(program, "v_tex");
+
+        texVertices = P2PVideoRenderUtils.createVerticesBuffer(TEX_VERTICES);
+        posVertices = P2PVideoRenderUtils.createVerticesBuffer(POS_VERTICES);
     }
 
-    public void setYuvTextures(int[] iArr)
+    public void setYUVTextures(int[] iArr)
     {
         textures = iArr;
     }
 
-    protected void prepareParams()
+    public void process(P2PVideoGLImage rgb)
     {
-        texYHandle = GLES20.glGetUniformLocation(program, "y_tex");
-        texUHandle = GLES20.glGetUniformLocation(program, "u_tex");
-        texVHandle = GLES20.glGetUniformLocation(program, "v_tex");
-    }
-
-    protected void updateParams()
-    {
-   }
-
-    private void process(P2PVideoGLImage rgb)
-    {
-        if ((program == 0) ||(rgb == null))
+        if ((program == 0) || (rgb == null))
         {
             return;
         }
 
-        if (this.frameBufferObjectId[0] == 0)
-        {
-            GLES20.glGenFramebuffers(1, this.frameBufferObjectId, 0);
-        }
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 
-        GLES20.glActiveTexture(33984);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, rgb.getTexture());
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, 10240, 9729);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, 10241, 9729);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, 10242, 33071);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, 10243, 33071);
-        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, 6408, rgb.getWidth(), rgb.getHeight(), 0, 6408, 5121, null);
-        GLES20.glBindFramebuffer(36160, this.frameBufferObjectId[0]);
-        GLES20.glFramebufferTexture2D(36160, 36064, GLES20.GL_TEXTURE_2D, rgb.getTexture(), 0);
-        P2PVideoRenderUtils.checkGlError("glBindFramebuffer");
+
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+
+        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, rgb.getWidth(), rgb.getHeight(),
+                0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
+
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBufferHandle);
+
+        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, rgb.getTexture(), 0);
+
+        checkGlError("glBindFramebuffer");
 
         GLES20.glUseProgram(program);
-        P2PVideoRenderUtils.checkGlError("glUseProgram");
+        checkGlError("glUseProgram");
 
         GLES20.glViewport(0, 0, rgb.getWidth(), rgb.getHeight());
-        P2PVideoRenderUtils.checkGlError("glViewport");
+        checkGlError("glViewport");
 
-        GLES20.glDisable(3042);
-        GLES20.glVertexAttribPointer(this.texCoordHandle, 2, 5126, false, 0, this.texVertices);
+        GLES20.glDisable(GLES20.GL_BLEND);
+
+        GLES20.glVertexAttribPointer(this.texCoordHandle, 2, GLES20.GL_FLOAT, false, 0, this.texVertices);
         GLES20.glEnableVertexAttribArray(this.texCoordHandle);
-        GLES20.glVertexAttribPointer(this.posCoordHandle, 3, 5126, false, 0, this.posVertices);
+
+        GLES20.glVertexAttribPointer(this.posCoordHandle, 3, GLES20.GL_FLOAT, false, 0, this.posVertices);
         GLES20.glEnableVertexAttribArray(this.posCoordHandle);
-        P2PVideoRenderUtils.checkGlError("vertex attribute setup");
+
+        checkGlError("vertex attribute setup");
 
         GLES20.glUniformMatrix4fv(this.texCoordMatHandle, 1, false, this.mTextureMat, 0);
-        P2PVideoRenderUtils.checkGlError("texCoordMatHandle");
+        checkGlError("texCoordMatHandle");
 
         GLES20.glUniformMatrix4fv(this.modelViewMatHandle, 1, false, this.mModelViewMat, 0);
-        P2PVideoRenderUtils.checkGlError("modelViewMatHandle");
+        checkGlError("modelViewMatHandle");
 
         //
         // Attach YUV textures.
         //
 
-        P2PVideoRenderUtils.checkGlError("setYuvTextures");
+        checkGlError("setYUVTextures");
 
-        GLES20.glActiveTexture(33984);
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[0]);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, 10241, 9729.0f);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, 10240, 9729.0f);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, 10242, 33071.0f);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, 10243, 33071.0f);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, 9729.0f);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, 9729.0f);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, 33071.0f);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, 33071.0f);
         GLES20.glUniform1i(texYHandle, 0);
 
-        P2PVideoRenderUtils.checkGlError("glBindTexture y");
+        checkGlError("glBindTexture y");
 
-        GLES20.glActiveTexture(33985);
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[1]);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, 10240, 9729.0f);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, 10242, 33071.0f);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, 10243, 33071.0f);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, 9729.0f);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, 33071.0f);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, 33071.0f);
         GLES20.glUniform1i(texUHandle, 1);
 
-        P2PVideoRenderUtils.checkGlError("glBindTexture u");
+        checkGlError("glBindTexture u");
 
-        GLES20.glActiveTexture(33986);
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE2);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[2]);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, 10240, 9729.0f);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, 10242, 33071.0f);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, 10243, 33071.0f);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, 9729.0f);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, 33071.0f);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, 33071.0f);
         GLES20.glUniform1i(texVHandle, 2);
 
-        P2PVideoRenderUtils.checkGlError("glBindTexture v");
+        checkGlError("glBindTexture v");
 
         //
         // Draw stuff,
         //
 
-        GLES20.glDrawArrays(6, 0, 4);
-        P2PVideoRenderUtils.checkGlError("glDrawArrays");
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, 4);
+        checkGlError("glDrawArrays");
 
         GLES20.glFinish();
-        P2PVideoRenderUtils.checkGlError("after draw");
+        checkGlError("after draw");
 
-        GLES20.glFramebufferTexture2D(36160, 36064, GLES20.GL_TEXTURE_2D, 0, 0);
-        GLES20.glBindFramebuffer(36160, 0);
+        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, 0, 0);
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 
-        P2PVideoRenderUtils.checkGlError("after process");
+        checkGlError("after process");
     }
 }

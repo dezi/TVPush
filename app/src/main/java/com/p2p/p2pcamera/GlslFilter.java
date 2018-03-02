@@ -291,7 +291,7 @@ public class GlslFilter
             P2PVideoGLImage photo3 = photo == null ? photo2 : photo;
             if (photo3 != null)
             {
-                this.mMiddlePhoto = P2PVideoGLImage.create(photo3.getWidth(), photo3.getHeight());
+                this.mMiddlePhoto = new P2PVideoGLImage(photo3.getWidth(), photo3.getHeight());
             }
         }
         processInner(photo, this.mMiddlePhoto);
@@ -305,7 +305,7 @@ public class GlslFilter
             this.isInitialed = false;
             if (this.mMiddlePhoto != null)
             {
-                this.mMiddlePhoto.clear();
+                this.mMiddlePhoto.release();
                 this.mMiddlePhoto = null;
             }
             if (this.mNextGlslFilter != null)
