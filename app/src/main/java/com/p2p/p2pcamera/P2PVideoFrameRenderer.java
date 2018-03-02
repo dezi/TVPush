@@ -1,6 +1,5 @@
 package com.p2p.p2pcamera;
 
-import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
@@ -15,15 +14,24 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
 
     private P2PVideoShaderYUV2RGB yuvShader;
     private P2PVideoShaderFrames frameShader;
-
     private P2PVideoGLImage rgbImage;
+
     private DecoderBase decoder;
+
+    private int sourceWidth;
+    private int sourceHeight;
 
     private int modcount;
 
-    public void setDecoder(DecoderBase decoder)
+    public void setSourceDecoder(DecoderBase decoder)
     {
         this.decoder = decoder;
+    }
+
+    public void setSourceDimensions(int width, int height)
+    {
+        sourceWidth = width;
+        sourceHeight = height;
     }
 
     public int[] getYUVTextures()
@@ -42,7 +50,7 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
     }
 
     @Override
-    public void onSurfaceCreated(GL10 gl10, EGLConfig eGLConfig)
+    public void onSurfaceCreated(GL10 unused, EGLConfig eGLConfig)
     {
         Log.d(LOGTAG, "onSurfaceCreated.");
 
@@ -52,32 +60,32 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
     }
 
     @Override
-    public void onSurfaceChanged(GL10 gl10, int width, int height)
+    public void onSurfaceChanged(GL10 unused, int width, int height)
     {
         Log.d(LOGTAG, "onSurfaceChanged.");
     }
 
     @Override
-    public void onDrawFrame(GL10 gl10)
+    public void onDrawFrame(GL10 unused)
     {
         if ((modcount++ % 30) == 0) Log.d(LOGTAG, "onDrawFrame.");
 
-        if (rgbImage != null)
+        boolean ok = false;
+
+        if ((yuvShader != null) && (frameShader != null) && (rgbImage != null))
         {
-            if (yuvShader != null)
+            int[] yuvTextures = yuvShader.getYUVTextures();
+
+            synchronized (P2PLocks.decoderLock)
             {
-                if (yuvShader.process(rgbImage, decoder))
-                {
-                    Bitmap bm = rgbImage.save();
-                }
+                ok = (decoder != null) && (decoder.toTextureDecoder(yuvTextures[0], yuvTextures[1], yuvTextures[2]) >= 0);
             }
 
-            if (frameShader != null)
-            {
-                //setRenderMatrix(image.width(), image.height());
+            if (ok) ok = yuvShader.process(rgbImage, sourceWidth, sourceHeight);
 
-                frameShader.process(rgbImage, 320, 180);
-            }
+            //setRenderMatrix(image.width(), image.height());
+
+            if (ok) frameShader.process(rgbImage, 320, 180);
         }
     }
 }

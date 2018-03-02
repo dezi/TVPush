@@ -118,7 +118,7 @@ public class P2PVideoShaderYUV2RGB extends P2PVideoShader
         return yuvTextures;
     }
 
-    public boolean process(P2PVideoGLImage rgb, DecoderBase decoder)
+    public boolean process(P2PVideoGLImage rgb, int width, int height)
     {
         if (program == 0)
         {
@@ -134,22 +134,14 @@ public class P2PVideoShaderYUV2RGB extends P2PVideoShader
             return false;
         }
 
-        if ((rgb.getTexture() == 0) || (rgb.getWidth() == 0) || (rgb.getHeight() == 0))
+        if ((rgb.getTexture() == 0) || (width == 0) || (height == 0))
         {
             Log.d(LOGTAG, "process: RGB image not yet ready.");
 
             return false;
         }
 
-        if (decoder.toTextureDecoder(yuvTextures[0], yuvTextures[1], yuvTextures[2]) < 0)
-        {
-            Log.d(LOGTAG, "process: decoder fucked up.");
-
-            return false;
-        }
-
-        //Log.d(LOGTAG, " rgb tex=" + rgb.getTexture() + " wid=" + rgb.getWidth() + " hei=" + rgb.getHeight());
-        //Log.d(LOGTAG, " yuv ytex=" + yuvTextures[0] + " utex=" + yuvTextures[1] + " ytex=" + yuvTextures[2]);
+        rgb.updateSize(width, height);
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 

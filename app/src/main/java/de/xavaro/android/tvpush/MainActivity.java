@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     {
         super.onCreate(savedInstanceState);
 
-        setFinishOnTouchOutside(true);
+        setFinishOnTouchOutside(false);
 
         WindowManager.LayoutParams params = getWindow().getAttributes();
 

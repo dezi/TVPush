@@ -66,14 +66,6 @@ public class P2PVideoGLImage
 
     public void updateSize(int width, int height)
     {
-        if ((this.width != width) || (this.height != height))
-        {
-            changeSize(width, height);
-        }
-    }
-
-    public void changeSize(int width, int height)
-    {
         this.width = width;
         this.height = height;
     }

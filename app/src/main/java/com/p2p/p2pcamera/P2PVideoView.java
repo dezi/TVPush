@@ -59,8 +59,13 @@ public class P2PVideoView extends GLSurfaceView
         return renderer.getYUVTextures();
     }
 
-    public void setDecoder(DecoderBase decoder)
+    public void setSourceDecoder(DecoderBase decoder)
     {
-        renderer.setDecoder(decoder);
+        renderer.setSourceDecoder(decoder);
+    }
+
+    public void setSourceDimensions(int width, int height)
+    {
+        renderer.setSourceDimensions(width, height);
     }
 }

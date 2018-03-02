@@ -1,6 +1,5 @@
 package com.p2p.p2pcamera;
 
-import android.opengl.GLES20;
 import android.util.Log;
 
 import com.decoder.xiaomi.AntsDecoder;
@@ -80,8 +79,13 @@ public class P2PReaderThreadCodec extends Thread
 
     public boolean onStop()
     {
-        decoder.releaseDecoder();
-        decoder = null;
+        synchronized (P2PLocks.decoderLock)
+        {
+            session.surface.setSourceDecoder(null);
+
+            decoder.releaseDecoder();
+            decoder = null;
+        }
 
         Log.d(LOGTAG, "onStop: done.");
 
@@ -101,14 +105,22 @@ public class P2PReaderThreadCodec extends Thread
                         || (lastWidth != avFrame.getVideoWidth())
                         || (lastHeight != avFrame.getVideoHeight()))
                 {
-                    if (decoder != null)
+                    synchronized (P2PLocks.decoderLock)
                     {
-                        Log.d(LOGTAG, "handleData: releaseDecoder codec=" + lastCodec);
+                        if (decoder != null)
+                        {
+                            Log.d(LOGTAG, "handleData: releaseDecoder codec=" + lastCodec);
 
-                        decoder.releaseDecoder();
+                            session.surface.setSourceDecoder(null);
+
+                            decoder.releaseDecoder();
+                            decoder = null;
+                        }
+
+                        decoder = new AntsDecoder(avFrame.getCodecId());
+
+                        session.surface.setSourceDecoder(decoder);
                     }
-
-                    decoder = new AntsDecoder(avFrame.getCodecId());
 
                     Log.d(LOGTAG, "handleData: createDecoder codec=" + avFrame.getCodecId());
 
@@ -121,40 +133,26 @@ public class P2PReaderThreadCodec extends Thread
 
                 if (haveIFrame)
                 {
-                    if (decoder.decodeDecoder(avFrame.frmData, avFrame.getFrmSize(), (long) avFrame.getTimeStamp()))
+                    boolean ok;
+
+                    synchronized (P2PLocks.decoderLock)
                     {
-                        int[] yuvTextures = session.surface.getYUVTextures();
-                        P2PVideoGLImage rgbImage = session.surface.getRGBImage();
+                        ok = decoder.decodeDecoder(avFrame.frmData, avFrame.getFrmSize(), (long) avFrame.getTimeStamp());
+                    }
 
-                        if ((yuvTextures == null) || (rgbImage == null))
+                    if (ok)
+                    {
+                        session.surface.setSourceDimensions(lastWidth, lastHeight);
+                        session.surface.requestRender();
+
+                        if (session.decodeFrames.size() > 2)
                         {
-                            Log.d(LOGTAG, "handleData: no surface ready.");
-                        }
-                        else
-                        {
-                            session.surface.setDecoder(decoder);
-                            rgbImage.updateSize(lastWidth, lastHeight);
-                            session.surface.requestRender();
-
-                            if (session.decodeFrames.size() > 2)
-                            {
-                                Log.d(LOGTAG, "handleData:"
-                                        + " " + lastCodec
-                                        + " " + lastWidth + "x" + lastHeight
-                                        + " " + avFrame.getFrmNo()
-                                        + " " + session.decodeFrames.size()
-                                );
-                            }
-
-                            /*
-                            if (decoder.toTextureDecoder(yuvTextures[0], yuvTextures[1], yuvTextures[2]) >= 0)
-                            {
-
-                                rgbImage.updateSize(lastWidth, lastHeight);
-
-                                session.surface.requestRender();
-                            }
-                            */
+                            Log.d(LOGTAG, "handleData:"
+                                    + " " + lastCodec
+                                    + " " + lastWidth + "x" + lastHeight
+                                    + " " + avFrame.getFrmNo()
+                                    + " " + session.decodeFrames.size()
+                            );
                         }
                     }
                 }
@@ -164,7 +162,13 @@ public class P2PReaderThreadCodec extends Thread
         {
             ex.printStackTrace();
 
-            decoder = null;
+            synchronized (P2PLocks.decoderLock)
+            {
+                session.surface.setSourceDecoder(null);
+
+                decoder.releaseDecoder();
+                decoder = null;
+            }
         }
 
         return true;
