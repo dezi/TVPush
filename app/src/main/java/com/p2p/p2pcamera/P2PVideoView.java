@@ -4,7 +4,6 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
-import android.util.Log;
 
 public class P2PVideoView extends GLSurfaceView
 {
@@ -48,7 +47,7 @@ public class P2PVideoView extends GLSurfaceView
         return (am != null) && (am.getDeviceConfigurationInfo().reqGlEsVersion >= 0x20000);
     }
 
-    public void setStillImage(P2PVideoStillImage image)
+    public void setStillImage(P2PVideoGLImage image)
     {
         renderer.setStillImage(image);
     }

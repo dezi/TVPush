@@ -25,7 +25,7 @@ public class GlslFilter
     boolean isInitialed = false;
     //protected Context mContext;
     int mInputTextureType = GL_TEXTURE_2D;
-    P2PVideoStillImage mMiddlePhoto;
+    P2PVideoGLImage mMiddlePhoto;
     final float[] mModelViewMat = new float[]{1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
     GlslFilter mNextGlslFilter;
     final float[] mTextureMat = new float[]{1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
@@ -122,7 +122,7 @@ public class GlslFilter
         return glCreateShader;
     }
 
-    private void processInner(P2PVideoStillImage photo, P2PVideoStillImage photo2)
+    private void processInner(P2PVideoGLImage photo, P2PVideoGLImage photo2)
     {
         if (this.shaderProgram != 0)
         {
@@ -137,14 +137,14 @@ public class GlslFilter
                     GLES20.glGenFramebuffers(1, this.frameBufferObjectId, 0);
                 }
                 GLES20.glActiveTexture(33984);
-                GLES20.glBindTexture(GL_TEXTURE_2D, photo2.texture());
+                GLES20.glBindTexture(GL_TEXTURE_2D, photo2.getTexture());
                 GLES20.glTexParameteri(GL_TEXTURE_2D, 10240, 9729);
                 GLES20.glTexParameteri(GL_TEXTURE_2D, 10241, 9729);
                 GLES20.glTexParameteri(GL_TEXTURE_2D, 10242, 33071);
                 GLES20.glTexParameteri(GL_TEXTURE_2D, 10243, 33071);
                 GLES20.glTexImage2D(GL_TEXTURE_2D, 0, 6408, photo2.getWidth(), photo2.getHeight(), 0, 6408, 5121, null);
                 GLES20.glBindFramebuffer(36160, this.frameBufferObjectId[0]);
-                GLES20.glFramebufferTexture2D(36160, 36064, GL_TEXTURE_2D, photo2.texture(), 0);
+                GLES20.glFramebufferTexture2D(36160, 36064, GL_TEXTURE_2D, photo2.getTexture(), 0);
                 checkGlError("glBindFramebuffer");
             }
             GLES20.glUseProgram(this.shaderProgram);
@@ -161,7 +161,7 @@ public class GlslFilter
             {
                 GLES20.glActiveTexture(33984);
                 checkGlError("glActiveTexture");
-                GLES20.glBindTexture(this.mInputTextureType, photo.texture());
+                GLES20.glBindTexture(this.mInputTextureType, photo.getTexture());
                 checkGlError("glBindTexture");
                 GLES20.glTexParameteri(this.mInputTextureType, 10240, 9729);
                 GLES20.glTexParameteri(this.mInputTextureType, 10241, 9729);
@@ -279,7 +279,7 @@ public class GlslFilter
     {
     }
 
-    public void process(P2PVideoStillImage photo, P2PVideoStillImage photo2)
+    public void process(P2PVideoGLImage photo, P2PVideoGLImage photo2)
     {
         if (this.mNextGlslFilter == null)
         {
@@ -288,10 +288,10 @@ public class GlslFilter
         }
         if (this.mMiddlePhoto == null)
         {
-            P2PVideoStillImage photo3 = photo == null ? photo2 : photo;
+            P2PVideoGLImage photo3 = photo == null ? photo2 : photo;
             if (photo3 != null)
             {
-                this.mMiddlePhoto = P2PVideoStillImage.create(photo3.getWidth(), photo3.getHeight());
+                this.mMiddlePhoto = P2PVideoGLImage.create(photo3.getWidth(), photo3.getHeight());
             }
         }
         processInner(photo, this.mMiddlePhoto);
