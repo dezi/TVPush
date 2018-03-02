@@ -3,9 +3,9 @@ package com.p2p.p2pcamera;
 import android.opengl.GLES20;
 import android.util.Log;
 
-public class P2PVideoShaderRGB2SUR extends P2PVideoShader
+public class P2PVideoGLShaderRGB2SUR extends P2PVideoGLShader
 {
-    private final String LOGTAG = P2PVideoShader.class.getSimpleName();
+    private final String LOGTAG = P2PVideoGLShader.class.getSimpleName();
 
     private static final float[] POS_VERTICES = new float[]{-1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 1.0f};
     private static final float[] TEX_VERTICES = new float[]{0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f};
@@ -34,9 +34,9 @@ public class P2PVideoShaderRGB2SUR extends P2PVideoShader
             + "}"
             ;
 
-    public P2PVideoShaderRGB2SUR()
+    public P2PVideoGLShaderRGB2SUR()
     {
-        int vertexShader = P2PVideoRenderUtils.loadShader(35633, VERTEX_SHADER_SOURCE);
+        int vertexShader = P2PVideoGLUtils.loadShader(35633, VERTEX_SHADER_SOURCE);
 
         if (vertexShader == 0)
         {
@@ -45,7 +45,7 @@ public class P2PVideoShaderRGB2SUR extends P2PVideoShader
 
         Log.d(LOGTAG, "createProgram: VERTEX_SHADER created.");
 
-        int fragentShader = P2PVideoRenderUtils.loadShader(35632, FRAGMENT_SHADER_SOURCE);
+        int fragentShader = P2PVideoGLUtils.loadShader(35632, FRAGMENT_SHADER_SOURCE);
 
         if (fragentShader == 0)
         {
@@ -59,10 +59,10 @@ public class P2PVideoShaderRGB2SUR extends P2PVideoShader
         if (program != 0)
         {
             GLES20.glAttachShader(program, vertexShader);
-            P2PVideoRenderUtils.checkGlError("glAttachShader");
+            P2PVideoGLUtils.checkGlError("glAttachShader");
 
             GLES20.glAttachShader(program, fragentShader);
-            P2PVideoRenderUtils.checkGlError("glAttachShader");
+            P2PVideoGLUtils.checkGlError("glAttachShader");
 
             GLES20.glLinkProgram(program);
             int[] iArr = new int[1];
@@ -81,8 +81,8 @@ public class P2PVideoShaderRGB2SUR extends P2PVideoShader
             posCoordHandle = GLES20.glGetAttribLocation(program, "a_position");
             modelViewMatHandle = GLES20.glGetUniformLocation(program, "u_model_view");
 
-            texVertices = P2PVideoRenderUtils.createVerticesBuffer(TEX_VERTICES);
-            posVertices = P2PVideoRenderUtils.createVerticesBuffer(POS_VERTICES);
+            texVertices = P2PVideoGLUtils.createVerticesBuffer(TEX_VERTICES);
+            posVertices = P2PVideoGLUtils.createVerticesBuffer(POS_VERTICES);
         }
     }
 

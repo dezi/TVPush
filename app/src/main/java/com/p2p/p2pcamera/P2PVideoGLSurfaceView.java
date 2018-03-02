@@ -12,7 +12,7 @@ public class P2PVideoGLSurfaceView extends GLSurfaceView
 {
     private static final String LOGTAG = P2PVideoGLSurfaceView.class.getSimpleName();
 
-    private P2PVideoFrameRenderer renderer;
+    private P2PVideoGLRenderer renderer;
 
     public P2PVideoGLSurfaceView(Context context)
     {
@@ -30,10 +30,9 @@ public class P2PVideoGLSurfaceView extends GLSurfaceView
     {
         if (supportsOpenGLES2(context))
         {
-            renderer = new P2PVideoFrameRenderer();
+            renderer = new P2PVideoGLRenderer();
 
             setEGLContextClientVersion(2);
-            setEGLConfigChooser(new P2PVideoConfigChooser.ComponentSizeChooser(8, 8, 8, 8, 0, 0));
 
             setRenderer(renderer);
             setRenderMode(RENDERMODE_WHEN_DIRTY);

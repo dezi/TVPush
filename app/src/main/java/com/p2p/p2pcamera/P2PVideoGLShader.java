@@ -2,9 +2,9 @@ package com.p2p.p2pcamera;
 
 import java.nio.FloatBuffer;
 
-public class P2PVideoShader
+public class P2PVideoGLShader
 {
-    private final static String LOGTAG = P2PVideoShader.class.getSimpleName();
+    private final static String LOGTAG = P2PVideoGLShader.class.getSimpleName();
 
     public int program;
 
@@ -26,6 +26,6 @@ public class P2PVideoShader
 
     public static boolean checkGlError(String str)
     {
-        return P2PVideoRenderUtils.checkGlError(LOGTAG + ":" + str);
+        return P2PVideoGLUtils.checkGlError(LOGTAG + ":" + str);
     }
 }

@@ -8,12 +8,12 @@ import com.decoder.xiaomi.DecoderBase;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
+public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
 {
-    private final String LOGTAG = P2PVideoFrameRenderer.class.getSimpleName();
+    private final String LOGTAG = P2PVideoGLRenderer.class.getSimpleName();
 
-    private P2PVideoShaderYUV2RGB yuvShader;
-    private P2PVideoShaderRGB2SUR rgbShader;
+    private P2PVideoGLShaderYUV2RGB yuvShader;
+    private P2PVideoGLShaderRGB2SUR rgbShader;
     private P2PVideoGLImage rgbImage;
 
     private DecoderBase decoder;
@@ -44,8 +44,8 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
 
         rgbImage = new P2PVideoGLImage();
 
-        yuvShader = new P2PVideoShaderYUV2RGB();
-        rgbShader = new P2PVideoShaderRGB2SUR();
+        yuvShader = new P2PVideoGLShaderYUV2RGB();
+        rgbShader = new P2PVideoGLShaderRGB2SUR();
     }
 
     @Override

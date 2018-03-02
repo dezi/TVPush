@@ -3,11 +3,9 @@ package com.p2p.p2pcamera;
 import android.opengl.GLES20;
 import android.util.Log;
 
-import com.decoder.xiaomi.DecoderBase;
-
-public class P2PVideoShaderYUV2RGB extends P2PVideoShader
+public class P2PVideoGLShaderYUV2RGB extends P2PVideoGLShader
 {
-    private final String LOGTAG = P2PVideoShader.class.getSimpleName();
+    private final String LOGTAG = P2PVideoGLShader.class.getSimpleName();
 
     private static final float[] POS_VERTICES = new float[]{-1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f};
     private static final float[] TEX_VERTICES = new float[]{0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f};
@@ -49,16 +47,16 @@ public class P2PVideoShaderYUV2RGB extends P2PVideoShader
 
     private int[] yuvTextures;
 
-    public P2PVideoShaderYUV2RGB()
+    public P2PVideoGLShaderYUV2RGB()
     {
-        int vertexShader = P2PVideoRenderUtils.loadShader(GLES20.GL_VERTEX_SHADER, VERTEX_SHADER_SOURCE);
+        int vertexShader = P2PVideoGLUtils.loadShader(GLES20.GL_VERTEX_SHADER, VERTEX_SHADER_SOURCE);
 
         if (vertexShader == 0)
         {
             throw new RuntimeException(LOGTAG + ": Could not load vertex shader: " + VERTEX_SHADER_SOURCE);
         }
 
-        int fragmentShader = P2PVideoRenderUtils.loadShader(35632, YUV_FRAGMENT_SHADER_SOURCE);
+        int fragmentShader = P2PVideoGLUtils.loadShader(35632, YUV_FRAGMENT_SHADER_SOURCE);
 
         if (fragmentShader == 0)
         {
@@ -109,8 +107,8 @@ public class P2PVideoShaderYUV2RGB extends P2PVideoShader
         texUHandle = GLES20.glGetUniformLocation(program, "u_tex");
         texVHandle = GLES20.glGetUniformLocation(program, "v_tex");
 
-        texVertices = P2PVideoRenderUtils.createVerticesBuffer(TEX_VERTICES);
-        posVertices = P2PVideoRenderUtils.createVerticesBuffer(POS_VERTICES);
+        texVertices = P2PVideoGLUtils.createVerticesBuffer(TEX_VERTICES);
+        posVertices = P2PVideoGLUtils.createVerticesBuffer(POS_VERTICES);
     }
 
     public int[] getYUVTextures()
