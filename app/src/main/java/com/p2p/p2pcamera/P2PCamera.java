@@ -1,8 +1,6 @@
 package com.p2p.p2pcamera;
 
 import android.util.Log;
-import android.view.Surface;
-import android.view.SurfaceView;
 
 import com.p2p.p2pcamera.p2pcommands.DeviceInfoQuery;
 import com.p2p.p2pcamera.p2pcommands.PTZControlStopSend;
@@ -25,7 +23,7 @@ public class P2PCamera
 
     private P2PSession session;
 
-    public P2PCamera(String targetUUID, String targetId, String targetPw, P2PVideoView surface)
+    public P2PCamera(String targetUUID, String targetId, String targetPw, P2PVideoGLSurfaceView surface)
     {
         this.targetUUID = targetUUID;
 

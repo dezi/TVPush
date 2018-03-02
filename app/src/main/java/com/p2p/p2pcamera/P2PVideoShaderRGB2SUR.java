@@ -3,7 +3,7 @@ package com.p2p.p2pcamera;
 import android.opengl.GLES20;
 import android.util.Log;
 
-public class P2PVideoShaderFrames extends P2PVideoShader
+public class P2PVideoShaderRGB2SUR extends P2PVideoShader
 {
     private final String LOGTAG = P2PVideoShader.class.getSimpleName();
 
@@ -34,7 +34,7 @@ public class P2PVideoShaderFrames extends P2PVideoShader
             + "}"
             ;
 
-    public P2PVideoShaderFrames()
+    public P2PVideoShaderRGB2SUR()
     {
         int vertexShader = P2PVideoRenderUtils.loadShader(35633, VERTEX_SHADER_SOURCE);
 
@@ -86,27 +86,27 @@ public class P2PVideoShaderFrames extends P2PVideoShader
         }
     }
 
-    public void process(P2PVideoGLImage rgb, int width, int height)
+    public boolean process(P2PVideoGLImage rgb, int width, int height)
     {
         if (program == 0)
         {
             Log.d(LOGTAG, "process: program failed.");
 
-            return;
+            return false;
         }
 
         if (rgb == null)
         {
             Log.d(LOGTAG, "process: no RGB image given.");
 
-            return;
+            return false;
         }
 
         if ((rgb.getTexture() == 0) || (rgb.getWidth() == 0) || (rgb.getHeight() == 0))
         {
             Log.d(LOGTAG, "process: RGB image not yet ready.");
 
-            return;
+            return false;
         }
 
         GLES20.glViewport(0, 0, width, height);
@@ -131,5 +131,7 @@ public class P2PVideoShaderFrames extends P2PVideoShader
         checkGlError("modelViewMatHandle");
         GLES20.glDrawArrays(5, 0, 4);
         GLES20.glFinish();
+
+        return true;
     }
 }

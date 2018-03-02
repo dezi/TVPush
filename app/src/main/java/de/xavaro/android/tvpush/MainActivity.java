@@ -1,6 +1,5 @@
 package de.xavaro.android.tvpush;
 
-import android.graphics.Canvas;
 import android.media.MediaCodec;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
@@ -10,7 +9,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.graphics.Color;
@@ -23,7 +21,7 @@ import android.view.View;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.p2p.p2pcamera.P2PVideoView;
+import com.p2p.p2pcamera.P2PVideoGLSurfaceView;
 
 import java.nio.ByteBuffer;
 
@@ -36,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private SpeechRecognition recognition;
     private TextView voiceButton;
     private SurfaceView surfaceView;
-    private P2PVideoView videoSurface;
+    private P2PVideoGLSurfaceView videoSurface;
 
     private static final String SAMPLE = Environment.getExternalStorageDirectory() + "/video.mp4";
     private PlayerThread mPlayer = null;
@@ -118,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         surfaceView = new SurfaceView(this);
         surfaceView.getHolder().addCallback(this);
 
-        videoSurface = new P2PVideoView(this);
+        videoSurface = new P2PVideoGLSurfaceView(this);
 
         topframe.addView(videoSurface, new FrameLayout.LayoutParams(640, 360, Gravity.TOP + Gravity.END));
 

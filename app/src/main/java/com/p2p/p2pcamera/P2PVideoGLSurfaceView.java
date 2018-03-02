@@ -2,24 +2,25 @@ package com.p2p.p2pcamera;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 
 import com.decoder.xiaomi.DecoderBase;
 
-public class P2PVideoView extends GLSurfaceView
+public class P2PVideoGLSurfaceView extends GLSurfaceView
 {
-    private static final String LOGTAG = P2PVideoView.class.getSimpleName();
+    private static final String LOGTAG = P2PVideoGLSurfaceView.class.getSimpleName();
 
     private P2PVideoFrameRenderer renderer;
 
-    public P2PVideoView(Context context)
+    public P2PVideoGLSurfaceView(Context context)
     {
         super(context);
         init(context);
     }
 
-    public P2PVideoView(Context context, AttributeSet attributeSet)
+    public P2PVideoGLSurfaceView(Context context, AttributeSet attributeSet)
     {
         super(context, attributeSet);
         init(context);
@@ -33,9 +34,11 @@ public class P2PVideoView extends GLSurfaceView
 
             setEGLContextClientVersion(2);
             setEGLConfigChooser(new P2PVideoConfigChooser.ComponentSizeChooser(8, 8, 8, 8, 0, 0));
-            getHolder().setFormat(1);
+
             setRenderer(renderer);
-            setRenderMode(0);
+            setRenderMode(RENDERMODE_WHEN_DIRTY);
+
+            getHolder().setFormat(PixelFormat.RGBA_8888);
         }
         else
         {
@@ -47,16 +50,6 @@ public class P2PVideoView extends GLSurfaceView
     {
         ActivityManager am = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE));
         return (am != null) && (am.getDeviceConfigurationInfo().reqGlEsVersion >= 0x20000);
-    }
-
-    public P2PVideoGLImage getRGBImage()
-    {
-        return renderer.getRGBImage();
-    }
-
-    public int[] getYUVTextures()
-    {
-        return renderer.getYUVTextures();
     }
 
     public void setSourceDecoder(DecoderBase decoder)
