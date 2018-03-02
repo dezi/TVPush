@@ -79,7 +79,6 @@ public class P2PVideoShaderFrames extends P2PVideoShader
             alphaHandle = GLES20.glGetUniformLocation(program, "alpha");
             texCoordHandle = GLES20.glGetAttribLocation(program, "a_texcoord");
             posCoordHandle = GLES20.glGetAttribLocation(program, "a_position");
-            texSamplerHandle = GLES20.glGetUniformLocation(program, "tex_sampler");
             modelViewMatHandle = GLES20.glGetUniformLocation(program, "u_model_view");
 
             texVertices = P2PVideoRenderUtils.createVerticesBuffer(TEX_VERTICES);

@@ -76,9 +76,6 @@ public class P2PVideoGLImage
     {
         this.width = width;
         this.height = height;
-
-        P2PVideoRenderUtils.clearTexture(texture);
-        texture = P2PVideoRenderUtils.createTexture();
     }
 
     public Bitmap save()

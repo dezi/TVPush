@@ -20,9 +20,6 @@ public class P2PReaderThreadCodec extends Thread
     private int lastWidth;
     private int lastHeight;
 
-    private int[] yuvTextures;
-    private P2PVideoGLImage rgbImage;
-
     public P2PReaderThreadCodec(P2PSession session)
     {
         super();
@@ -76,15 +73,6 @@ public class P2PReaderThreadCodec extends Thread
         lastWidth = 0;
         lastHeight = 0;
 
-        yuvTextures = new int[3];
-        GLES20.glGenTextures(yuvTextures.length, yuvTextures, 0);
-
-        session.surface.setYUVTextureIds(yuvTextures);
-
-        rgbImage = new P2PVideoGLImage();
-
-        session.surface.setStillImage(rgbImage);
-
         Log.d(LOGTAG, "onStart: done.");
 
         return true;
@@ -94,18 +82,6 @@ public class P2PReaderThreadCodec extends Thread
     {
         decoder.releaseDecoder();
         decoder = null;
-
-        if (yuvTextures != null)
-        {
-            GLES20.glDeleteTextures(yuvTextures.length, yuvTextures, 0);
-            yuvTextures = null;
-        }
-
-        if (rgbImage != null)
-        {
-            rgbImage.release();
-            rgbImage = null;
-        }
 
         Log.d(LOGTAG, "onStop: done.");
 
@@ -147,21 +123,31 @@ public class P2PReaderThreadCodec extends Thread
                 {
                     if (decoder.decodeDecoder(avFrame.frmData, avFrame.getFrmSize(), (long) avFrame.getTimeStamp()))
                     {
-                        if (decoder.toTextureDecoder(yuvTextures[0], yuvTextures[1], yuvTextures[2]) >= 0)
+                        int[] yuvTextures = session.surface.getYUVTextures();
+                        P2PVideoGLImage rgbImage = session.surface.getRGBImage();
+
+                        if ((yuvTextures == null) || (rgbImage == null))
                         {
-                            if (session.decodeFrames.size() > 2)
+                            Log.d(LOGTAG, "handleData: no surface ready.");
+                        }
+                        else
+                        {
+                            if (decoder.toTextureDecoder(yuvTextures[0], yuvTextures[1], yuvTextures[2]) >= 0)
                             {
-                                Log.d(LOGTAG, "handleData:"
-                                        + " " + lastCodec
-                                        + " " + lastWidth + "x" + lastHeight
-                                        + " " + avFrame.getFrmNo()
-                                        + " " + session.decodeFrames.size()
-                                );
+                                if (session.decodeFrames.size() > 2)
+                                {
+                                    Log.d(LOGTAG, "handleData:"
+                                            + " " + lastCodec
+                                            + " " + lastWidth + "x" + lastHeight
+                                            + " " + avFrame.getFrmNo()
+                                            + " " + session.decodeFrames.size()
+                                    );
+                                }
+
+                                rgbImage.updateSize(lastWidth, lastHeight);
+
+                                session.surface.requestRender();
                             }
-
-                            rgbImage.updateSize(lastWidth, lastHeight);
-
-                            session.surface.requestRender();
                         }
                     }
                 }

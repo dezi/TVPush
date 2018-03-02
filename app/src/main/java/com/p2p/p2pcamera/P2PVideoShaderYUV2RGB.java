@@ -1,6 +1,7 @@
 package com.p2p.p2pcamera;
 
 import android.opengl.GLES20;
+import android.util.Log;
 
 public class P2PVideoShaderYUV2RGB extends P2PVideoShader
 {
@@ -44,7 +45,7 @@ public class P2PVideoShaderYUV2RGB extends P2PVideoShader
     private int texVHandle;
     private int texYHandle;
 
-    private int[] textures;
+    private int[] yuvTextures;
 
     public P2PVideoShaderYUV2RGB()
     {
@@ -94,6 +95,9 @@ public class P2PVideoShaderYUV2RGB extends P2PVideoShader
         checkGlError("glGenFramebuffers");
         frameBufferHandle = iArr[0];
 
+        yuvTextures = new int[3];
+        GLES20.glGenTextures(yuvTextures.length, yuvTextures, 0);
+
         texCoordHandle = GLES20.glGetAttribLocation(program, "a_texcoord");
         posCoordHandle = GLES20.glGetAttribLocation(program, "a_position");
         texCoordMatHandle = GLES20.glGetUniformLocation(program, "u_texture_mat");
@@ -107,17 +111,36 @@ public class P2PVideoShaderYUV2RGB extends P2PVideoShader
         posVertices = P2PVideoRenderUtils.createVerticesBuffer(POS_VERTICES);
     }
 
-    public void setYUVTextures(int[] iArr)
+    public int[] getYUVTextures()
     {
-        textures = iArr;
+        return yuvTextures;
     }
 
     public void process(P2PVideoGLImage rgb)
     {
-        if ((program == 0) || (rgb == null))
+        if (program == 0)
         {
+            Log.d(LOGTAG, "process: program failed.");
+
             return;
         }
+
+        if (rgb == null)
+        {
+            Log.d(LOGTAG, "process: no RGB image given.");
+
+            return;
+        }
+
+        if ((rgb.getTexture() == 0) || (rgb.getWidth() == 0) || (rgb.getHeight() == 0))
+        {
+            Log.d(LOGTAG, "process: RGB image not yet ready.");
+
+            return;
+        }
+
+        //Log.d(LOGTAG, " rgb tex=" + rgb.getTexture() + " wid=" + rgb.getWidth() + " hei=" + rgb.getHeight());
+        //Log.d(LOGTAG, " yuv ytex=" + yuvTextures[0] + " utex=" + yuvTextures[1] + " ytex=" + yuvTextures[2]);
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 
@@ -166,7 +189,7 @@ public class P2PVideoShaderYUV2RGB extends P2PVideoShader
         checkGlError("setYUVTextures");
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[0]);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, yuvTextures[0]);
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, 9729.0f);
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, 9729.0f);
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, 33071.0f);
@@ -176,7 +199,7 @@ public class P2PVideoShaderYUV2RGB extends P2PVideoShader
         checkGlError("glBindTexture y");
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[1]);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, yuvTextures[1]);
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, 9729.0f);
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, 33071.0f);
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, 33071.0f);
@@ -185,7 +208,7 @@ public class P2PVideoShaderYUV2RGB extends P2PVideoShader
         checkGlError("glBindTexture u");
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE2);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[2]);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, yuvTextures[2]);
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, 9729.0f);
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, 33071.0f);
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, 33071.0f);

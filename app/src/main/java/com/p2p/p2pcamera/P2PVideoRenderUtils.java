@@ -48,7 +48,6 @@ public class P2PVideoRenderUtils
 
         checkGlError("glBindTexture");
 
-        GLES20.glUniform1i(renderContext.texSamplerHandle, 0);
         GLES20.glUniform1f(renderContext.alphaHandle, renderContext.alpha);
         GLES20.glUniformMatrix4fv(renderContext.modelViewMatHandle, 1, false, renderContext.mModelViewMat, 0);
 
@@ -105,7 +104,6 @@ public class P2PVideoRenderUtils
 
         P2PVideoShader renderContext = new P2PVideoShader();
 
-        renderContext.texSamplerHandle = GLES20.glGetUniformLocation(glCreateProgram, "tex_sampler");
         renderContext.alphaHandle = GLES20.glGetUniformLocation(glCreateProgram, "alpha");
         renderContext.texCoordHandle = GLES20.glGetAttribLocation(glCreateProgram, "a_texcoord");
         renderContext.posCoordHandle = GLES20.glGetAttribLocation(glCreateProgram, "a_position");

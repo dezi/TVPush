@@ -17,17 +17,19 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
 
     private int modcount;
 
-    public void setYUVTextures(int[] yuvTextureIds)
+    public int[] getYUVTextures()
     {
         if (yuvShader != null)
         {
-            yuvShader.setYUVTextures(yuvTextureIds);
+            return yuvShader.getYUVTextures();
         }
+
+        return null;
     }
 
-    public void setStillImage(P2PVideoGLImage image)
+    public P2PVideoGLImage getRGBImage()
     {
-        this.rgbImage = image;
+        return rgbImage;
     }
 
     @Override
@@ -35,6 +37,7 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
     {
         Log.d(LOGTAG, "onSurfaceCreated.");
 
+        rgbImage = new P2PVideoGLImage();
         yuvShader = new P2PVideoShaderYUV2RGB();
         frameShader = new P2PVideoShaderFrames();
     }

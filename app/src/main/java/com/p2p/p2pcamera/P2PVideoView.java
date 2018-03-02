@@ -47,13 +47,13 @@ public class P2PVideoView extends GLSurfaceView
         return (am != null) && (am.getDeviceConfigurationInfo().reqGlEsVersion >= 0x20000);
     }
 
-    public void setStillImage(P2PVideoGLImage image)
+    public P2PVideoGLImage getRGBImage()
     {
-        renderer.setStillImage(image);
+        return renderer.getRGBImage();
     }
 
-    public void setYUVTextureIds(int[] yuvTextureIds)
+    public int[] getYUVTextures()
     {
-        renderer.setYUVTextures(yuvTextureIds);
+        return renderer.getYUVTextures();
     }
 }
