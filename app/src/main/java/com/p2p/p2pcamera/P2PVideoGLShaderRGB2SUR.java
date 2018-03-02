@@ -65,8 +65,10 @@ public class P2PVideoGLShaderRGB2SUR extends P2PVideoGLShader
             P2PVideoGLUtils.checkGlError("glAttachShader");
 
             GLES20.glLinkProgram(program);
+
             int[] iArr = new int[1];
-            GLES20.glGetProgramiv(program, 35714, iArr, 0);
+
+            GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, iArr, 0);
 
             if (iArr[0] != 1)
             {
@@ -110,27 +112,39 @@ public class P2PVideoGLShaderRGB2SUR extends P2PVideoGLShader
         }
 
         GLES20.glViewport(0, 0, width, height);
+
         checkGlError("glViewport");
 
-        GLES20.glDisable(3042);
-        GLES20.glVertexAttribPointer(texCoordHandle, 2, 5126, false, 0, texVertices);
+        GLES20.glDisable(GLES20.GL_BLEND);
+
+        GLES20.glVertexAttribPointer(texCoordHandle, 2, GLES20.GL_FLOAT, false, 0, texVertices);
         GLES20.glEnableVertexAttribArray(texCoordHandle);
-        GLES20.glVertexAttribPointer(posCoordHandle, 2, 5126, false, 0, posVertices);
+        GLES20.glVertexAttribPointer(posCoordHandle, 2, GLES20.GL_FLOAT, false, 0, posVertices);
         GLES20.glEnableVertexAttribArray(posCoordHandle);
+
         checkGlError("vertex attribute setup");
-        GLES20.glActiveTexture(33984);
+
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+
         checkGlError("glActiveTexture");
-        GLES20.glBindTexture(GlslFilter.GL_TEXTURE_2D, rgb.getTexture());
-        GLES20.glTexParameteri(GlslFilter.GL_TEXTURE_2D, 10240, 9729);
-        GLES20.glTexParameteri(GlslFilter.GL_TEXTURE_2D, 10241, 9729);
-        GLES20.glTexParameteri(GlslFilter.GL_TEXTURE_2D, 10242, 33071);
-        GLES20.glTexParameteri(GlslFilter.GL_TEXTURE_2D, 10243, 33071);
+
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, rgb.getTexture());
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+
         checkGlError("glBindTexture");
+
         GLES20.glUniform1f(alphaHandle, alpha);
         GLES20.glUniformMatrix4fv(modelViewMatHandle, 1, false, mModelViewMat, 0);
+
         checkGlError("modelViewMatHandle");
-        GLES20.glDrawArrays(5, 0, 4);
+
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
         GLES20.glFinish();
+
+        checkGlError("finish");
 
         return true;
     }
