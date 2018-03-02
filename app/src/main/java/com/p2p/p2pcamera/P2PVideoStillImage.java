@@ -4,90 +4,94 @@ import android.graphics.Bitmap;
 
 public class P2PVideoStillImage
 {
+    private int width;
     private int height;
     private int texture = -1;
-    private int width;
 
-    public P2PVideoStillImage(int i, int i2, int i3)
+    public P2PVideoStillImage(int texture, int width, int height)
     {
-        this.texture = i;
-        this.width = i2;
-        this.height = i3;
+        this.texture = texture;
+        this.width = width;
+        this.height = height;
     }
 
-    public static P2PVideoStillImage create(int i, int i2)
+    public static P2PVideoStillImage create(int width, int height)
     {
-        return new P2PVideoStillImage(P2PVideoRenderUtils.createTexture(), i, i2);
+        return new P2PVideoStillImage(P2PVideoRenderUtils.createTexture(), width, height);
     }
 
     public static P2PVideoStillImage create(Bitmap bitmap)
     {
-        return bitmap != null ? new P2PVideoStillImage(P2PVideoRenderUtils.createTexture(bitmap), bitmap.getWidth(), bitmap.getHeight()) : null;
+        return (bitmap != null) ? new P2PVideoStillImage(P2PVideoRenderUtils.createTexture(bitmap), bitmap.getWidth(), bitmap.getHeight()) : null;
     }
 
-    public void changeDimension(int i, int i2)
+    public void changeDimension(int width, int height)
     {
-        this.width = i;
-        this.height = i2;
-        P2PVideoRenderUtils.clearTexture(this.texture);
-        this.texture = P2PVideoRenderUtils.createTexture();
+        this.width = width;
+        this.height = height;
+
+        P2PVideoRenderUtils.clearTexture(texture);
+        texture = P2PVideoRenderUtils.createTexture();
     }
 
     public void clear()
     {
-        P2PVideoRenderUtils.clearTexture(this.texture);
-        this.texture = -1;
-    }
-
-    public int height()
-    {
-        return this.height;
+        P2PVideoRenderUtils.clearTexture(texture);
+        texture = -1;
     }
 
     public boolean matchDimension(P2PVideoStillImage photo)
     {
-        return photo.width == this.width && photo.height == this.height;
+        return (photo.width == width) && (photo.height == height);
     }
 
     public Bitmap save()
     {
-        return P2PVideoRenderUtils.saveTexture(this.texture, this.width, this.height);
+        return P2PVideoRenderUtils.saveTexture(texture, width, height);
     }
 
     public void setTexture(int texture)
     {
-        P2PVideoRenderUtils.clearTexture(this.texture);
+        P2PVideoRenderUtils.clearTexture(texture);
 
         this.texture = texture;
     }
 
     public void swap(P2PVideoStillImage photo)
     {
-        int i = this.texture;
-        this.texture = photo.texture;
-        photo.texture = i;
+        int swap = texture;
+        texture = photo.texture;
+        photo.texture = swap;
     }
 
     public int texture()
     {
-        return this.texture;
+        return texture;
     }
 
     public void update(Bitmap bitmap)
     {
-        this.texture = P2PVideoRenderUtils.createTexture(this.texture, bitmap);
-        this.width = bitmap.getWidth();
-        this.height = bitmap.getHeight();
+        texture = P2PVideoRenderUtils.createTexture(texture, bitmap);
+
+        width = bitmap.getWidth();
+        height = bitmap.getHeight();
     }
 
-    public void updateSize(int i, int i2)
+    public void updateSize(int width, int height)
     {
-        this.width = i;
-        this.height = i2;
+        this.width = width;
+        this.height = height;
     }
 
-    public int width()
+    public int getWidth()
     {
-        return this.width;
+        return width;
     }
+
+    public int getHeight()
+    {
+        return height;
+    }
+
+
 }

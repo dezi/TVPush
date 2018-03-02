@@ -52,7 +52,7 @@ public class P2PVideoFrameRenderer implements GLSurfaceView.Renderer
         {
             //setRenderMatrix(image.width(), image.height());
 
-            P2PVideoRenderUtils.renderTexture(frameShader, image.texture(), image.width(), image.height());
+            P2PVideoRenderUtils.renderTexture(frameShader, image.texture(), image.getWidth(), image.getHeight());
         }
     }
 

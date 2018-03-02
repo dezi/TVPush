@@ -173,7 +173,7 @@ public class P2PVideoShaderStills extends P2PVideoShader
             GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, 10241, 9729);
             GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, 10242, 33071);
             GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, 10243, 33071);
-            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, 6408, photo2.width(), photo2.height(), 0, 6408, 5121, null);
+            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, 6408, photo2.getWidth(), photo2.getHeight(), 0, 6408, 5121, null);
             GLES20.glBindFramebuffer(36160, this.frameBufferObjectId[0]);
             GLES20.glFramebufferTexture2D(36160, 36064, GLES20.GL_TEXTURE_2D, photo2.texture(), 0);
 
@@ -182,7 +182,7 @@ public class P2PVideoShaderStills extends P2PVideoShader
 
         GLES20.glUseProgram(program);
         P2PVideoRenderUtils.checkGlError("glUseProgram");
-        GLES20.glViewport(0, 0, photo2.width(), photo2.height());
+        GLES20.glViewport(0, 0, photo2.getWidth(), photo2.getHeight());
         P2PVideoRenderUtils.checkGlError("glViewport");
         GLES20.glDisable(3042);
         GLES20.glVertexAttribPointer(this.texCoordHandle, 2, 5126, false, 0, this.texVertices);

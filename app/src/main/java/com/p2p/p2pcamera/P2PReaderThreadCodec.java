@@ -139,14 +139,12 @@ public class P2PReaderThreadCodec extends Thread
                     {
                         if (decoder.toTextureDecoder(mYUVTextures[0], mYUVTextures[1], mYUVTextures[2]) >= 0)
                         {
-                            /*
                             Log.d(LOGTAG, "handleData:"
                                     + " " + lastCodec
                                     + " " + lastWidth + "x" + lastHeight
                                     + " " + avFrame.getFrmNo()
                                     + " " + session.decodeFrames.size()
                             );
-                            */
 
                             if (mYUVImage == null)
                             {
