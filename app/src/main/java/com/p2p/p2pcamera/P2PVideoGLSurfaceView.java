@@ -6,8 +6,6 @@ import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 
-import com.decoder.xiaomi.DecoderBase;
-
 public class P2PVideoGLSurfaceView extends GLSurfaceView
 {
     private static final String LOGTAG = P2PVideoGLSurfaceView.class.getSimpleName();
@@ -51,7 +49,7 @@ public class P2PVideoGLSurfaceView extends GLSurfaceView
         return (am != null) && (am.getDeviceConfigurationInfo().reqGlEsVersion >= 0x20000);
     }
 
-    public void setSourceDecoder(DecoderBase decoder)
+    public void setSourceDecoder(P2PVideoGLDecoder decoder)
     {
         renderer.setSourceDecoder(decoder);
     }

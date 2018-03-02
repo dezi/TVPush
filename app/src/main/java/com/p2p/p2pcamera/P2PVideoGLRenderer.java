@@ -3,8 +3,6 @@ package com.p2p.p2pcamera;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
-import com.decoder.xiaomi.DecoderBase;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -16,7 +14,7 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
     private P2PVideoGLShaderRGB2SUR rgbShader;
     private P2PVideoGLImage rgbImage;
 
-    private DecoderBase decoder;
+    private P2PVideoGLDecoder decoder;
 
     private int sourceWidth;
     private int sourceHeight;
@@ -26,7 +24,7 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
 
     private int modcount;
 
-    public void setSourceDecoder(DecoderBase decoder)
+    public void setSourceDecoder(P2PVideoGLDecoder decoder)
     {
         this.decoder = decoder;
     }

@@ -2,8 +2,10 @@ package com.decoder.xiaomi;
 
 import java.nio.ByteBuffer;
 
+import com.p2p.p2pcamera.P2PVideoGLDecoder;
+
 @SuppressWarnings("JniMissingFunction")
-public class AntsDecoder extends DecoderBase
+public class AntsDecoder extends P2PVideoGLDecoder
 {
     static
     {
@@ -14,6 +16,8 @@ public class AntsDecoder extends DecoderBase
     {
         initDecoder(i);
     }
+
+    protected int mNativeContext;
 
     private native void init(int i);
 

@@ -3,7 +3,6 @@ package com.p2p.p2pcamera;
 import android.util.Log;
 
 import com.decoder.xiaomi.AntsDecoder;
-import com.decoder.xiaomi.DecoderBase;
 
 public class P2PReaderThreadCodec extends Thread
 {
@@ -12,7 +11,7 @@ public class P2PReaderThreadCodec extends Thread
     static final int MAX_FRAMEBUF = 4000000;
 
     private P2PSession session;
-    private DecoderBase decoder;
+    private P2PVideoGLDecoder decoder;
     private boolean haveIFrame;
 
     private int lastCodec;
