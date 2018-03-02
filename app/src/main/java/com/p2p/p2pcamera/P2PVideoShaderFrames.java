@@ -85,4 +85,51 @@ public class P2PVideoShaderFrames extends P2PVideoShader
             posVertices = P2PVideoRenderUtils.createVerticesBuffer(POS_VERTICES);
         }
     }
+
+    public void process(P2PVideoGLImage rgb, int width, int height)
+    {
+        if (program == 0)
+        {
+            Log.d(LOGTAG, "process: program failed.");
+
+            return;
+        }
+
+        if (rgb == null)
+        {
+            Log.d(LOGTAG, "process: no RGB image given.");
+
+            return;
+        }
+
+        if ((rgb.getTexture() == 0) || (rgb.getWidth() == 0) || (rgb.getHeight() == 0))
+        {
+            Log.d(LOGTAG, "process: RGB image not yet ready.");
+
+            return;
+        }
+
+        GLES20.glViewport(0, 0, width, height);
+        checkGlError("glViewport");
+
+        GLES20.glDisable(3042);
+        GLES20.glVertexAttribPointer(texCoordHandle, 2, 5126, false, 0, texVertices);
+        GLES20.glEnableVertexAttribArray(texCoordHandle);
+        GLES20.glVertexAttribPointer(posCoordHandle, 2, 5126, false, 0, posVertices);
+        GLES20.glEnableVertexAttribArray(posCoordHandle);
+        checkGlError("vertex attribute setup");
+        GLES20.glActiveTexture(33984);
+        checkGlError("glActiveTexture");
+        GLES20.glBindTexture(GlslFilter.GL_TEXTURE_2D, rgb.getTexture());
+        GLES20.glTexParameteri(GlslFilter.GL_TEXTURE_2D, 10240, 9729);
+        GLES20.glTexParameteri(GlslFilter.GL_TEXTURE_2D, 10241, 9729);
+        GLES20.glTexParameteri(GlslFilter.GL_TEXTURE_2D, 10242, 33071);
+        GLES20.glTexParameteri(GlslFilter.GL_TEXTURE_2D, 10243, 33071);
+        checkGlError("glBindTexture");
+        GLES20.glUniform1f(alphaHandle, alpha);
+        GLES20.glUniformMatrix4fv(modelViewMatHandle, 1, false, mModelViewMat, 0);
+        checkGlError("modelViewMatHandle");
+        GLES20.glDrawArrays(5, 0, 4);
+        GLES20.glFinish();
+    }
 }
