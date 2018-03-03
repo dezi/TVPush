@@ -66,7 +66,7 @@ public class CameraTest
         //p2pcamera.ptzDirectionSend(P2PCamera.PTZ_DIRECTION_LEFT, 0);
 
         p2pcamera.startVideoSend(P2PCamera.STARTREALTIME_RESOLUTION_PREVIEW);
-        //p2pcamera.startAudioSend();
+        p2pcamera.startAudioSend();
 
         /*
         ApplicationBase.handler.postDelayed(new Runnable()

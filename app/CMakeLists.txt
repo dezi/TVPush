@@ -22,10 +22,15 @@ add_library( # Sets the name of the library.
              # Provides a relative path to your source file(s).
              src/main/cpp/native-lib.cpp )
 
-add_library(libPPPP_API SHARED IMPORTED)
+add_library(libzztopp2z SHARED IMPORTED)
 
-set_target_properties(libPPPP_API PROPERTIES IMPORTED_LOCATION
+set_target_properties(libzztopp2z PROPERTIES IMPORTED_LOCATION
 ${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libzztopp2z.so)
+
+add_library(libzztopaac SHARED IMPORTED)
+
+set_target_properties(libzztopaac PROPERTIES IMPORTED_LOCATION
+${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libzztopaac.so)
 
 add_library(libfaad SHARED IMPORTED)
 
@@ -70,7 +75,8 @@ target_link_libraries( # Specifies the target library.
                        libmi_decoder
                        libijkffmpeg
                        libh265decoder
-                       libPPPP_API
+                       libzztopp2z
+                       libzztopaac
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib} )

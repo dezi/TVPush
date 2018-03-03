@@ -86,11 +86,11 @@ extern "C" JNIEXPORT jint JNICALL Java_zz_top_p2p_api_P2PApiNative_ForceClose
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_zz_top_p2p_api_P2PApiNative_Write
-        (JNIEnv *env, jclass self, jint sessionHandle, jbyte channel, jbyteArray dataBuff, jint int2)
+        (JNIEnv *env, jclass self, jint sessionHandle, jbyte channel, jbyteArray dataBuff, jint dataSizeToWrite)
 {
     jbyte *dataBuffNative = env->GetByteArrayElements(dataBuff, NULL);
 
-    jint res = PPPP_Write(sessionHandle, channel, (const char *) dataBuffNative, int2);
+    jint res = PPPP_Write(sessionHandle, channel, (const char *) dataBuffNative, dataSizeToWrite);
 
     env->ReleaseByteArrayElements(dataBuff, dataBuffNative, JNI_COMMIT);
 

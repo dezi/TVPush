@@ -1,6 +1,5 @@
 package com.aac.utils;
 
-@SuppressWarnings("JniMissingFunction")
 public class DecodeAAC
 {
     public static native int nOpen();

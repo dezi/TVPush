@@ -51,7 +51,8 @@ public class P2PSession
     {
         System.loadLibrary("faad");
         System.loadLibrary("h265decoder");
-        System.loadLibrary("PPPP_API");
+        System.loadLibrary("zztopp2z");
+        System.loadLibrary("zztopaac");
 
         int resVersion = P2PApiNative.GetAPIVersion();
         Log.d(LOGTAG, "static: P2PAPI.GetAPIVersion=" + resVersion);

@@ -3,6 +3,7 @@ package com.p2p.p2pcamera;
 import android.util.Log;
 
 import com.aac.utils.DecodeAAC;
+import zz.top.aac.AACDecode;
 
 public class P2PReaderThreadAudio extends P2PReaderThread
 {
@@ -20,6 +21,7 @@ public class P2PReaderThreadAudio extends P2PReaderThread
         decodeData = new byte[ 10 * 1024 ];
 
         DecodeAAC.nOpen();
+        //AACDecode.open();
 
         Log.d(LOGTAG, "onStart: done.");
 
@@ -29,6 +31,7 @@ public class P2PReaderThreadAudio extends P2PReaderThread
     public boolean onStop()
     {
         DecodeAAC.nClose();
+        //AACDecode.close();
 
         decodeData = null;
 
@@ -41,6 +44,7 @@ public class P2PReaderThreadAudio extends P2PReaderThread
         P2PAVFrame avFrame = new P2PAVFrame(data, size, session.isBigEndian);
 
         int nDecode = DecodeAAC.nDecode(avFrame.frmData, avFrame.getFrmSize(), this.decodeData, this.decodeData.length);
+        //int nDecode = AACDecode.decode(avFrame.frmData, avFrame.getFrmSize(), this.decodeData, this.decodeData.length);
 
         if ((avFrame.getFrmNo() % 30) == 0)
         {

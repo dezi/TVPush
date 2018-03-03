@@ -131,9 +131,63 @@ void zz_top_p2p_api()
     system(strings);
 }
 
+void zz_top_aac_api()
+{
+    char* inpLib = "libfaad.so";
+    char* outLib = "libzztopaac.so";
+
+    char inpPath[ 256 ];
+
+    strcpy(inpPath, "/Users/dezi/TVPush/gen/");
+    strcat(inpPath, inpLib);
+
+    char outPath[ 256 ];
+    strcpy(outPath, "/Users/dezi/TVPush/app/src/main/jnilibs/armeabi-v7a/");
+    strcat(outPath, outLib);
+
+    char cpyPath[ 256 ];
+    strcpy(cpyPath, "/Users/dezi/TVPush/gen/");
+    strcat(cpyPath, outLib);
+
+    char strings[ 256 ];
+    strcpy(strings, "strings");
+    strcat(strings, " ");
+    strcat(strings, cpyPath);
+    strcat(strings, " > ");
+    strcat(strings, cpyPath);
+    strcat(strings, ".txt");
+
+    long size;
+    char *data = readlib(inpPath, &size);
+
+    replacedat(data, size,
+               "Java_com_aac_utils_DecodeAAC_nOpen",
+               "Java_zz_top_aac_AACDecode_open");
+
+    replacedat(data, size,
+               "Java_com_aac_utils_DecodeAAC_nDecode",
+               "Java_zz_top_aac_AACDecode_decode");
+
+    replacedat(data, size,
+               "Java_com_aac_utils_DecodeAAC_nClose",
+               "Java_zz_top_aac_AACDecode_close");
+
+    /*
+    replacedat(data, size,
+               inpLib,
+               outLib);
+    */
+
+    writelib(outPath, data, size);
+    writelib(cpyPath, data, size);
+
+    system(strings);
+}
+
 int main(int argc, char *argv[])
 {
-    zz_top_p2p_api();
+    //zz_top_p2p_api();
+    zz_top_aac_api();
 
     return 0;
 }
