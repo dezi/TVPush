@@ -3,7 +3,7 @@ package com.p2p.p2pcamera;
 import android.util.Log;
 
 //import com.aac.utils.DecodeAAC;
-import zz.top.aac.AACDecode;
+import zz.top.dec.AACDecode;
 
 public class P2PReaderThreadAudio extends P2PReaderThread
 {
