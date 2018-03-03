@@ -14,7 +14,6 @@ public class ApplicationBase extends Application
 
     static
     {
-        System.loadLibrary("native-lib");
     }
 
     @Override

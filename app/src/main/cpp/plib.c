@@ -174,9 +174,11 @@ void zz_top_aac_api()
                "Java_zz_top_aac_AACDecode_close");
     */
 
+    /*
     replacedat(data, size,
                inpLib,
                "libdl.so");
+    */
 
     writelib(outPath, data, size);
     writelib(cpyPath, data, size);

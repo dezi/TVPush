@@ -30,7 +30,7 @@ ${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libzztopp2z.so)
 add_library(libzztopaac SHARED IMPORTED)
 
 set_target_properties(libzztopaac PROPERTIES IMPORTED_LOCATION
-${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libzztopaac.so)
+${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libfaad.so)
 
 add_library(libh265decoder SHARED IMPORTED)
 

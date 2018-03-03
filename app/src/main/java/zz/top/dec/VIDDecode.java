@@ -1,10 +1,10 @@
-package com.decoder.xiaomi;
+package zz.top.dec;
 
 import java.nio.ByteBuffer;
 
 import com.p2p.p2pcamera.P2PVideoGLDecoder;
 
-public class AntsDecoder extends P2PVideoGLDecoder
+public class VIDDecode extends P2PVideoGLDecoder
 {
     protected int mNativeContext;
 
@@ -13,19 +13,10 @@ public class AntsDecoder extends P2PVideoGLDecoder
         nativeInit();
     }
 
-    private static native void nativeInit();
-
-    public AntsDecoder(int i)
+    public VIDDecode(int i)
     {
         initDecoder(i);
     }
-
-
-    private native void init(int i);
-
-    public native boolean decode(byte[] bArr, int i, long j);
-
-    public native boolean decodeBuffer(ByteBuffer byteBuffer, int i, long j);
 
     public boolean decodeBufferDecoder(ByteBuffer byteBuffer, int i, long j)
     {
@@ -37,14 +28,11 @@ public class AntsDecoder extends P2PVideoGLDecoder
         return decode(bArr, i, j);
     }
 
-    public native int getHeight();
-
     public int getHeightDecoder()
+
     {
         return getHeight();
     }
-
-    public native int getWidth();
 
     public int getWidthDecoder()
     {
@@ -56,17 +44,23 @@ public class AntsDecoder extends P2PVideoGLDecoder
         init(i);
     }
 
-    public native void release();
-
     public void releaseDecoder()
     {
         release();
     }
 
-    public native int toTexture(int i, int i2, int i3);
-
     public int toTextureDecoder(int i, int i2, int i3)
     {
         return toTexture(i, i2, i3);
     }
+
+    public static native void nativeInit();
+
+    public native void init(int i);
+    public native boolean decode(byte[] bArr, int i, long j);
+    public native boolean decodeBuffer(ByteBuffer byteBuffer, int i, long j);
+    public native int getHeight();
+    public native int getWidth();
+    public native void release();
+    public native int toTexture(int i, int i2, int i3);
 }

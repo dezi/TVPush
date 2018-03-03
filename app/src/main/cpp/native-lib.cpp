@@ -6,6 +6,117 @@
 //
 //__android_log_print(ANDROID_LOG_INFO, "Hubuabddhdsds####%s####", "++++");
 //
+// javah -jni -classpath ../app/build/intermediates/classes/debug/ zz.top.aac.AACDecode
+//
+
+
+//
+// C native external functions.
+//
+
+extern "C" void JNICALL Java_com_decoder_xiaomi_AntsDecoder_nativeInit
+        (JNIEnv *, jclass);
+
+extern "C" void JNICALL Java_com_decoder_xiaomi_AntsDecoder_init
+        (JNIEnv *, jobject, jint);
+
+extern "C" jboolean JNICALL Java_com_decoder_xiaomi_AntsDecoder_decode
+        (JNIEnv *, jobject, jbyteArray, jint, jlong);
+
+extern "C" jboolean JNICALL Java_com_decoder_xiaomi_AntsDecoder_decodeBuffer
+        (JNIEnv *, jobject, jobject, jint, jlong);
+
+extern "C" jint JNICALL Java_com_decoder_xiaomi_AntsDecoder_getHeight
+        (JNIEnv *, jobject);
+
+extern "C" jint JNICALL Java_com_decoder_xiaomi_AntsDecoder_getWidth
+        (JNIEnv *, jobject);
+
+extern "C" void JNICALL Java_com_decoder_xiaomi_AntsDecoder_release
+        (JNIEnv *, jobject);
+
+extern "C" jint JNICALL Java_com_decoder_xiaomi_AntsDecoder_toTexture
+        (JNIEnv *, jobject, jint, jint, jint);
+
+//
+// JNI bridge methods.
+//
+
+JNIEXPORT void JNICALL Java_zz_top_dec_VIDDecode_nativeInit
+        (JNIEnv *env, jclass self)
+{
+    return Java_com_decoder_xiaomi_AntsDecoder_nativeInit(env, self);
+
+}
+
+JNIEXPORT void JNICALL Java_zz_top_dec_VIDDecode_init
+        (JNIEnv *env, jobject obj, jint int1)
+{
+    return Java_com_decoder_xiaomi_AntsDecoder_init(env, obj, int1);
+}
+
+JNIEXPORT jboolean JNICALL Java_zz_top_dec_VIDDecode_decode
+        (JNIEnv *env, jobject obj, jbyteArray bArr1, jint int1 , jlong long1)
+{
+    return Java_com_decoder_xiaomi_AntsDecoder_decode(env, obj, bArr1, int1, long1);
+
+}
+
+JNIEXPORT jboolean JNICALL Java_zz_top_dec_VIDDecode_decodeBuffer
+        (JNIEnv *env, jobject obj, jobject obj1, jint int1, jlong long1)
+{
+    return Java_com_decoder_xiaomi_AntsDecoder_decodeBuffer(env, obj, obj1, int1, long1);
+}
+
+JNIEXPORT jint JNICALL Java_zz_top_dec_VIDDecode_getHeight
+        (JNIEnv *env, jobject obj)
+{
+    return Java_com_decoder_xiaomi_AntsDecoder_getHeight(env, obj);
+
+}
+
+JNIEXPORT jint JNICALL Java_zz_top_dec_VIDDecode_getWidth
+        (JNIEnv *env, jobject obj)
+{
+    return Java_com_decoder_xiaomi_AntsDecoder_getWidth(env, obj);
+}
+
+JNIEXPORT void JNICALL Java_zz_top_dec_VIDDecode_release
+        (JNIEnv *env, jobject obj)
+{
+    return Java_com_decoder_xiaomi_AntsDecoder_release(env, obj);
+}
+
+JNIEXPORT jint JNICALL Java_zz_top_dec_VIDDecode_toTexture
+        (JNIEnv *env, jobject obj, jint int1, jint int2 , jint int3)
+{
+    return Java_com_decoder_xiaomi_AntsDecoder_toTexture(env, obj, int1, int2, int3);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //
 // C native external functions.
