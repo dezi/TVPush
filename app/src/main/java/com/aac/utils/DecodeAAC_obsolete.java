@@ -1,6 +1,6 @@
 package com.aac.utils;
 
-public class DecodeAAC
+public class DecodeAAC_obsolete
 {
     public static native int nOpen();
 
