@@ -46,7 +46,7 @@ public class P2PReaderThread extends Thread
 
             if (! session.isConnected) break;
 
-            if (hRes == P2PApiErrors.ERROR_PPPP_SESSION_CLOSED_CALLED)
+            if (hRes == P2PApiErrors.ERROR_P2P_SESSION_CLOSED_CALLED)
             {
                 Log.d(LOGTAG, "run: closed channel=" + this.channel);
 
@@ -92,7 +92,7 @@ public class P2PReaderThread extends Thread
 
                     if (! session.isConnected) break;
 
-                    if (dRes == P2PApiErrors.ERROR_PPPP_SESSION_CLOSED_CALLED)
+                    if (dRes == P2PApiErrors.ERROR_P2P_SESSION_CLOSED_CALLED)
                     {
                         Log.d(LOGTAG, "run: closed channel=" + this.channel);
 
