@@ -6,6 +6,7 @@
 cmake_minimum_required(VERSION 3.4.1)
 
 add_executable(meme src/main/cpp/meme.c src/main/cpp/json.h src/main/cpp/json.c)
+add_executable(plib src/main/cpp/plib.c)
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
