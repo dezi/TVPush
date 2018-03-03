@@ -2,16 +2,14 @@ package com.p2p.p2pcamera;
 
 import android.util.Log;
 
-import com.p2p.pppp_api.PPPP_APIs;
-import com.p2p.pppp_api.PPPP_Keys;
-import com.p2p.pppp_api.PPPP_Session;
-
 import com.p2p.p2pcamera.p2pcommands.DeviceInfoData;
 import com.p2p.p2pcamera.p2pcommands.ResolutionData;
 
 import java.util.ArrayList;
 
-import static com.p2p.pppp_api.PPPP_APIs.PPPP_Check;
+import zz.top.p2p.api.P2PApiKeys;
+import zz.top.p2p.api.P2PApiNative;
+import zz.top.p2p.api.P2PApiSession;
 
 @SuppressWarnings({ "WeakerAccess"})
 public class P2PSession
@@ -32,7 +30,7 @@ public class P2PSession
     private short cmdSequence;
     private long lastLoginTime;
 
-    private PPPP_Session sessionInfo;
+    private P2PApiSession sessionInfo;
 
     private P2PReaderThread t0;
     private P2PReaderThread t1;
@@ -55,14 +53,11 @@ public class P2PSession
         System.loadLibrary("h265decoder");
         System.loadLibrary("PPPP_API");
 
-        int resVersion = PPPP_APIs.PPPP_GetAPIVersion();
-        Log.d(LOGTAG, "static: PPPP_GetAPIVersion=" + resVersion);
+        int resVersion = P2PApiNative.GetAPIVersion();
+        Log.d(LOGTAG, "static: P2PAPI.GetAPIVersion=" + resVersion);
 
-        int zztopVersion = zz.top.p2p.api.P2PApiNative.GetAPIVersion();
-        Log.d(LOGTAG, "static: zz.top.p2p.api.P2PApiNative.GetAPIVersion=" + zztopVersion);
-
-        int resInit = PPPP_APIs.PPPP_Initialize("".getBytes(), 12);
-        Log.d(LOGTAG, "static: PPPP_Initialize=" + resInit);
+        int resInit = P2PApiNative.Initialize("".getBytes(), 12);
+        Log.d(LOGTAG, "static: P2PAPI.Initialize=" + resInit);
     }
 
     public P2PSession(String targetId, String targetPw)
@@ -77,9 +72,9 @@ public class P2PSession
     {
         int[] lastLoginTime = new int[2];
 
-        int resCheckOnline = PPPP_APIs.PPPP_CheckDevOnline(targetId, PPPP_Keys.serverString, 2, lastLoginTime);
+        int resCheckOnline = P2PApiNative.CheckDevOnline(targetId, P2PApiKeys.serverString, 2, lastLoginTime);
 
-        Log.d(LOGTAG, "isOnline: PPPP_CheckDevOnline=" + resCheckOnline + " lastLoginTime=" + lastLoginTime[ 0 ]);
+        Log.d(LOGTAG, "isOnline: P2PAPI.CheckDevOnline=" + resCheckOnline + " lastLoginTime=" + lastLoginTime[ 0 ]);
 
         if (resCheckOnline == 1) this.lastLoginTime = lastLoginTime[ 0 ];
 
@@ -95,8 +90,8 @@ public class P2PSession
 
             Log.d(LOGTAG, "connect: magic=" + magic);
 
-            session = PPPP_APIs.PPPP_ConnectByServer(targetId, magic, 0, PPPP_Keys.serverString, PPPP_Keys.licenseKey);
-            Log.d(LOGTAG, "connect: PPPP_ConnectByServer=" + session);
+            session = P2PApiNative.ConnectByServer(targetId, magic, 0, P2PApiKeys.serverString, P2PApiKeys.licenseKey);
+            Log.d(LOGTAG, "connect: P2PAPI.ConnectByServer=" + session);
 
             if (session <= 0)
             {
@@ -121,11 +116,11 @@ public class P2PSession
             // Retrieve basic session info.
             //
 
-            sessionInfo = new PPPP_Session();
+            sessionInfo = new P2PApiSession();
 
-            int resCheck = PPPP_Check(session, sessionInfo);
+            int resCheck = P2PApiNative.Check(session, sessionInfo);
 
-            Log.d(LOGTAG, "initialize: PPPP_Check=" + resCheck);
+            Log.d(LOGTAG, "initialize: P2PAPI.Check=" + resCheck);
 
             if (resCheck == 0)
             {
@@ -170,8 +165,8 @@ public class P2PSession
                 t5.interrupt();
                 t6.interrupt();
 
-                int resClose = PPPP_APIs.PPPP_Close(session);
-                Log.d(LOGTAG, "disconnect: PPPP_Close=" + resClose);
+                int resClose = P2PApiNative.Close(session);
+                Log.d(LOGTAG, "disconnect: P2PAPI.Close=" + resClose);
 
                 if (resClose == 0)
                 {
@@ -199,8 +194,8 @@ public class P2PSession
                 t5.interrupt();
                 t6.interrupt();
 
-                int resClose = PPPP_APIs.PPPP_ForceClose(session);
-                Log.d(LOGTAG, "forceDisconnect: PPPP_ForceClose=" + resClose);
+                int resClose = P2PApiNative.ForceClose(session);
+                Log.d(LOGTAG, "forceDisconnect: P2PAPI.ForceClose=" + resClose);
 
                 if (resClose == 0)
                 {
@@ -239,11 +234,11 @@ public class P2PSession
 
         //Log.d(LOGTAG, "packDatAndSend: size=" + obj.length + " hex=" + P2PUtil.getHexBytesToString(obj));
 
-        int PPPP_Write = PPPP_APIs.PPPP_Write(session, (byte) 0, data, data.length);
+        int xfer = P2PApiNative.Write(session, (byte) 0, data, data.length);
 
-        //Log.d(LOGTAG, "PPPP_Write IOCTRL, ret:" + PPPP_Write + ", cmdNum:" + p2pFrame.commandNumber + ", extSize:" + p2pFrame.exHeaderSize + ", send(" + session + ", 0x" + Integer.toHexString(p2PMessage.reqId) + ", " + P2PUtil.getHexBytesToString(p2PMessage.data) + ")");
+        //Log.d(LOGTAG, "P2PApiNative.Write IOCTRL, ret:" + xfer + ", cmdNum:" + p2pFrame.commandNumber + ", extSize:" + p2pFrame.exHeaderSize + ", send(" + session + ", 0x" + Integer.toHexString(p2PMessage.reqId) + ", " + P2PUtil.getHexBytesToString(p2PMessage.data) + ")");
 
-        return (PPPP_Write == data.length);
+        return (xfer == data.length);
     }
 
     //region Listener section.

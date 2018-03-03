@@ -2,8 +2,8 @@ package com.p2p.p2pcamera;
 
 import android.util.Log;
 
-import com.p2p.pppp_api.PPPP_APIs;
-import com.p2p.pppp_api.PPPP_Errors;
+import zz.top.p2p.api.P2PApiErrors;
+import zz.top.p2p.api.P2PApiNative;
 
 public class P2PReaderThread extends Thread
 {
@@ -42,11 +42,11 @@ public class P2PReaderThread extends Thread
 
             if (channel == CHANNEL_COMMAND) Log.d(LOGTAG, "head: wait channel=" + channel + " size=" + nSize[0]);
 
-            int hRes = PPPP_APIs.PPPP_Read(session.session, channel, nBuffer, nSize, -1);
+            int hRes = P2PApiNative.Read(session.session, channel, nBuffer, nSize, -1);
 
             if (! session.isConnected) break;
 
-            if (hRes == PPPP_Errors.ERROR_PPPP_SESSION_CLOSED_CALLED)
+            if (hRes == P2PApiErrors.ERROR_PPPP_SESSION_CLOSED_CALLED)
             {
                 Log.d(LOGTAG, "run: closed channel=" + this.channel);
 
@@ -88,11 +88,11 @@ public class P2PReaderThread extends Thread
 
                     if (channel == CHANNEL_COMMAND) Log.d(LOGTAG, "data: wait channel=" + channel + " size=" + dSize[0]);
 
-                    int dRes = PPPP_APIs.PPPP_Read(session.session, channel, dBuffer, dSize, -1);
+                    int dRes = P2PApiNative.Read(session.session, channel, dBuffer, dSize, -1);
 
                     if (! session.isConnected) break;
 
-                    if (dRes == PPPP_Errors.ERROR_PPPP_SESSION_CLOSED_CALLED)
+                    if (dRes == P2PApiErrors.ERROR_PPPP_SESSION_CLOSED_CALLED)
                     {
                         Log.d(LOGTAG, "run: closed channel=" + this.channel);
 
