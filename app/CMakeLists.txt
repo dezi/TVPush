@@ -25,7 +25,7 @@ add_library( # Sets the name of the library.
 add_library(libPPPP_API SHARED IMPORTED)
 
 set_target_properties(libPPPP_API PROPERTIES IMPORTED_LOCATION
-${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libPPPP_API.so)
+${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libzztopp2z.so)
 
 add_library(libfaad SHARED IMPORTED)
 

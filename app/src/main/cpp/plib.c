@@ -87,7 +87,7 @@ void replacedat(char *data, long size, char *target, char *patchs)
 void zz_top_p2p_api()
 {
     char* inpLib = "libPPPP_API.so";
-    char* outLib = "libzztopp2p_1.so";
+    char* outLib = "libzztopp2z.so";
 
     char inpPath[ 256 ];
 
@@ -115,11 +115,15 @@ void zz_top_p2p_api()
 
     replacedat(data, size,
                "Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1",
-               "Java_zz_top_p2p_api_P2PApiNative");
+               "Java_com_xxx_yyyy_1aaa_XYZZ_1XXXX_HACK_1");
 
     replacedat(data, size,
                "PPPP_",
                "PPPP_");
+
+    replacedat(data, size,
+               inpLib,
+               outLib);
 
     writelib(outPath, data, size);
     writelib(cpyPath, data, size);
