@@ -1,5 +1,43 @@
 #include <jni.h>
 #include <string>
+#include <android/log.h>
+
+
+//
+//__android_log_print(ANDROID_LOG_INFO, "Hubuabddhdsds####%s####", "++++");
+//
+
+
+//
+// C native external functions.
+//
+
+extern "C" int Java_com_aac_utils_DecodeAAC_nOpen(JNIEnv *env, jclass self);
+extern "C" int Java_com_aac_utils_DecodeAAC_nDecode(JNIEnv *env, jclass self, jbyteArray bArr1, jint int1, jbyteArray bArr2, jint int2);
+extern "C" int Java_com_aac_utils_DecodeAAC_nClose(JNIEnv *env, jclass self);
+
+//
+// JNI bridge methods.
+//
+
+
+extern "C" JNIEXPORT jint JNICALL Java_zz_top_aac_AACDecode_open
+        (JNIEnv *env, jclass self)
+{
+    return Java_com_aac_utils_DecodeAAC_nOpen(env, self);
+}
+
+extern "C" JNIEXPORT jint JNICALL Java_zz_top_aac_AACDecode_decode
+        (JNIEnv *env, jclass self, jbyteArray bArr1, jint int1, jbyteArray bArr2, jint int2)
+{
+    return Java_com_aac_utils_DecodeAAC_nDecode(env, self, bArr1, int1, bArr2, int2);
+}
+
+extern "C" JNIEXPORT jint JNICALL Java_zz_top_aac_AACDecode_close
+        (JNIEnv *env, jclass self)
+{
+    return Java_com_aac_utils_DecodeAAC_nClose(env, self);
+}
 
 //
 // C native external functions.
