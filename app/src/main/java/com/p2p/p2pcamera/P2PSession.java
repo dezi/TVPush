@@ -58,6 +58,9 @@ public class P2PSession
         int resVersion = PPPP_APIs.PPPP_GetAPIVersion();
         Log.d(LOGTAG, "static: PPPP_GetAPIVersion=" + resVersion);
 
+        int zztopVersion = zz.top.p2p.api.P2PApiNative.GetAPIVersion();
+        Log.d(LOGTAG, "static: zz.top.p2p.api.P2PApiNative.GetAPIVersion=" + zztopVersion);
+
         int resInit = PPPP_APIs.PPPP_Initialize("".getBytes(), 12);
         Log.d(LOGTAG, "static: PPPP_Initialize=" + resInit);
     }
