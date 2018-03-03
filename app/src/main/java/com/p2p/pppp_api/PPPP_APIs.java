@@ -26,6 +26,7 @@ public class PPPP_APIs
     public static native int PPPP_Connect_Break(String str);
 
     public static native int PPPP_GetAPIVersion();
+    public static native int PPPP_GetAPOVersion();
     public static native int PPPP_IsConnecting();
     public static native int PPPP_Listen_Break();
     public static native int PPPP_Config_Debug(byte b, int i);

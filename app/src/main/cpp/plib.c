@@ -89,7 +89,7 @@ void zz_top_p2p_api()
 
     replacedat(data, size,
                "Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1GetAPIVersion",
-               "Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1GetAPOVersion");
+               "Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1GetAPIVersion");
 
     replacedat(data, size,
                "PPPP_GetAPIVersion",
