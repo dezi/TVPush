@@ -73,8 +73,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             getWindow().setLayout((int) (width * 0.4), (int) (height * 0.4));
         }
 
-        Log.d(LOGTAG, "onCreate: stringFromJNI=" + stringFromJNI());
-
         FrameLayout topframe = new FrameLayout(this);
         topframe.setBackgroundColor(0x88880000);
         setContentView(topframe);

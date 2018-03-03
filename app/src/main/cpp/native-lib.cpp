@@ -1,140 +1,112 @@
 #include <jni.h>
 #include <string>
 
-extern "C" JNIEXPORT jint JNICALL Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1GetAPIVersion
-        (JNIEnv *env, jclass self);
+//
+// C native external functions.
+//
 
-extern "C" JNIEXPORT jint JNICALL Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1Initialize
-        (JNIEnv *env, jclass self, jbyteArray bArr1, jint int1);
+extern "C" int PPPP_GetAPIVersion();
 
-extern "C" JNIEXPORT jint JNICALL Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1DeInitialize
-        (JNIEnv *env, jclass self);
+extern "C" int PPPP_Initialize(const char *parameter, int keyLenght);
+extern "C" int PPPP_DeInitialize();
 
-extern "C" JNIEXPORT jint JNICALL Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1Check
-        (JNIEnv *env, jclass self, jint int1, jobject obj1);
+extern "C" int PPPP_CheckDevOnline(const char *targetID, const char *serverString, int size, int *lastLoginTime);
 
-extern "C" JNIEXPORT jint JNICALL Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1CheckDevOnline
-        (JNIEnv *env, jclass self, jstring str1, jstring str2, jint int1, jintArray iArr1);
+extern "C" int PPPP_ConnectByServer(const char *targetID, char bEnableLanSearch, int udpPort, const char *serverString, const char *licenseKey);
 
-extern "C" JNIEXPORT jint JNICALL Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1ConnectByServer
-        (JNIEnv *env, jclass self, jstring str1, jbyte byte1, jint int1, jstring str2, jstring str3);
+extern "C" int PPPP_Close(int sessionHandle);
+extern "C" int PPPP_ForceClose(int sessionHandle);
 
-extern "C" JNIEXPORT jint JNICALL Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1Close
-        (JNIEnv *env, jclass self, jint int1);
+extern "C" int PPPP_Write(int sessionHandle, char channel, const char *dataBuff, int dataSizeToWrite);
+extern "C" int PPPP_Read(int sessionHandle, char channel, char *dataBuff, int *dataSize, int timeOutMS);
 
-extern "C" JNIEXPORT jint JNICALL Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1ForceClose
-        (JNIEnv *env, jclass self, jint int1);
-
-extern "C" JNIEXPORT jint JNICALL Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1Write
-        (JNIEnv *env, jclass self, jint int1, jbyte byte1, jbyteArray bArr1, jint int2);
-
-extern "C" JNIEXPORT jint JNICALL Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1Read
-        (JNIEnv *env, jclass self, jint int1, jbyte byte1, jbyteArray bArr1, jintArray, jint int2);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//
+// JNI bridge methods.
+//
 
 extern "C" JNIEXPORT jint JNICALL Java_zz_top_p2p_api_P2PApiNative_GetAPIVersion
         (JNIEnv *env, jclass self)
 {
-    return Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1GetAPIVersion(env, self);
+    return PPPP_GetAPIVersion();
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_zz_top_p2p_api_P2PApiNative_Initialize
-        (JNIEnv *env, jclass self, jbyteArray bArr1, jint int1)
+        (JNIEnv *env, jclass self, jbyteArray parameter, jint keyLenght)
 {
-    return Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1Initialize(env, self, bArr1, int1);
+    jbyte *parameterNative = env->GetByteArrayElements(parameter, NULL);
+
+    jint res = PPPP_Initialize((const char *) parameterNative, keyLenght);
+
+    env->ReleaseByteArrayElements(parameter, parameterNative, JNI_COMMIT);
+
+    return res;
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_zz_top_p2p_api_P2PApiNative_DeInitialize
         (JNIEnv *env, jclass self)
 {
-    return Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1DeInitialize(env, self);
-}
-
-extern "C" JNIEXPORT jint JNICALL Java_zz_top_p2p_api_P2PApiNative_Check
-        (JNIEnv *env, jclass self, jint int1, jobject obj1)
-{
-    return Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1Check(env, self, int1, obj1);
+    return PPPP_DeInitialize();
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_zz_top_p2p_api_P2PApiNative_CheckDevOnline
-        (JNIEnv *env, jclass self, jstring str1, jstring str2, jint int1, jintArray iArr1)
+        (JNIEnv *env, jclass self, jstring targetID, jstring serverString, jint size, jintArray lastLoginTime)
 {
-    return Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1CheckDevOnline(env, self, str1, str2, int1, iArr1);
+    const char *targetIDNative = env->GetStringUTFChars(targetID, NULL);
+    const char *serverStringNative = env->GetStringUTFChars(serverString, NULL);
+
+    jint *iArr1native = env->GetIntArrayElements(lastLoginTime, NULL);
+
+    jint res = PPPP_CheckDevOnline(targetIDNative, serverStringNative, size, iArr1native);
+
+    env->ReleaseIntArrayElements(lastLoginTime, iArr1native, JNI_COMMIT);
+
+    return res;
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_zz_top_p2p_api_P2PApiNative_ConnectByServer
-        (JNIEnv *env, jclass self, jstring str1, jbyte byte1, jint int1, jstring str2, jstring str3)
+        (JNIEnv *env, jclass self, jstring targetID, jbyte bEnableLanSearch, jint udpPort, jstring serverString, jstring licenseKey)
 {
-    return Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1ConnectByServer(env, self, str1, byte1, int1, str2, str3);
+    const char *targetIDNative = env->GetStringUTFChars(targetID, NULL);
+    const char *serverStringNative = env->GetStringUTFChars(serverString, NULL);
+    const char *licenseKeyNative = env->GetStringUTFChars(licenseKey, NULL);
+
+    return PPPP_ConnectByServer(targetIDNative, bEnableLanSearch, udpPort, serverStringNative, licenseKeyNative);
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_zz_top_p2p_api_P2PApiNative_Close
-        (JNIEnv *env, jclass self, jint int1)
+        (JNIEnv *env, jclass self, jint sessionHandle)
 {
-    return Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1Close(env, self, int1);
+    return PPPP_Close(sessionHandle);
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_zz_top_p2p_api_P2PApiNative_ForceClose
-        (JNIEnv *env, jclass self, jint int1)
+        (JNIEnv *env, jclass self, jint sessionHandle)
 {
-    return Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1ForceClose(env, self, int1);
+    return PPPP_ForceClose(sessionHandle);
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_zz_top_p2p_api_P2PApiNative_Write
-        (JNIEnv *env, jclass self, jint int1, jbyte byte1, jbyteArray bArr1, jint int2)
+        (JNIEnv *env, jclass self, jint sessionHandle, jbyte channel, jbyteArray dataBuff, jint int2)
 {
-    return Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1Write(env, self, int1, byte1, bArr1, int2);
+    jbyte *dataBuffNative = env->GetByteArrayElements(dataBuff, NULL);
+
+    jint res = PPPP_Write(sessionHandle, channel, (const char *) dataBuffNative, int2);
+
+    env->ReleaseByteArrayElements(dataBuff, dataBuffNative, JNI_COMMIT);
+
+    return res;
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_zz_top_p2p_api_P2PApiNative_Read
-        (JNIEnv *env, jclass self, jint int1, jbyte byte1, jbyteArray bArr1, jintArray iArr1, jint int2)
+        (JNIEnv *env, jclass self, jint sessionHandle, jbyte channel, jbyteArray dataBuff, jintArray dataSize, jint timeOutMS)
 {
-    return Java_com_p2p_pppp_1api_PPPP_1APIs_PPPP_1Read(env, self, int1, byte1, bArr1, iArr1, int2);
-}
+    jbyte *dataBuffNative = env->GetByteArrayElements(dataBuff, NULL);
+    jint *dataSizeNative = env->GetIntArrayElements(dataSize, NULL);
 
+    jint res = PPPP_Read(sessionHandle, channel, (char *) dataBuffNative, dataSizeNative, timeOutMS);
 
+    env->ReleaseIntArrayElements(dataSize, dataSizeNative, JNI_COMMIT);
+    env->ReleaseByteArrayElements(dataBuff, dataBuffNative, JNI_COMMIT);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-extern "C" JNIEXPORT jstring JNICALL Java_de_xavaro_android_tvpush_MainActivity_stringFromJNI(
-        JNIEnv *env, jobject self)
-{
-    std::string hello = "Hello from C++";
-    return env->NewStringUTF(hello.c_str());
+    return res;
 }

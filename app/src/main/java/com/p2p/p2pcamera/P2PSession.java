@@ -118,8 +118,8 @@ public class P2PSession
 
             sessionInfo = new P2PApiSession();
 
+            /*
             int resCheck = P2PApiNative.Check(session, sessionInfo);
-
             Log.d(LOGTAG, "initialize: P2PAPI.Check=" + resCheck);
 
             if (resCheck == 0)
@@ -127,6 +127,7 @@ public class P2PSession
                 Log.d(LOGTAG, "connect: getRemoteIP=" + sessionInfo.getRemoteIP());
                 Log.d(LOGTAG, "connect: getRemotePort=" + sessionInfo.getRemotePort());
             }
+            */
 
             t0 = new P2PReaderThreadContl(this);
             t1 = new P2PReaderThreadAudio(this, (byte) 1);

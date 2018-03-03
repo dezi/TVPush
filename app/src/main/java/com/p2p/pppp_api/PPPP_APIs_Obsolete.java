@@ -1,7 +1,7 @@
 package com.p2p.pppp_api;
 
 @SuppressWarnings({"JniMissingFunction"})
-public class PPPP_APIs
+public class PPPP_APIs_Obsolete
 {
     public static native int PPPP_GetAPIVersion();
 
