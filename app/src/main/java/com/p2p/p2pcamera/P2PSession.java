@@ -49,7 +49,6 @@ public class P2PSession
 
     static
     {
-        System.loadLibrary("faad");
         System.loadLibrary("h265decoder");
         System.loadLibrary("zztopp2z");
         System.loadLibrary("zztopaac");

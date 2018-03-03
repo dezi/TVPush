@@ -48,7 +48,7 @@ void replacedat(char *data, long size, char *target, char *patchs)
 
     size_t tarlen = strlen(target);
 
-    for (int inx = 0; inx < size - 100; inx++)
+    for (int inx = 0; inx < size - tarlen - 1; inx++)
     {
         if (strncmp(data + inx, target, tarlen) == 0)
         {
@@ -160,6 +160,7 @@ void zz_top_aac_api()
     long size;
     char *data = readlib(inpPath, &size);
 
+    /*
     replacedat(data, size,
                "Java_com_aac_utils_DecodeAAC_nOpen",
                "Java_zz_top_aac_AACDecode_open");
@@ -171,12 +172,11 @@ void zz_top_aac_api()
     replacedat(data, size,
                "Java_com_aac_utils_DecodeAAC_nClose",
                "Java_zz_top_aac_AACDecode_close");
+    */
 
-    /*
     replacedat(data, size,
                inpLib,
-               outLib);
-    */
+               "libdl.so");
 
     writelib(outPath, data, size);
     writelib(cpyPath, data, size);

@@ -32,11 +32,6 @@ add_library(libzztopaac SHARED IMPORTED)
 set_target_properties(libzztopaac PROPERTIES IMPORTED_LOCATION
 ${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libzztopaac.so)
 
-add_library(libfaad SHARED IMPORTED)
-
-set_target_properties(libfaad PROPERTIES IMPORTED_LOCATION
-${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libfaad.so)
-
 add_library(libh265decoder SHARED IMPORTED)
 
 set_target_properties(libh265decoder PROPERTIES IMPORTED_LOCATION
@@ -71,7 +66,6 @@ find_library( # Sets the name of the path variable.
 
 target_link_libraries( # Specifies the target library.
                        native-lib
-                       libfaad
                        libmi_decoder
                        libijkffmpeg
                        libh265decoder

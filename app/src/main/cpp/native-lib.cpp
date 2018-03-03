@@ -7,7 +7,6 @@
 //__android_log_print(ANDROID_LOG_INFO, "Hubuabddhdsds####%s####", "++++");
 //
 
-
 //
 // C native external functions.
 //
@@ -19,7 +18,6 @@ extern "C" int Java_com_aac_utils_DecodeAAC_nClose(JNIEnv *env, jclass self);
 //
 // JNI bridge methods.
 //
-
 
 extern "C" JNIEXPORT jint JNICALL Java_zz_top_aac_AACDecode_open
         (JNIEnv *env, jclass self)
