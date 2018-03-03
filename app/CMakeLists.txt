@@ -31,16 +31,6 @@ add_library(libfaad SHARED IMPORTED)
 set_target_properties(libfaad PROPERTIES IMPORTED_LOCATION
 ${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libfaad.so)
 
-add_library(libvideodecoder SHARED IMPORTED)
-
-set_target_properties(libvideodecoder PROPERTIES IMPORTED_LOCATION
-${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libvideodecoder.so)
-
-add_library(libvideodraw SHARED IMPORTED)
-
-set_target_properties(libvideodraw PROPERTIES IMPORTED_LOCATION
-${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libvideodraw.so)
-
 add_library(libh265decoder SHARED IMPORTED)
 
 set_target_properties(libh265decoder PROPERTIES IMPORTED_LOCATION
@@ -79,8 +69,6 @@ target_link_libraries( # Specifies the target library.
                        libmi_decoder
                        libijkffmpeg
                        libh265decoder
-                       libvideodraw
-                       libvideodecoder
                        libPPPP_API
                        # Links the target library to the log library
                        # included in the NDK.

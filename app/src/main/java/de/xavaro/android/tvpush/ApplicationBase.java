@@ -4,8 +4,6 @@ import android.app.Application;
 import android.os.Handler;
 import android.util.Log;
 
-import com.decoder.util.H264Decoder;
-
 import de.xavaro.android.common.Simple;
 
 public class ApplicationBase extends Application

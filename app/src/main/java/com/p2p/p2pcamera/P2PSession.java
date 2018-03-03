@@ -52,11 +52,7 @@ public class P2PSession
     static
     {
         System.loadLibrary("faad");
-        System.loadLibrary("videodraw");
-        System.loadLibrary("ijkffmpeg");
         System.loadLibrary("h265decoder");
-        System.loadLibrary("mi_decoder");
-        System.loadLibrary("videodecoder");
         System.loadLibrary("PPPP_API");
 
         int resVersion = PPPP_APIs.PPPP_GetAPIVersion();
