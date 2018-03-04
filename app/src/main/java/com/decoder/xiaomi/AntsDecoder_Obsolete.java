@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 import com.p2p.p2pcamera.P2PVideoGLDecoder;
 
-public class AntsDecoder extends P2PVideoGLDecoder
+public class AntsDecoder_Obsolete extends P2PVideoGLDecoder
 {
     protected int mNativeContext;
 
@@ -15,7 +15,7 @@ public class AntsDecoder extends P2PVideoGLDecoder
 
     private static native void nativeInit();
 
-    public AntsDecoder(int i)
+    public AntsDecoder_Obsolete(int i)
     {
         initDecoder(i);
     }

@@ -2,7 +2,7 @@ package com.p2p.p2pcamera;
 
 import android.util.Log;
 
-import com.decoder.xiaomi.AntsDecoder;
+import zz.top.dec.VIDDecode;
 
 public class P2PReaderThreadCodec extends Thread
 {
@@ -116,7 +116,7 @@ public class P2PReaderThreadCodec extends Thread
                             decoder = null;
                         }
 
-                        decoder = new AntsDecoder(avFrame.getCodecId());
+                        decoder = new VIDDecode(avFrame.getCodecId());
 
                         session.surface.setSourceDecoder(decoder);
                     }

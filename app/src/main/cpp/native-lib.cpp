@@ -42,52 +42,51 @@ extern "C" jint JNICALL Java_com_decoder_xiaomi_AntsDecoder_toTexture
 // JNI bridge methods.
 //
 
-JNIEXPORT void JNICALL Java_zz_top_dec_VIDDecode_nativeInit
+extern "C" JNIEXPORT void JNICALL Java_zz_top_dec_VIDDecode_nativeInit
         (JNIEnv *env, jclass self)
 {
     return Java_com_decoder_xiaomi_AntsDecoder_nativeInit(env, self);
 
 }
 
-JNIEXPORT void JNICALL Java_zz_top_dec_VIDDecode_init
+extern "C" JNIEXPORT void JNICALL Java_zz_top_dec_VIDDecode_init
         (JNIEnv *env, jobject obj, jint int1)
 {
     return Java_com_decoder_xiaomi_AntsDecoder_init(env, obj, int1);
 }
 
-JNIEXPORT jboolean JNICALL Java_zz_top_dec_VIDDecode_decode
+extern "C" JNIEXPORT jboolean JNICALL Java_zz_top_dec_VIDDecode_decode
         (JNIEnv *env, jobject obj, jbyteArray bArr1, jint int1 , jlong long1)
 {
     return Java_com_decoder_xiaomi_AntsDecoder_decode(env, obj, bArr1, int1, long1);
-
 }
 
-JNIEXPORT jboolean JNICALL Java_zz_top_dec_VIDDecode_decodeBuffer
+extern "C" JNIEXPORT jboolean JNICALL Java_zz_top_dec_VIDDecode_decodeBuffer
         (JNIEnv *env, jobject obj, jobject obj1, jint int1, jlong long1)
 {
     return Java_com_decoder_xiaomi_AntsDecoder_decodeBuffer(env, obj, obj1, int1, long1);
 }
 
-JNIEXPORT jint JNICALL Java_zz_top_dec_VIDDecode_getHeight
+extern "C" JNIEXPORT jint JNICALL Java_zz_top_dec_VIDDecode_getHeight
         (JNIEnv *env, jobject obj)
 {
     return Java_com_decoder_xiaomi_AntsDecoder_getHeight(env, obj);
 
 }
 
-JNIEXPORT jint JNICALL Java_zz_top_dec_VIDDecode_getWidth
+extern "C" JNIEXPORT jint JNICALL Java_zz_top_dec_VIDDecode_getWidth
         (JNIEnv *env, jobject obj)
 {
     return Java_com_decoder_xiaomi_AntsDecoder_getWidth(env, obj);
 }
 
-JNIEXPORT void JNICALL Java_zz_top_dec_VIDDecode_release
+extern "C" JNIEXPORT void JNICALL Java_zz_top_dec_VIDDecode_release
         (JNIEnv *env, jobject obj)
 {
     return Java_com_decoder_xiaomi_AntsDecoder_release(env, obj);
 }
 
-JNIEXPORT jint JNICALL Java_zz_top_dec_VIDDecode_toTexture
+extern "C" JNIEXPORT jint JNICALL Java_zz_top_dec_VIDDecode_toTexture
         (JNIEnv *env, jobject obj, jint int1, jint int2 , jint int3)
 {
     return Java_com_decoder_xiaomi_AntsDecoder_toTexture(env, obj, int1, int2, int3);
