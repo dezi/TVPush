@@ -85,10 +85,11 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
             }
         }
 
-        //setRenderMatrix(image.width(), image.height());
-
         if (ok) ok = rgbShader.process(rgbImage, displayWidth, displayHeight);
 
-        if ((modcount++ % 30) == 0) Log.d(LOGTAG, "onDrawFrame ok=" + ok);
+        if ((modcount++ % 30) == 0)
+        {
+            Log.d(LOGTAG, "onDrawFrame ok=" + ok + " width=" + sourceWidth + " height=" + sourceHeight);
+        }
     }
 }
