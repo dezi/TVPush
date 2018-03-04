@@ -16,6 +16,8 @@ public class P2PApiNative
     public static native int Write(int sessionHandle, byte channel, byte[] dataBuff, int dataSizeToWrite);
     public static native int Read(int sessionHandle, byte channel, byte[] dataBuff, int[] dataSize, int timeOutMS);
 
+    public static native int ShareBandwidth(int bOnOff);
+
     /*
     public static native int Check(int sessionHandle, P2PApiSession session);
     public static native int Check_Buffer(int sessionHandle, byte channel, int[] writeSize, int[] readSize);
@@ -49,6 +51,5 @@ public class P2PApiNative
 
     public static native int Set_Log_Filename(String str1);
 
-    public static native int Share_Bandwidth(byte bOnOff);
     */
 }

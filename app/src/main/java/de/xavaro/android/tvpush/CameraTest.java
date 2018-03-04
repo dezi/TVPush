@@ -66,7 +66,7 @@ public class CameraTest
 
         //p2pcamera.ptzDirectionSend(P2PCamera.PTZ_DIRECTION_LEFT, 0);
 
-        p2pcamera.startVideoSend(P2PCamera.RESOLUTION_1080P);
+        p2pcamera.startVideoSend(P2PCamera.RESOLUTION_720P);
         //p2pcamera.startAudioSend();
 
         p2pcamera.dayNightSend(2);

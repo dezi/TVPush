@@ -18,7 +18,9 @@ public class P2PReaderThreadCodec extends Thread
     private int lastWidth;
     private int lastHeight;
 
-    private int logmod;
+    private int modcount;
+    private int lastframes;
+    private long lasttimems;
 
     public P2PReaderThreadCodec(P2PSession session)
     {
@@ -95,6 +97,26 @@ public class P2PReaderThreadCodec extends Thread
 
     public boolean handleData(P2PAVFrame avFrame)
     {
+        if (lasttimems == 0)
+        {
+            lastframes = 0;
+            lasttimems = System.currentTimeMillis();
+        }
+        else
+        {
+            long diffmillis = System.currentTimeMillis() - lasttimems;
+
+            if (diffmillis >= 1000)
+            {
+                Log.d(LOGTAG, "handleData: fps=" + lastframes);
+
+                lastframes = 0;
+                lasttimems = System.currentTimeMillis();
+            }
+        }
+
+        lastframes++;
+
         if ((decoder == null)
                 || (lastCodec != avFrame.getCodecId())
                 || (lastWidth != avFrame.getVideoWidth())
@@ -134,7 +156,7 @@ public class P2PReaderThreadCodec extends Thread
             session.surface.requestRender();
         }
 
-        if (((logmod++ % 30) == 0) || !ok)
+        if (((modcount++ % 30) == 0) || !ok)
         {
             Log.d(LOGTAG, "handleData:"
                     + " " + ok

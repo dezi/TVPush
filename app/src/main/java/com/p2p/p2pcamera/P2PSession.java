@@ -59,6 +59,9 @@ public class P2PSession
 
         int resInit = P2PApiNative.Initialize("".getBytes(), 12);
         Log.d(LOGTAG, "static: P2PAPI.Initialize=" + resInit);
+
+        int resShare = P2PApiNative.ShareBandwidth(0);
+        Log.d(LOGTAG, "static: P2PAPI.ShareBandwidth=" + resShare);
     }
 
     public P2PSession(String targetId, String targetPw)

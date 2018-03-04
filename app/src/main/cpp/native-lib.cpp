@@ -166,6 +166,8 @@ extern "C" int PPPP_ForceClose(int sessionHandle);
 extern "C" int PPPP_Write(int sessionHandle, char channel, const char *dataBuff, int dataSizeToWrite);
 extern "C" int PPPP_Read(int sessionHandle, char channel, char *dataBuff, int *dataSize, int timeOutMS);
 
+extern "C" int PPPP_Share_Bandwidth(char bOnOff);
+
 //
 // JNI bridge methods.
 //
@@ -256,3 +258,10 @@ extern "C" JNIEXPORT jint JNICALL Java_zz_top_p2p_api_P2PApiNative_Read
 
     return res;
 }
+
+extern "C" JNIEXPORT jint JNICALL Java_zz_top_p2p_api_P2PApiNative_ShareBandwidth
+        (JNIEnv *env, jclass self, jint bOnOff)
+{
+    return PPPP_Share_Bandwidth((jbyte) bOnOff);
+}
+
