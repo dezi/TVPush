@@ -126,26 +126,24 @@ public class P2PReaderThreadCodec extends Thread
 
         boolean ok;
 
-        synchronized (P2PLocks.decoderLock)
-        {
-            ok = decoder.decodeDecoder(avFrame.frmData, avFrame.getFrmSize(), 0);
-        }
+        ok = decoder.decodeDecoder(avFrame.frmData, avFrame.getFrmSize(), 0);
 
         if (ok)
         {
             session.surface.setSourceDimensions(lastWidth, lastHeight);
             session.surface.requestRender();
+        }
 
-            if ((logmod++ % 30) == 0)
-            {
-                Log.d(LOGTAG, "handleData:"
-                        + " " + lastCodec
-                        + " " + lastWidth + "x" + lastHeight
-                        + " " + avFrame.getFrmNo()
-                        + " " + avFrame.getFrmSize()
-                        + " " + session.decodeFrames.size()
-                );
-            }
+        if (((logmod++ % 30) == 0) || !ok)
+        {
+            Log.d(LOGTAG, "handleData:"
+                    + " " + ok
+                    + " " + lastCodec
+                    + " " + lastWidth + "x" + lastHeight
+                    + " " + avFrame.getFrmNo()
+                    + " " + avFrame.getFrmSize()
+                    + " " + session.decodeFrames.size()
+            );
         }
 
         return true;

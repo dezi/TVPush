@@ -34,8 +34,11 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
     private int displayWidth;
     private int displayHeight;
 
-    private int modcount;
     private Faces faceDetector;
+
+    private int modcount;
+    private int lastframes;
+    private long lasttimems;
 
     public P2PVideoGLRenderer(Context context)
     {
@@ -78,6 +81,26 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
     @Override
     public void onDrawFrame(GL10 unused)
     {
+        if (lasttimems == 0)
+        {
+            lastframes = 0;
+            lasttimems = System.currentTimeMillis();
+        }
+        else
+        {
+            long diffmillis = System.currentTimeMillis() - lasttimems;
+
+            if (diffmillis >= 1000)
+            {
+                Log.d(LOGTAG, "onDrawFrame: fps=" + lastframes);
+
+                lastframes = 0;
+                lasttimems = System.currentTimeMillis();
+            }
+        }
+
+        lastframes++;
+
         boolean ok;
 
         synchronized (P2PLocks.decoderLock)
@@ -88,7 +111,9 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
         }
 
         if (ok) ok = yuvShader.process(rgbImage, sourceWidth, sourceHeight);
+        if (ok) ok = rgbShader.process(rgbImage, displayWidth, displayHeight);
 
+        /*
         if (ok)
         {
             if ((onFacesDetectedListener != null) && (faceDetector != null))
@@ -99,8 +124,7 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
                         rgbImage.getHeight());
             }
         }
-
-        if (ok) ok = rgbShader.process(rgbImage, displayWidth, displayHeight);
+        */
 
         if ((modcount++ % 30) == 0)
         {
