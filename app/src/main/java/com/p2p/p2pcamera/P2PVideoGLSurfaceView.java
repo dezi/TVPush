@@ -5,13 +5,16 @@ import android.content.Context;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.util.SparseArray;
 import android.widget.ImageView;
+
+import com.google.android.gms.vision.face.Face;
 
 public class P2PVideoGLSurfaceView extends GLSurfaceView
 {
     private static final String LOGTAG = P2PVideoGLSurfaceView.class.getSimpleName();
 
-    private P2PVideoGLRenderer renderer;
+    public P2PVideoGLRenderer renderer;
 
     public P2PVideoGLSurfaceView(Context context)
     {
@@ -23,14 +26,13 @@ public class P2PVideoGLSurfaceView extends GLSurfaceView
     {
         super(context, attributeSet);
         init(context);
-
     }
 
     private void init(Context context)
     {
         if (supportsOpenGLES2(context))
         {
-            renderer = new P2PVideoGLRenderer();
+            renderer = new P2PVideoGLRenderer(context);
 
             setEGLContextClientVersion(2);
 

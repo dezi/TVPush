@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.graphics.drawable.ColorDrawable;
 import android.view.Surface;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,9 +25,11 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.p2p.p2pcamera.P2PVideoGLSurfaceView;
+import com.p2p.p2pcamera.P2PVideoGLVideoView;
 
 import java.nio.ByteBuffer;
 
+import de.xavaro.android.common.Faces;
 import de.xavaro.android.common.Simple;
 
 public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback
@@ -37,11 +38,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     private SpeechRecognition recognition;
     private TextView voiceButton;
-    private SurfaceView surfaceView;
-    private P2PVideoGLSurfaceView videoSurface;
+    private P2PVideoGLVideoView videoView;
 
     private static final String SAMPLE = Environment.getExternalStorageDirectory() + "/video.mp4";
     private PlayerThread mPlayer = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -70,11 +71,13 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         if (height > width)
         {
-            getWindow().setLayout((int) (width * 0.4), (int) (height * 0.4));
+            //getWindow().setLayout((int) (width * 0.4), (int) (height * 0.4));
+            getWindow().setLayout(700, 500);
         }
         else
         {
-            getWindow().setLayout((int) (width * 0.4), (int) (height * 0.4));
+            //getWindow().setLayout((int) (width * 0.4), (int) (height * 0.4));
+            getWindow().setLayout(700, 500);
         }
 
         FrameLayout topframe = new FrameLayout(this);
@@ -96,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             }
         });
 
-        topframe.addView(heloButton, new FrameLayout.LayoutParams(Simple.WC, Simple.WC, Gravity.TOP + Gravity.START));
+        topframe.addView(heloButton, new FrameLayout.LayoutParams(Simple.WC, Simple.WC, Gravity.BOTTOM + Gravity.START));
 
         voiceButton = new TextView(this);
         voiceButton.setText("VOICE ON");
@@ -115,35 +118,32 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         topframe.addView(voiceButton, new FrameLayout.LayoutParams(Simple.WC, Simple.WC, Gravity.BOTTOM + Gravity.END));
 
-        surfaceView = new SurfaceView(this);
-        surfaceView.getHolder().addCallback(this);
+        videoView = new P2PVideoGLVideoView(this);
 
-        videoSurface = new P2PVideoGLSurfaceView(this);
+        topframe.addView(videoView, new FrameLayout.LayoutParams(640, 360, Gravity.TOP + Gravity.START));
 
-        topframe.addView(videoSurface, new FrameLayout.LayoutParams(640, 360, Gravity.TOP + Gravity.END));
-
-        /*
         rgbTest = new ImageView(this);
         rgbTest.setScaleType(ImageView.ScaleType.FIT_XY);
         rgbTest.setBackgroundColor(0xffffffff);
 
-        topframe.addView(rgbTest, new FrameLayout.LayoutParams(160, 90, Gravity.TOP + Gravity.END));
-        */
+        topframe.addView(rgbTest, new FrameLayout.LayoutParams(320, 180, Gravity.TOP + Gravity.END));
+
+        faceDetector = new Faces(this);
 
         ApplicationBase.handler.postDelayed(new Runnable()
         {
             @Override
             public void run()
             {
-                CameraTest.initialize(videoSurface);
+                CameraTest.initialize(videoView);
             }
         }, 1000);
 
     }
 
-    /*
     public static ImageView rgbTest;
     public static Bitmap rgbBitmap;
+    private static Faces faceDetector;
 
     public static Runnable updateRGB = new Runnable()
     {
@@ -151,9 +151,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         public void run()
         {
             rgbTest.setImageDrawable(new BitmapDrawable(rgbTest.getContext().getResources(), rgbBitmap));
+            //faceDetector.detect(rgbBitmap);
         }
     };
-    */
 
     private void speechClick()
     {

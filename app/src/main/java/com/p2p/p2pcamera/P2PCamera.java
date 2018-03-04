@@ -23,7 +23,7 @@ public class P2PCamera
 
     private P2PSession session;
 
-    public P2PCamera(String targetUUID, String targetId, String targetPw, P2PVideoGLSurfaceView surface)
+    public P2PCamera(String targetUUID, String targetId, String targetPw, P2PVideoGLVideoView surface)
     {
         this.targetUUID = targetUUID;
 

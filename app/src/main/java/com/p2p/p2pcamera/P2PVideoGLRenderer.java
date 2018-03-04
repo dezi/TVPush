@@ -1,15 +1,20 @@
 package com.p2p.p2pcamera;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.opengl.GLSurfaceView;
 import android.renderscript.Matrix4f;
 import android.util.Log;
+import android.util.SparseArray;
+
+import com.google.android.gms.vision.face.Face;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import de.xavaro.android.common.Faces;
 import de.xavaro.android.tvpush.ApplicationBase;
 import de.xavaro.android.tvpush.MainActivity;
 
@@ -30,6 +35,14 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
     private int displayHeight;
 
     private int modcount;
+    private Faces faceDetector;
+
+    public P2PVideoGLRenderer(Context context)
+    {
+        super();
+
+        faceDetector = new Faces(context);
+    }
 
     public void setSourceDecoder(P2PVideoGLDecoder decoder)
     {
@@ -76,7 +89,14 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
 
         if (ok) ok = yuvShader.process(rgbImage, sourceWidth, sourceHeight);
 
-        /*
+        if (ok)
+        {
+            if ((onFacesDetectedListener != null) && (faceDetector != null))
+            {
+                onFacesDetectedListener.onFacesDetected(faceDetector.detect(rgbImage.save()));
+            }
+        }
+
         if ((modcount % 30) == 0)
         {
             if ((sourceWidth > 0) && (sourceHeight > 0))
@@ -85,7 +105,6 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
                 ApplicationBase.handler.post(MainActivity.updateRGB);
             }
         }
-        */
 
         if (ok) ok = rgbShader.process(rgbImage, displayWidth, displayHeight);
 
@@ -94,4 +113,36 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
             Log.d(LOGTAG, "onDrawFrame ok=" + ok + " width=" + sourceWidth + " height=" + sourceHeight);
         }
     }
+
+    //region OnFacesDetectedListener
+
+    private OnFacesDetectedListener onFacesDetectedListener;
+
+    public void setOnFacesDetectedListener(OnFacesDetectedListener listener)
+    {
+        onFacesDetectedListener = listener;
+    }
+
+    public OnFacesDetectedListener getOnFacesDetectedListener()
+    {
+        return onFacesDetectedListener;
+    }
+
+    public void OnFacesDetected(SparseArray<Face> faces)
+    {
+        Log.d(LOGTAG, "OnFacesDetected:"
+        );
+
+        if (onFacesDetectedListener != null)
+        {
+            onFacesDetectedListener.onFacesDetected(faces);
+        }
+    }
+
+    public interface OnFacesDetectedListener
+    {
+        void onFacesDetected(SparseArray<Face> faces);
+    }
+
+    //endregion OnFacesDetectedListener
 }

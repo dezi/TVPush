@@ -7,18 +7,19 @@ import com.p2p.p2pcamera.P2PBarcode;
 import com.p2p.p2pcamera.P2PCamera;
 import com.p2p.p2pcamera.P2PCameras;
 import com.p2p.p2pcamera.P2PVideoGLSurfaceView;
+import com.p2p.p2pcamera.P2PVideoGLVideoView;
 
 public class CameraTest
 {
     private static final String LOGTAG = CameraTest.class.getSimpleName();
 
     private static P2PCamera p2pcamera;
-    private static P2PVideoGLSurfaceView surface;
+    private static P2PVideoGLVideoView surface;
 
     public static String DID = "TNPUSAC-663761-TLWPW";
     public static String DPW = "IHQPekEX41IaZ4T";
 
-    public static void initialize(P2PVideoGLSurfaceView surfaceparam)
+    public static void initialize(P2PVideoGLVideoView surfaceparam)
     {
         surface = surfaceparam;
 

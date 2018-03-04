@@ -45,7 +45,7 @@ public class P2PSession
 
     public final ArrayList<P2PAVFrame> decodeFrames = new ArrayList<>();
 
-    public P2PVideoGLSurfaceView surface;
+    public P2PVideoGLVideoView surface;
 
     static
     {
