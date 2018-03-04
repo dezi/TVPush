@@ -93,7 +93,10 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
         {
             if ((onFacesDetectedListener != null) && (faceDetector != null))
             {
-                onFacesDetectedListener.onFacesDetected(faceDetector.detect(rgbImage.save()));
+                onFacesDetectedListener.onFacesDetected(
+                        faceDetector.detect(rgbImage.save()),
+                        rgbImage.getWidth(),
+                        rgbImage.getHeight());
             }
         }
 
@@ -128,20 +131,20 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
         return onFacesDetectedListener;
     }
 
-    public void OnFacesDetected(SparseArray<Face> faces)
+    public void OnFacesDetected(SparseArray<Face> faces, int imageWidth, int imageHeight)
     {
         Log.d(LOGTAG, "OnFacesDetected:"
         );
 
         if (onFacesDetectedListener != null)
         {
-            onFacesDetectedListener.onFacesDetected(faces);
+            onFacesDetectedListener.onFacesDetected(faces, imageWidth, imageHeight);
         }
     }
 
     public interface OnFacesDetectedListener
     {
-        void onFacesDetected(SparseArray<Face> faces);
+        void onFacesDetected(SparseArray<Face> faces, int imageWidth, int imageHeight);
     }
 
     //endregion OnFacesDetectedListener

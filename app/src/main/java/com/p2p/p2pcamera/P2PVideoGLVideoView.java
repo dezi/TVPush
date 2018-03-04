@@ -2,6 +2,7 @@ package com.p2p.p2pcamera;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.SparseArray;
 import android.widget.FrameLayout;
 import android.content.Context;
@@ -10,8 +11,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 
 import com.google.android.gms.vision.face.Face;
-
-import de.xavaro.android.tvpush.ApplicationBase;
+import com.google.android.gms.vision.face.Landmark;
 
 public class P2PVideoGLVideoView extends FrameLayout
 {
@@ -34,6 +34,8 @@ public class P2PVideoGLVideoView extends FrameLayout
     }
 
     private SparseArray<Face> lastFaces;
+    private int lastFacesWidth;
+    private int lastFacesHeight;
 
     private void init(Context context)
     {
@@ -42,9 +44,11 @@ public class P2PVideoGLVideoView extends FrameLayout
         surface.renderer.setOnFacesDetectedListener(new P2PVideoGLRenderer.OnFacesDetectedListener()
         {
             @Override
-            public void onFacesDetected(SparseArray<Face> faces)
+            public void onFacesDetected(SparseArray<Face> faces, int imageWidth, int imageHeight)
             {
                 lastFaces = faces;
+                lastFacesWidth = imageWidth;
+                lastFacesHeight = imageHeight;
 
                 handler.post(new Runnable()
                 {
@@ -66,10 +70,7 @@ public class P2PVideoGLVideoView extends FrameLayout
             {
                 super.onDraw(canvas);
 
-                if (lastFaces != null)
-                {
-                    Log.d(LOGTAG, "maldat: onDraw faces=" + lastFaces.size());
-                }
+                drawFaces(canvas);
             }
         };
 
@@ -96,5 +97,46 @@ public class P2PVideoGLVideoView extends FrameLayout
     public void requestRender()
     {
         surface.requestRender();
+    }
+
+    private void drawFaces(Canvas canvas)
+    {
+        if (lastFaces == null) return;
+
+        float scalex = canvas.getWidth() / (float) lastFacesWidth;
+        float scaley = canvas.getHeight() / (float) lastFacesHeight;
+
+        //Log.d(LOGTAG, "maldat: onDraw faces=" + lastFaces.size());
+
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(1);
+
+        for (int i = 0; i < lastFaces.size(); ++i)
+        {
+            Face face = lastFaces.valueAt(i);
+
+            paint.setColor(Color.RED);
+
+            int left = (int) (face.getPosition().x * scalex);
+            int top = (int) (face.getPosition().y * scaley);
+            int right = left + (int) (face.getWidth() * scalex);
+            int bottom = top + (int) (face.getHeight() * scaley);
+
+            int cx = (left + right) / 2;
+            int cy = (top + bottom) / 2;
+
+            canvas.drawCircle(cx, cy, 5, paint);
+
+            paint.setColor(Color.GREEN);
+
+            for (Landmark landmark : face.getLandmarks())
+            {
+                cx = (int) (landmark.getPosition().x * scalex);
+                cy = (int) (landmark.getPosition().y * scaley);
+
+                canvas.drawCircle(cx, cy, 5, paint);
+            }
+        }
     }
 }

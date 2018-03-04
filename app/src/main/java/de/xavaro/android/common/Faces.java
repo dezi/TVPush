@@ -77,7 +77,7 @@ public class Faces
                 Face face = faces.valueAt(inx);
                 PointF pos = face.getPosition();
 
-                Log.d(LOGTAG, "detect: face=" + inx + " id=" + face.getId() + " x=" + pos.x + " y=" + pos.y);
+                //Log.d(LOGTAG, "detect: face=" + inx + " id=" + face.getId() + " x=" + pos.x + " y=" + pos.y);
 
                 /*
                 Log.d(LOGTAG, "detect:"
