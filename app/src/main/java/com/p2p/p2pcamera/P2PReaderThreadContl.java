@@ -44,10 +44,13 @@ public class P2PReaderThreadContl extends P2PReaderThread
             byte[] dataBuffer = new byte[ dataSize ];
             System.arraycopy(data, dataOffset, dataBuffer, 0, dataSize);
 
-            if (head.commandType == CommandCodes.IPCAM_DEVINFO_RESP)
+            if ((head.commandType == CommandCodes.IPCAM_DEVINFO_RESP)
+             || (head.commandType == CommandCodes.IPCAM_SET_DAYNIGHT_MODE_RESP))
             {
                 DeviceInfoData deviceInfo = new DeviceInfoData(session, dataBuffer);
                 session.onDeviceInfoReceived(deviceInfo);
+
+                Log.d(LOGTAG, "DeviceInfoData: dayNight=" + deviceInfo.day_night_mode);
 
                 return true;
             }

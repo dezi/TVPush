@@ -2,6 +2,7 @@ package com.p2p.p2pcamera;
 
 import android.util.Log;
 
+import com.p2p.p2pcamera.p2pcommands.DayNightSend;
 import com.p2p.p2pcamera.p2pcommands.DeviceInfoQuery;
 import com.p2p.p2pcamera.p2pcommands.PTZControlStopSend;
 import com.p2p.p2pcamera.p2pcommands.PTZDirectionSend;
@@ -71,8 +72,8 @@ public class P2PCamera
         return (new ResolutionSend(session, resolution)).send();
     }
 
-    public final static byte STARTREALTIME_RESOLUTION_PREVIEW = 0;
-    public final static byte STARTREALTIME_RESOLUTION_HIGH = 1;
+    public final static byte STARVIDEO_RESOLUTION_PREVIEW = 0;
+    public final static byte STARVIDEO_RESOLUTION_HIGH = 1;
 
     public boolean startVideoSend(byte resolution)
     {
@@ -92,6 +93,15 @@ public class P2PCamera
     public boolean stopAudioSend()
     {
         return (new StopAudioSend(session)).send();
+    }
+
+    public final static int DAYNIGHTSEND_DAYNIGHT_AUTO = 1;
+    public final static int DAYNIGHTSEND_DAYNIGHT_OFF = 2;
+    public final static int DAYNIGHTSEND_DAYNIGHT_ON = 3;
+
+    public boolean dayNightSend(int daynight)
+    {
+        return (new DayNightSend(session, daynight, 0,0)).send();
     }
 
     public final static int PTZ_DIRECTION_UP = 1;

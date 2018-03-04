@@ -59,15 +59,18 @@ public class CameraTest
 
         p2pcamera.connectCamera();
 
-        //p2pcamera.deviceInfoQuery();
+        p2pcamera.deviceInfoQuery();
+
         //p2pcamera.resolutionQuery();
 
         //p2pcamera.resolutionSend(P2PCamera.RESOLUTION_1080P);
 
         //p2pcamera.ptzDirectionSend(P2PCamera.PTZ_DIRECTION_LEFT, 0);
 
-        p2pcamera.startVideoSend(P2PCamera.STARTREALTIME_RESOLUTION_PREVIEW);
+        p2pcamera.startVideoSend(P2PCamera.STARVIDEO_RESOLUTION_PREVIEW);
         //p2pcamera.startAudioSend();
+
+        p2pcamera.dayNightSend(2);
 
         /*
         ApplicationBase.handler.postDelayed(new Runnable()

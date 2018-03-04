@@ -238,7 +238,16 @@ public class P2PSession
 
         int xfer = P2PApiNative.Write(session, (byte) 0, data, data.length);
 
-        //Log.d(LOGTAG, "P2PApiNative.Write IOCTRL, ret:" + xfer + ", cmdNum:" + p2pFrame.commandNumber + ", extSize:" + p2pFrame.exHeaderSize + ", send(" + session + ", 0x" + Integer.toHexString(p2PMessage.reqId) + ", " + P2PUtil.getHexBytesToString(p2PMessage.data) + ")");
+        Log.d(LOGTAG, "P2PApiNative.Write IOCTRL" +
+                ", ret:" + xfer
+                + ", cmdNum:" + p2pFrame.commandNumber
+                + ", extSize:" + p2pFrame.exHeaderSize
+                + ", send(" + session
+                + ", 0x" + Integer.toHexString(p2PMessage.reqId)
+                + "=" + p2PMessage.reqId
+                + ", " + P2PUtil.getHexBytesToString(p2PMessage.data)
+                + ")"
+        );
 
         return (xfer == data.length);
     }
