@@ -1,6 +1,7 @@
 package com.p2p.p2pcamera;
 
 import android.opengl.GLES20;
+import android.renderscript.Matrix4f;
 import android.util.Log;
 
 public class P2PVideoGLShaderYUV2RGB extends P2PVideoGLShader
@@ -141,6 +142,10 @@ public class P2PVideoGLShaderYUV2RGB extends P2PVideoGLShader
 
         rgb.updateSize(width, height);
 
+        //
+        // Bind RGB texture to frame buffer.
+        //
+
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, rgb.getTexture());
@@ -158,6 +163,10 @@ public class P2PVideoGLShaderYUV2RGB extends P2PVideoGLShader
         GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, rgb.getTexture(), 0);
 
         checkGlError("glBindFramebuffer");
+
+        //
+        // Setup program and view.
+        //
 
         GLES20.glUseProgram(program);
         checkGlError("glUseProgram");
@@ -184,8 +193,6 @@ public class P2PVideoGLShaderYUV2RGB extends P2PVideoGLShader
         //
         // Attach YUV textures.
         //
-
-        checkGlError("setYUVTextures");
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, yuvTextures[0]);

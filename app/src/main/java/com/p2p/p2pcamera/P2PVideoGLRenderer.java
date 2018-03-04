@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.opengl.GLSurfaceView;
+import android.renderscript.Matrix4f;
 import android.util.Log;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -86,7 +87,7 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
 
         //setRenderMatrix(image.width(), image.height());
 
-        if (ok) ok = rgbShader.process(rgbImage, 320, 180);
+        if (ok) ok = rgbShader.process(rgbImage, displayWidth, displayHeight);
 
         if ((modcount++ % 30) == 0) Log.d(LOGTAG, "onDrawFrame ok=" + ok);
     }
