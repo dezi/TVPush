@@ -63,18 +63,15 @@ public class P2PCamera
 
     //region Delegate section.
 
-    public final static int RESOLUTION_AUTO = 0;
-    public final static int RESOLUTION_1080P = 1;
-    public final static int RESOLUTION_720P = 2;
-    public final static int RESOLUTION_SUPER1080P = 3;
+    public final static byte RESOLUTION_AUTO = 0;
+    public final static byte RESOLUTION_1080P = 1;
+    public final static byte RESOLUTION_720P = 2;
+    public final static byte RESOLUTION_SUPER1080P = 3;
 
     public boolean resolutionSend(int resolution)
     {
         return (new ResolutionSend(session, resolution)).send();
     }
-
-    public final static byte STARVIDEO_RESOLUTION_PREVIEW = 0;
-    public final static byte STARVIDEO_RESOLUTION_HIGH = 1;
 
     public boolean startVideoSend(byte resolution)
     {
@@ -96,19 +93,19 @@ public class P2PCamera
         return (new StopAudioSend(session)).send();
     }
 
-    public final static int DAYNIGHTSEND_DAYNIGHT_AUTO = 1;
-    public final static int DAYNIGHTSEND_DAYNIGHT_OFF = 2;
-    public final static int DAYNIGHTSEND_DAYNIGHT_ON = 3;
+    public final static byte DAYNIGHTSEND_DAYNIGHT_AUTO = 1;
+    public final static byte DAYNIGHTSEND_DAYNIGHT_OFF = 2;
+    public final static byte DAYNIGHTSEND_DAYNIGHT_ON = 3;
 
     public boolean dayNightSend(int daynight)
     {
         return (new DayNightSend(session, daynight, 0,0)).send();
     }
 
-    public final static int PTZ_DIRECTION_UP = 1;
-    public final static int PTZ_DIRECTION_DOWN = 2;
-    public final static int PTZ_DIRECTION_LEFT = 3;
-    public final static int PTZ_DIRECTION_RIGHT = 4;
+    public final static byte PTZ_DIRECTION_UP = 1;
+    public final static byte PTZ_DIRECTION_DOWN = 2;
+    public final static byte PTZ_DIRECTION_LEFT = 3;
+    public final static byte PTZ_DIRECTION_RIGHT = 4;
 
     public boolean ptzDirectionSend(int direction, int speed)
     {

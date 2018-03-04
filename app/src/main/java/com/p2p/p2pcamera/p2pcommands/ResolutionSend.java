@@ -6,10 +6,10 @@ import com.p2p.p2pcamera.P2PSession;
 
 public class ResolutionSend
 {
-    public final static int RESOLUTION_AUTO = 0;
-    public final static int RESOLUTION_1080P = 1;
-    public final static int RESOLUTION_720P = 2;
-    public final static int RESOLUTION_SUPER1080P = 3;
+    public final static byte RESOLUTION_AUTO = 0;
+    public final static byte RESOLUTION_1080P = 1;
+    public final static byte RESOLUTION_720P = 2;
+    public final static byte RESOLUTION_SUPER1080P = 3;
 
     public int resolution;
 

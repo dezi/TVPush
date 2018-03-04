@@ -5,8 +5,10 @@ import com.p2p.p2pcamera.P2PSession;
 
 public class StartVideoSend
 {
-    public final static byte RESOLUTION_PREVIEW = 0;
-    public final static byte RESOLUTION_HIGH = 1;
+    public final static byte RESOLUTION_AUTO = 0;
+    public final static byte RESOLUTION_1080P = 1;
+    public final static byte RESOLUTION_720P = 2;
+    public final static byte RESOLUTION_SUPER1080P = 3;
 
     public byte usecount;
     public byte resolution;

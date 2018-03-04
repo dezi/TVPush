@@ -18,6 +18,8 @@ public class P2PReaderThreadCodec extends Thread
     private int lastWidth;
     private int lastHeight;
 
+    private int logmod;
+
     public P2PReaderThreadCodec(P2PSession session)
     {
         super();
@@ -93,80 +95,56 @@ public class P2PReaderThreadCodec extends Thread
 
     public boolean handleData(P2PAVFrame avFrame)
     {
-        try
+        if ((decoder == null)
+                || (lastCodec != avFrame.getCodecId())
+                || (lastWidth != avFrame.getVideoWidth())
+                || (lastHeight != avFrame.getVideoHeight()))
         {
-            if (avFrame.isIFrame() || haveIFrame)
-            {
-                haveIFrame = true;
-
-                if ((decoder == null)
-                        || (lastCodec != avFrame.getCodecId())
-                        || (lastWidth != avFrame.getVideoWidth())
-                        || (lastHeight != avFrame.getVideoHeight()))
-                {
-                    synchronized (P2PLocks.decoderLock)
-                    {
-                        if (decoder != null)
-                        {
-                            Log.d(LOGTAG, "handleData: releaseDecoder codec=" + lastCodec);
-
-                            session.surface.setSourceDecoder(null);
-
-                            decoder.releaseDecoder();
-                            decoder = null;
-                        }
-
-                        decoder = new VIDDecode(avFrame.getCodecId());
-
-                        session.surface.setSourceDecoder(decoder);
-                    }
-
-                    Log.d(LOGTAG, "handleData: createDecoder codec=" + avFrame.getCodecId());
-
-                    haveIFrame = avFrame.isIFrame();
-                }
-
-                lastCodec = avFrame.getCodecId();
-                lastWidth = avFrame.getVideoWidth();
-                lastHeight = avFrame.getVideoHeight();
-
-                if (haveIFrame)
-                {
-                    boolean ok;
-
-                    synchronized (P2PLocks.decoderLock)
-                    {
-                        ok = decoder.decodeDecoder(avFrame.frmData, avFrame.getFrmSize(), (long) avFrame.getTimeStamp());
-                    }
-
-                    if (ok)
-                    {
-                        session.surface.setSourceDimensions(lastWidth, lastHeight);
-                        session.surface.requestRender();
-
-                        if (session.decodeFrames.size() > 2)
-                        {
-                            Log.d(LOGTAG, "handleData:"
-                                    + " " + lastCodec
-                                    + " " + lastWidth + "x" + lastHeight
-                                    + " " + avFrame.getFrmNo()
-                                    + " " + session.decodeFrames.size()
-                            );
-                        }
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-
             synchronized (P2PLocks.decoderLock)
             {
-                session.surface.setSourceDecoder(null);
+                if (decoder != null)
+                {
+                    Log.d(LOGTAG, "handleData: releaseDecoder codec=" + lastCodec);
 
-                decoder.releaseDecoder();
-                decoder = null;
+                    session.surface.setSourceDecoder(null);
+
+                    decoder.releaseDecoder();
+                    decoder = null;
+                }
+
+                decoder = new VIDDecode(avFrame.getCodecId());
+
+                session.surface.setSourceDecoder(decoder);
+            }
+
+            Log.d(LOGTAG, "handleData: createDecoder codec=" + avFrame.getCodecId());
+        }
+
+        lastCodec = avFrame.getCodecId();
+        lastWidth = avFrame.getVideoWidth();
+        lastHeight = avFrame.getVideoHeight();
+
+        boolean ok;
+
+        synchronized (P2PLocks.decoderLock)
+        {
+            ok = decoder.decodeDecoder(avFrame.frmData, avFrame.getFrmSize(), 0);
+        }
+
+        if (ok)
+        {
+            session.surface.setSourceDimensions(lastWidth, lastHeight);
+            session.surface.requestRender();
+
+            if ((logmod++ % 30) == 0)
+            {
+                Log.d(LOGTAG, "handleData:"
+                        + " " + lastCodec
+                        + " " + lastWidth + "x" + lastHeight
+                        + " " + avFrame.getFrmNo()
+                        + " " + avFrame.getFrmSize()
+                        + " " + session.decodeFrames.size()
+                );
             }
         }
 
