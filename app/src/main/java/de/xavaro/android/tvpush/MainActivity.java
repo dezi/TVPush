@@ -1,5 +1,8 @@
 package de.xavaro.android.tvpush;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaCodec;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
@@ -10,6 +13,7 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
@@ -118,6 +122,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         topframe.addView(videoSurface, new FrameLayout.LayoutParams(640, 360, Gravity.TOP + Gravity.END));
 
+        rgbTest = new ImageView(this);
+        rgbTest.setScaleType(ImageView.ScaleType.FIT_XY);
+        rgbTest.setBackgroundColor(0xffffffff);
+
+        topframe.addView(rgbTest, new FrameLayout.LayoutParams(160, 90, Gravity.TOP + Gravity.END));
+
         ApplicationBase.handler.postDelayed(new Runnable()
         {
             @Override
@@ -128,6 +138,18 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         }, 1000);
 
     }
+
+    public static ImageView rgbTest;
+    public static Bitmap rgbBitmap;
+
+    public static Runnable updateRGB = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            rgbTest.setImageDrawable(new BitmapDrawable(rgbTest.getContext().getResources(), rgbBitmap));
+        }
+    };
 
     private void speechClick()
     {
@@ -162,8 +184,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         super.onPause();
     }
 
-    public native String stringFromJNI();
-
     @Override
     public void surfaceCreated(SurfaceHolder holder)
     {
@@ -181,7 +201,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             mPlayer.start();
         }
         */
-
     }
 
     @Override

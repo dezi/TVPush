@@ -1,10 +1,16 @@
 package com.p2p.p2pcamera;
 
+import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+
+import de.xavaro.android.tvpush.ApplicationBase;
+import de.xavaro.android.tvpush.MainActivity;
 
 public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
 {
@@ -68,6 +74,15 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
         }
 
         if (ok) ok = yuvShader.process(rgbImage, sourceWidth, sourceHeight);
+
+        if ((modcount % 30) == 0)
+        {
+            if ((sourceWidth > 0) && (sourceHeight > 0))
+            {
+                MainActivity.rgbBitmap = rgbImage.save();
+                ApplicationBase.handler.post(MainActivity.updateRGB);
+            }
+        }
 
         //setRenderMatrix(image.width(), image.height());
 

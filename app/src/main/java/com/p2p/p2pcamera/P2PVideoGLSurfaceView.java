@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 
 public class P2PVideoGLSurfaceView extends GLSurfaceView
 {
@@ -22,6 +23,7 @@ public class P2PVideoGLSurfaceView extends GLSurfaceView
     {
         super(context, attributeSet);
         init(context);
+
     }
 
     private void init(Context context)
