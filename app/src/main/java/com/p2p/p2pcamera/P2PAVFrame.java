@@ -219,9 +219,9 @@ public class P2PAVFrame
         return flags;
     }
 
-    public short getFrmNo()
+    public int getFrmNo()
     {
-        return frmNo;
+        return (frmNo & 0xffff);
     }
 
     public int getFrmSize()

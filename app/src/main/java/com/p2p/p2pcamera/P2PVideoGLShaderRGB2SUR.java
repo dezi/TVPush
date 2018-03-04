@@ -11,8 +11,6 @@ public class P2PVideoGLShaderRGB2SUR extends P2PVideoGLShader
     private static final float[] POS_VERTICES = new float[]{-1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f};
     private static final float[] TEX_VERTICES = new float[]{0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f};
 
-    private final float[] mTextureMat = new float[]{1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
-
     private static final String FRAGMENT_SHADER_SOURCE = ""
             + "precision mediump float;"
             + "uniform sampler2D tex_sampler;"
@@ -87,6 +85,7 @@ public class P2PVideoGLShaderRGB2SUR extends P2PVideoGLShader
         alphaHandle = GLES20.glGetUniformLocation(program, "alpha");
         texCoordHandle = GLES20.glGetAttribLocation(program, "a_texcoord");
         posCoordHandle = GLES20.glGetAttribLocation(program, "a_position");
+
         modelViewMatHandle = GLES20.glGetUniformLocation(program, "u_model_view");
 
         texVertices = P2PVideoGLUtils.createVerticesBuffer(TEX_VERTICES);
@@ -134,9 +133,6 @@ public class P2PVideoGLShaderRGB2SUR extends P2PVideoGLShader
         GLES20.glEnableVertexAttribArray(posCoordHandle);
 
         checkGlError("vertex attribute setup");
-
-        GLES20.glUniformMatrix4fv(this.texCoordMatHandle, 1, false, this.mTextureMat, 0);
-        checkGlError("texCoordMatHandle");
 
         GLES20.glUniformMatrix4fv(this.modelViewMatHandle, 1, false, this.mModelViewMat, 0);
         checkGlError("modelViewMatHandle");

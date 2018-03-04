@@ -122,11 +122,13 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         topframe.addView(videoSurface, new FrameLayout.LayoutParams(640, 360, Gravity.TOP + Gravity.END));
 
+        /*
         rgbTest = new ImageView(this);
         rgbTest.setScaleType(ImageView.ScaleType.FIT_XY);
         rgbTest.setBackgroundColor(0xffffffff);
 
         topframe.addView(rgbTest, new FrameLayout.LayoutParams(160, 90, Gravity.TOP + Gravity.END));
+        */
 
         ApplicationBase.handler.postDelayed(new Runnable()
         {
@@ -139,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     }
 
+    /*
     public static ImageView rgbTest;
     public static Bitmap rgbBitmap;
 
@@ -150,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             rgbTest.setImageDrawable(new BitmapDrawable(rgbTest.getContext().getResources(), rgbBitmap));
         }
     };
+    */
 
     private void speechClick()
     {
