@@ -63,7 +63,7 @@ public class CameraTest
 
         //p2pcamera.resolutionQuery();
 
-        //p2pcamera.resolutionSend(P2PCamera.RESOLUTION_1080P);
+        p2pcamera.resolutionSend(P2PCamera.RESOLUTION_1080P);
 
         //p2pcamera.ptzDirectionSend(P2PCamera.PTZ_DIRECTION_LEFT, 0);
 

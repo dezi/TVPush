@@ -100,6 +100,7 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
             }
         }
 
+        /*
         if ((modcount % 30) == 0)
         {
             if ((sourceWidth > 0) && (sourceHeight > 0))
@@ -108,6 +109,7 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
                 ApplicationBase.handler.post(MainActivity.updateRGB);
             }
         }
+        */
 
         if (ok) ok = rgbShader.process(rgbImage, displayWidth, displayHeight);
 

@@ -63,8 +63,9 @@ public class P2PCamera
 
     //region Delegate section.
 
-    public final static int RESOLUTION_720P = 1;
-    public final static int RESOLUTION_1080P = 2;
+    public final static int RESOLUTION_AUTO = 0;
+    public final static int RESOLUTION_1080P = 1;
+    public final static int RESOLUTION_720P = 2;
     public final static int RESOLUTION_SUPER1080P = 3;
 
     public boolean resolutionSend(int resolution)
