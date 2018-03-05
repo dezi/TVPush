@@ -3,6 +3,7 @@ package de.xavaro.android.tvpush;
 import android.util.Base64;
 import android.util.Log;
 
+import zz.top.cam.Camera;
 import zz.top.p2p.camera.P2PBarcode;
 import zz.top.p2p.camera.P2PCamera;
 import zz.top.cam.Cameras;
@@ -12,11 +13,8 @@ public class CameraTest
 {
     private static final String LOGTAG = CameraTest.class.getSimpleName();
 
-    private static P2PCamera p2pcamera;
+    private static Camera camera;
     private static VideoGLVideoView surface;
-
-    public static String DID = "TNPUSAC-663761-TLWPW";
-    public static String DPW = "IHQPekEX41IaZ4T";
 
     public static void initialize(VideoGLVideoView surfaceparam)
     {
@@ -47,50 +45,13 @@ public class CameraTest
             return;
         }
 
-        String did = Cameras.getP2PDeviceId(uuid);
-        String dpw = Cameras.getP2PDevicePw(uuid);
+        camera = new P2PCamera();
 
-        Log.d(LOGTAG, "delayedInit: fund=" + name + " did=" + did + " dpw=" + dpw);
+        camera.attachCamera(uuid);
+        camera.connectCamera();
 
-        if ((did == null) || (dpw == null)) return;
+        camera.setResolution(Camera.RESOLUTION_1080P);
 
-        p2pcamera = new P2PCamera(uuid, did, dpw, surface);
-
-        p2pcamera.connectCamera();
-
-        p2pcamera.deviceInfoQuery();
-
-        p2pcamera.resolutionSend(P2PCamera.RESOLUTION_1080P);
-        p2pcamera.resolutionQuery();
-
-        //p2pcamera.ptzDirectionSend(P2PCamera.PTZ_DIRECTION_LEFT, 0);
-
-        p2pcamera.startVideoSend(P2PCamera.RESOLUTION_720P);
-        //p2pcamera.startAudioSend();
-
-        p2pcamera.dayNightSend(2);
-
-        /*
-        ApplicationBase.handler.postDelayed(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                p2pcamera.ptzHomeSend();
-            }
-        }, 5000);
-        */
-
-        /*
-        ApplicationBase.handler.postDelayed(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                p2pcamera.disconnectCamera();
-                p2pcamera = null;
-            }
-        }, 15000);
-        */
+        camera.startRealtimeVideo();
     }
 }

@@ -59,25 +59,34 @@ public class P2PSession
         Log.d(LOGTAG, "static: P2PAPI.ShareBandwidth=" + resShare);
     }
 
-    public P2PSession(String targetId, String targetPw)
+    public P2PSession()
     {
-        this.targetId = targetId;
-        this.targetPw = targetPw;
-
-        p2pAVFrameDecrypt = new P2PAVFrameDecrypt(targetPw + "0");
+        //
+        // Nothing done here...
+        //
     }
 
-    public boolean isOnline()
+    public boolean isOnline(String testId)
     {
         int[] lastLoginTime = new int[2];
 
-        int resCheckOnline = P2PApiNative.CheckDevOnline(targetId, P2PApiKeys.serverString, 2, lastLoginTime);
+        int resCheckOnline = P2PApiNative.CheckDevOnline(testId, P2PApiKeys.serverString, 2, lastLoginTime);
 
         Log.d(LOGTAG, "isOnline: P2PAPI.CheckDevOnline=" + resCheckOnline + " lastLoginTime=" + lastLoginTime[ 0 ]);
 
         if (resCheckOnline == 1) this.lastLoginTime = lastLoginTime[ 0 ];
 
         return (resCheckOnline == 1);
+    }
+
+    public boolean attachCamera(String targetId, String targetPw)
+    {
+        this.targetId = targetId;
+        this.targetPw = targetPw;
+
+        p2pAVFrameDecrypt = new P2PAVFrameDecrypt(targetPw + "0");
+
+        return true;
     }
 
     public boolean connect()

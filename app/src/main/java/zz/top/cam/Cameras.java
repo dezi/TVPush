@@ -32,6 +32,12 @@ public class Cameras
     }
 
     @Nullable
+    public static JSONObject getCameraDevice(String deviceUUID)
+    {
+        return cameras.get(deviceUUID);
+    }
+
+    @Nullable
     public static String findCameraByName(String name)
     {
         for (Map.Entry<String, JSONObject> camera : cameras.entrySet())
@@ -50,7 +56,7 @@ public class Cameras
     }
 
     @Nullable
-    public static String findCameraByNickname(String name)
+    public static String findCameraByNick(String nick)
     {
         for (Map.Entry<String, JSONObject> entry : cameras.entrySet())
         {
@@ -58,7 +64,7 @@ public class Cameras
 
             String devName = Json.getString(camera, "device_nick");
 
-            if ((devName != null) && devName.equals(name))
+            if ((devName != null) && devName.equals(nick))
             {
                 return Json.getString(camera, "device_uuid");
             }
@@ -68,16 +74,20 @@ public class Cameras
     }
 
     @Nullable
-    public static String getP2PDeviceId(String uuid)
+    public static String findCameraByDeviceID(String deviceID)
     {
-        JSONObject camera = cameras.get(uuid);
-        return Json.getString(camera, "p2p_id");
-    }
+        for (Map.Entry<String, JSONObject> entry : cameras.entrySet())
+        {
+            JSONObject camera = entry.getValue();
 
-    @Nullable
-    public static String getP2PDevicePw(String uuid)
-    {
-        JSONObject camera = cameras.get(uuid);
-        return Json.getString(camera, "p2p_pw");
+            String devName = Json.getString(camera, "device_id");
+
+            if ((devName != null) && devName.equals(deviceID))
+            {
+                return Json.getString(camera, "device_uuid");
+            }
+        }
+
+        return null;
     }
 }

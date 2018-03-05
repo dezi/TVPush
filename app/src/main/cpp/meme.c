@@ -136,6 +136,8 @@ char mod[ 256 ];
 char ver[ 256 ];
 char uid[ 256 ];
 char cat[ 256 ];
+char cap[ 256 ];
+char drv[ 256 ];
 
 char did[ 32 ];
 char cid[ 32 ];
@@ -419,6 +421,14 @@ void formatMessage(char *type, int credentials)
         catMESS("\n");
     }
 
+    if (strlen(did) > 0)
+    {
+        catMESS("  \"device_id\": \"");
+        escMESS(did);
+        catMESS("\",");
+        catMESS("\n");
+    }
+
     if (strlen(nam) > 0)
     {
         catMESS("  \"device_name\": \"");
@@ -461,6 +471,18 @@ void formatMessage(char *type, int credentials)
 
     catMESS("  \"device_category\": \"");
     escMESS(cat);
+    catMESS("\"");
+    catMESS(",");
+    catMESS("\n");
+
+    catMESS("  \"device_capability\": \"");
+    escMESS(cap);
+    catMESS("\"");
+    catMESS(",");
+    catMESS("\n");
+
+    catMESS("  \"device_driver\": \"");
+    escMESS(drv);
     catMESS("\"");
     if (credentials) catMESS(",");
     catMESS("\n");
@@ -654,7 +676,9 @@ int main(int argc, char *argv[])
     memset(cid, 0, sizeof(cid));
     memset(cpw, 0, sizeof(cpw));
 
-    strcpy(cat, "p2pcamera");
+    strcpy(cat, "camera");
+    strcpy(cap, "camera|speaker|mic");
+    strcpy(drv, "yip2p");
 
     getCustomInfo();
 
