@@ -50,7 +50,7 @@ public class P2PAVFrame
     private short codec_id;
     private byte cover_state;
     private byte flags;
-    private short frmNo;
+    private int frmNo;
     private int frmSize;
     private byte inloss;
     private byte isDay;
@@ -131,7 +131,7 @@ public class P2PAVFrame
         liveFlag = data[3];
         onlineNum = data[4];
         useCount = data[5];
-        frmNo = P2PPacker.byteArrayToShort(data, 6, isBigEndian);
+        frmNo = P2PPacker.byteArrayToShort(data, 6, isBigEndian) & 0xffff;
         videoWidth = P2PPacker.byteArrayToShort(data, 8, isBigEndian);
         videoHeight = P2PPacker.byteArrayToShort(data, 10,  isBigEndian);
         timestamp = P2PPacker.byteArrayToInt(data, 12, isBigEndian);
@@ -221,7 +221,7 @@ public class P2PAVFrame
 
     public int getFrmNo()
     {
-        return (frmNo & 0xffff);
+        return frmNo;
     }
 
     public int getFrmSize()

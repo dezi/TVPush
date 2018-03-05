@@ -83,7 +83,7 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
     @Override
     public void onDrawFrame(GL10 unused)
     {
-        boolean ok = false;
+        boolean display = false;
 
         while (decodeFrames.size() > 0)
         {
@@ -143,10 +143,10 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
             sourceWidth = avFrame.getVideoWidth();
             sourceHeight = avFrame.getVideoHeight();
 
-            ok = decoder.decodeDecoder(avFrame.frmData, avFrame.getFrmSize(), avFrame.getTimeStamp());
+            display = decoder.decodeDecoder(avFrame.frmData, avFrame.getFrmSize(), avFrame.getTimeStamp());
         }
 
-        if (ok)
+        if (display)
         {
             int[] yuvTextures = yuvShader.getYUVTextures();
 
@@ -154,11 +154,7 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
 
             yuvShader.process(rgbImage, sourceWidth, sourceHeight);
             rgbShader.process(rgbImage, displayWidth, displayHeight);
-        }
 
-        /*
-        if (ok)
-        {
             if ((onFacesDetectedListener != null) && (faceDetector != null))
             {
                 onFacesDetectedListener.onFacesDetected(
@@ -167,7 +163,6 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
                         rgbImage.getHeight());
             }
         }
-        */
     }
 
     //region OnFacesDetectedListener
@@ -186,8 +181,7 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
 
     public void OnFacesDetected(SparseArray<Face> faces, int imageWidth, int imageHeight)
     {
-        Log.d(LOGTAG, "OnFacesDetected:"
-        );
+        Log.d(LOGTAG, "OnFacesDetected:");
 
         if (onFacesDetectedListener != null)
         {
