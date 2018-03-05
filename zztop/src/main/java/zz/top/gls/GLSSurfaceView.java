@@ -1,10 +1,11 @@
 package zz.top.gls;
 
 import android.app.ActivityManager;
-import android.content.Context;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
+import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 
 public class GLSSurfaceView extends GLSurfaceView
 {
@@ -43,6 +44,26 @@ public class GLSSurfaceView extends GLSurfaceView
         }
     }
 
+    @Override
+    public void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+
+        renderer.startDecoding();
+
+        Log.d(LOGTAG, "onAttachedToWindow:");
+    }
+
+    @Override
+    public void onDetachedFromWindow()
+    {
+        renderer.stopDecoding();
+
+        super.onDetachedFromWindow();
+
+        Log.d(LOGTAG, "onDetachedFromWindow:");
+    }
+
     private boolean supportsOpenGLES2(Context context)
     {
         ActivityManager am = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE));
@@ -51,9 +72,8 @@ public class GLSSurfaceView extends GLSurfaceView
 
     public void renderFrame(GLSFrame avFrame)
     {
-        if (renderer.renderFrame(avFrame))
-        {
-            requestRender();
-        }
+        renderer.renderFrame(avFrame);
+
+        requestRender();
     }
 }

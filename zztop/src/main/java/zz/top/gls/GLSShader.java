@@ -16,6 +16,7 @@ public class GLSShader
     public int texCoordMatHandle;
 
     public int modelViewMatHandle;
+    public int texSamplerHandle;
 
     public int frameBufferHandle;
 

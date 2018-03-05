@@ -5,7 +5,7 @@ import android.util.Log;
 
 public class GLSShaderRGB2SUR extends GLSShader
 {
-    private final String LOGTAG = GLSShader.class.getSimpleName();
+    private final String LOGTAG = GLSShaderRGB2SUR.class.getSimpleName();
 
     private static final float[] POS_VERTICES = new float[]{-1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f};
     private static final float[] TEX_VERTICES = new float[]{0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f};
@@ -86,6 +86,7 @@ public class GLSShaderRGB2SUR extends GLSShader
         posCoordHandle = GLES20.glGetAttribLocation(program, "a_position");
 
         modelViewMatHandle = GLES20.glGetUniformLocation(program, "u_model_view");
+        texSamplerHandle = GLES20.glGetUniformLocation(program, "tex_sampler");
 
         texVertices = GLSUtils.createVerticesBuffer(TEX_VERTICES);
         posVertices = GLSUtils.createVerticesBuffer(POS_VERTICES);
@@ -133,9 +134,6 @@ public class GLSShaderRGB2SUR extends GLSShader
 
         checkGlError("vertex attribute setup");
 
-        GLES20.glUniformMatrix4fv(this.modelViewMatHandle, 1, false, this.mModelViewMat, 0);
-        checkGlError("modelViewMatHandle");
-
         //
         // Attach RGB texture.
         //
@@ -149,12 +147,17 @@ public class GLSShaderRGB2SUR extends GLSShader
 
         checkGlError("glBindTexture");
 
+        GLES20.glUniform1i(texSamplerHandle, 0);
         GLES20.glUniform1f(alphaHandle, alpha);
 
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, 4);
-        GLES20.glFinish();
+        GLES20.glUniformMatrix4fv(this.modelViewMatHandle, 1, false, this.mModelViewMat, 0);
+        checkGlError("modelViewMatHandle");
 
-        checkGlError("finish");
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, 4);
+        checkGlError("glDrawArrays");
+
+        GLES20.glFinish();
+        checkGlError("after draw");
 
         return true;
     }

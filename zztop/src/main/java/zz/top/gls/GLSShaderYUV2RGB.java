@@ -5,7 +5,7 @@ import android.util.Log;
 
 public class GLSShaderYUV2RGB extends GLSShader
 {
-    private final String LOGTAG = GLSShader.class.getSimpleName();
+    private final String LOGTAG = GLSShaderYUV2RGB.class.getSimpleName();
 
     private static final float[] POS_VERTICES = new float[]{-1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f};
     private static final float[] TEX_VERTICES = new float[]{0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f};
@@ -125,43 +125,43 @@ public class GLSShaderYUV2RGB extends GLSShader
             return false;
         }
 
-        if (rgb == null)
-        {
-            Log.d(LOGTAG, "process: no RGB image given.");
-
-            return false;
-        }
-
-        if ((rgb.getTexture() == 0) || (width == 0) || (height == 0))
+        if ((rgb != null) && ((rgb.getTexture() == 0) || (width == 0) || (height == 0)))
         {
             Log.d(LOGTAG, "process: RGB image not yet ready.");
 
             return false;
         }
 
-        rgb.updateSize(width, height);
+        if (rgb == null)
+        {
+            GLES20.glBindFramebuffer(36160, 0);
+        }
+        else
+        {
+            rgb.updateSize(width, height);
 
-        //
-        // Bind RGB texture to frame buffer.
-        //
+            //
+            // Bind RGB texture to frame buffer.
+            //
 
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, rgb.getTexture());
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, rgb.getTexture());
 
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
 
-        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, rgb.getWidth(), rgb.getHeight(),
-                0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
+            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, rgb.getWidth(), rgb.getHeight(),
+                    0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
 
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBufferHandle);
+            GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBufferHandle);
 
-        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, rgb.getTexture(), 0);
+            GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, rgb.getTexture(), 0);
 
-        checkGlError("glBindFramebuffer");
+            checkGlError("glBindFramebuffer");
+        }
 
         //
         // Setup program and view.
@@ -170,7 +170,7 @@ public class GLSShaderYUV2RGB extends GLSShader
         GLES20.glUseProgram(program);
         checkGlError("glUseProgram");
 
-        GLES20.glViewport(0, 0, rgb.getWidth(), rgb.getHeight());
+        GLES20.glViewport(0, 0, width, height);
         checkGlError("glViewport");
 
         GLES20.glDisable(GLES20.GL_BLEND);
@@ -233,10 +233,13 @@ public class GLSShaderYUV2RGB extends GLSShader
         GLES20.glFinish();
         checkGlError("after draw");
 
-        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, 0, 0);
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+        if (rgb != null)
+        {
+            GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, 0, 0);
+            GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 
-        checkGlError("after process");
+            checkGlError("after process");
+        }
 
         return true;
     }
