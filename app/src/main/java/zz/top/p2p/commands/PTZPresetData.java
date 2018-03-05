@@ -1,0 +1,37 @@
+package zz.top.p2p.commands;
+
+import zz.top.p2p.camera.P2PSession;
+import zz.top.p2p.camera.P2PPacker;
+
+@SuppressWarnings({"WeakerAccess", "unused"})
+public class PTZPresetData
+{
+    private P2PSession session;
+
+    public PTZPresetData(P2PSession session)
+    {
+        this.session = session;
+    }
+
+    public PTZPresetData(P2PSession session, byte[] data)
+    {
+        this.session = session;
+
+        parse(data);
+    }
+
+    public short opResult;
+    public short presetIndex;
+    public PTZPresetsData presets = new PTZPresetsData(session);
+
+    public void parse(byte[] data)
+    {
+        opResult = P2PPacker.byteArrayToShort(data, 0, session.isBigEndian);
+        presetIndex = P2PPacker.byteArrayToShort(data, 2, session.isBigEndian);
+
+        byte[] ptzpresets = new byte[data.length - 4];
+        System.arraycopy(data, 4, ptzpresets, 0, ptzpresets.length);
+
+        presets = new PTZPresetsData(session, ptzpresets);
+    }
+}

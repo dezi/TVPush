@@ -20,8 +20,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
 
-import com.p2p.p2pcamera.P2PReaderThread;
-
 public class DecodeActivity extends Activity implements SurfaceHolder.Callback
 {
     private static final String LOGTAG = DecodeActivity.class.getSimpleName();

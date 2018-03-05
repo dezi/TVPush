@@ -15,7 +15,7 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketTimeoutException;
 
-import com.p2p.p2pcamera.P2PCameras;
+import zz.top.p2p.camera.P2PCameras;
 
 import de.xavaro.android.common.Json;
 import de.xavaro.android.common.Simple;
