@@ -84,14 +84,9 @@ public class P2PVideoGLVideoView extends FrameLayout
         addView(maldat);
     }
 
-    public void setSourceDecoder(P2PVideoGLDecoder decoder)
+    public void renderFrame(P2PAVFrame avFrame)
     {
-        surface.renderer.setSourceDecoder(decoder);
-    }
-
-    public void setSourceDimensions(int width, int height)
-    {
-        surface.renderer.setSourceDimensions(width, height);
+        surface.renderFrame(avFrame);
     }
 
     public void requestRender()

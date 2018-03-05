@@ -21,10 +21,8 @@ public class P2PReaderThreadVideo extends P2PReaderThread
 
         //Log.d(LOGTAG, "handleData: channel=" + channel + " " + avFrame.toFrameString());
 
-        synchronized (session.decodeFrames)
-        {
-            session.decodeFrames.add(avFrame);
-        }
+        session.surface.renderFrame(avFrame);
+        session.surface.requestRender();
 
         return true;
     }

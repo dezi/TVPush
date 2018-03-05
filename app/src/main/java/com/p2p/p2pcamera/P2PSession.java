@@ -39,11 +39,7 @@ public class P2PSession
     private P2PReaderThread t4;
     private P2PReaderThread t5;
 
-    private P2PReaderThreadCodec t6;
-
     public P2PAVFrameDecrypt p2pAVFrameDecrypt;
-
-    public final ArrayList<P2PAVFrame> decodeFrames = new ArrayList<>();
 
     public P2PVideoGLVideoView surface;
 
@@ -120,6 +116,7 @@ public class P2PSession
             // Retrieve basic session info.
             //
 
+
             sessionInfo = new P2PApiSession();
 
             /*
@@ -140,15 +137,12 @@ public class P2PSession
             t4 = new P2PReaderThreadVideo(this, (byte) 4);
             t5 = new P2PReaderThreadVideo(this, (byte) 5);
 
-            t6 = new P2PReaderThreadCodec(this);
-
             t0.start();
             t1.start();
             t2.start();
             t3.start();
             t4.start();
             t5.start();
-            t6.start();
 
             onConnectStateChanged(isConnected);
         }
@@ -168,7 +162,6 @@ public class P2PSession
                 t3.interrupt();
                 t4.interrupt();
                 t5.interrupt();
-                t6.interrupt();
 
                 int resClose = P2PApiNative.Close(session);
                 Log.d(LOGTAG, "disconnect: P2PAPI.Close=" + resClose);
@@ -197,7 +190,6 @@ public class P2PSession
                 t3.interrupt();
                 t4.interrupt();
                 t5.interrupt();
-                t6.interrupt();
 
                 int resClose = P2PApiNative.ForceClose(session);
                 Log.d(LOGTAG, "forceDisconnect: P2PAPI.ForceClose=" + resClose);

@@ -11,12 +11,15 @@ import android.util.SparseArray;
 
 import com.google.android.gms.vision.face.Face;
 
+import java.util.ArrayList;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import de.xavaro.android.common.Faces;
 import de.xavaro.android.tvpush.ApplicationBase;
 import de.xavaro.android.tvpush.MainActivity;
+import zz.top.dec.VIDDecode;
 
 public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
 {
@@ -28,6 +31,7 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
 
     private P2PVideoGLDecoder decoder;
 
+    private int sourceCodec;
     private int sourceWidth;
     private int sourceHeight;
 
@@ -36,9 +40,10 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
 
     private Faces faceDetector;
 
-    private int modcount;
     private int lastframes;
     private long lasttimems;
+
+    public final ArrayList<P2PAVFrame> decodeFrames = new ArrayList<>();
 
     public P2PVideoGLRenderer(Context context)
     {
@@ -47,15 +52,12 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
         faceDetector = new Faces(context);
     }
 
-    public void setSourceDecoder(P2PVideoGLDecoder decoder)
+    public void renderFrame(P2PAVFrame avFrame)
     {
-        this.decoder = decoder;
-    }
-
-    public void setSourceDimensions(int width, int height)
-    {
-        sourceWidth = width;
-        sourceHeight = height;
+        synchronized (decodeFrames)
+        {
+            decodeFrames.add(avFrame);
+        }
     }
 
     @Override
@@ -81,38 +83,80 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
     @Override
     public void onDrawFrame(GL10 unused)
     {
-        if (lasttimems == 0)
-        {
-            lastframes = 0;
-            lasttimems = System.currentTimeMillis();
-        }
-        else
-        {
-            long diffmillis = System.currentTimeMillis() - lasttimems;
+        boolean ok = false;
 
-            if (diffmillis >= 1000)
+        while (decodeFrames.size() > 0)
+        {
+            P2PAVFrame avFrame = null;
+
+            synchronized (decodeFrames)
             {
-                Log.d(LOGTAG, "onDrawFrame: fps=" + lastframes);
+                avFrame = decodeFrames.remove(0);
+            }
 
+            if (lasttimems == 0)
+            {
                 lastframes = 0;
                 lasttimems = System.currentTimeMillis();
             }
+            else
+            {
+                long diffmillis = System.currentTimeMillis() - lasttimems;
+
+                if (diffmillis >= 1000)
+                {
+                    Log.d(LOGTAG, "onDrawFrame:"
+                                    + " fps=" + lastframes
+                                    + " width=" + sourceWidth
+                                    + " height=" + sourceHeight
+                                    + " back=" + decodeFrames.size());
+
+                    lastframes = 0;
+                    lasttimems = System.currentTimeMillis();
+                }
+            }
+
+            lastframes++;
+
+            if ((decoder == null)
+                    || (sourceCodec != avFrame.getCodecId())
+                    || (sourceWidth != avFrame.getVideoWidth())
+                    || (sourceHeight != avFrame.getVideoHeight()))
+            {
+                synchronized (P2PLocks.decoderLock)
+                {
+                    if (decoder != null)
+                    {
+                        Log.d(LOGTAG, "onDrawFrame: releaseDecoder codec=" + sourceCodec);
+
+                        decoder.releaseDecoder();
+                        decoder = null;
+                    }
+
+                    sourceCodec = avFrame.getCodecId();
+                    decoder = new VIDDecode(sourceCodec);
+                }
+
+                Log.d(LOGTAG, "onDrawFrame: createDecoder codec=" + avFrame.getCodecId());
+            }
+
+            sourceWidth = avFrame.getVideoWidth();
+            sourceHeight = avFrame.getVideoHeight();
+
+            ok = decoder.decodeDecoder(avFrame.frmData, avFrame.getFrmSize(), avFrame.getTimeStamp());
         }
 
-        lastframes++;
-
-        boolean ok;
-
-        synchronized (P2PLocks.decoderLock)
+        if (ok)
         {
             int[] yuvTextures = yuvShader.getYUVTextures();
 
-            ok = (decoder != null) && (decoder.toTextureDecoder(yuvTextures[0], yuvTextures[1], yuvTextures[2]) >= 0);
+            decoder.toTextureDecoder(yuvTextures[0], yuvTextures[1], yuvTextures[2]);
+
+            yuvShader.process(rgbImage, sourceWidth, sourceHeight);
+            rgbShader.process(rgbImage, displayWidth, displayHeight);
         }
 
-        if (ok) ok = yuvShader.process(rgbImage, sourceWidth, sourceHeight);
-        if (ok) ok = rgbShader.process(rgbImage, displayWidth, displayHeight);
-
+        /*
         if (ok)
         {
             if ((onFacesDetectedListener != null) && (faceDetector != null))
@@ -123,11 +167,7 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
                         rgbImage.getHeight());
             }
         }
-
-        if ((modcount++ % 30) == 0)
-        {
-            Log.d(LOGTAG, "onDrawFrame: ok=" + ok + " width=" + sourceWidth + " height=" + sourceHeight);
-        }
+        */
     }
 
     //region OnFacesDetectedListener

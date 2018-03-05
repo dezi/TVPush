@@ -53,13 +53,8 @@ public class P2PVideoGLSurfaceView extends GLSurfaceView
         return (am != null) && (am.getDeviceConfigurationInfo().reqGlEsVersion >= 0x20000);
     }
 
-    public void setSourceDecoder(P2PVideoGLDecoder decoder)
+    public void renderFrame(P2PAVFrame avFrame)
     {
-        renderer.setSourceDecoder(decoder);
-    }
-
-    public void setSourceDimensions(int width, int height)
-    {
-        renderer.setSourceDimensions(width, height);
+        renderer.renderFrame(avFrame);
     }
 }
