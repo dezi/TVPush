@@ -74,4 +74,9 @@ public class P2PVideoGLImage
     {
         return P2PVideoGLUtils.saveTexture(texture, width, height);
     }
+
+    public Bitmap saveSmall(int div)
+    {
+        return P2PVideoGLUtils.saveTexture(texture, width / div, height / div);
+    }
 }

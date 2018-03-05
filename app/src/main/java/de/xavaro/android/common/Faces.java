@@ -9,7 +9,6 @@ import android.widget.Toast;
 import android.util.SparseArray;
 import android.util.Log;
 
-import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
@@ -23,9 +22,14 @@ public class Faces
 
     public Faces(Context context)
     {
+        this(context, FaceDetector.ALL_LANDMARKS | FaceDetector.FAST_MODE | FaceDetector.NO_CLASSIFICATIONS);
+    }
+
+    public Faces(Context context, int mode)
+    {
         detector = new FaceDetector.Builder(context)
                 .setTrackingEnabled(false)
-                .setLandmarkType(FaceDetector.ALL_LANDMARKS)
+                .setLandmarkType(mode)
                 .build();
 
         Log.d(LOGTAG, "Faces: detector=" + detector);

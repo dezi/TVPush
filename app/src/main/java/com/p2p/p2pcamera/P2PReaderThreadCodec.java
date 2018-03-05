@@ -56,7 +56,7 @@ public class P2PReaderThreadCodec extends Thread
             {
                 try
                 {
-                    Thread.sleep(10);
+                    Thread.sleep(3);
                 }
                 catch (Exception ignore)
                 {

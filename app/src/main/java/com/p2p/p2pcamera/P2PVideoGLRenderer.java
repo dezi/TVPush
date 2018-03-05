@@ -113,7 +113,6 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
         if (ok) ok = yuvShader.process(rgbImage, sourceWidth, sourceHeight);
         if (ok) ok = rgbShader.process(rgbImage, displayWidth, displayHeight);
 
-        /*
         if (ok)
         {
             if ((onFacesDetectedListener != null) && (faceDetector != null))
@@ -124,7 +123,6 @@ public class P2PVideoGLRenderer implements GLSurfaceView.Renderer
                         rgbImage.getHeight());
             }
         }
-        */
 
         if ((modcount++ % 30) == 0)
         {

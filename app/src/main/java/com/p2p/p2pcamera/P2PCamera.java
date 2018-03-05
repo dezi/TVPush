@@ -33,6 +33,19 @@ public class P2PCamera
         session = new P2PSession(targetId, targetPw);
 
         session.surface = surface;
+
+        initialize();
+    }
+
+    public void initialize()
+    {
+        //
+        // 4881 IPCAM_SET_RESOLUTION         send(1, 0x1311, 00 00 00 01 00 00 00 01 )
+        // 9029 IPCAM_TNP_START_REALTIME     send(1, 0x2345, 02 01 01 00 )
+        //  816 IPCAM_DEVINFO_REQ            send(1, 0x0330, 00 00 00 00 )
+        // 4864 IPCAM_UPDATE_CHECK_PHONE_REQ send(1, 0x1300, 00 00 00 00 )
+        // 9031 IPCAM_TNP_EVENT_LIST_REQ     send(1, 0x2347, 00 00 00 00 07 E2 02 03 07 07 06 00 07 E2 03 05 02 07 06 00 00 00 00 00 )
+        //
     }
 
     public boolean isOnline()
