@@ -10,7 +10,6 @@ import android.util.AttributeSet;
 
 import com.google.android.gms.vision.face.Face;
 
-import zz.top.p2p.camera.P2PAVFrame;
 
 public class GLSVideoView extends FrameLayout
 {
@@ -85,7 +84,7 @@ public class GLSVideoView extends FrameLayout
     {
     }
 
-    public void renderFrame(P2PAVFrame avFrame)
+    public void renderFrame(GLSFrame avFrame)
     {
         surface.renderFrame(avFrame);
     }

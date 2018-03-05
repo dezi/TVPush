@@ -6,8 +6,6 @@ import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 
-import zz.top.p2p.camera.P2PAVFrame;
-
 public class GLSSurfaceView extends GLSurfaceView
 {
     private static final String LOGTAG = GLSSurfaceView.class.getSimpleName();
@@ -51,7 +49,7 @@ public class GLSSurfaceView extends GLSurfaceView
         return (am != null) && (am.getDeviceConfigurationInfo().reqGlEsVersion >= 0x20000);
     }
 
-    public void renderFrame(P2PAVFrame avFrame)
+    public void renderFrame(GLSFrame avFrame)
     {
         renderer.renderFrame(avFrame);
     }
