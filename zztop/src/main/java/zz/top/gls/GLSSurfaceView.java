@@ -49,16 +49,12 @@ public class GLSSurfaceView extends GLSurfaceView
     {
         super.onAttachedToWindow();
 
-        renderer.startDecoding();
-
         Log.d(LOGTAG, "onAttachedToWindow:");
     }
 
     @Override
     public void onDetachedFromWindow()
     {
-        renderer.stopDecoding();
-
         super.onDetachedFromWindow();
 
         Log.d(LOGTAG, "onDetachedFromWindow:");

@@ -56,111 +56,6 @@ public class GLSRenderer implements GLSurfaceView.Renderer
         faceDetector = new GLSFaceDetect(context);
     }
 
-    public void startDecoding()
-    {
-        if (renderMan == null)
-        {
-            renderMan = new Thread(renderManRunner);
-            renderMan.start();
-        }
-    }
-
-    public void stopDecoding()
-    {
-        if (renderMan != null)
-        {
-            renderMan.interrupt();
-            renderMan = null;
-        }
-    }
-
-    private Runnable renderManRunner = new Runnable()
-    {
-        @Override
-        public void run()
-        {
-            while (true)
-            {
-                GLSFrame avFrame = null;
-
-                synchronized (frameQueue)
-                {
-                    if (frameQueue.size() > 0)
-                    {
-                        avFrame = frameQueue.remove(0);
-                    }
-                }
-
-                if (avFrame == null)
-                {
-                    try
-                    {
-                        Thread.sleep(5);
-                    }
-                    catch (Exception ignore)
-                    {
-                    }
-
-                    continue;
-                }
-
-                synchronized (decoderLock)
-                {
-                    //
-                    // Check decoder and decoding sizes.
-                    //
-
-                    if ((videoDecoder == null)
-                            || (sourceCodec != avFrame.getCodecId())
-                            || (sourceWidth != avFrame.getVideoWidth())
-                            || (sourceHeight != avFrame.getVideoHeight()))
-                    {
-                        if (videoDecoder != null)
-                        {
-                            Log.d(LOGTAG, "renderFrame: releaseDecoder codec=" + sourceCodec);
-
-                            videoDecoder.releaseDecoder();
-                            videoDecoder = null;
-                        }
-
-                        sourceCodec = avFrame.getCodecId();
-                        sourceWidth = avFrame.getVideoWidth();
-                        sourceHeight = avFrame.getVideoHeight();
-
-                        videoDecoder = new VIDDecode(sourceCodec);
-
-                        framesDecoded = 0;
-                        framesCorrupt = 0;
-
-                        hadIFrame = false;
-
-                        Log.d(LOGTAG, "renderFrame: createDecoder codec=" + avFrame.getCodecId());
-                    }
-
-                    if (hadIFrame || avFrame.isIFrame())
-                    {
-                        if (videoDecoder.decodeDecoder(avFrame.getFrameData(), avFrame.getFrameSize(), 0))
-                        {
-                            framesDecoded++;
-                            hadIFrame = true;
-                        }
-                        else
-                        {
-                            framesCorrupt++;
-                            hadIFrame = false;
-
-                            Log.d(LOGTAG, "onDrawFrame: frame corrupt."
-                                    + " iframe=" + avFrame.isIFrame()
-                                    + " dec=" + framesDecoded
-                                    + " bad=" + framesCorrupt
-                            );
-                        }
-                    }
-                }
-            }
-        }
-    };
-
     public void renderFrame(GLSFrame avFrame)
     {
         synchronized (frameQueue)
@@ -193,36 +88,79 @@ public class GLSRenderer implements GLSurfaceView.Renderer
     @Override
     public void onDrawFrame(GL10 unused)
     {
-        if ((videoDecoder == null) || ! hadIFrame) return;
+        GLSFrame avFrame = null;
 
-        //rgbShader.process(rgbImage, displayWidth, displayHeight);
-
-        synchronized (decoderLock)
+        synchronized (frameQueue)
         {
-            int[] yuvTextures = yuvShader.getYUVTextures();
-
-            if (videoDecoder.toTextureDecoder(yuvTextures[0], yuvTextures[1], yuvTextures[2]) >= 0)
+            if (frameQueue.size() > 0)
             {
-                yuvShader.process(null, displayWidth, displayHeight);
+                avFrame = frameQueue.remove(0);
+            }
+        }
 
-                /*
-                if ((rgbImage == null) || (rgbImage == rgbImage2))
+        if (avFrame == null) return;
+
+        //
+        // Check decoder and decoding sizes.
+        //
+
+        if ((videoDecoder == null)
+            || (sourceCodec != avFrame.getCodecId())
+            || (sourceWidth != avFrame.getVideoWidth())
+            || (sourceHeight != avFrame.getVideoHeight()))
+        {
+            if (videoDecoder != null)
+            {
+                Log.d(LOGTAG, "renderFrame: releaseDecoder codec=" + sourceCodec);
+
+                videoDecoder.releaseDecoder();
+                videoDecoder = null;
+            }
+
+            sourceCodec = avFrame.getCodecId();
+            sourceWidth = avFrame.getVideoWidth();
+            sourceHeight = avFrame.getVideoHeight();
+
+            videoDecoder = new VIDDecode(sourceCodec);
+
+            framesDecoded = 0;
+            framesCorrupt = 0;
+
+            hadIFrame = false;
+
+            Log.d(LOGTAG, "renderFrame: createDecoder codec=" + avFrame.getCodecId());
+        }
+
+        if (hadIFrame || avFrame.isIFrame())
+        {
+            if (videoDecoder.decodeDecoder(avFrame.getFrameData(), avFrame.getFrameSize(), 0))
+            {
+                framesDecoded++;
+                hadIFrame = true;
+
+                int[] yuvTextures = yuvShader.getYUVTextures();
+
+                if (videoDecoder.toTextureDecoder(yuvTextures[0], yuvTextures[1], yuvTextures[2]) >= 0)
                 {
-                    yuvShader.process(rgbImage1, sourceWidth, sourceHeight);
-                    rgbImage = rgbImage1;
+                    yuvShader.process(null, displayWidth, displayHeight);
+
+                    lastframes++;
                 }
                 else
                 {
-                    yuvShader.process(rgbImage2, sourceWidth, sourceHeight);
-                    rgbImage = rgbImage2;
+                    Log.d(LOGTAG, "onDrawFrame: toTextureDecoder bad");
                 }
-                */
-
-                lastframes++;
             }
             else
             {
-                Log.d(LOGTAG, "onDrawFrame: toTextureDecoder bad");
+                framesCorrupt++;
+                hadIFrame = false;
+
+                Log.d(LOGTAG, "onDrawFrame: frame corrupt."
+                        + " iframe=" + avFrame.isIFrame()
+                        + " dec=" + framesDecoded
+                        + " bad=" + framesCorrupt
+                );
             }
         }
 
