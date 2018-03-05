@@ -89,11 +89,6 @@ public class GLSVideoView extends FrameLayout
         surface.renderFrame(avFrame);
     }
 
-    public void requestRender()
-    {
-        surface.requestRender();
-    }
-
     private final GLSRenderer.OnFacesDetectedListener onFacesDetectedListener =
             new GLSRenderer.OnFacesDetectedListener()
     {

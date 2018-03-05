@@ -55,13 +55,17 @@ public class P2PCamera extends Camera
     @Override
     public FrameLayout createSurface(Context context)
     {
-        session.videoView = new GLSVideoView(context);
-        return session.videoView;
+        GLSVideoView videoView = new GLSVideoView(context);
+
+        session.setVideoView(videoView);
+
+        return videoView;
     }
 
     @Override
     public void releaseSurface()
     {
+        session.setVideoView(null);
     }
 
     @Override
@@ -138,8 +142,8 @@ public class P2PCamera extends Camera
     @Override
     public boolean startFaceDetection(boolean demodraw)
     {
-        session.videoView.setFaceDetecion(true);
-        session.videoView.setFaceDetecionDraw(demodraw);
+        session.getVideoView().setFaceDetecion(true);
+        session.getVideoView().setFaceDetecionDraw(demodraw);
 
         return true;
     }
@@ -147,7 +151,7 @@ public class P2PCamera extends Camera
     @Override
     public boolean stopFaceDetection()
     {
-        session.videoView.setFaceDetecion(false);
+        session.getVideoView().setFaceDetecion(false);
 
         return true;
     }

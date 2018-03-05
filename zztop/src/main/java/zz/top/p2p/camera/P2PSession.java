@@ -2,6 +2,7 @@ package zz.top.p2p.camera;
 
 import android.util.Log;
 
+import zz.top.gls.GLSFrame;
 import zz.top.p2p.commands.DeviceInfoData;
 import zz.top.p2p.commands.ResolutionData;
 
@@ -40,7 +41,7 @@ public class P2PSession
 
     public P2PAVFrameDecrypt p2pAVFrameDecrypt;
 
-    public GLSVideoView videoView;
+    private GLSVideoView videoView;
 
     static
     {
@@ -210,6 +211,21 @@ public class P2PSession
                 }
             }
         }
+    }
+
+    public void setVideoView(GLSVideoView videoView)
+    {
+        this.videoView = videoView;
+    }
+
+    public GLSVideoView getVideoView()
+    {
+        return videoView;
+    }
+
+    public void renderFrame(GLSFrame avFrame)
+    {
+        videoView.renderFrame(avFrame);
     }
 
     public boolean packDatAndSend(P2PMessage p2PMessage)

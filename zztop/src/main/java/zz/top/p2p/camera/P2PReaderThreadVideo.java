@@ -1,5 +1,7 @@
 package zz.top.p2p.camera;
 
+import android.util.Log;
+
 public class P2PReaderThreadVideo extends P2PReaderThread
 {
     private static final String LOGTAG = P2PReaderThreadVideo.class.getSimpleName();
@@ -19,10 +21,12 @@ public class P2PReaderThreadVideo extends P2PReaderThread
             session.p2pAVFrameDecrypt.decryptIframe(avFrame);
         }
 
-        //Log.d(LOGTAG, "handleData: channel=" + channel + " " + avFrame.toFrameString());
+        if (avFrame.isIFrame())
+        {
+            Log.d(LOGTAG, "handleData: channel=" + channel + " " + avFrame.toFrameString());
+        }
 
-        session.videoView.renderFrame(avFrame);
-        session.videoView.requestRender();
+        session.renderFrame(avFrame);
 
         return true;
     }

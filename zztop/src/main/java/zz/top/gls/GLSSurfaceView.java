@@ -33,7 +33,7 @@ public class GLSSurfaceView extends GLSurfaceView
             setEGLContextClientVersion(2);
 
             setRenderer(renderer);
-            setRenderMode(RENDERMODE_WHEN_DIRTY);
+            setRenderMode(RENDERMODE_CONTINUOUSLY);
 
             getHolder().setFormat(PixelFormat.RGBA_8888);
         }
