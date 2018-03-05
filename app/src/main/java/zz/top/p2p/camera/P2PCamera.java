@@ -137,6 +137,23 @@ public class P2PCamera extends Camera
     }
 
     @Override
+    public boolean startFaceDetection(boolean demodraw)
+    {
+        session.videoView.setFaceDetecion(true);
+        session.videoView.setFaceDetecionDraw(demodraw);
+
+        return true;
+    }
+
+    @Override
+    public boolean stopFaceDetection()
+    {
+        session.videoView.setFaceDetecion(false);
+
+        return true;
+    }
+
+    @Override
     public boolean setResolution(int resolution)
     {
         if (resolution == RESOLUTION_4K)

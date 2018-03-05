@@ -1,12 +1,7 @@
 package zz.top.cam;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.widget.FrameLayout;
-
-import org.json.JSONObject;
-
-import zz.top.p2p.camera.P2PCamera;
 
 public abstract class Camera
 {
@@ -38,6 +33,9 @@ public abstract class Camera
 
     public abstract boolean startRealtimeAudio();
     public abstract boolean stopRealtimeAudio();
+
+    public abstract boolean startFaceDetection(boolean demodraw);
+    public abstract boolean stopFaceDetection();
 
     public abstract boolean startPTZDirection(int direction, int speed);
     public abstract boolean stopPTZDirection();
