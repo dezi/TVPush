@@ -19,6 +19,7 @@ public class GLSRenderer implements GLSurfaceView.Renderer
 {
     private final String LOGTAG = GLSRenderer.class.getSimpleName();
 
+    private GLSShaderRGB2SUR rgbShader;
     private GLSShaderYUV2RGB yuvShader;
 
     private int sourceCodec;
@@ -28,6 +29,7 @@ public class GLSRenderer implements GLSurfaceView.Renderer
     private int displayWidth;
     private int displayHeight;
 
+    private GLSImage screenShot;
     private GLSDecoder videoDecoder;
     private GLSFaceDetect faceDetector;
 
@@ -60,6 +62,9 @@ public class GLSRenderer implements GLSurfaceView.Renderer
         Log.d(LOGTAG, "onSurfaceCreated.");
 
         yuvShader = new GLSShaderYUV2RGB();
+        rgbShader = new GLSShaderRGB2SUR();
+
+        screenShot = new GLSImage();
     }
 
     @Override
@@ -74,6 +79,19 @@ public class GLSRenderer implements GLSurfaceView.Renderer
     @Override
     public void onDrawFrame(GL10 unused)
     {
+        //
+        // Display the last valid image.
+        //
+
+        if ((screenShot.getWidth() > 0) && (screenShot.getWidth() > 0))
+        {
+            rgbShader.process(screenShot, displayWidth, displayHeight);
+        }
+
+        //
+        // Decode new frames.
+        //
+
         boolean display = false;
 
         while (frameQueue.size() > 0)
@@ -137,7 +155,7 @@ public class GLSRenderer implements GLSurfaceView.Renderer
 
             if (videoDecoder.toTextureDecoder(yuvTextures[0], yuvTextures[1], yuvTextures[2]) >= 0)
             {
-                yuvShader.process(null, displayWidth, displayHeight);
+                yuvShader.process(screenShot, sourceWidth, sourceHeight);
 
                 lastframes++;
             }
@@ -169,20 +187,19 @@ public class GLSRenderer implements GLSurfaceView.Renderer
                     lasttimems = System.currentTimeMillis();
                 }
             }
-        }
 
-        /*
-        if (display)
-        {
+            /*
             if ((onFacesDetectedListener != null) && (faceDetector != null))
             {
+                Log.d(LOGTAG, "#############");
+
                 onFacesDetectedListener.onFacesDetected(
-                        faceDetector.detect(rgbImage.save()),
-                        rgbImage.getWidth(),
-                        rgbImage.getHeight());
+                        faceDetector.detect(screenShot.save()),
+                        screenShot.getWidth(),
+                        screenShot.getHeight());
             }
+            */
         }
-        */
     }
 
     //region OnFacesDetectedListener
