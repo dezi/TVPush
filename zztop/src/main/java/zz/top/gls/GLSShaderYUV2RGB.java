@@ -100,6 +100,7 @@ public class GLSShaderYUV2RGB extends GLSShader
 
         texCoordHandle = GLES20.glGetAttribLocation(program, "a_texcoord");
         posCoordHandle = GLES20.glGetAttribLocation(program, "a_position");
+
         texCoordMatHandle = GLES20.glGetUniformLocation(program, "u_texture_mat");
         modelViewMatHandle = GLES20.glGetUniformLocation(program, "u_model_view");
 
@@ -134,7 +135,7 @@ public class GLSShaderYUV2RGB extends GLSShader
 
         if (rgb == null)
         {
-            GLES20.glBindFramebuffer(36160, 0);
+            GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
         }
         else
         {
