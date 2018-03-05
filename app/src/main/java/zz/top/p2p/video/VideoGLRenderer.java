@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import de.xavaro.android.common.Faces;
 import zz.top.dec.VIDDecode;
 import zz.top.p2p.camera.P2PAVFrame;
 import zz.top.p2p.camera.P2PLocks;
@@ -34,7 +33,7 @@ public class VideoGLRenderer implements GLSurfaceView.Renderer
     private int displayWidth;
     private int displayHeight;
 
-    private Faces faceDetector;
+    private VideoGLFaceDetect faceDetector;
 
     private int lastframes;
     private long lasttimems;
@@ -45,7 +44,7 @@ public class VideoGLRenderer implements GLSurfaceView.Renderer
     {
         super();
 
-        faceDetector = new Faces(context);
+        faceDetector = new VideoGLFaceDetect(context);
     }
 
     public void renderFrame(P2PAVFrame avFrame)

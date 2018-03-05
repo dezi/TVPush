@@ -1,9 +1,12 @@
-package de.xavaro.android.common;
+package zz.top.p2p.video;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PointF;
 import android.widget.Toast;
 import android.util.SparseArray;
@@ -14,18 +17,18 @@ import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 import com.google.android.gms.vision.face.Landmark;
 
-public class Faces
+public class VideoGLFaceDetect
 {
-    private static final String LOGTAG = Faces.class.getSimpleName();
+    private static final String LOGTAG = VideoGLFaceDetect.class.getSimpleName();
 
     public FaceDetector detector;
 
-    public Faces(Context context)
+    public VideoGLFaceDetect(Context context)
     {
-        this(context, FaceDetector.ALL_LANDMARKS | FaceDetector.FAST_MODE | FaceDetector.NO_CLASSIFICATIONS);
+        this(context, FaceDetector.ALL_LANDMARKS | FaceDetector.FAST_MODE | FaceDetector.ALL_CLASSIFICATIONS);
     }
 
-    public Faces(Context context, int mode)
+    public VideoGLFaceDetect(Context context, int mode)
     {
         detector = new FaceDetector.Builder(context)
                 .setTrackingEnabled(false)
@@ -102,4 +105,44 @@ public class Faces
 
         return faces;
     }
+
+    public static void drawFaces(Canvas canvas, SparseArray<Face> faces, int sourceWidth, int sourceHeight)
+    {
+        if (faces == null) return;
+
+        float scalex = canvas.getWidth() / (float) sourceWidth;
+        float scaley = canvas.getHeight() / (float) sourceHeight;
+
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(1);
+
+        for (int inx = 0; inx < faces.size(); ++inx)
+        {
+            Face face = faces.valueAt(inx);
+
+            paint.setColor(Color.RED);
+
+            int left = (int) (face.getPosition().x * scalex);
+            int top = (int) (face.getPosition().y * scaley);
+            int right = left + (int) (face.getWidth() * scalex);
+            int bottom = top + (int) (face.getHeight() * scaley);
+
+            int cx = (left + right) / 2;
+            int cy = (top + bottom) / 2;
+
+            canvas.drawCircle(cx, cy, 5, paint);
+
+            paint.setColor(Color.GREEN);
+
+            for (Landmark landmark : face.getLandmarks())
+            {
+                cx = (int) (landmark.getPosition().x * scalex);
+                cy = (int) (landmark.getPosition().y * scaley);
+
+                canvas.drawCircle(cx, cy, 5, paint);
+            }
+        }
+    }
+
 }

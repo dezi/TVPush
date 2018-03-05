@@ -2,7 +2,6 @@ package zz.top.p2p.video;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.SparseArray;
 import android.widget.FrameLayout;
 import android.content.Context;
@@ -10,7 +9,6 @@ import android.os.Handler;
 import android.util.AttributeSet;
 
 import com.google.android.gms.vision.face.Face;
-import com.google.android.gms.vision.face.Landmark;
 
 import zz.top.p2p.camera.P2PAVFrame;
 
@@ -71,7 +69,7 @@ public class VideoGLVideoView extends FrameLayout
             {
                 super.onDraw(canvas);
 
-                drawFaces(canvas);
+                VideoGLFaceDetect.drawFaces(canvas, lastFaces, lastFacesWidth, lastFacesHeight);
             }
         };
 
@@ -93,46 +91,5 @@ public class VideoGLVideoView extends FrameLayout
     public void requestRender()
     {
         surface.requestRender();
-    }
-
-    private void drawFaces(Canvas canvas)
-    {
-        if (lastFaces == null) return;
-
-        float scalex = canvas.getWidth() / (float) lastFacesWidth;
-        float scaley = canvas.getHeight() / (float) lastFacesHeight;
-
-        //Log.d(LOGTAG, "maldat: onDraw faces=" + lastFaces.size());
-
-        Paint paint = new Paint();
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(1);
-
-        for (int i = 0; i < lastFaces.size(); ++i)
-        {
-            Face face = lastFaces.valueAt(i);
-
-            paint.setColor(Color.RED);
-
-            int left = (int) (face.getPosition().x * scalex);
-            int top = (int) (face.getPosition().y * scaley);
-            int right = left + (int) (face.getWidth() * scalex);
-            int bottom = top + (int) (face.getHeight() * scaley);
-
-            int cx = (left + right) / 2;
-            int cy = (top + bottom) / 2;
-
-            canvas.drawCircle(cx, cy, 5, paint);
-
-            paint.setColor(Color.GREEN);
-
-            for (Landmark landmark : face.getLandmarks())
-            {
-                cx = (int) (landmark.getPosition().x * scalex);
-                cy = (int) (landmark.getPosition().y * scaley);
-
-                canvas.drawCircle(cx, cy, 5, paint);
-            }
-        }
     }
 }
