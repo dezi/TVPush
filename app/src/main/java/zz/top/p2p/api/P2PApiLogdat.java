@@ -1,11 +1,11 @@
-package com.p2p.pppp_api;
+package zz.top.p2p.api;
 
 import android.util.Log;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
-public class PPPP_Logdat
+public class P2PApiLogdat
 {
-    private static final String LOGTAG = PPPP_Logdat.class.getSimpleName();
+    private static final String LOGTAG = P2PApiLogdat.class.getSimpleName();
 
     public static void logShowHowtoCall()
     {
