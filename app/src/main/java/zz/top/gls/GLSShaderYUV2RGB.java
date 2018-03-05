@@ -1,11 +1,11 @@
-package zz.top.p2p.surface;
+package zz.top.gls;
 
 import android.opengl.GLES20;
 import android.util.Log;
 
-public class VideoGLShaderYUV2RGB extends VideoGLShader
+public class GLSShaderYUV2RGB extends GLSShader
 {
-    private final String LOGTAG = VideoGLShader.class.getSimpleName();
+    private final String LOGTAG = GLSShader.class.getSimpleName();
 
     private static final float[] POS_VERTICES = new float[]{-1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f};
     private static final float[] TEX_VERTICES = new float[]{0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f};
@@ -47,16 +47,16 @@ public class VideoGLShaderYUV2RGB extends VideoGLShader
 
     private int[] yuvTextures;
 
-    public VideoGLShaderYUV2RGB()
+    public GLSShaderYUV2RGB()
     {
-        int vertexShader = VideoGLUtils.loadShader(GLES20.GL_VERTEX_SHADER, VERTEX_SHADER_SOURCE);
+        int vertexShader = GLSUtils.loadShader(GLES20.GL_VERTEX_SHADER, VERTEX_SHADER_SOURCE);
 
         if (vertexShader == 0)
         {
             throw new RuntimeException(LOGTAG + ": Could not load vertex shader: " + VERTEX_SHADER_SOURCE);
         }
 
-        int fragmentShader = VideoGLUtils.loadShader(35632, YUV_FRAGMENT_SHADER_SOURCE);
+        int fragmentShader = GLSUtils.loadShader(35632, YUV_FRAGMENT_SHADER_SOURCE);
 
         if (fragmentShader == 0)
         {
@@ -107,8 +107,8 @@ public class VideoGLShaderYUV2RGB extends VideoGLShader
         texUHandle = GLES20.glGetUniformLocation(program, "u_tex");
         texVHandle = GLES20.glGetUniformLocation(program, "v_tex");
 
-        texVertices = VideoGLUtils.createVerticesBuffer(TEX_VERTICES);
-        posVertices = VideoGLUtils.createVerticesBuffer(POS_VERTICES);
+        texVertices = GLSUtils.createVerticesBuffer(TEX_VERTICES);
+        posVertices = GLSUtils.createVerticesBuffer(POS_VERTICES);
     }
 
     public int[] getYUVTextures()
@@ -116,7 +116,7 @@ public class VideoGLShaderYUV2RGB extends VideoGLShader
         return yuvTextures;
     }
 
-    public boolean process(VideoGLImage rgb, int width, int height)
+    public boolean process(GLSImage rgb, int width, int height)
     {
         if (program == 0)
         {

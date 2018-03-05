@@ -1,11 +1,11 @@
-package zz.top.p2p.surface;
+package zz.top.gls;
 
 import android.opengl.GLES20;
 import android.util.Log;
 
-public class VideoGLShaderRGB2SUR extends VideoGLShader
+public class GLSShaderRGB2SUR extends GLSShader
 {
-    private final String LOGTAG = VideoGLShader.class.getSimpleName();
+    private final String LOGTAG = GLSShader.class.getSimpleName();
 
     private static final float[] POS_VERTICES = new float[]{-1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f};
     private static final float[] TEX_VERTICES = new float[]{0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f};
@@ -34,9 +34,9 @@ public class VideoGLShaderRGB2SUR extends VideoGLShader
             + "}"
             ;
 
-    public VideoGLShaderRGB2SUR()
+    public GLSShaderRGB2SUR()
     {
-        int vertexShader = VideoGLUtils.loadShader(35633, VERTEX_SHADER_SOURCE);
+        int vertexShader = GLSUtils.loadShader(35633, VERTEX_SHADER_SOURCE);
 
         if (vertexShader == 0)
         {
@@ -45,7 +45,7 @@ public class VideoGLShaderRGB2SUR extends VideoGLShader
 
         Log.d(LOGTAG, "createProgram: VERTEX_SHADER created.");
 
-        int fragentShader = VideoGLUtils.loadShader(35632, FRAGMENT_SHADER_SOURCE);
+        int fragentShader = GLSUtils.loadShader(35632, FRAGMENT_SHADER_SOURCE);
 
         if (fragentShader == 0)
         {
@@ -62,10 +62,10 @@ public class VideoGLShaderRGB2SUR extends VideoGLShader
         }
 
         GLES20.glAttachShader(program, vertexShader);
-        VideoGLUtils.checkGlError("glAttachShader");
+        GLSUtils.checkGlError("glAttachShader");
 
         GLES20.glAttachShader(program, fragentShader);
-        VideoGLUtils.checkGlError("glAttachShader");
+        GLSUtils.checkGlError("glAttachShader");
 
         GLES20.glLinkProgram(program);
 
@@ -87,11 +87,11 @@ public class VideoGLShaderRGB2SUR extends VideoGLShader
 
         modelViewMatHandle = GLES20.glGetUniformLocation(program, "u_model_view");
 
-        texVertices = VideoGLUtils.createVerticesBuffer(TEX_VERTICES);
-        posVertices = VideoGLUtils.createVerticesBuffer(POS_VERTICES);
+        texVertices = GLSUtils.createVerticesBuffer(TEX_VERTICES);
+        posVertices = GLSUtils.createVerticesBuffer(POS_VERTICES);
     }
 
-    public boolean process(VideoGLImage rgb, int width, int height)
+    public boolean process(GLSImage rgb, int width, int height)
     {
         if (program == 0)
         {

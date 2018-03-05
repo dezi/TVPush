@@ -1,10 +1,10 @@
-package zz.top.p2p.surface;
+package zz.top.gls;
 
 import java.nio.FloatBuffer;
 
-public class VideoGLShader
+public class GLSShader
 {
-    private final static String LOGTAG = VideoGLShader.class.getSimpleName();
+    private final static String LOGTAG = GLSShader.class.getSimpleName();
 
     public int program;
 
@@ -26,6 +26,6 @@ public class VideoGLShader
 
     public static boolean checkGlError(String str)
     {
-        return VideoGLUtils.checkGlError(LOGTAG + ":" + str);
+        return GLSUtils.checkGlError(LOGTAG + ":" + str);
     }
 }

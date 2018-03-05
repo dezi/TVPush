@@ -21,7 +21,7 @@ import zz.top.p2p.commands.StartAudioSend;
 import zz.top.p2p.commands.StartVideoSend;
 import zz.top.p2p.commands.StopAudioSend;
 import zz.top.p2p.commands.StopVideoSend;
-import zz.top.p2p.surface.VideoGLVideoView;
+import zz.top.gls.GLSVideoView;
 
 public class P2PCamera extends Camera
 {
@@ -55,7 +55,7 @@ public class P2PCamera extends Camera
     @Override
     public FrameLayout createSurface(Context context)
     {
-        session.videoView = new VideoGLVideoView(context);
+        session.videoView = new GLSVideoView(context);
         return session.videoView;
     }
 

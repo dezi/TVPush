@@ -2,9 +2,9 @@ package zz.top.dec;
 
 import java.nio.ByteBuffer;
 
-import zz.top.p2p.surface.VideoGLDecoder;
+import zz.top.gls.GLSDecoder;
 
-public class VIDDecode extends VideoGLDecoder
+public class VIDDecode extends GLSDecoder
 {
     protected int mNativeContext;
 

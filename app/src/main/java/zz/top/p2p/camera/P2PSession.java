@@ -8,7 +8,7 @@ import zz.top.p2p.commands.ResolutionData;
 import zz.top.p2p.api.P2PApiKeys;
 import zz.top.p2p.api.P2PApiNative;
 import zz.top.p2p.api.P2PApiSession;
-import zz.top.p2p.surface.VideoGLVideoView;
+import zz.top.gls.GLSVideoView;
 
 @SuppressWarnings({ "WeakerAccess"})
 public class P2PSession
@@ -40,7 +40,7 @@ public class P2PSession
 
     public P2PAVFrameDecrypt p2pAVFrameDecrypt;
 
-    public VideoGLVideoView videoView;
+    public GLSVideoView videoView;
 
     static
     {

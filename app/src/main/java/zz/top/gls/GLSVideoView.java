@@ -1,4 +1,4 @@
-package zz.top.p2p.surface;
+package zz.top.gls;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -12,22 +12,22 @@ import com.google.android.gms.vision.face.Face;
 
 import zz.top.p2p.camera.P2PAVFrame;
 
-public class VideoGLVideoView extends FrameLayout
+public class GLSVideoView extends FrameLayout
 {
-    private static final String LOGTAG = VideoGLVideoView.class.getSimpleName();
+    private static final String LOGTAG = GLSVideoView.class.getSimpleName();
 
     private Handler handler = new Handler();
-    private VideoGLSurfaceView surface;
+    private GLSSurfaceView surface;
     private FrameLayout maldat;
     private boolean malfaces;
 
-    public VideoGLVideoView(Context context)
+    public GLSVideoView(Context context)
     {
         super(context);
         init(context);
     }
 
-    public VideoGLVideoView(Context context, AttributeSet attributeSet)
+    public GLSVideoView(Context context, AttributeSet attributeSet)
     {
         super(context, attributeSet);
         init(context);
@@ -39,7 +39,7 @@ public class VideoGLVideoView extends FrameLayout
 
     private void init(Context context)
     {
-        surface = new VideoGLSurfaceView(context);
+        surface = new GLSSurfaceView(context);
 
         addView(surface);
 
@@ -50,7 +50,7 @@ public class VideoGLVideoView extends FrameLayout
             {
                 super.onDraw(canvas);
 
-                VideoGLFaceDetect.drawFaces(canvas, lastFaces, lastFacesWidth, lastFacesHeight);
+                GLSFaceDetect.drawFaces(canvas, lastFaces, lastFacesWidth, lastFacesHeight);
             }
         };
 
@@ -95,8 +95,8 @@ public class VideoGLVideoView extends FrameLayout
         surface.requestRender();
     }
 
-    private final VideoGLRenderer.OnFacesDetectedListener onFacesDetectedListener =
-            new VideoGLRenderer.OnFacesDetectedListener()
+    private final GLSRenderer.OnFacesDetectedListener onFacesDetectedListener =
+            new GLSRenderer.OnFacesDetectedListener()
     {
         @Override
         public void onFacesDetected(SparseArray<Face> faces, int imageWidth, int imageHeight)
@@ -105,7 +105,7 @@ public class VideoGLVideoView extends FrameLayout
             lastFacesWidth = imageWidth;
             lastFacesHeight = imageHeight;
 
-            VideoGLVideoView.this.onFacesDetected(faces, imageWidth, imageHeight);
+            GLSVideoView.this.onFacesDetected(faces, imageWidth, imageHeight);
 
             if (malfaces)
             {

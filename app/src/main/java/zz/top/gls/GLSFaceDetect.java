@@ -1,4 +1,4 @@
-package zz.top.p2p.surface;
+package zz.top.gls;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,18 +17,18 @@ import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 import com.google.android.gms.vision.face.Landmark;
 
-public class VideoGLFaceDetect
+public class GLSFaceDetect
 {
-    private static final String LOGTAG = VideoGLFaceDetect.class.getSimpleName();
+    private static final String LOGTAG = GLSFaceDetect.class.getSimpleName();
 
     public FaceDetector detector;
 
-    public VideoGLFaceDetect(Context context)
+    public GLSFaceDetect(Context context)
     {
         this(context, FaceDetector.ALL_LANDMARKS | FaceDetector.FAST_MODE | FaceDetector.ALL_CLASSIFICATIONS);
     }
 
-    public VideoGLFaceDetect(Context context, int mode)
+    public GLSFaceDetect(Context context, int mode)
     {
         detector = new FaceDetector.Builder(context)
                 .setTrackingEnabled(false)

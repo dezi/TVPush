@@ -1,8 +1,8 @@
 package zz.top.p2p.camera;
 
-import zz.top.p2p.surface.VideoGLFrame;
+import zz.top.gls.GLSFrame;
 
-public class P2PAVFrame extends VideoGLFrame
+public class P2PAVFrame extends GLSFrame
 {
     private static final String LOGTAG = P2PAVFrame.class.getSimpleName();
 

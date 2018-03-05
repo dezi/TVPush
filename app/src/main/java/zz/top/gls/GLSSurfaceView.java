@@ -1,4 +1,4 @@
-package zz.top.p2p.surface;
+package zz.top.gls;
 
 import android.app.ActivityManager;
 import android.content.Context;
@@ -8,19 +8,19 @@ import android.util.AttributeSet;
 
 import zz.top.p2p.camera.P2PAVFrame;
 
-public class VideoGLSurfaceView extends GLSurfaceView
+public class GLSSurfaceView extends GLSurfaceView
 {
-    private static final String LOGTAG = VideoGLSurfaceView.class.getSimpleName();
+    private static final String LOGTAG = GLSSurfaceView.class.getSimpleName();
 
-    public VideoGLRenderer renderer;
+    public GLSRenderer renderer;
 
-    public VideoGLSurfaceView(Context context)
+    public GLSSurfaceView(Context context)
     {
         super(context);
         init(context);
     }
 
-    public VideoGLSurfaceView(Context context, AttributeSet attributeSet)
+    public GLSSurfaceView(Context context, AttributeSet attributeSet)
     {
         super(context, attributeSet);
         init(context);
@@ -30,7 +30,7 @@ public class VideoGLSurfaceView extends GLSurfaceView
     {
         if (supportsOpenGLES2(context))
         {
-            renderer = new VideoGLRenderer(context);
+            renderer = new GLSRenderer(context);
 
             setEGLContextClientVersion(2);
 

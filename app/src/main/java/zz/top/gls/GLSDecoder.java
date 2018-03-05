@@ -1,8 +1,8 @@
-package zz.top.p2p.surface;
+package zz.top.gls;
 
 import java.nio.ByteBuffer;
 
-public abstract class VideoGLDecoder
+public abstract class GLSDecoder
 {
     public abstract boolean decodeBufferDecoder(ByteBuffer byteBuffer, int i, long j);
 

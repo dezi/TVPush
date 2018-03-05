@@ -1,38 +1,38 @@
-package zz.top.p2p.surface;
+package zz.top.gls;
 
 import android.graphics.Bitmap;
 
-public class VideoGLImage
+public class GLSImage
 {
     private int width;
     private int height;
     private int texture;
 
-    public VideoGLImage()
+    public GLSImage()
     {
-        this(VideoGLUtils.createTexture(), 0, 0);
+        this(GLSUtils.createTexture(), 0, 0);
     }
 
-    public VideoGLImage(int width, int height)
+    public GLSImage(int width, int height)
     {
-        this(VideoGLUtils.createTexture(), width, height);
+        this(GLSUtils.createTexture(), width, height);
     }
 
-    public VideoGLImage(int texture, int width, int height)
+    public GLSImage(int texture, int width, int height)
     {
         this.texture = texture;
         this.width = width;
         this.height = height;
     }
 
-    public VideoGLImage(Bitmap bitmap)
+    public GLSImage(Bitmap bitmap)
     {
         if (bitmap != null)
         {
             this.width = bitmap.getWidth();
             this.height = bitmap.getHeight();
 
-            this.texture = VideoGLUtils.createTexture(bitmap);
+            this.texture = GLSUtils.createTexture(bitmap);
         }
     }
 
@@ -53,14 +53,14 @@ public class VideoGLImage
 
     public void setTexture(int texture)
     {
-        VideoGLUtils.clearTexture(texture);
+        GLSUtils.clearTexture(texture);
 
         this.texture = texture;
     }
 
     public void release()
     {
-        VideoGLUtils.clearTexture(texture);
+        GLSUtils.clearTexture(texture);
         texture = -1;
     }
 
@@ -72,11 +72,11 @@ public class VideoGLImage
 
     public Bitmap save()
     {
-        return VideoGLUtils.saveTexture(texture, width, height);
+        return GLSUtils.saveTexture(texture, width, height);
     }
 
     public Bitmap saveSmall(int div)
     {
-        return VideoGLUtils.saveTexture(texture, width / div, height / div);
+        return GLSUtils.saveTexture(texture, width / div, height / div);
     }
 }

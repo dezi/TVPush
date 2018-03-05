@@ -1,6 +1,6 @@
-package zz.top.p2p.surface;
+package zz.top.gls;
 
-public abstract class VideoGLFrame
+public abstract class GLSFrame
 {
     public abstract boolean isVideo();
     public abstract boolean isAudio();

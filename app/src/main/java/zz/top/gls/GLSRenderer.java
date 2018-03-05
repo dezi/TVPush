@@ -1,4 +1,4 @@
-package zz.top.p2p.surface;
+package zz.top.gls;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
@@ -14,15 +14,15 @@ import javax.microedition.khronos.opengles.GL10;
 
 import zz.top.dec.VIDDecode;
 
-public class VideoGLRenderer implements GLSurfaceView.Renderer
+public class GLSRenderer implements GLSurfaceView.Renderer
 {
-    private final String LOGTAG = VideoGLRenderer.class.getSimpleName();
+    private final String LOGTAG = GLSRenderer.class.getSimpleName();
 
-    private VideoGLShaderYUV2RGB yuvShader;
-    private VideoGLShaderRGB2SUR rgbShader;
-    private VideoGLImage rgbImage;
+    private GLSShaderYUV2RGB yuvShader;
+    private GLSShaderRGB2SUR rgbShader;
+    private GLSImage rgbImage;
 
-    private VideoGLDecoder decoder;
+    private GLSDecoder decoder;
 
     private int sourceCodec;
     private int sourceWidth;
@@ -31,21 +31,21 @@ public class VideoGLRenderer implements GLSurfaceView.Renderer
     private int displayWidth;
     private int displayHeight;
 
-    private VideoGLFaceDetect faceDetector;
+    private GLSFaceDetect faceDetector;
 
     private int lastframes;
     private long lasttimems;
 
-    public final ArrayList<VideoGLFrame> decodeFrames = new ArrayList<>();
+    public final ArrayList<GLSFrame> decodeFrames = new ArrayList<>();
 
-    public VideoGLRenderer(Context context)
+    public GLSRenderer(Context context)
     {
         super();
 
-        faceDetector = new VideoGLFaceDetect(context);
+        faceDetector = new GLSFaceDetect(context);
     }
 
-    public void renderFrame(VideoGLFrame avFrame)
+    public void renderFrame(GLSFrame avFrame)
     {
         synchronized (decodeFrames)
         {
@@ -58,10 +58,10 @@ public class VideoGLRenderer implements GLSurfaceView.Renderer
     {
         Log.d(LOGTAG, "onSurfaceCreated.");
 
-        rgbImage = new VideoGLImage();
+        rgbImage = new GLSImage();
 
-        yuvShader = new VideoGLShaderYUV2RGB();
-        rgbShader = new VideoGLShaderRGB2SUR();
+        yuvShader = new GLSShaderYUV2RGB();
+        rgbShader = new GLSShaderRGB2SUR();
     }
 
     @Override
@@ -80,7 +80,7 @@ public class VideoGLRenderer implements GLSurfaceView.Renderer
 
         while (decodeFrames.size() > 0)
         {
-            VideoGLFrame avFrame = null;
+            GLSFrame avFrame = null;
 
             synchronized (decodeFrames)
             {

@@ -1,4 +1,4 @@
-package zz.top.p2p.surface;
+package zz.top.gls;
 
 import android.graphics.Bitmap;
 import android.opengl.GLES20;
@@ -10,9 +10,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-public class VideoGLUtils
+public class GLSUtils
 {
-    private static final String LOGTAG = VideoGLUtils.class.getSimpleName();
+    private static final String LOGTAG = GLSUtils.class.getSimpleName();
 
     public static FloatBuffer createVerticesBuffer(float[] fArr)
     {
