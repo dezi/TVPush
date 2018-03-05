@@ -113,18 +113,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         topframe.addView(voiceButton, new FrameLayout.LayoutParams(Simple.WC, Simple.WC, Gravity.BOTTOM + Gravity.END));
 
         videoView = new VideoGLVideoView(this);
+        videoView.setFaceDetecion(true);
+        videoView.setFaceDetecionDraw(true);
 
         topframe.addView(videoView, new FrameLayout.LayoutParams(640, 360, Gravity.TOP + Gravity.START));
-
-        /*
-        rgbTest = new ImageView(this);
-        rgbTest.setScaleType(ImageView.ScaleType.FIT_XY);
-        rgbTest.setBackgroundColor(0xffffffff);
-
-        topframe.addView(rgbTest, new FrameLayout.LayoutParams(320, 180, Gravity.TOP + Gravity.END));
-
-        faceDetector = new Faces(this);
-        */
 
         ApplicationBase.handler.postDelayed(new Runnable()
         {
@@ -136,22 +128,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         }, 1000);
 
     }
-
-    /*
-    public static ImageView rgbTest;
-    public static Bitmap rgbBitmap;
-    private static Faces faceDetector;
-
-    public static Runnable updateRGB = new Runnable()
-    {
-        @Override
-        public void run()
-        {
-            rgbTest.setImageDrawable(new BitmapDrawable(rgbTest.getContext().getResources(), rgbBitmap));
-            //faceDetector.detect(rgbBitmap);
-        }
-    };
-    */
 
     private void speechClick()
     {

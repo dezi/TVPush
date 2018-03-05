@@ -33,7 +33,7 @@ public class P2PCamera
 
         session = new P2PSession(targetId, targetPw);
 
-        session.surface = surface;
+        session.videoView = surface;
 
         initialize();
     }

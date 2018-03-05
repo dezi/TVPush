@@ -40,7 +40,7 @@ public class P2PSession
 
     public P2PAVFrameDecrypt p2pAVFrameDecrypt;
 
-    public VideoGLVideoView surface;
+    public VideoGLVideoView videoView;
 
     static
     {

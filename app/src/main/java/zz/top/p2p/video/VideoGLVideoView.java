@@ -19,6 +19,7 @@ public class VideoGLVideoView extends FrameLayout
     private Handler handler = new Handler();
     private VideoGLSurfaceView surface;
     private FrameLayout maldat;
+    private boolean malfaces;
 
     public VideoGLVideoView(Context context)
     {
@@ -39,26 +40,6 @@ public class VideoGLVideoView extends FrameLayout
     private void init(Context context)
     {
         surface = new VideoGLSurfaceView(context);
-
-        surface.renderer.setOnFacesDetectedListener(new VideoGLRenderer.OnFacesDetectedListener()
-        {
-            @Override
-            public void onFacesDetected(SparseArray<Face> faces, int imageWidth, int imageHeight)
-            {
-                lastFaces = faces;
-                lastFacesWidth = imageWidth;
-                lastFacesHeight = imageHeight;
-
-                handler.post(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        maldat.invalidate();
-                    }
-                });
-            }
-        });
 
         addView(surface);
 
@@ -83,6 +64,27 @@ public class VideoGLVideoView extends FrameLayout
         addView(maldat);
     }
 
+    public void setFaceDetecion(boolean enabled)
+    {
+        if (enabled)
+        {
+            surface.renderer.setOnFacesDetectedListener(onFacesDetectedListener);
+        }
+        else
+        {
+            surface.renderer.setOnFacesDetectedListener(null);
+        }
+    }
+
+    public void setFaceDetecionDraw(boolean enabled)
+    {
+        malfaces = enabled;
+    }
+
+    public void onFacesDetected(SparseArray<Face> faces, int imageWidth, int imageHeight)
+    {
+    }
+
     public void renderFrame(P2PAVFrame avFrame)
     {
         surface.renderFrame(avFrame);
@@ -92,4 +94,30 @@ public class VideoGLVideoView extends FrameLayout
     {
         surface.requestRender();
     }
+
+    private final VideoGLRenderer.OnFacesDetectedListener onFacesDetectedListener =
+            new VideoGLRenderer.OnFacesDetectedListener()
+    {
+        @Override
+        public void onFacesDetected(SparseArray<Face> faces, int imageWidth, int imageHeight)
+        {
+            lastFaces = faces;
+            lastFacesWidth = imageWidth;
+            lastFacesHeight = imageHeight;
+
+            VideoGLVideoView.this.onFacesDetected(faces, imageWidth, imageHeight);
+
+            if (malfaces)
+            {
+                handler.post(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        maldat.invalidate();
+                    }
+                });
+            }
+        }
+    };
 }
