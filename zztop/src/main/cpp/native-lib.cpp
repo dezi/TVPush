@@ -71,7 +71,6 @@ extern "C" JNIEXPORT jint JNICALL Java_zz_top_dec_VIDDecode_getHeight
         (JNIEnv *env, jobject obj)
 {
     return Java_com_decoder_xiaomi_AntsDecoder_getHeight(env, obj);
-
 }
 
 extern "C" JNIEXPORT jint JNICALL Java_zz_top_dec_VIDDecode_getWidth

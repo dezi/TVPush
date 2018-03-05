@@ -1,21 +1,41 @@
 package zz.top.dec;
 
+import android.content.res.Resources;
+import android.util.Log;
+
 import java.nio.ByteBuffer;
 
+import zz.top.cam.Camera;
 import zz.top.gls.GLSDecoder;
 
 public class VIDDecode extends GLSDecoder
 {
+    private static final String LOGTAG = VIDDecode.class.getSimpleName();
+
     protected int mNativeContext;
 
     static
     {
+        Log.d(LOGTAG, " static: nativeInit() start...");
+
         nativeInit();
+
+        Log.d(LOGTAG, " static: nativeInit() done...");
     }
 
     public VIDDecode(int i)
     {
         initDecoder(i);
+    }
+
+    public void initDecoder(int i)
+    {
+        init(i);
+    }
+
+    public void releaseDecoder()
+    {
+        release();
     }
 
     public boolean decodeBufferDecoder(ByteBuffer byteBuffer, int i, long j)
@@ -39,28 +59,18 @@ public class VIDDecode extends GLSDecoder
         return getWidth();
     }
 
-    public void initDecoder(int i)
-    {
-        init(i);
-    }
-
-    public void releaseDecoder()
-    {
-        release();
-    }
-
     public int toTextureDecoder(int i, int i2, int i3)
     {
         return toTexture(i, i2, i3);
     }
 
-    public static native void nativeInit();
+    private static native void nativeInit();
 
-    public native void init(int i);
-    public native boolean decode(byte[] bArr, int i, long j);
-    public native boolean decodeBuffer(ByteBuffer byteBuffer, int i, long j);
-    public native int getHeight();
-    public native int getWidth();
-    public native void release();
-    public native int toTexture(int i, int i2, int i3);
+    private native void init(int i);
+    private native boolean decode(byte[] bArr, int i, long j);
+    private native boolean decodeBuffer(ByteBuffer byteBuffer, int i, long j);
+    private native int getHeight();
+    private native int getWidth();
+    private native void release();
+    private native int toTexture(int i, int i2, int i3);
 }
