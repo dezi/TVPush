@@ -1,4 +1,4 @@
-package zz.top.cam;
+package zz.top.utl;
 
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -17,7 +17,7 @@ import java.util.Set;
 @SuppressWarnings({"WeakerAccess"})
 public class Json
 {
-    private static final String LOGTAG = de.xavaro.android.common.Json.class.getSimpleName();
+    private static final String LOGTAG = Json.class.getSimpleName();
 
     @Nullable
     public static JSONObject fromStringObject(String jsonstr)
@@ -378,12 +378,12 @@ public class Json
 
     public static String toJavaScript(JSONObject jsonObject)
     {
-        return (jsonObject == null) ? "{}" : de.xavaro.android.common.Json.toPretty(jsonObject);
+        return (jsonObject == null) ? "{}" : Json.toPretty(jsonObject);
     }
 
     public static String toJavaScript(JSONArray jsonArray)
     {
-        return (jsonArray == null) ? "[]" : de.xavaro.android.common.Json.toPretty(jsonArray);
+        return (jsonArray == null) ? "[]" : Json.toPretty(jsonArray);
     }
 
     public static void makeFormat(JSONObject jsonObject, String key, Object... args)
