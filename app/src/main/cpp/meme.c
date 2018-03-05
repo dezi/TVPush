@@ -678,13 +678,17 @@ int main(int argc, char *argv[])
 
     strcpy(cat, "camera");
     strcpy(cap, "camera|speaker|mic");
-    strcpy(drv, "yip2p");
+    strcpy(drv, "yi-p2p");
 
     getCustomInfo();
 
     getHackInfo();
     getDeviceInfo();
     getCloudInfo();
+
+    printf("cat=%s\n", cat);
+    printf("cap=%s\n", cap);
+    printf("drv=%s\n", drv);
 
     if (strlen(uid) == 0)
     {
