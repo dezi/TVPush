@@ -6,6 +6,8 @@ import android.widget.FrameLayout;
 
 import org.json.JSONObject;
 
+import zz.top.p2p.camera.P2PCamera;
+
 public abstract class Camera
 {
     private static final String LOGTAG = Camera.class.getSimpleName();
@@ -19,32 +21,6 @@ public abstract class Camera
     public final static int PTZ_DIRECTION_DOWN = 2;
     public final static int PTZ_DIRECTION_LEFT = 3;
     public final static int PTZ_DIRECTION_RIGHT = 4;
-
-    @Nullable
-    public Camera createCameraByName(String name)
-    {
-        return createCameraByUUID(Cameras.findCameraByName(name));
-    }
-
-    @Nullable
-    public Camera createCameraByNick(String nick)
-    {
-        return createCameraByUUID(Cameras.findCameraByNick(nick));
-    }
-
-    @Nullable
-    public Camera createCameraByDeviceID(String deviceID)
-    {
-        return createCameraByUUID(Cameras.findCameraByDeviceID(deviceID));
-    }
-
-    @Nullable
-    public Camera createCameraByUUID(String uuid)
-    {
-        JSONObject device = Cameras.getCameraDevice(uuid);
-
-        return null;
-    }
 
     public abstract FrameLayout createSurface(Context context);
     public abstract void releaseSurface();

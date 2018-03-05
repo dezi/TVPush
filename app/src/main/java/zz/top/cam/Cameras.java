@@ -9,6 +9,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import zz.top.p2p.camera.P2PCamera;
+
 public class Cameras
 {
     private static final String LOGTAG = Cameras.class.getSimpleName();
@@ -89,5 +91,51 @@ public class Cameras
         }
 
         return null;
+    }
+    @Nullable
+    public static Camera createCameraByName(String name)
+    {
+        return createCameraByUUID(Cameras.findCameraByName(name));
+    }
+
+    @Nullable
+    public static Camera createCameraByNick(String nick)
+    {
+        return createCameraByUUID(Cameras.findCameraByNick(nick));
+    }
+
+    @Nullable
+    public static Camera createCameraByDeviceID(String deviceID)
+    {
+        return createCameraByUUID(Cameras.findCameraByDeviceID(deviceID));
+    }
+
+    @Nullable
+    public static Camera createCameraByUUID(String uuid)
+    {
+        Camera camera = null;
+
+        JSONObject device = Cameras.getCameraDevice(uuid);
+
+        Log.d(LOGTAG, "createCameraByUUID: uuid=" + uuid + " device=" + device);
+
+        String device_driver = Json.getString(device, "device_driver");
+
+        if (device_driver != null)
+        {
+            if (device_driver.equals("yi-p2p"))
+            {
+                Log.d(LOGTAG, "createCameraByUUID: found=" + device_driver);
+
+                camera = new P2PCamera();
+            }
+        }
+
+        if (camera != null)
+        {
+            camera.attachCamera(uuid);
+        }
+
+        return camera;
     }
 }

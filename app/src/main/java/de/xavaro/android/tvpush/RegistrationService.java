@@ -193,7 +193,7 @@ public class RegistrationService extends Service
 
                     String deviceCategory = Json.getString(jsonmess, "device_category");
 
-                    if ((deviceCategory != null) && deviceCategory.equalsIgnoreCase("p2pcamera"))
+                    if ((deviceCategory != null) && deviceCategory.equalsIgnoreCase("camera"))
                     {
                         JSONObject mejson = new JSONObject();
 
@@ -215,11 +215,12 @@ public class RegistrationService extends Service
                 {
                     String deviceName = Json.getString(jsonmess, "device_name");
                     if (deviceName == null) deviceName = Json.getString(jsonmess, "devicename");
-                    Log.d(LOGTAG, "workerThread: SAUT from=" + deviceName);
 
                     String deviceCategory = Json.getString(jsonmess, "device_category");
 
-                    if ((deviceCategory != null) && deviceCategory.equalsIgnoreCase("p2pcamera"))
+                    Log.d(LOGTAG, "workerThread: SAUT from=" + deviceName + " cat=" + deviceCategory);
+
+                    if ((deviceCategory != null) && deviceCategory.equalsIgnoreCase("camera"))
                     {
                         Cameras.addCamera(jsonmess);
                     }

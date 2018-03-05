@@ -45,13 +45,16 @@ public class CameraTest
             return;
         }
 
+        /*
         camera = new P2PCamera();
 
+        camera.createSurface()
         camera.attachCamera(uuid);
         camera.connectCamera();
 
         camera.setResolution(Camera.RESOLUTION_1080P);
 
         camera.startRealtimeVideo();
+        */
     }
 }

@@ -1,5 +1,6 @@
 package de.xavaro.android.tvpush;
 
+import android.content.Context;
 import android.media.MediaCodec;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
@@ -20,6 +21,8 @@ import android.view.View;
 import android.os.Bundle;
 import android.util.Log;
 
+import zz.top.cam.Camera;
+import zz.top.cam.Cameras;
 import zz.top.p2p.video.VideoGLVideoView;
 
 import java.nio.ByteBuffer;
@@ -30,13 +33,16 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 {
     private final static String LOGTAG = MainActivity.class.getSimpleName();
 
-    private SpeechRecognition recognition;
     private TextView voiceButton;
-    private VideoGLVideoView videoView;
+
+    private Camera camera;
+    private FrameLayout topframe;
+    private FrameLayout videoView;
+
+    private SpeechRecognition recognition;
 
     private static final String SAMPLE = Environment.getExternalStorageDirectory() + "/video.mp4";
     private PlayerThread mPlayer = null;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -74,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             getWindow().setLayout(700, 500);
         }
 
-        FrameLayout topframe = new FrameLayout(this);
+        topframe = new FrameLayout(this);
         topframe.setBackgroundColor(0x88880000);
         setContentView(topframe);
 
@@ -112,21 +118,32 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         topframe.addView(voiceButton, new FrameLayout.LayoutParams(Simple.WC, Simple.WC, Gravity.BOTTOM + Gravity.END));
 
-        videoView = new VideoGLVideoView(this);
-        videoView.setFaceDetecion(true);
-        videoView.setFaceDetecionDraw(true);
-
-        topframe.addView(videoView, new FrameLayout.LayoutParams(640, 360, Gravity.TOP + Gravity.START));
-
         ApplicationBase.handler.postDelayed(new Runnable()
         {
             @Override
             public void run()
             {
-                CameraTest.initialize(videoView);
-            }
-        }, 1000);
+                String name = "Dezi's Domcam #1";
 
+                camera = Cameras.createCameraByName(name);
+
+                if (camera == null)
+                {
+                    Log.d(LOGTAG, "createCameraByName not fund name=" + name);
+                }
+                else
+                {
+                    videoView = camera.createSurface(MainActivity.this);
+
+                    topframe.addView(videoView, new FrameLayout.LayoutParams(640, 360, Gravity.TOP + Gravity.START));
+
+                    camera.connectCamera();
+                    camera.setResolution(Camera.RESOLUTION_1080P);
+                    camera.startRealtimeVideo();
+                }
+            }
+
+        }, 2000);
     }
 
     private void speechClick()
