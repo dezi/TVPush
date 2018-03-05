@@ -15,7 +15,7 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketTimeoutException;
 
-import zz.top.p2p.camera.P2PCameras;
+import zz.top.cam.Cameras;
 
 import de.xavaro.android.common.Json;
 import de.xavaro.android.common.Simple;
@@ -221,7 +221,7 @@ public class RegistrationService extends Service
 
                     if ((deviceCategory != null) && deviceCategory.equalsIgnoreCase("p2pcamera"))
                     {
-                        P2PCameras.addCamera(jsonmess);
+                        Cameras.addCamera(jsonmess);
                     }
                 }
             }

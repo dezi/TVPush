@@ -1,6 +1,7 @@
-package zz.top.p2p.camera;
+package zz.top.cam;
 
 import android.support.annotation.Nullable;
+
 import android.util.Log;
 
 import org.json.JSONObject;
@@ -8,11 +9,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.xavaro.android.common.Json;
-
-public class P2PCameras
+public class Cameras
 {
-    private static final String LOGTAG = P2PCameras.class.getSimpleName();
+    private static final String LOGTAG = Cameras.class.getSimpleName();
 
     public static final Map<String, JSONObject> cameras = new HashMap<>();
 
@@ -20,11 +19,10 @@ public class P2PCameras
     {
         String deviceUUID = Json.getString(device, "device_uuid");
         String deviceName = Json.getString(device, "device_name");
-        String deviceCategory = Json.getString(device, "device_category");
 
-        Log.d(LOGTAG, "addCamera: name=" + deviceName);
+        Log.d(LOGTAG, "addCamera:" + " uuid=" + deviceUUID + " name=" + deviceName);
 
-        if ((deviceUUID != null) && (deviceCategory != null) && deviceCategory.equals("p2pcamera"))
+        if (deviceUUID != null)
         {
             synchronized (cameras)
             {

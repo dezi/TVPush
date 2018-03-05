@@ -5,7 +5,7 @@ import android.util.Log;
 
 import zz.top.p2p.camera.P2PBarcode;
 import zz.top.p2p.camera.P2PCamera;
-import zz.top.p2p.camera.P2PCameras;
+import zz.top.cam.Cameras;
 import zz.top.p2p.video.VideoGLVideoView;
 
 public class CameraTest
@@ -38,7 +38,7 @@ public class CameraTest
 
     private static void delayedInit(String name)
     {
-        String uuid = P2PCameras.findCameraByName(name);
+        String uuid = Cameras.findCameraByName(name);
 
         if (uuid == null)
         {
@@ -47,8 +47,8 @@ public class CameraTest
             return;
         }
 
-        String did = P2PCameras.getP2PDeviceId(uuid);
-        String dpw = P2PCameras.getP2PDevicePw(uuid);
+        String did = Cameras.getP2PDeviceId(uuid);
+        String dpw = Cameras.getP2PDevicePw(uuid);
 
         Log.d(LOGTAG, "delayedInit: fund=" + name + " did=" + did + " dpw=" + dpw);
 
