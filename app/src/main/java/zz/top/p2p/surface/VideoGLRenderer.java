@@ -1,9 +1,9 @@
-package zz.top.p2p.video;
+package zz.top.p2p.surface;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-import android.util.Log;
 import android.util.SparseArray;
+import android.util.Log;
 
 import com.google.android.gms.vision.face.Face;
 
@@ -13,8 +13,6 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import zz.top.dec.VIDDecode;
-import zz.top.p2p.camera.P2PAVFrame;
-import zz.top.p2p.camera.P2PLocks;
 
 public class VideoGLRenderer implements GLSurfaceView.Renderer
 {
@@ -38,7 +36,7 @@ public class VideoGLRenderer implements GLSurfaceView.Renderer
     private int lastframes;
     private long lasttimems;
 
-    public final ArrayList<P2PAVFrame> decodeFrames = new ArrayList<>();
+    public final ArrayList<VideoGLFrame> decodeFrames = new ArrayList<>();
 
     public VideoGLRenderer(Context context)
     {
@@ -47,7 +45,7 @@ public class VideoGLRenderer implements GLSurfaceView.Renderer
         faceDetector = new VideoGLFaceDetect(context);
     }
 
-    public void renderFrame(P2PAVFrame avFrame)
+    public void renderFrame(VideoGLFrame avFrame)
     {
         synchronized (decodeFrames)
         {
@@ -82,7 +80,7 @@ public class VideoGLRenderer implements GLSurfaceView.Renderer
 
         while (decodeFrames.size() > 0)
         {
-            P2PAVFrame avFrame = null;
+            VideoGLFrame avFrame = null;
 
             synchronized (decodeFrames)
             {
@@ -118,19 +116,16 @@ public class VideoGLRenderer implements GLSurfaceView.Renderer
                     || (sourceWidth != avFrame.getVideoWidth())
                     || (sourceHeight != avFrame.getVideoHeight()))
             {
-                synchronized (P2PLocks.decoderLock)
+                if (decoder != null)
                 {
-                    if (decoder != null)
-                    {
-                        Log.d(LOGTAG, "onDrawFrame: releaseDecoder codec=" + sourceCodec);
+                    Log.d(LOGTAG, "onDrawFrame: releaseDecoder codec=" + sourceCodec);
 
-                        decoder.releaseDecoder();
-                        decoder = null;
-                    }
-
-                    sourceCodec = avFrame.getCodecId();
-                    decoder = new VIDDecode(sourceCodec);
+                    decoder.releaseDecoder();
+                    decoder = null;
                 }
+
+                sourceCodec = avFrame.getCodecId();
+                decoder = new VIDDecode(sourceCodec);
 
                 Log.d(LOGTAG, "onDrawFrame: createDecoder codec=" + avFrame.getCodecId());
             }
@@ -138,7 +133,7 @@ public class VideoGLRenderer implements GLSurfaceView.Renderer
             sourceWidth = avFrame.getVideoWidth();
             sourceHeight = avFrame.getVideoHeight();
 
-            display = decoder.decodeDecoder(avFrame.frmData, avFrame.getFrmSize(), avFrame.getTimeStamp());
+            display = decoder.decodeDecoder(avFrame.getFrameData(), avFrame.getFrameSize(), avFrame.getTimeStamp());
         }
 
         if (display)

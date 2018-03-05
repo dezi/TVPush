@@ -2,7 +2,7 @@ package zz.top.dec;
 
 import java.nio.ByteBuffer;
 
-import zz.top.p2p.video.VideoGLDecoder;
+import zz.top.p2p.surface.VideoGLDecoder;
 
 public class VIDDecode extends VideoGLDecoder
 {

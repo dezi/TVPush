@@ -2,7 +2,6 @@ package zz.top.p2p.camera;
 
 import android.content.Context;
 import android.util.Log;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import org.json.JSONObject;
@@ -22,7 +21,7 @@ import zz.top.p2p.commands.StartAudioSend;
 import zz.top.p2p.commands.StartVideoSend;
 import zz.top.p2p.commands.StopAudioSend;
 import zz.top.p2p.commands.StopVideoSend;
-import zz.top.p2p.video.VideoGLVideoView;
+import zz.top.p2p.surface.VideoGLVideoView;
 
 public class P2PCamera extends Camera
 {

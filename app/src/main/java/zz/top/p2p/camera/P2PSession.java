@@ -8,7 +8,7 @@ import zz.top.p2p.commands.ResolutionData;
 import zz.top.p2p.api.P2PApiKeys;
 import zz.top.p2p.api.P2PApiNative;
 import zz.top.p2p.api.P2PApiSession;
-import zz.top.p2p.video.VideoGLVideoView;
+import zz.top.p2p.surface.VideoGLVideoView;
 
 @SuppressWarnings({ "WeakerAccess"})
 public class P2PSession

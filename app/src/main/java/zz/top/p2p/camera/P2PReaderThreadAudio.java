@@ -43,10 +43,10 @@ public class P2PReaderThreadAudio extends P2PReaderThread
     {
         P2PAVFrame avFrame = new P2PAVFrame(data, size, session.isBigEndian);
 
-        //int nDecode = DecodeAAC.nDecode(avFrame.frmData, avFrame.getFrmSize(), this.decodeData, this.decodeData.length);
-        int nDecode = AACDecode.decode(avFrame.frmData, avFrame.getFrmSize(), this.decodeData, this.decodeData.length);
+        //int nDecode = DecodeAAC.nDecode(avFrame.frameData, avFrame.getFrameSize(), this.decodeData, this.decodeData.length);
+        int nDecode = AACDecode.decode(avFrame.getFrameData(), avFrame.getFrameSize(), this.decodeData, this.decodeData.length);
 
-        if ((avFrame.getFrmNo() % 30) == 0)
+        if ((avFrame.getFrameNo() % 30) == 0)
         {
             Log.d(LOGTAG, "handleData: " + avFrame.toFrameString() + " decoded=" + nDecode);
         }

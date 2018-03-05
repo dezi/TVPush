@@ -1,6 +1,5 @@
 package de.xavaro.android.tvpush;
 
-import android.content.Context;
 import android.media.MediaCodec;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
@@ -23,7 +22,6 @@ import android.util.Log;
 
 import zz.top.cam.Camera;
 import zz.top.cam.Cameras;
-import zz.top.p2p.video.VideoGLVideoView;
 
 import java.nio.ByteBuffer;
 
@@ -140,10 +138,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     camera.connectCamera();
                     camera.setResolution(Camera.RESOLUTION_1080P);
 
-                    camera.startRealtimeAudio();
+                    //camera.startRealtimeAudio();
                     camera.startRealtimeVideo();
 
-                    camera.startFaceDetection(true);
+                    //camera.startFaceDetection(true);
                 }
             }
 

@@ -1,6 +1,8 @@
 package zz.top.p2p.camera;
 
-public class P2PAVFrame
+import zz.top.p2p.surface.VideoGLFrame;
+
+public class P2PAVFrame extends VideoGLFrame
 {
     private static final String LOGTAG = P2PAVFrame.class.getSimpleName();
 
@@ -50,8 +52,6 @@ public class P2PAVFrame
     private short codec_id;
     private byte cover_state;
     private byte flags;
-    private int frmNo;
-    private int frmSize;
     private byte inloss;
     private byte isDay;
     private byte liveFlag;
@@ -63,7 +63,10 @@ public class P2PAVFrame
     private int videoHeight;
     private int videoWidth;
 
-    public byte[] frmData;
+    private int frameNo;
+    private int frameSize;
+    private byte[] frameData;
+
     public PanState panState;
 
     public static class PanState
@@ -131,7 +134,7 @@ public class P2PAVFrame
         liveFlag = data[3];
         onlineNum = data[4];
         useCount = data[5];
-        frmNo = P2PPacker.byteArrayToShort(data, 6, isBigEndian) & 0xffff;
+        frameNo = P2PPacker.byteArrayToShort(data, 6, isBigEndian) & 0xffff;
         videoWidth = P2PPacker.byteArrayToShort(data, 8, isBigEndian);
         videoHeight = P2PPacker.byteArrayToShort(data, 10,  isBigEndian);
         timestamp = P2PPacker.byteArrayToInt(data, 12, isBigEndian);
@@ -141,41 +144,61 @@ public class P2PAVFrame
         inloss = data[19];
         timestamp_ms = P2PPacker.byteArrayToInt(data, 20, isBigEndian);
 
-        frmSize = size - FRAMEINFO_SIZE;
-        frmData = new byte[frmSize];
+        frameSize = size - FRAMEINFO_SIZE;
+        frameData = new byte[frameSize];
 
-        System.arraycopy(data, FRAMEINFO_SIZE, frmData, 0, frmSize);
+        System.arraycopy(data, FRAMEINFO_SIZE, frameData, 0, frameSize);
 
         panState = new PanState(onlineNum);
     }
 
-    public int getSamplerate()
+    //region Interface.
+
+    @Override
+    public boolean isVideo()
     {
-        switch (flags >>> 2)
+        switch (codec_id)
         {
-            case AUDIO_SAMPLE_8K:
-                return 16000;
-            case AUDIO_SAMPLE_11K:
-                return 11025;
-            case AUDIO_SAMPLE_12K:
-                return 12000;
-            case AUDIO_SAMPLE_16K:
-                return 16000;
-            case AUDIO_SAMPLE_22K:
-                return 22050;
-            case AUDIO_SAMPLE_24K:
-                return 24000;
-            case AUDIO_SAMPLE_32K:
-                return 32000;
-            case AUDIO_SAMPLE_44K:
-                return 44100;
-            case AUDIO_SAMPLE_48K:
-                return 48000;
+            case MEDIA_CODEC_VIDEO_H263:
+            case MEDIA_CODEC_VIDEO_H264:
+            case MEDIA_CODEC_VIDEO_MJPEG:
+            case MEDIA_CODEC_VIDEO_MPEG4:
+                return true;
         }
 
-        return 16000;
+        return false;
     }
 
+    @Override
+    public boolean isAudio()
+    {
+        switch (codec_id)
+        {
+            case MEDIA_CODEC_AUDIO_AAC:
+            case MEDIA_CODEC_AUDIO_ADPCM:
+            case MEDIA_CODEC_AUDIO_G726:
+            case MEDIA_CODEC_AUDIO_MP3:
+            case MEDIA_CODEC_AUDIO_PCM:
+            case MEDIA_CODEC_AUDIO_SPEEX:
+                return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean isIFrame()
+    {
+        return (flags & 1) == 1;
+    }
+
+    @Override
+    public int getCodecId()
+    {
+        return codec_id;
+    }
+
+    @Override
     public String getCodecName()
     {
         switch (codec_id)
@@ -209,24 +232,74 @@ public class P2PAVFrame
         return "UNKNOWN";
     }
 
-    public short getCodecId()
+    @Override
+    public int getVideoHeight()
     {
-        return codec_id;
+        return videoHeight;
+    }
+
+    @Override
+    public int getVideoWidth()
+    {
+        return videoWidth;
+    }
+
+    @Override
+    public long getTimeStamp()
+    {
+        return timestamp;
+    }
+
+    @Override
+    public int getFrameNo()
+    {
+        return frameNo;
+    }
+
+    @Override
+    public int getFrameSize()
+    {
+        return frameSize;
+    }
+
+    @Override
+    public byte[] getFrameData()
+    {
+        return frameData;
+    }
+
+    //endregion Interface.
+
+    public int getSamplerate()
+    {
+        switch (flags >>> 2)
+        {
+            case AUDIO_SAMPLE_8K:
+                return 16000;
+            case AUDIO_SAMPLE_11K:
+                return 11025;
+            case AUDIO_SAMPLE_12K:
+                return 12000;
+            case AUDIO_SAMPLE_16K:
+                return 16000;
+            case AUDIO_SAMPLE_22K:
+                return 22050;
+            case AUDIO_SAMPLE_24K:
+                return 24000;
+            case AUDIO_SAMPLE_32K:
+                return 32000;
+            case AUDIO_SAMPLE_44K:
+                return 44100;
+            case AUDIO_SAMPLE_48K:
+                return 48000;
+        }
+
+        return 16000;
     }
 
     public byte getFlags()
     {
         return flags;
-    }
-
-    public int getFrmNo()
-    {
-        return frmNo;
-    }
-
-    public int getFrmSize()
-    {
-        return frmSize;
     }
 
     public byte getInloss()
@@ -244,24 +317,9 @@ public class P2PAVFrame
         return outloss;
     }
 
-    public int getTimeStamp()
-    {
-        return timestamp;
-    }
-
     public int getTimestamp_ms()
     {
         return timestamp_ms;
-    }
-
-    public int getVideoHeight()
-    {
-        return videoHeight;
-    }
-
-    public int getVideoWidth()
-    {
-        return videoWidth;
     }
 
     public boolean isCovered()
@@ -272,41 +330,6 @@ public class P2PAVFrame
     public boolean isDay()
     {
         return isDay == 1;
-    }
-
-    public boolean isVideo()
-    {
-        switch (codec_id)
-        {
-            case MEDIA_CODEC_VIDEO_H263:
-            case MEDIA_CODEC_VIDEO_H264:
-            case MEDIA_CODEC_VIDEO_MJPEG:
-            case MEDIA_CODEC_VIDEO_MPEG4:
-                return true;
-        }
-
-        return false;
-    }
-
-    public boolean isAudio()
-    {
-        switch (codec_id)
-        {
-            case MEDIA_CODEC_AUDIO_AAC:
-            case MEDIA_CODEC_AUDIO_ADPCM:
-            case MEDIA_CODEC_AUDIO_G726:
-            case MEDIA_CODEC_AUDIO_MP3:
-            case MEDIA_CODEC_AUDIO_PCM:
-            case MEDIA_CODEC_AUDIO_SPEEX:
-                return true;
-        }
-
-        return false;
-    }
-
-    public boolean isIFrame()
-    {
-        return (flags & 1) == 1;
     }
 
     public String toFrameString()
@@ -323,7 +346,7 @@ public class P2PAVFrame
             spec += " " + getSamplerate();
         }
 
-        return spec + " #" + getFrmNo() + " " + getTimeStamp() + " " + getFrmSize();
+        return spec + " #" + getFrameNo() + " " + getTimeStamp() + " " + getFrameSize();
     }
 
     public String toString()
@@ -333,7 +356,7 @@ public class P2PAVFrame
                 " liveFlag=" + liveFlag +
                 " onlineNum=" + onlineNum +
                 " useCount=" + useCount +
-                " frmNo=" + frmNo +
+                " frameNo=" + frameNo +
                 " videoWidth=" + videoWidth +
                 " videoHeight=" + videoHeight +
                 " timestamp=" + timestamp +
@@ -342,6 +365,6 @@ public class P2PAVFrame
                 " outloss=" + outloss +
                 " inloss=" + inloss +
                 " timestamp_ms=" + timestamp_ms +
-                " frmSize=" + frmSize;
+                " frameSize=" + frameSize;
     }
 }

@@ -1,4 +1,4 @@
-package zz.top.p2p.video;
+package zz.top.p2p.surface;
 
 import android.opengl.GLES20;
 import android.util.Log;

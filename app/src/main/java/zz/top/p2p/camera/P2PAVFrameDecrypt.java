@@ -18,14 +18,16 @@ public class P2PAVFrameDecrypt
 
     public void decryptIframe(P2PAVFrame aVFrame)
     {
-        if (aVFrame.frmData.length >= 36)
+        byte[] avdata = aVFrame.getFrameData();
+
+        if (avdata.length >= 36)
         {
             byte[] data = new byte[16];
 
-            System.arraycopy(aVFrame.frmData, 4, data, 0, 16);
-            System.arraycopy(decrypt(data), 0, aVFrame.frmData, 4, 16);
-            System.arraycopy(aVFrame.frmData, 20, data, 0, 16);
-            System.arraycopy(decrypt(data), 0, aVFrame.frmData, 20, 16);
+            System.arraycopy(avdata, 4, data, 0, 16);
+            System.arraycopy(decrypt(data), 0, avdata, 4, 16);
+            System.arraycopy(avdata, 20, data, 0, 16);
+            System.arraycopy(decrypt(data), 0, avdata, 20, 16);
         }
     }
 
