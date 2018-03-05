@@ -20,14 +20,6 @@ public class GLSRenderer implements GLSurfaceView.Renderer
     private final String LOGTAG = GLSRenderer.class.getSimpleName();
 
     private GLSShaderYUV2RGB yuvShader;
-    private GLSShaderRGB2SUR rgbShader;
-
-    private GLSImage rgbImage;
-
-    private GLSImage rgbImage1;
-    private GLSImage rgbImage2;
-
-    private boolean hadIFrame;
 
     private int sourceCodec;
     private int sourceWidth;
@@ -38,7 +30,6 @@ public class GLSRenderer implements GLSurfaceView.Renderer
 
     private GLSDecoder videoDecoder;
     private GLSFaceDetect faceDetector;
-    private Thread renderMan;
 
     private int framesDecoded;
     private int framesCorrupt;
@@ -46,7 +37,6 @@ public class GLSRenderer implements GLSurfaceView.Renderer
     private int lastframes;
     private long lasttimems;
 
-    public final Object decoderLock = new Object();
     public final ArrayList<GLSFrame> frameQueue = new ArrayList<>();
 
     public GLSRenderer(Context context)
@@ -69,11 +59,7 @@ public class GLSRenderer implements GLSurfaceView.Renderer
     {
         Log.d(LOGTAG, "onSurfaceCreated.");
 
-        rgbImage1 = new GLSImage();
-        rgbImage2 = new GLSImage();
-
         yuvShader = new GLSShaderYUV2RGB();
-        rgbShader = new GLSShaderRGB2SUR();
     }
 
     @Override
@@ -88,108 +74,100 @@ public class GLSRenderer implements GLSurfaceView.Renderer
     @Override
     public void onDrawFrame(GL10 unused)
     {
-        GLSFrame avFrame = null;
+        boolean display = false;
 
-        synchronized (frameQueue)
+        while (frameQueue.size() > 0)
         {
-            if (frameQueue.size() > 0)
+            GLSFrame avFrame = null;
+
+            synchronized (frameQueue)
             {
-                avFrame = frameQueue.remove(0);
-            }
-        }
-
-        if (avFrame == null) return;
-
-        //
-        // Check decoder and decoding sizes.
-        //
-
-        if ((videoDecoder == null)
-            || (sourceCodec != avFrame.getCodecId())
-            || (sourceWidth != avFrame.getVideoWidth())
-            || (sourceHeight != avFrame.getVideoHeight()))
-        {
-            if (videoDecoder != null)
-            {
-                Log.d(LOGTAG, "renderFrame: releaseDecoder codec=" + sourceCodec);
-
-                videoDecoder.releaseDecoder();
-                videoDecoder = null;
+                if (frameQueue.size() > 0)
+                {
+                    avFrame = frameQueue.remove(0);
+                }
             }
 
-            sourceCodec = avFrame.getCodecId();
-            sourceWidth = avFrame.getVideoWidth();
-            sourceHeight = avFrame.getVideoHeight();
+            if (avFrame == null) break;
 
-            videoDecoder = new VIDDecode(sourceCodec);
+            //
+            // Check decoder and decoding sizes.
+            //
 
-            framesDecoded = 0;
-            framesCorrupt = 0;
+            if ((videoDecoder == null)
+                    || (sourceCodec != avFrame.getCodecId())
+                    || (sourceWidth != avFrame.getVideoWidth())
+                    || (sourceHeight != avFrame.getVideoHeight()))
+            {
+                if (videoDecoder != null)
+                {
+                    Log.d(LOGTAG, "renderFrame: releaseDecoder codec=" + sourceCodec);
 
-            hadIFrame = false;
+                    videoDecoder.releaseDecoder();
+                    videoDecoder = null;
+                }
 
-            Log.d(LOGTAG, "renderFrame: createDecoder codec=" + avFrame.getCodecId());
-        }
+                sourceCodec = avFrame.getCodecId();
+                sourceWidth = avFrame.getVideoWidth();
+                sourceHeight = avFrame.getVideoHeight();
 
-        if (hadIFrame || avFrame.isIFrame())
-        {
+                videoDecoder = new VIDDecode(sourceCodec);
+
+                framesDecoded = 0;
+                framesCorrupt = 0;
+
+                Log.d(LOGTAG, "renderFrame: createDecoder codec=" + avFrame.getCodecId());
+            }
+
             if (videoDecoder.decodeDecoder(avFrame.getFrameData(), avFrame.getFrameSize(), 0))
             {
                 framesDecoded++;
-                hadIFrame = true;
 
-                int[] yuvTextures = yuvShader.getYUVTextures();
-
-                if (videoDecoder.toTextureDecoder(yuvTextures[0], yuvTextures[1], yuvTextures[2]) >= 0)
-                {
-                    yuvShader.process(null, displayWidth, displayHeight);
-
-                    lastframes++;
-                }
-                else
-                {
-                    Log.d(LOGTAG, "onDrawFrame: toTextureDecoder bad");
-                }
+                display = true;
             }
             else
             {
                 framesCorrupt++;
-                hadIFrame = false;
-
-                Log.d(LOGTAG, "onDrawFrame: frame corrupt."
-                        + " iframe=" + avFrame.isIFrame()
-                        + " dec=" + framesDecoded
-                        + " bad=" + framesCorrupt
-                );
             }
         }
 
-        //
-        // Update FPS statistics,
-        //
-
-        if (lasttimems == 0)
+        if (display)
         {
-            lastframes = 0;
-            lasttimems = System.currentTimeMillis();
-        }
-        else
-        {
-            long diffmillis = System.currentTimeMillis() - lasttimems;
+            int[] yuvTextures = yuvShader.getYUVTextures();
 
-            if (diffmillis >= 1000)
+            if (videoDecoder.toTextureDecoder(yuvTextures[0], yuvTextures[1], yuvTextures[2]) >= 0)
             {
-                Log.d(LOGTAG, "onDrawFrame:"
-                        + " fps=" + lastframes
-                        + " width=" + sourceWidth
-                        + " height=" + sourceHeight
-                       // + " back=" + decodeFrames.size()
-                        + " dec=" + framesDecoded
-                        + " bad=" + framesCorrupt
-                );
+                yuvShader.process(null, displayWidth, displayHeight);
 
+                lastframes++;
+            }
+
+            //
+            // Update FPS statistics,
+            //
+
+            if (lasttimems == 0)
+            {
                 lastframes = 0;
                 lasttimems = System.currentTimeMillis();
+            }
+            else
+            {
+                long diffmillis = System.currentTimeMillis() - lasttimems;
+
+                if (diffmillis >= 1000)
+                {
+                    Log.d(LOGTAG, "onDrawFrame:"
+                            + " fps=" + lastframes
+                            + " width=" + sourceWidth
+                            + " height=" + sourceHeight
+                            + " dec=" + framesDecoded
+                            + " bad=" + framesCorrupt
+                    );
+
+                    lastframes = 0;
+                    lasttimems = System.currentTimeMillis();
+                }
             }
         }
 
