@@ -413,9 +413,14 @@ void formatMessage(char *type, int credentials)
     catMESS("\",");
     catMESS("\n");
 
+    catMESS("  \"device\":");
+    catMESS("\n");
+    catMESS("    {");
+    catMESS("\n");
+
     if (strlen(uid) > 0)
     {
-        catMESS("  \"device_uuid\": \"");
+        catMESS("      \"uuid\": \"");
         escMESS(uid);
         catMESS("\",");
         catMESS("\n");
@@ -423,7 +428,7 @@ void formatMessage(char *type, int credentials)
 
     if (strlen(did) > 0)
     {
-        catMESS("  \"device_id\": \"");
+        catMESS("      \"id\": \"");
         escMESS(did);
         catMESS("\",");
         catMESS("\n");
@@ -431,7 +436,7 @@ void formatMessage(char *type, int credentials)
 
     if (strlen(nam) > 0)
     {
-        catMESS("  \"device_name\": \"");
+        catMESS("      \"name\": \"");
         escMESS(nam);
         catMESS("\",");
         catMESS("\n");
@@ -439,7 +444,7 @@ void formatMessage(char *type, int credentials)
 
     if (strlen(nck) > 0)
     {
-        catMESS("  \"device_nick\": \"");
+        catMESS("      \"nick\": \"");
         escMESS(nck);
         catMESS("\",");
         catMESS("\n");
@@ -447,7 +452,7 @@ void formatMessage(char *type, int credentials)
 
     if (strlen(loc) > 0)
     {
-        catMESS("  \"device_location\": \"");
+        catMESS("      \"location\": \"");
         escMESS(loc);
         catMESS("\",");
         catMESS("\n");
@@ -455,7 +460,7 @@ void formatMessage(char *type, int credentials)
 
     if (strlen(mod) > 0)
     {
-        catMESS("  \"device_model\": \"");
+        catMESS("      \"model\": \"");
         escMESS(mod);
         catMESS("\",");
         catMESS("\n");
@@ -463,50 +468,61 @@ void formatMessage(char *type, int credentials)
 
     if (strlen(ver) > 0)
     {
-        catMESS("  \"device_version\": \"");
+        catMESS("      \"version\": \"");
         escMESS(ver);
         catMESS("\",");
         catMESS("\n");
     }
 
-    catMESS("  \"device_category\": \"");
+    catMESS("      \"category\": \"");
     escMESS(cat);
     catMESS("\"");
     catMESS(",");
     catMESS("\n");
 
-    catMESS("  \"device_capability\": \"");
+    catMESS("      \"capability\": \"");
     escMESS(cap);
     catMESS("\"");
     catMESS(",");
     catMESS("\n");
 
-    catMESS("  \"device_driver\": \"");
+    catMESS("      \"driver\": \"");
     escMESS(drv);
     catMESS("\"");
+    catMESS("\n");
+
+    catMESS("    }");
     if (credentials) catMESS(",");
     catMESS("\n");
 
     if (credentials)
     {
-        catMESS("  \"p2p_id\": \"");
+        catMESS("  \"credentials\":");
+        catMESS("\n");
+        catMESS("    {");
+        catMESS("\n");
+
+        catMESS("      \"p2p_id\": \"");
         escMESS(did);
         catMESS("\",");
         catMESS("\n");
 
-        catMESS("  \"p2p_pw\": \"");
+        catMESS("      \"p2p_pw\": \"");
         escMESS(dpw);
         catMESS("\",");
         catMESS("\n");
 
-        catMESS("  \"cloud_id\": \"");
+        catMESS("      \"cloud_id\": \"");
         escMESS(cid);
         catMESS("\",");
         catMESS("\n");
 
-        catMESS("  \"cloud_pw\": \"");
+        catMESS("      \"cloud_pw\": \"");
         escMESS(cpw);
         catMESS("\"");
+        catMESS("\n");
+
+        catMESS("    }");
         catMESS("\n");
     }
 
@@ -564,7 +580,11 @@ void responder()
         return;
     }
 
-    formatMessage("HELO", false);
+    //
+    // Send initial broadcast message.
+    //
+
+    formatMessage("MEME", false);
 
     addr.sin_addr.s_addr = inet_addr(HELO_GROUP);
     addr.sin_port = htons(HELO_PORT);
@@ -574,7 +594,11 @@ void responder()
         perror("Send to broadcast socket failed.");
     }
 
-    printf("send: %s (%s) => %s \n", "HELO", inet_ntoa(addr.sin_addr), nam);
+    printf("send: %s (%s) => %s \n", "MEME", inet_ntoa(addr.sin_addr), nam);
+
+    //
+    // Listen for messages.
+    //
 
     while (! exitloop)
     {
@@ -618,8 +642,9 @@ void responder()
         }
 
         char *type = jsonGetStringValue(messbuff, "type");
-        char *name = jsonGetStringValue(messbuff, "device_name");
 
+        char *name = jsonGetStringValue(messbuff, "device|name");
+        if (name == null) name = jsonGetStringValue(messbuff, "device_name");
         if (name == null) name = jsonGetStringValue(messbuff, "devicename");
 
         printf("recv: %s (%s) => %s\n", type, inet_ntoa(addr.sin_addr), name);
@@ -627,9 +652,6 @@ void responder()
         if ((type != null) && (strcmp(type, "HELO") == 0))
         {
             formatMessage("MEME", false);
-
-            addr.sin_addr.s_addr = inet_addr(HELO_GROUP);
-            addr.sin_port = htons(HELO_PORT);
 
             if (sendto(sockfd, memebuff, strlen(memebuff), 0, (struct sockaddr *) &addr, sizeof(addr)) < 0)
             {
