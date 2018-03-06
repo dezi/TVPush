@@ -124,6 +124,35 @@ public class GLSUtils
         return bitmap;
     }
 
+    public static void saveTextureToBuffer(int texture, int width, int height, Buffer buffer)
+    {
+        int[] iArr = new int[1];
+
+        GLES20.glGenFramebuffers(1, iArr, 0);
+
+        checkGlError("glGenFramebuffers");
+
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, iArr[0]);
+
+        checkGlError("glBindFramebuffer");
+
+        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, texture, 0);
+
+        checkGlError("glFramebufferTexture2D");
+
+        GLES20.glReadPixels(0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, buffer);
+
+        checkGlError("glReadPixels");
+
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+
+        checkGlError("glBindFramebuffer");
+
+        GLES20.glDeleteFramebuffers(1, iArr, 0);
+
+        checkGlError("glDeleteFramebuffer");
+    }
+
     public static boolean checkGlError(String str)
     {
         int glGetError = GLES20.glGetError();

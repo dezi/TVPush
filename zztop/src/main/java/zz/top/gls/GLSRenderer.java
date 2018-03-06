@@ -8,6 +8,8 @@ import android.util.Log;
 
 import com.google.android.gms.vision.face.Face;
 
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -32,6 +34,7 @@ public class GLSRenderer implements GLSurfaceView.Renderer
     private GLSImage screenShot;
     private GLSDecoder videoDecoder;
     private GLSFaceDetect faceDetector;
+    private Buffer stillBuffer;
 
     private int framesDecoded;
     private int framesCorrupt;
@@ -131,6 +134,8 @@ public class GLSRenderer implements GLSurfaceView.Renderer
 
                 videoDecoder = new VIDDecode(sourceCodec);
 
+                stillBuffer = ByteBuffer.allocate(sourceWidth * sourceHeight * 4);
+
                 framesDecoded = 0;
                 framesCorrupt = 0;
 
@@ -190,10 +195,17 @@ public class GLSRenderer implements GLSurfaceView.Renderer
 
             if ((onFacesDetectedListener != null) && (faceDetector != null))
             {
+                GLSUtils.saveTextureToBuffer(screenShot.getTexture(),
+                        screenShot.getWidth(),
+                        screenShot.getHeight(),
+                        stillBuffer);
+
+                /*
                 onFacesDetectedListener.onFacesDetected(
                         faceDetector.detect(screenShot.save()),
                         screenShot.getWidth(),
                         screenShot.getHeight());
+                */
             }
         }
     }
