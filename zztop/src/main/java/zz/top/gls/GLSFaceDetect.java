@@ -25,7 +25,7 @@ public class GLSFaceDetect
 
     public GLSFaceDetect(Context context)
     {
-        this(context, FaceDetector.ALL_LANDMARKS | FaceDetector.FAST_MODE | FaceDetector.ALL_CLASSIFICATIONS);
+        this(context, FaceDetector.ALL_LANDMARKS | FaceDetector.FAST_MODE | FaceDetector.NO_CLASSIFICATIONS);
     }
 
     public GLSFaceDetect(Context context, int mode)

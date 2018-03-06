@@ -1,8 +1,9 @@
 package zz.top.gls;
 
 import android.content.Context;
-import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
+import android.os.AsyncTask;
 import android.util.SparseArray;
 import android.util.Log;
 
@@ -19,9 +20,9 @@ import zz.top.dec.VIDDecode;
 
 public class GLSRenderer implements GLSurfaceView.Renderer
 {
-    private final String LOGTAG = GLSRenderer.class.getSimpleName();
+    private final static String LOGTAG = GLSRenderer.class.getSimpleName();
 
-    private final int IFRAME_LAG_FUCK = 8;
+    private final static int IFRAME_LAG_FUCK = 8;
 
     private GLSShaderRGB2SUR rgbShader;
     private GLSShaderYUV2RGB yuvShader;
@@ -36,8 +37,12 @@ public class GLSRenderer implements GLSurfaceView.Renderer
     private GLSImage screenShot;
     private GLSDecoder videoDecoder;
     private GLSFaceDetect faceDetector;
-    private Buffer stillBuffer;
+    private Thread faceDetectWorker;
+
     private int[] yuvTextures;
+
+    private Buffer faceBuffer;
+    private Bitmap faceBitmap;
 
     private int framesDecoded;
     private int framesCorrupt;
@@ -45,6 +50,7 @@ public class GLSRenderer implements GLSurfaceView.Renderer
     private int lastframes;
     private long lasttimems;
 
+    public final ArrayList<Buffer> facesQueue = new ArrayList<>();
     public final ArrayList<GLSFrame> frameQueue = new ArrayList<>();
 
     public GLSRenderer(Context context)
@@ -53,6 +59,105 @@ public class GLSRenderer implements GLSurfaceView.Renderer
 
         faceDetector = new GLSFaceDetect(context);
     }
+
+    private void startFaceDetect()
+    {
+        if (faceDetectWorker == null)
+        {
+            faceDetectWorker = new Thread(faceDetectWorkerRunner);
+            faceDetectWorker.setPriority(Thread.MIN_PRIORITY);
+            faceDetectWorker.start();
+        }
+    }
+
+    private void stopFaceDetect()
+    {
+        if (faceDetectWorker != null)
+        {
+            faceDetectWorker.interrupt();
+            faceDetectWorker = null;
+        }
+    }
+
+    private final Runnable faceDetectWorkerRunner = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            while (faceDetectWorker != null)
+            {
+                try
+                {
+                    Thread.sleep(20);
+                }
+                catch (Exception ignore)
+                {
+                }
+
+                if ((sourceWidth == 0) || (sourceHeight == 0))
+                {
+                    //
+                    // Decoder not yet ready.
+                    //
+
+                    continue;
+                }
+
+                //
+                // Create bitmap outside synchronized region.
+                //
+
+                if ((faceBitmap == null)
+                        || (faceBitmap.getWidth() != sourceWidth)
+                        || (faceBitmap.getHeight() != sourceHeight))
+                {
+                    if (faceBitmap != null) faceBitmap.recycle();
+
+                    faceBitmap = Bitmap.createBitmap(sourceWidth, sourceHeight, Bitmap.Config.ARGB_8888);
+                }
+
+                boolean work = false;
+
+                synchronized (facesQueue)
+                {
+                    if (facesQueue.size() > 0)
+                    {
+                        //
+                        // Check in synchronize region of bitmap still
+                        // fits. Otherwise skip this bitmap.
+                        //
+
+                        if ((faceBitmap.getWidth() == sourceWidth) &&
+                                (faceBitmap.getHeight() == sourceHeight))
+                        {
+                            faceBuffer.rewind();
+                            faceBitmap.copyPixelsFromBuffer(faceBuffer);
+
+                            work = true;
+                        }
+                    }
+                }
+
+                if (work)
+                {
+                    SparseArray<Face> faces = faceDetector.detect(faceBitmap);
+
+                    onFacesDetectedListener.onFacesDetected(faces, faceBitmap.getWidth(), faceBitmap.getHeight());
+
+                    Log.d(LOGTAG, "faceDetectWorkerRunner:"
+                            + " width=" + sourceWidth
+                            + " height=" + sourceHeight
+                            + " faces=" + faces.size());
+                }
+
+                //
+                // Signal renderer that we like another frame.
+                //
+
+                facesQueue.clear();
+            }
+        }
+    };
 
     public void renderFrame(GLSFrame avFrame)
     {
@@ -118,127 +223,147 @@ public class GLSRenderer implements GLSurfaceView.Renderer
         // Display the last valid image.
         //
 
-        if ((screenShot.getWidth() > 0) && (screenShot.getWidth() > 0))
+        if (framesDecoded > 0)
         {
-            rgbShader.process(screenShot, displayWidth, displayHeight);
+            yuvShader.process(null, displayWidth, displayHeight);
         }
 
         //
         // Decode new frames.
         //
 
-        if (frameQueue.size() < IFRAME_LAG_FUCK)
+        boolean display = false;
+
+        GLSFrame avFrame = null;
+
+        while (frameQueue.size() > IFRAME_LAG_FUCK)
+        {
+
+            synchronized (frameQueue)
+            {
+                avFrame = frameQueue.remove(0);
+            }
+
+            //
+            // Check decoder and decoding sizes.
+            //
+
+            if ((videoDecoder == null)
+                    || (sourceCodec != avFrame.getCodecId())
+                    || (sourceWidth != avFrame.getVideoWidth())
+                    || (sourceHeight != avFrame.getVideoHeight()))
+            {
+                if (videoDecoder != null)
+                {
+                    Log.d(LOGTAG, "renderFrame: releaseDecoder codec=" + sourceCodec);
+
+                    videoDecoder.releaseDecoder();
+                    videoDecoder = null;
+                }
+
+                synchronized (facesQueue)
+                {
+                    sourceCodec = avFrame.getCodecId();
+                    sourceWidth = avFrame.getVideoWidth();
+                    sourceHeight = avFrame.getVideoHeight();
+
+                    faceBuffer = ByteBuffer.allocate(sourceWidth * sourceHeight * 4);
+                }
+
+                videoDecoder = new VIDDecode(sourceCodec);
+
+                framesDecoded = 0;
+                framesCorrupt = 0;
+
+                Log.d(LOGTAG, "renderFrame: createDecoder codec=" + avFrame.getCodecId());
+            }
+
+            if (videoDecoder.decodeDecoder(avFrame.getFrameData(), avFrame.getFrameSize(), avFrame.getTimeStamp()))
+            {
+                display = true;
+                framesDecoded++;
+            }
+            else
+            {
+                framesCorrupt++;
+            }
+        }
+
+        if (! display)
         {
             //
-            // Make sure, all fucking I-Frames have come in.
+            // We are at end of queue or frames are corrupt.
             //
 
             return;
         }
 
-        boolean display = false;
+        lastframes++;
 
-        GLSFrame avFrame = null;
-
-        synchronized (frameQueue)
+        if (videoDecoder.toTextureDecoder(yuvTextures[0], yuvTextures[1], yuvTextures[2]) < 0)
         {
-            avFrame = frameQueue.remove(0);
+            //
+            // Happens never. Hopefully.
+            //
+
+            return;
         }
 
         //
-        // Check decoder and decoding sizes.
+        // Update FPS statistics,
         //
 
-        if ((videoDecoder == null)
-                || (sourceCodec != avFrame.getCodecId())
-                || (sourceWidth != avFrame.getVideoWidth())
-                || (sourceHeight != avFrame.getVideoHeight()))
+        if (lasttimems == 0)
         {
-            if (videoDecoder != null)
-            {
-                Log.d(LOGTAG, "renderFrame: releaseDecoder codec=" + sourceCodec);
-
-                videoDecoder.releaseDecoder();
-                videoDecoder = null;
-            }
-
-            sourceCodec = avFrame.getCodecId();
-            sourceWidth = avFrame.getVideoWidth();
-            sourceHeight = avFrame.getVideoHeight();
-
-            videoDecoder = new VIDDecode(sourceCodec);
-
-            stillBuffer = ByteBuffer.allocate(sourceWidth * sourceHeight * 4);
-
-            framesDecoded = 0;
-            framesCorrupt = 0;
-
-            Log.d(LOGTAG, "renderFrame: createDecoder codec=" + avFrame.getCodecId());
-        }
-
-        if (videoDecoder.decodeDecoder(avFrame.getFrameData(), avFrame.getFrameSize(), avFrame.getTimeStamp()))
-        {
-            framesDecoded++;
-
-            display = true;
+            lastframes = 0;
+            lasttimems = System.currentTimeMillis();
         }
         else
         {
-            framesCorrupt++;
-        }
+            long diffmillis = System.currentTimeMillis() - lasttimems;
 
-        if (display)
-        {
-            lastframes++;
-
-            if (videoDecoder.toTextureDecoder(yuvTextures[0], yuvTextures[1], yuvTextures[2]) >= 0)
+            if (diffmillis >= 1000)
             {
-                yuvShader.process(screenShot, sourceWidth, sourceHeight);
-            }
+                Log.d(LOGTAG, "onDrawFrame:"
+                        + " fps=" + lastframes
+                        + " back=" + frameQueue.size()
+                        + " width=" + sourceWidth
+                        + " height=" + sourceHeight
+                        + " fno=" + avFrame.getFrameNo()
+                        + " dec=" + framesDecoded
+                        + " bad=" + framesCorrupt
+                );
 
-            //
-            // Update FPS statistics,
-            //
-
-            if (lasttimems == 0)
-            {
                 lastframes = 0;
                 lasttimems = System.currentTimeMillis();
             }
-            else
+        }
+
+        if ((onFacesDetectedListener != null) && (faceDetector != null))
+        {
+            if (facesQueue.size() == 0)
             {
-                long diffmillis = System.currentTimeMillis() - lasttimems;
+                //
+                // Process current YUV into texture and save raw pixels in buffer.
+                //
 
-                if (diffmillis >= 1000)
+                synchronized (facesQueue)
                 {
-                    Log.d(LOGTAG, "onDrawFrame:"
-                            + " fps=" + lastframes
-                            + " width=" + sourceWidth
-                            + " height=" + sourceHeight
-                            + " dec=" + framesDecoded
-                            + " bad=" + framesCorrupt
-                    );
+                    yuvShader.process(screenShot, sourceWidth, sourceHeight);
 
-                    lastframes = 0;
-                    lasttimems = System.currentTimeMillis();
+                    screenShot.save(faceBuffer);
+                    facesQueue.add(faceBuffer);
                 }
             }
+        }
+    }
 
-            if ((onFacesDetectedListener != null) && (faceDetector != null))
-            {
-                /*
-                GLSUtils.saveTextureToBuffer(screenShot.getTexture(),
-                        screenShot.getWidth(),
-                        screenShot.getHeight(),
-                        stillBuffer);
-                */
-                /*
-                onFacesDetectedListener.onFacesDetected(
-                        faceDetector.detect(screenShot.save()),
-                        screenShot.getWidth(),
-                        screenShot.getHeight());
-                */
-            }
+    private class GLSFaceAsync extends AsyncTask<Buffer , Integer, Long>
+    {
+        protected Long doInBackground(Buffer... buffer)
+        {
+
+            return 0L;
         }
     }
 
@@ -249,6 +374,15 @@ public class GLSRenderer implements GLSurfaceView.Renderer
     public void setOnFacesDetectedListener(OnFacesDetectedListener listener)
     {
         onFacesDetectedListener = listener;
+
+        if (listener != null)
+        {
+            startFaceDetect();
+        }
+        else
+        {
+            stopFaceDetect();
+        }
     }
 
     public OnFacesDetectedListener getOnFacesDetectedListener()

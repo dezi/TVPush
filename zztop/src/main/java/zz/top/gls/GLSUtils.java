@@ -140,6 +140,7 @@ public class GLSUtils
 
         checkGlError("glFramebufferTexture2D");
 
+        buffer.rewind();
         GLES20.glReadPixels(0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, buffer);
 
         checkGlError("glReadPixels");

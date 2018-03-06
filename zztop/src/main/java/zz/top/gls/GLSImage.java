@@ -2,6 +2,8 @@ package zz.top.gls;
 
 import android.graphics.Bitmap;
 
+import java.nio.Buffer;
+
 public class GLSImage
 {
     private int width;
@@ -75,8 +77,13 @@ public class GLSImage
         return GLSUtils.saveTexture(texture, width, height);
     }
 
-    public Bitmap saveSmall(int div)
+    public Bitmap save(int div)
     {
         return GLSUtils.saveTexture(texture, width / div, height / div);
+    }
+
+    public void save(Buffer buffer)
+    {
+        GLSUtils.saveTextureToBuffer(texture, width, height, buffer);
     }
 }

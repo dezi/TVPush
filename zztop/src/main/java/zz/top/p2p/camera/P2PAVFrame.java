@@ -164,6 +164,11 @@ public class P2PAVFrame extends GLSFrame
         frameData = dataBuff;
     }
 
+    public void addFrameNoOverflow(int overflows)
+    {
+        frameNo += (overflows << 16);
+    }
+
     //region Interface.
 
     @Override
