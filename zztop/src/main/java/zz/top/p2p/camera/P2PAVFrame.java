@@ -145,11 +145,23 @@ public class P2PAVFrame extends GLSFrame
         timestamp_ms = P2PPacker.byteArrayToInt(data, 20, isBigEndian);
 
         frameSize = size - FRAMEINFO_SIZE;
-        frameData = new byte[frameSize];
 
-        System.arraycopy(data, FRAMEINFO_SIZE, frameData, 0, frameSize);
+        if (frameSize > 0)
+        {
+            frameData = new byte[frameSize];
+
+            System.arraycopy(data, FRAMEINFO_SIZE, frameData, 0, frameSize);
+        }
 
         panState = new PanState(onlineNum);
+    }
+
+    public P2PAVFrame(byte[] headBuff, int headSize, byte[] dataBuff, int dataSize, boolean isBigEndian)
+    {
+        this(headBuff, headSize, isBigEndian);
+
+        frameSize = dataSize;
+        frameData = dataBuff;
     }
 
     //region Interface.

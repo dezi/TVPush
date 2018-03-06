@@ -10,9 +10,9 @@ public class P2PReaderThreadVideo extends P2PReaderThread
     }
 
     @Override
-    public boolean handleData(byte[] data, int size)
+    public boolean handleData(byte[] headBuff, int headSize, byte[] dataBuff, int dataSize)
     {
-        P2PAVFrame avFrame = new P2PAVFrame(data, size, session.isBigEndian);
+        P2PAVFrame avFrame = new P2PAVFrame(headBuff, headSize, dataBuff, dataSize, session.isBigEndian);
 
         if (session.isEncrypted && avFrame.isIFrame())
         {

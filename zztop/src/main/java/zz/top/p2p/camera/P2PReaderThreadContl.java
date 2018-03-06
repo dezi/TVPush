@@ -16,18 +16,15 @@ public class P2PReaderThreadContl extends P2PReaderThread
     }
 
     @Override
-    public boolean handleData(byte[] data, int size)
+    public boolean handleData(byte[] headBuff, int headSize, byte[] dataBuff, int dataSize)
     {
-        P2PFrame frame = P2PFrame.parse(data, 0, session.isBigEndian);
+        P2PFrame frame = P2PFrame.parse(headBuff, 0, session.isBigEndian);
 
         Log.d(LOGTAG, "handleData:"
                 + " command=" + frame.commandType
                 + " seq=" + frame.commandNumber
                 + " exsize=" + frame.exHeaderSize
                 + " datasize=" + frame.dataSize);
-
-        int dataOffset = P2PFrame.FRAME_SIZE + frame.exHeaderSize;
-        int dataSize = size - dataOffset;
 
         Log.d(LOGTAG, "handleData: head.authResult=" + frame.authResult);
 
@@ -41,13 +38,10 @@ public class P2PReaderThreadContl extends P2PReaderThread
         }
         else
         {
-            byte[] dataBuffer = new byte[ dataSize ];
-            System.arraycopy(data, dataOffset, dataBuffer, 0, dataSize);
-
             if ((frame.commandType == CommandCodes.IPCAM_DEVINFO_RESP)
              || (frame.commandType == CommandCodes.IPCAM_SET_DAYNIGHT_MODE_RESP))
             {
-                DeviceInfoData deviceInfo = new DeviceInfoData(session, dataBuffer);
+                DeviceInfoData deviceInfo = new DeviceInfoData(session, dataBuff);
                 session.onDeviceInfoReceived(deviceInfo);
 
                 Log.d(LOGTAG, "DeviceInfoData: dayNight=" + deviceInfo.day_night_mode);
@@ -58,7 +52,7 @@ public class P2PReaderThreadContl extends P2PReaderThread
             if ((frame.commandType == CommandCodes.IPCAM_SET_RESOLUTION_RESP)
                 || (frame.commandType == CommandCodes.IPCAM_GET_RESOLUTION_RESP))
             {
-                ResolutionData resolution = new ResolutionData(session, dataBuffer);
+                ResolutionData resolution = new ResolutionData(session, dataBuff);
                 session.onResolutionReceived(resolution);
 
                 return true;

@@ -37,9 +37,9 @@ public class P2PReaderThreadAudio extends P2PReaderThread
     }
 
     @Override
-    public boolean handleData(byte[] data, int size)
+    public boolean handleData(byte[] headBuff, int headSize, byte[] dataBuff, int dataSize)
     {
-        P2PAVFrame avFrame = new P2PAVFrame(data, size, session.isBigEndian);
+        P2PAVFrame avFrame = new P2PAVFrame(headBuff, headSize, dataBuff, dataSize, session.isBigEndian);
 
         int nDecode = AACDecode.decode(avFrame.getFrameData(), avFrame.getFrameSize(), this.decodeData, this.decodeData.length);
 
