@@ -20,6 +20,8 @@ public class P2PReaderThread extends Thread
 
         this.session = session;
         this.channel = channel;
+
+        setPriority(MAX_PRIORITY);
     }
 
     @Override

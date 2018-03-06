@@ -21,10 +21,7 @@ public class P2PReaderThreadVideo extends P2PReaderThread
             session.p2pAVFrameDecrypt.decryptIframe(avFrame);
         }
 
-        if (avFrame.isIFrame())
-        {
-            //Log.d(LOGTAG, "handleData: channel=" + channel + " " + avFrame.toFrameString());
-        }
+        //Log.d(LOGTAG, "handleData: channel=" + channel + " " + avFrame.toFrameString());
 
         session.renderFrame(avFrame);
 

@@ -94,10 +94,14 @@ public class P2PSession
     {
         if (! isConnected)
         {
+            //
+            // Should be 75.
+            //
+
             byte type = (byte) 5;
             byte magic = (byte) (((type << 1) | 1) | 64);
 
-            Log.d(LOGTAG, "connect: magic=" + magic);
+            Log.d(LOGTAG, "connect: magic=75==" + magic);
 
             session = P2PApiNative.ConnectByServer(targetId, magic, 0, P2PApiKeys.serverString, P2PApiKeys.licenseKey);
             Log.d(LOGTAG, "connect: P2PAPI.ConnectByServer=" + session);

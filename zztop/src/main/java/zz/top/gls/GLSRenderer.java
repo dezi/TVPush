@@ -21,6 +21,8 @@ public class GLSRenderer implements GLSurfaceView.Renderer
 {
     private final String LOGTAG = GLSRenderer.class.getSimpleName();
 
+    private final int IFRAME_LAG_FUCK = 8;
+
     private GLSShaderRGB2SUR rgbShader;
     private GLSShaderYUV2RGB yuvShader;
 
@@ -56,7 +58,34 @@ public class GLSRenderer implements GLSurfaceView.Renderer
     {
         synchronized (frameQueue)
         {
-            frameQueue.add(avFrame);
+            if (avFrame.isIFrame())
+            {
+                //
+                // Fuck this. I-Frames take longer to
+                // compress and therefore come out of order.
+                // They are usually 4 - 5 frames late.
+                // If they come, insert into the right
+                // spot.
+                //
+
+                int index;
+
+                for (index = 0; index < frameQueue.size(); index++)
+                {
+                    GLSFrame frame = frameQueue.get(index);
+
+                    if (frame.getFrameNo() > avFrame.getFrameNo())
+                    {
+                        break;
+                    }
+                }
+
+                frameQueue.add(index, avFrame);
+            }
+            else
+            {
+                frameQueue.add(avFrame);
+            }
         }
     }
 
@@ -98,63 +127,64 @@ public class GLSRenderer implements GLSurfaceView.Renderer
         // Decode new frames.
         //
 
+        if (frameQueue.size() < IFRAME_LAG_FUCK)
+        {
+            //
+            // Make sure, all fucking I-Frames have come in.
+            //
+
+            return;
+        }
+
         boolean display = false;
 
-        while (frameQueue.size() > 0)
+        GLSFrame avFrame = null;
+
+        synchronized (frameQueue)
         {
-            GLSFrame avFrame = null;
+            avFrame = frameQueue.remove(0);
+        }
 
-            synchronized (frameQueue)
+        //
+        // Check decoder and decoding sizes.
+        //
+
+        if ((videoDecoder == null)
+                || (sourceCodec != avFrame.getCodecId())
+                || (sourceWidth != avFrame.getVideoWidth())
+                || (sourceHeight != avFrame.getVideoHeight()))
+        {
+            if (videoDecoder != null)
             {
-                if (frameQueue.size() > 0)
-                {
-                    avFrame = frameQueue.remove(0);
-                }
+                Log.d(LOGTAG, "renderFrame: releaseDecoder codec=" + sourceCodec);
+
+                videoDecoder.releaseDecoder();
+                videoDecoder = null;
             }
 
-            if (avFrame == null) break;
+            sourceCodec = avFrame.getCodecId();
+            sourceWidth = avFrame.getVideoWidth();
+            sourceHeight = avFrame.getVideoHeight();
 
-            //
-            // Check decoder and decoding sizes.
-            //
+            videoDecoder = new VIDDecode(sourceCodec);
 
-            if ((videoDecoder == null)
-                    || (sourceCodec != avFrame.getCodecId())
-                    || (sourceWidth != avFrame.getVideoWidth())
-                    || (sourceHeight != avFrame.getVideoHeight()))
-            {
-                if (videoDecoder != null)
-                {
-                    Log.d(LOGTAG, "renderFrame: releaseDecoder codec=" + sourceCodec);
+            stillBuffer = ByteBuffer.allocate(sourceWidth * sourceHeight * 4);
 
-                    videoDecoder.releaseDecoder();
-                    videoDecoder = null;
-                }
+            framesDecoded = 0;
+            framesCorrupt = 0;
 
-                sourceCodec = avFrame.getCodecId();
-                sourceWidth = avFrame.getVideoWidth();
-                sourceHeight = avFrame.getVideoHeight();
+            Log.d(LOGTAG, "renderFrame: createDecoder codec=" + avFrame.getCodecId());
+        }
 
-                videoDecoder = new VIDDecode(sourceCodec);
+        if (videoDecoder.decodeDecoder(avFrame.getFrameData(), avFrame.getFrameSize(), avFrame.getTimeStamp()))
+        {
+            framesDecoded++;
 
-                stillBuffer = ByteBuffer.allocate(sourceWidth * sourceHeight * 4);
-
-                framesDecoded = 0;
-                framesCorrupt = 0;
-
-                Log.d(LOGTAG, "renderFrame: createDecoder codec=" + avFrame.getCodecId());
-            }
-
-            if (videoDecoder.decodeDecoder(avFrame.getFrameData(), avFrame.getFrameSize(), avFrame.getTimeStamp()))
-            {
-                framesDecoded++;
-
-                display = true;
-            }
-            else
-            {
-                framesCorrupt++;
-            }
+            display = true;
+        }
+        else
+        {
+            framesCorrupt++;
         }
 
         if (display)
