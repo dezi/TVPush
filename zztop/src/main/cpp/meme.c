@@ -595,6 +595,7 @@ void responder()
     }
 
     printf("send: %s (%s) => %s \n", "MEME", inet_ntoa(addr.sin_addr), nam);
+    puts(memebuff);
 
     //
     // Listen for messages.
