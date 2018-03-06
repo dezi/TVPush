@@ -1,7 +1,6 @@
 package de.xavaro.android.common;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.json.JSONObject;
@@ -11,7 +10,6 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketTimeoutException;
 
-import de.xavaro.android.tvpush.ApplicationBase;
 import zz.top.cam.Cameras;
 
 public class Comm extends Thread
@@ -24,19 +22,18 @@ public class Comm extends Thread
     private static MulticastSocket socket;
     private static InetAddress bcastip;
 
-    private Context context;
     private boolean running;
 
     private JSONObject myDevice;
     private JSONObject myCredentials;
 
+    private JSONObject myHELO;
     private JSONObject myMEME;
     private JSONObject myGAUT;
+    private JSONObject mySAUT;
 
     public Comm(Context context)
     {
-        this.context = context;
-
         try
         {
             bcastip = InetAddress.getByName(bcast_addr);
@@ -68,14 +65,22 @@ public class Comm extends Thread
             Json.put(myCredentials, "fcmtoken", Simple.getFCMToken());
         }
 
+        myHELO = new JSONObject();
+        Json.put(myHELO, "type", "HELO");
+        Json.put(myHELO, "device", myDevice);
+
         myMEME = new JSONObject();
         Json.put(myMEME, "type", "MEME");
         Json.put(myMEME, "device", myDevice);
-        Json.put(myMEME, "credentials", myCredentials);
 
         myGAUT = new JSONObject();
         Json.put(myGAUT, "type", "GAUT");
         Json.put(myGAUT, "device", myDevice);
+
+        mySAUT = new JSONObject();
+        Json.put(mySAUT, "type", "SAUT");
+        Json.put(mySAUT, "device", myDevice);
+        Json.put(myMEME, "credentials", myCredentials);
     }
 
     @Override
@@ -138,6 +143,10 @@ public class Comm extends Thread
                         + " type=" + type
                         + " from=" + deviceName);
 
+                //
+                // Messages with responses.
+                //
+
                 JSONObject response = null;
 
                 if ("HELO".equals(type))
@@ -153,14 +162,9 @@ public class Comm extends Thread
                     }
                 }
 
-                if ("SAUT".equals(type))
+                if ("GAUT".equals(type))
                 {
-                    Log.d(LOGTAG, "workerThread: SAUT from=" + deviceName + " cat=" + deviceCategory);
-
-                    if ((deviceCategory != null) && deviceCategory.equalsIgnoreCase("camera"))
-                    {
-                        Cameras.addCamera(jsonmess);
-                    }
+                    response = mySAUT;
                 }
 
                 if (response != null)
@@ -179,6 +183,21 @@ public class Comm extends Thread
                             + " port=" + txpack.getPort()
                             + " type=" + type);
 
+                    continue;
+                }
+
+                //
+                // Messages w/o responses.
+                //
+
+                if ("SAUT".equals(type))
+                {
+                    Log.d(LOGTAG, "workerThread: SAUT from=" + deviceName + " cat=" + deviceCategory);
+
+                    if ((deviceCategory != null) && deviceCategory.equalsIgnoreCase("camera"))
+                    {
+                        Cameras.addCamera(jsonmess);
+                    }
                 }
             }
             catch (SocketTimeoutException ignore)
