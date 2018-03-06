@@ -20,7 +20,6 @@ public class P2PReaderThreadAudio extends P2PReaderThread
     {
         decodeData = new byte[ 10 * 1024 ];
 
-        //DecodeAAC.nOpen();
         AACDecode.open();
 
         Log.d(LOGTAG, "onStart: done.");
@@ -30,7 +29,6 @@ public class P2PReaderThreadAudio extends P2PReaderThread
 
     public boolean onStop()
     {
-        //DecodeAAC.nClose();
         AACDecode.close();
 
         decodeData = null;
@@ -43,7 +41,6 @@ public class P2PReaderThreadAudio extends P2PReaderThread
     {
         P2PAVFrame avFrame = new P2PAVFrame(data, size, session.isBigEndian);
 
-        //int nDecode = DecodeAAC.nDecode(avFrame.frameData, avFrame.getFrameSize(), this.decodeData, this.decodeData.length);
         int nDecode = AACDecode.decode(avFrame.getFrameData(), avFrame.getFrameSize(), this.decodeData, this.decodeData.length);
 
         if ((avFrame.getFrameNo() % 30) == 0)

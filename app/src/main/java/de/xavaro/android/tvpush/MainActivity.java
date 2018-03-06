@@ -136,11 +136,13 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     topframe.addView(videoView, new FrameLayout.LayoutParams(640, 360, Gravity.TOP + Gravity.START));
 
                     camera.connectCamera();
+
                     camera.setResolution(Camera.RESOLUTION_1080P);
 
-                    camera.startRealtimeAudio();
                     camera.startRealtimeVideo();
-                    camera.startFaceDetection(true);
+
+                    //camera.startRealtimeAudio();
+                    //camera.startFaceDetection(true);
                 }
             }
 

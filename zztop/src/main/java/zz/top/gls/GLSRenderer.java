@@ -35,6 +35,7 @@ public class GLSRenderer implements GLSurfaceView.Renderer
     private GLSDecoder videoDecoder;
     private GLSFaceDetect faceDetector;
     private Buffer stillBuffer;
+    private int[] yuvTextures;
 
     private int framesDecoded;
     private int framesCorrupt;
@@ -64,10 +65,12 @@ public class GLSRenderer implements GLSurfaceView.Renderer
     {
         Log.d(LOGTAG, "onSurfaceCreated.");
 
+        screenShot = new GLSImage();
+
         yuvShader = new GLSShaderYUV2RGB();
         rgbShader = new GLSShaderRGB2SUR();
 
-        screenShot = new GLSImage();
+        yuvTextures = yuvShader.getYUVTextures();
     }
 
     @Override
@@ -142,7 +145,7 @@ public class GLSRenderer implements GLSurfaceView.Renderer
                 Log.d(LOGTAG, "renderFrame: createDecoder codec=" + avFrame.getCodecId());
             }
 
-            if (videoDecoder.decodeDecoder(avFrame.getFrameData(), avFrame.getFrameSize(), 0))
+            if (videoDecoder.decodeDecoder(avFrame.getFrameData(), avFrame.getFrameSize(), avFrame.getTimeStamp()))
             {
                 framesDecoded++;
 
@@ -156,13 +159,11 @@ public class GLSRenderer implements GLSurfaceView.Renderer
 
         if (display)
         {
-            int[] yuvTextures = yuvShader.getYUVTextures();
+            lastframes++;
 
             if (videoDecoder.toTextureDecoder(yuvTextures[0], yuvTextures[1], yuvTextures[2]) >= 0)
             {
                 yuvShader.process(screenShot, sourceWidth, sourceHeight);
-
-                lastframes++;
             }
 
             //
@@ -195,11 +196,12 @@ public class GLSRenderer implements GLSurfaceView.Renderer
 
             if ((onFacesDetectedListener != null) && (faceDetector != null))
             {
+                /*
                 GLSUtils.saveTextureToBuffer(screenShot.getTexture(),
                         screenShot.getWidth(),
                         screenShot.getHeight(),
                         stillBuffer);
-
+                */
                 /*
                 onFacesDetectedListener.onFacesDetected(
                         faceDetector.detect(screenShot.save()),

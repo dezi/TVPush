@@ -1,69 +1,63 @@
 package zz.top.p2p.camera;
 
-import android.text.TextUtils;
-
 public class P2PFrame
 {
     public static final int FRAME_SIZE = 40;
+    public static final int AUTH_SIZE = 32;
 
-    public byte[] authInfo;
-    public int authResult;
     public short commandNumber;
     public short commandType;
-    public short dataSize;
     public short exHeaderSize;
+    public short dataSize;
+
     public boolean isByteOrderBig;
 
-    public P2PFrame(short s, short s2, short s3, String str, String str2, int i, boolean z)
+    public int authResult;
+    public byte[] authInfo  = new byte[32];
+
+    public P2PFrame(short commandType, short commandNumber, short dataSize, String auth1, String auth2, boolean isByteOrderBig)
     {
-        this.authInfo = new byte[32];
-        this.authResult = -1;
-        this.commandType = s;
-        this.commandNumber = s2;
-        this.exHeaderSize = (short) 0;
-        this.dataSize = s3;
-        if (TextUtils.isEmpty(str) || TextUtils.isEmpty(str2))
+        this.commandType = commandType;
+        this.commandNumber = commandNumber;
+        this.dataSize = dataSize;
+        this.isByteOrderBig = isByteOrderBig;
+
+        if ((auth1 != null) && (! auth1.isEmpty()) && (auth2 != null) && (! auth2.isEmpty()))
         {
-            this.authResult = i;
-            this.isByteOrderBig = z;
-            return;
+            String auth = auth1 + "," + auth2;
+            System.arraycopy(auth.getBytes(), 0, this.authInfo, 0, auth.length());
         }
-        this.authResult = -1;
-        String str3 = str + "," + str2;
-        System.arraycopy(str3.getBytes(), 0, this.authInfo, 0, str3.length());
-        this.isByteOrderBig = z;
     }
 
-    private P2PFrame(boolean z)
+    private P2PFrame(boolean isBigEndian)
     {
-        this.authInfo = new byte[32];
-        this.authResult = -1;
-        this.isByteOrderBig = z;
+        this.isByteOrderBig = isBigEndian;
     }
 
     public static P2PFrame parse(byte[] data, boolean isBigEndian)
     {
-        P2PFrame tNPIOCtrlHead = new P2PFrame(isBigEndian);
+        P2PFrame frame = new P2PFrame(isBigEndian);
 
-        tNPIOCtrlHead.commandType = P2PPacker.byteArrayToShort(data, 0, isBigEndian);
-        tNPIOCtrlHead.commandNumber = P2PPacker.byteArrayToShort(data, 2, isBigEndian);
-        tNPIOCtrlHead.exHeaderSize = P2PPacker.byteArrayToShort(data, 4, isBigEndian);
-        tNPIOCtrlHead.dataSize = P2PPacker.byteArrayToShort(data, 6, isBigEndian);
-        tNPIOCtrlHead.authResult = P2PPacker.byteArrayToInt(data, 8, isBigEndian);
+        frame.commandType = P2PPacker.byteArrayToShort(data, 0, isBigEndian);
+        frame.commandNumber = P2PPacker.byteArrayToShort(data, 2, isBigEndian);
+        frame.exHeaderSize = P2PPacker.byteArrayToShort(data, 4, isBigEndian);
+        frame.dataSize = P2PPacker.byteArrayToShort(data, 6, isBigEndian);
+        frame.authResult = P2PPacker.byteArrayToInt(data, 8, isBigEndian);
 
-        return tNPIOCtrlHead;
+        return frame;
     }
 
     public byte[] build()
     {
-        byte[] obj = new byte[40];
+        byte[] data = new byte[FRAME_SIZE];
 
-        System.arraycopy(P2PPacker.shortToByteArray(this.commandType, this.isByteOrderBig), 0, obj, 0, 2);
-        System.arraycopy(P2PPacker.shortToByteArray(this.commandNumber, this.isByteOrderBig), 0, obj, 2, 2);
-        System.arraycopy(P2PPacker.shortToByteArray(this.exHeaderSize, this.isByteOrderBig), 0, obj, 4, 2);
-        System.arraycopy(P2PPacker.shortToByteArray(this.dataSize, this.isByteOrderBig), 0, obj, 6, 2);
-        System.arraycopy(this.authInfo, 0, obj, 8, 32);
+        System.arraycopy(P2PPacker.shortToByteArray(this.commandType, this.isByteOrderBig), 0, data, 0, 2);
+        System.arraycopy(P2PPacker.shortToByteArray(this.commandNumber, this.isByteOrderBig), 0, data, 2, 2);
+        System.arraycopy(P2PPacker.shortToByteArray(this.exHeaderSize, this.isByteOrderBig), 0, data, 4, 2);
+        System.arraycopy(P2PPacker.shortToByteArray(this.dataSize, this.isByteOrderBig), 0, data, 6, 2);
 
-        return obj;
+        System.arraycopy(this.authInfo, 0, data, 8, AUTH_SIZE);
+
+        return data;
     }
 }

@@ -4,25 +4,25 @@ public class P2PHeader
 {
     public static final int HEADER_SIZE = 8;
 
-    public static final byte IO_TYPE_UNKNOWN = (byte) 0;
-    public static final byte IO_TYPE_VIDEO = (byte) 1;
-    public static final byte IO_TYPE_AUDIO = (byte) 2;
-    public static final byte IO_TYPE_COMMAND = (byte) 3;
+    public static final byte IO_TYPE_UNKNOWN = 0;
+    public static final byte IO_TYPE_VIDEO = 1;
+    public static final byte IO_TYPE_AUDIO = 2;
+    public static final byte IO_TYPE_COMMAND = 3;
 
-    public static final byte VERSION_ONE = (byte) 1;
-    public static final byte VERSION_TWO = (byte) 2;
+    public static final byte VERSION_ONE = 1;
+    public static final byte VERSION_TWO = 2;
 
-    public int dataSize;
-    public byte ioType;
-    public boolean isBigEndian;
-    public byte[] reserved;
     public byte version;
+    public byte ioType;
+    public byte reserved1;
+    public byte reserved2;
+    public int dataSize;
+    public boolean isBigEndian;
 
     public P2PHeader(byte version, byte ioType, int dataSize, boolean isBigEndian)
     {
         this.version = version;
         this.ioType = ioType;
-        this.reserved = new byte[2];
         this.dataSize = dataSize;
         this.isBigEndian = isBigEndian;
     }
@@ -31,7 +31,6 @@ public class P2PHeader
     {
         this.version = VERSION_ONE;
         this.ioType = ioType;
-        this.reserved = new byte[2];
         this.dataSize = dataSize;
         this.isBigEndian = isBigEndian;
     }
@@ -43,25 +42,29 @@ public class P2PHeader
 
     public static P2PHeader parse(byte[] data, boolean isBigEndian)
     {
-        P2PHeader tNPHead = new P2PHeader(isBigEndian);
+        P2PHeader header = new P2PHeader(isBigEndian);
 
-        tNPHead.version = data[0];
-        tNPHead.ioType = data[1];
-        tNPHead.dataSize = P2PPacker.byteArrayToInt(data, 4, isBigEndian);
+        header.version = data[0];
+        header.ioType = data[1];
+        header.reserved1 = data[2];
+        header.reserved2 = data[3];
 
-        return tNPHead;
+        header.dataSize = P2PPacker.byteArrayToInt(data, 4, isBigEndian);
+
+        return header;
     }
 
     public byte[] build()
     {
-        byte[] obj = new byte[8];
+        byte[] data = new byte[8];
 
-        obj[0] = this.version;
-        obj[1] = this.ioType;
+        data[0] = version;
+        data[1] = ioType;
+        data[2] = reserved1;
+        data[3] = reserved2;
 
-        System.arraycopy(this.reserved, 0, obj, 2, 2);
-        System.arraycopy(P2PPacker.intToByteArray(this.dataSize, this.isBigEndian), 0, obj, 4, 4);
+        System.arraycopy(P2PPacker.intToByteArray(this.dataSize, this.isBigEndian), 0, data, 4, 4);
 
-        return obj;
+        return data;
     }
 }

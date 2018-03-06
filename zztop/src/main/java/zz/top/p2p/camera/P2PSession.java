@@ -244,8 +244,8 @@ public class P2PSession
         Log.d(LOGTAG, "packDatAndSend: dezihack: " + auth1);
         Log.d(LOGTAG, "packDatAndSend: dezihack: " + auth2);
 
-        P2PFrame p2pFrame = new P2PFrame(p2PMessage.reqId, ++cmdSequence, (short) p2PMessage.data.length, auth1, auth2, -1, isBigEndian);
-        P2PHeader p2pHead = new P2PHeader((byte) 1, (byte) 3, (p2pFrame.exHeaderSize + 40) + p2PMessage.data.length, isBigEndian);
+        P2PFrame p2pFrame = new P2PFrame(p2PMessage.reqId, ++cmdSequence, (short) p2PMessage.data.length, auth1, auth2, isBigEndian);
+        P2PHeader p2pHead = new P2PHeader(P2PHeader.VERSION_ONE, (byte) 3, (p2pFrame.exHeaderSize + 40) + p2PMessage.data.length, isBigEndian);
 
         byte[] data = new byte[p2pHead.dataSize + 8];
 
