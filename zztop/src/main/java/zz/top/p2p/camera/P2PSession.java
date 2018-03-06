@@ -263,7 +263,7 @@ public class P2PSession
                 + ", send(" + session
                 + ", 0x" + Integer.toHexString(p2PMessage.reqId)
                 + "=" + p2PMessage.reqId
-                + ", " + P2PUtil.getHexBytesToString(p2PMessage.data)
+                + ", " + P2PUtil.getHexBytesToString(p2PMessage.data, true)
                 + ")"
         );
 

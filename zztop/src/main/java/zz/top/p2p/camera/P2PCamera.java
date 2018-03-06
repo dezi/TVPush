@@ -36,9 +36,8 @@ public class P2PCamera extends Camera
     //
 
     //
-    // send(1, 0x1311=4881, 0000000200000001)
-    // send(1, 0x300=768, 0000000000000000)
-    // send(1, 0x2345=9029, 01020100)
+    // send(1, 0x1311=4881, 00 00 00 01 00 00 00 01)
+    // send(1, 0x2345=9029, 02 01 01 00)
     //
 
     public final static byte RESOLUTION_AUTO = 0;
@@ -132,7 +131,7 @@ public class P2PCamera extends Camera
     @Override
     public boolean startRealtimeVideo()
     {
-        return (new StartVideoSend(session, (byte) 1, (byte) resolution, (byte) 1)).send();
+        return (new StartVideoSend(session, (byte) 2, (byte) resolution, (byte) 1)).send();
     }
 
     @Override

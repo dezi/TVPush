@@ -80,17 +80,33 @@ public class P2PUtil
         return getHexBytesToString(bytes, 0, bytes.length);
     }
 
+    public static String getHexBytesToString(byte[] bytes, boolean space)
+    {
+        return getHexBytesToString(bytes, 0, bytes.length, space);
+    }
+
     public static String getHexBytesToString(byte[] bytes, int offset, int length)
     {
+        return getHexBytesToString(bytes, offset, length, false);
+    }
+
+    public static String getHexBytesToString(byte[] bytes, int offset, int length, boolean space)
+    {
+        int clen = (length << 1) + (space ? (length - 1) : 0);
+
         char[] hexArray = "0123456789ABCDEF".toCharArray();
-        char[] hexChars = new char[ length << 1 ];
+        char[] hexChars = new char[ clen ];
+
+        int pos = 0;
 
         for (int inx = offset; inx < (length + offset); inx++)
         {
+            if (space && (inx > offset)) hexChars[ pos++ ] = ' ';
+
             //noinspection PointlessArithmeticExpression
-            hexChars[ ((inx - offset) << 1) + 0 ] = hexArray[ (bytes[ inx ] >> 4) & 0x0f ];
+            hexChars[ pos++ ] = hexArray[ (bytes[ inx ] >> 4) & 0x0f ];
             //noinspection PointlessBitwiseExpression
-            hexChars[ ((inx - offset) << 1) + 1 ] = hexArray[ (bytes[ inx ] >> 0) & 0x0f ];
+            hexChars[ pos++ ] = hexArray[ (bytes[ inx ] >> 0) & 0x0f ];
         }
 
         return String.valueOf(hexChars);
