@@ -18,10 +18,12 @@ public class Cameras
 
     public static final Map<String, JSONObject> cameras = new HashMap<>();
 
-    public static void addCamera(JSONObject device)
+    public static void addCamera(JSONObject camera)
     {
-        String deviceUUID = Json.getString(device, "device_uuid");
-        String deviceName = Json.getString(device, "device_name");
+        JSONObject device = Json.getObject(camera, "device");
+
+        String deviceUUID = Json.getString(device, "uuid");
+        String deviceName = Json.getString(device, "name");
 
         Log.d(LOGTAG, "addCamera:" + " uuid=" + deviceUUID + " name=" + deviceName);
 
@@ -29,7 +31,7 @@ public class Cameras
         {
             synchronized (cameras)
             {
-                cameras.put(deviceUUID, device);
+                cameras.put(deviceUUID, camera);
             }
         }
     }
@@ -43,15 +45,18 @@ public class Cameras
     @Nullable
     public static String findCameraByName(String name)
     {
-        for (Map.Entry<String, JSONObject> camera : cameras.entrySet())
+        for (Map.Entry<String, JSONObject> entry : cameras.entrySet())
         {
-            JSONObject json = camera.getValue();
+            JSONObject camera = entry.getValue();
 
-            String devName = Json.getString(json, "device_name");
+            JSONObject device = Json.getObject(camera, "device");
 
-            if ((devName != null) && devName.equals(name))
+            String deviceUUID = Json.getString(device, "uuid");
+            String deviceName = Json.getString(device, "name");
+
+            if ((deviceUUID != null) && (deviceName != null) && deviceName.equals(name))
             {
-                return Json.getString(json, "device_uuid");
+                return deviceUUID;
             }
         }
 
@@ -65,11 +70,14 @@ public class Cameras
         {
             JSONObject camera = entry.getValue();
 
-            String devName = Json.getString(camera, "device_nick");
+            JSONObject device = Json.getObject(camera, "device");
 
-            if ((devName != null) && devName.equals(nick))
+            String deviceUUID = Json.getString(device, "uuid");
+            String deviceNick = Json.getString(device, "nick");
+
+            if ((deviceUUID != null) && (deviceNick != null) && deviceNick.equals(nick))
             {
-                return Json.getString(camera, "device_uuid");
+                return deviceUUID;
             }
         }
 
@@ -77,17 +85,20 @@ public class Cameras
     }
 
     @Nullable
-    public static String findCameraByDeviceID(String deviceID)
+    public static String findCameraByDeviceID(String id)
     {
         for (Map.Entry<String, JSONObject> entry : cameras.entrySet())
         {
             JSONObject camera = entry.getValue();
 
-            String devName = Json.getString(camera, "device_id");
+            JSONObject device = Json.getObject(camera, "device");
 
-            if ((devName != null) && devName.equals(deviceID))
+            String deviceUUID = Json.getString(device, "uuid");
+            String deviceID = Json.getString(device, "id");
+
+            if ((deviceUUID != null) && (deviceID != null) && deviceID.equals(id))
             {
-                return Json.getString(camera, "device_uuid");
+                return deviceUUID;
             }
         }
 
@@ -114,29 +125,37 @@ public class Cameras
     @Nullable
     public static Camera createCameraByUUID(String uuid)
     {
-        Camera camera = null;
+        JSONObject camera = Cameras.getCameraDevice(uuid);
 
-        JSONObject device = Cameras.getCameraDevice(uuid);
+        JSONObject device = Json.getObject(camera, "device");
 
-        Log.d(LOGTAG, "createCameraByUUID: uuid=" + uuid + " device=" + device);
+        String deviceUUID = Json.getString(device, "uuid");
+        String deviceName = Json.getString(device, "name");
+        String deviceDriver = Json.getString(device, "driver");
 
-        String device_driver = Json.getString(device, "device_driver");
+        Log.d(LOGTAG, "createCameraByUUID:"
+                + " uuid=" + deviceUUID
+                + " name=" + deviceName
+                + " driver=" + deviceDriver
+                );
 
-        if (device_driver != null)
+        Camera newcamera = null;
+
+        if (deviceDriver != null)
         {
-            if (device_driver.equals("yi-p2p"))
+            if (deviceDriver.equals("yi-p2p"))
             {
-                Log.d(LOGTAG, "createCameraByUUID: found=" + device_driver);
+                Log.d(LOGTAG, "createCameraByUUID: found=" + deviceDriver);
 
-                camera = new P2PCamera();
+                newcamera = new P2PCamera();
             }
         }
 
-        if (camera != null)
+        if (newcamera != null)
         {
-            camera.attachCamera(uuid);
+            newcamera.attachCamera(uuid);
         }
 
-        return camera;
+        return newcamera;
     }
 }

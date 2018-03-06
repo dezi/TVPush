@@ -15,6 +15,7 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketTimeoutException;
 
+import de.xavaro.android.common.Comm;
 import zz.top.cam.Cameras;
 
 import de.xavaro.android.common.Json;
@@ -42,10 +43,12 @@ public class RegistrationService extends Service
         if (socket != null)
         {
             JSONObject helojson = new JSONObject();
-
             Json.put(helojson, "type", "HELO");
-            Json.put(helojson, "device_name", Simple.getDeviceUserName(context));
-            Json.put(helojson, "fcmtoken", Simple.getFCMToken());
+
+            JSONObject devicejson = new JSONObject();
+            Json.put(devicejson, "name", Simple.getDeviceUserName(context));
+
+            Json.put(helojson, "device", devicejson);
 
             byte[] txbuf = helojson.toString().getBytes();
             DatagramPacket helo = new DatagramPacket(txbuf, txbuf.length);
@@ -107,15 +110,7 @@ public class RegistrationService extends Service
 
         if (worker == null)
         {
-            worker = new Thread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    workerThread();
-                }
-            });
-
+            worker = new Comm(this);
             worker.start();
         }
 
@@ -127,21 +122,17 @@ public class RegistrationService extends Service
     {
         Log.d(LOGTAG, "onDestroy...");
 
-        if (running)
+        try
         {
-            running = false;
-
-            try
+            if (worker != null)
             {
-                if (worker != null)
-                {
-                    worker.interrupt();
-                    worker.join();
-                }
+                worker.interrupt();
+                worker.join();
+                worker = null;
             }
-            catch (InterruptedException ignore)
-            {
-            }
+        }
+        catch (InterruptedException ignore)
+        {
         }
 
         Toast.makeText(this, "RegistrationService Stopped", Toast.LENGTH_SHORT).show();
@@ -155,6 +146,25 @@ public class RegistrationService extends Service
 
         while (running)
         {
+            JSONObject myDevice = new JSONObject();
+            Json.put(myDevice, "name", Simple.getDeviceUserName(this));
+
+            JSONObject myCredentials = new JSONObject();
+
+            if (Simple.getFCMToken() != null)
+            {
+                Json.put(myCredentials, "fcmtoken", Simple.getFCMToken());
+            }
+
+            JSONObject myMEME = new JSONObject();
+            Json.put(myMEME, "type", "MEME");
+            Json.put(myMEME, "device", myDevice);
+            Json.put(myMEME, "credentials", myCredentials);
+
+            JSONObject myGAUT = new JSONObject();
+            Json.put(myGAUT, "type", "GAUT");
+            Json.put(myGAUT, "device", myDevice);
+
             try
             {
                 byte[] rxbuf = new byte[ 8 * 1024 ];
@@ -163,44 +173,45 @@ public class RegistrationService extends Service
 
                 String message = new String(packet.getData(), 0, packet.getLength());
 
+                if (message.length() == 4)
+                {
+                    Log.d(LOGTAG, "workerThread: " + message);
+                    continue;
+                }
+
                 JSONObject jsonmess = Json.fromStringObject(message);
                 if (jsonmess == null) continue;
 
-                if (Json.equals(jsonmess, "type", "HELO"))
+                String type = Json.getString(jsonmess, "type");
+                if (type == null) continue;
+
+                JSONObject device = Json.getObject(jsonmess, "device");
+                JSONObject credentials = Json.getObject(jsonmess, "credentials");
+
+                String deviceName = Json.getString(device, "name");
+                String deviceCategory = Json.getString(device, "category");
+
+                Log.d(LOGTAG, "workerThread:"
+                        + " type=" + type
+                        + " from=" + deviceName
+                        + " ip=" + packet.getAddress()
+                        + " port=" + packet.getPort());
+
+                if ("HELO".equals(type))
                 {
-                    Log.d(LOGTAG, "workerThread: HELO from=" + Json.getString(jsonmess, "device_name"));
-
-                    JSONObject mejson = new JSONObject();
-
-                    Json.put(mejson, "type", "MEME");
-                    Json.put(mejson, "device_name", Simple.getDeviceUserName(this));
-                    Json.put(mejson, "fcmtoken", Simple.getFCMToken());
-
-                    byte[] txbuf = mejson.toString().getBytes();
+                    byte[] txbuf = myMEME.toString().getBytes();
                     DatagramPacket meme = new DatagramPacket(txbuf, txbuf.length);
-                    meme.setAddress(multicastAddress);
-                    meme.setPort(port);
+                    meme.setAddress(packet.getAddress());
+                    meme.setPort(packet.getPort());
 
                     socket.send(meme);
                 }
 
-                if (Json.equals(jsonmess, "type", "MEME"))
+                if ("MEME".equals(type))
                 {
-                    String deviceName = Json.getString(jsonmess, "device_name");
-                    if (deviceName == null) deviceName = Json.getString(jsonmess, "devicename");
-
-                    Log.d(LOGTAG, "workerThread: MEME from=" + deviceName);
-
-                    String deviceCategory = Json.getString(jsonmess, "device_category");
-
                     if ((deviceCategory != null) && deviceCategory.equalsIgnoreCase("camera"))
                     {
-                        JSONObject mejson = new JSONObject();
-
-                        Json.put(mejson, "type", "GAUT");
-                        Json.put(mejson, "device_name", Simple.getDeviceUserName(this));
-
-                        byte[] txbuf = mejson.toString().getBytes();
+                        byte[] txbuf = myGAUT.toString().getBytes();
                         DatagramPacket gaut = new DatagramPacket(txbuf, txbuf.length);
                         gaut.setAddress(packet.getAddress());
                         gaut.setPort(packet.getPort());
@@ -211,13 +222,8 @@ public class RegistrationService extends Service
                     }
                 }
 
-                if (Json.equals(jsonmess, "type", "SAUT"))
+                if ("SAUT".equals(type))
                 {
-                    String deviceName = Json.getString(jsonmess, "device_name");
-                    if (deviceName == null) deviceName = Json.getString(jsonmess, "devicename");
-
-                    String deviceCategory = Json.getString(jsonmess, "device_category");
-
                     Log.d(LOGTAG, "workerThread: SAUT from=" + deviceName + " cat=" + deviceCategory);
 
                     if ((deviceCategory != null) && deviceCategory.equalsIgnoreCase("camera"))

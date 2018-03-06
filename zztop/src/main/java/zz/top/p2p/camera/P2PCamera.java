@@ -99,13 +99,14 @@ public class P2PCamera extends Camera
     @Override
     public boolean attachCamera(String deviceUUID)
     {
-        JSONObject device = Cameras.getCameraDevice(deviceUUID);
+        JSONObject camera = Cameras.getCameraDevice(deviceUUID);
+        JSONObject credentials = Json.getObject(camera, "credentials");
 
-        if (device != null)
+        String p2p_id = Json.getString(credentials, "p2p_id");
+        String p2p_pw = Json.getString(credentials, "p2p_pw");
+
+        if ((p2p_id != null) && (p2p_pw != null))
         {
-            String p2p_id = Json.getString(device, "p2p_id");
-            String p2p_pw = Json.getString(device, "p2p_pw");
-
             return session.attachCamera(p2p_id, p2p_pw);
         }
 
