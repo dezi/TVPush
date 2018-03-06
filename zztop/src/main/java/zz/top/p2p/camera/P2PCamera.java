@@ -27,6 +27,20 @@ public class P2PCamera extends Camera
 {
     private static final String LOGTAG = P2PCamera.class.getSimpleName();
 
+    //
+    // send(1, 0x1311, 00 00 00 01 00 00 00 01 )
+    // send(1, 0x2345, 02 01 01 00 )
+    // send(1, 0x330, 00 00 00 00 )
+    // send(1, 0x1300, 00 00 00 00 )
+    // send(1, 0x2347, 00 00 00 00 07 E2 02 03 07 15 0F 00 07 E2 03 05 02 15 0F 00 00 00 00 00 )
+    //
+
+    //
+    // send(1, 0x1311=4881, 0000000200000001)
+    // send(1, 0x300=768, 0000000000000000)
+    // send(1, 0x2345=9029, 01020100)
+    //
+
     public final static byte RESOLUTION_AUTO = 0;
     public final static byte RESOLUTION_1080P = 1;
     public final static byte RESOLUTION_720P = 2;

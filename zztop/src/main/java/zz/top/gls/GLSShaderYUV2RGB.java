@@ -8,7 +8,9 @@ public class GLSShaderYUV2RGB extends GLSShader
     private final String LOGTAG = GLSShaderYUV2RGB.class.getSimpleName();
 
     private static final float[] POS_VERTICES = new float[]{-1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f};
-    private static final float[] TEX_VERTICES = new float[]{0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f};
+
+    private static final float[] TEX_VERTICES_NORM = new float[]{0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f};
+    private static final float[] TEX_VERTICES_FlIP = new float[]{0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f};
 
     private final float[] mTextureMat = new float[]{1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
 
@@ -108,8 +110,10 @@ public class GLSShaderYUV2RGB extends GLSShader
         texUHandle = GLES20.glGetUniformLocation(program, "u_tex");
         texVHandle = GLES20.glGetUniformLocation(program, "v_tex");
 
-        texVertices = GLSUtils.createVerticesBuffer(TEX_VERTICES);
         posVertices = GLSUtils.createVerticesBuffer(POS_VERTICES);
+
+        texVerticesFlip = GLSUtils.createVerticesBuffer(TEX_VERTICES_FlIP);
+        texVerticesNorm = GLSUtils.createVerticesBuffer(TEX_VERTICES_NORM);
     }
 
     public int[] getYUVTextures()
@@ -176,7 +180,9 @@ public class GLSShaderYUV2RGB extends GLSShader
 
         GLES20.glDisable(GLES20.GL_BLEND);
 
-        GLES20.glVertexAttribPointer(this.texCoordHandle, 2, GLES20.GL_FLOAT, false, 0, this.texVertices);
+        GLES20.glVertexAttribPointer(this.texCoordHandle, 2, GLES20.GL_FLOAT, false, 0,
+                (rgb == null) ? this.texVerticesFlip : this.texVerticesNorm);
+
         GLES20.glEnableVertexAttribArray(this.texCoordHandle);
 
         GLES20.glVertexAttribPointer(this.posCoordHandle, 3, GLES20.GL_FLOAT, false, 0, this.posVertices);

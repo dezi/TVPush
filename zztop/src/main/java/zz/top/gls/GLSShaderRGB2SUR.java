@@ -8,7 +8,9 @@ public class GLSShaderRGB2SUR extends GLSShader
     private final String LOGTAG = GLSShaderRGB2SUR.class.getSimpleName();
 
     private static final float[] POS_VERTICES = new float[]{-1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f};
-    private static final float[] TEX_VERTICES = new float[]{0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f};
+
+    private static final float[] TEX_VERTICES_NORM = new float[]{0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f};
+    private static final float[] TEX_VERTICES_FlIP = new float[]{0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f};
 
     private static final String FRAGMENT_SHADER_SOURCE = ""
             + "precision mediump float;"
@@ -88,8 +90,10 @@ public class GLSShaderRGB2SUR extends GLSShader
         modelViewMatHandle = GLES20.glGetUniformLocation(program, "u_model_view");
         texSamplerHandle = GLES20.glGetUniformLocation(program, "tex_sampler");
 
-        texVertices = GLSUtils.createVerticesBuffer(TEX_VERTICES);
         posVertices = GLSUtils.createVerticesBuffer(POS_VERTICES);
+
+        texVerticesFlip = GLSUtils.createVerticesBuffer(TEX_VERTICES_FlIP);
+        texVerticesNorm = GLSUtils.createVerticesBuffer(TEX_VERTICES_NORM);
     }
 
     public boolean process(GLSImage rgb, int width, int height)
@@ -127,7 +131,7 @@ public class GLSShaderRGB2SUR extends GLSShader
 
         GLES20.glDisable(GLES20.GL_BLEND);
 
-        GLES20.glVertexAttribPointer(texCoordHandle, 2, GLES20.GL_FLOAT, false, 0, this.texVertices);
+        GLES20.glVertexAttribPointer(texCoordHandle, 2, GLES20.GL_FLOAT, false, 0, this.texVerticesFlip);
         GLES20.glEnableVertexAttribArray(texCoordHandle);
         GLES20.glVertexAttribPointer(posCoordHandle, 3, GLES20.GL_FLOAT, false, 0, this.posVertices);
         GLES20.glEnableVertexAttribArray(posCoordHandle);

@@ -188,17 +188,13 @@ public class GLSRenderer implements GLSurfaceView.Renderer
                 }
             }
 
-            /*
             if ((onFacesDetectedListener != null) && (faceDetector != null))
             {
-                Log.d(LOGTAG, "#############");
-
                 onFacesDetectedListener.onFacesDetected(
                         faceDetector.detect(screenShot.save()),
                         screenShot.getWidth(),
                         screenShot.getHeight());
             }
-            */
         }
     }
 

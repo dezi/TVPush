@@ -23,7 +23,9 @@ public class GLSShader
     public float[] mModelViewMat = new float[]{1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
 
     public FloatBuffer posVertices;
-    public FloatBuffer texVertices;
+
+    public FloatBuffer texVerticesFlip;
+    public FloatBuffer texVerticesNorm;
 
     public static boolean checkGlError(String str)
     {
