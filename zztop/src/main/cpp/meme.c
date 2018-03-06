@@ -106,10 +106,10 @@
  Compile and link with uClibc:
 
      /opt/hisi-linux/x86-arm/arm-hisiv400-linux/target/bin/arm-hisiv400-linux-gcc \
-        -Wall -std=gnu99 -c ~/TVPush/app/src/main/cpp/meme.c -o meme.o
+        -Wall -std=gnu99 -c ~/TVPush/zztop/src/main/cpp/meme.c -o meme.o
 
      /opt/hisi-linux/x86-arm/arm-hisiv400-linux/target/bin/arm-hisiv400-linux-gcc \
-        -Wall -std=gnu99 -c ~/TVPush/app/src/main/cpp/json.c -o json.o
+        -Wall -std=gnu99 -c ~/TVPush/zztop/src/main/cpp/json.c -o json.o
 
      /opt/hisi-linux/x86-arm/arm-hisiv400-linux/bin/arm-hisiv400-linux-gnueabi-ld \
         --sysroot=/opt/hisi-linux/x86-arm/arm-hisiv400-linux/target \
@@ -584,7 +584,7 @@ void responder()
     // Send initial broadcast message.
     //
 
-    formatMessage("MEME", false);
+    formatMessage("MEME", true);
 
     addr.sin_addr.s_addr = inet_addr(HELO_GROUP);
     addr.sin_port = htons(HELO_PORT);

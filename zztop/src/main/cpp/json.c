@@ -59,6 +59,15 @@ char *parseDat(const char json[], const char *path)
                 cpth[ inx-- ] = 0;
             }
 
+            if (inx > 0)
+            {
+                //
+                // Pop trailing bar.
+                //
+                
+                cpth[ inx ] = 0;
+            }
+
             continue;
         }
 
@@ -76,6 +85,8 @@ char *parseDat(const char json[], const char *path)
 
                 free(last);
                 last = NULL;
+
+                printf("######## %s\n", cpth);
             }
 
             continue;
