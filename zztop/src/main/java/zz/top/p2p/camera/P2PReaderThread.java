@@ -33,6 +33,7 @@ public class P2PReaderThread extends Thread
 
         while (session.isConnected)
         {
+            
             byte[] nBuffer = new byte[P2PHeader.HEADER_SIZE];
             int[] nSize = new int[]{nBuffer.length};
 

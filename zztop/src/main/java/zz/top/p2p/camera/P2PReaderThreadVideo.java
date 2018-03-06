@@ -1,7 +1,5 @@
 package zz.top.p2p.camera;
 
-import android.util.Log;
-
 public class P2PReaderThreadVideo extends P2PReaderThread
 {
     private static final String LOGTAG = P2PReaderThreadVideo.class.getSimpleName();
