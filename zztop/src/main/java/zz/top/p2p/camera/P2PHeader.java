@@ -40,16 +40,16 @@ public class P2PHeader
         this.isBigEndian = isBigEndian;
     }
 
-    public static P2PHeader parse(byte[] data, boolean isBigEndian)
+    public static P2PHeader parse(byte[] data, int offset, boolean isBigEndian)
     {
         P2PHeader header = new P2PHeader(isBigEndian);
 
-        header.version = data[0];
-        header.ioType = data[1];
-        header.reserved1 = data[2];
-        header.reserved2 = data[3];
+        header.version = data[offset];
+        header.ioType = data[offset + 1];
+        header.reserved1 = data[offset + 2];
+        header.reserved2 = data[offset + 3];
 
-        header.dataSize = P2PPacker.byteArrayToInt(data, 4, isBigEndian);
+        header.dataSize = P2PPacker.byteArrayToInt(data, offset +4, isBigEndian);
 
         return header;
     }

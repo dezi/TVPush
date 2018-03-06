@@ -179,7 +179,7 @@ public class P2PSession
                 {
                     isConnected = false;
 
-                    onConnectStateChanged(isConnected);
+                    onConnectStateChanged(false);
                 }
             }
         }
@@ -206,8 +206,7 @@ public class P2PSession
                 if (resClose == 0)
                 {
                     isConnected = false;
-
-                    onConnectStateChanged(isConnected);
+                    onConnectStateChanged(false);
                 }
             }
         }

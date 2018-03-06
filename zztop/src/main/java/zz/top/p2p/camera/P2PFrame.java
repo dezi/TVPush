@@ -34,15 +34,15 @@ public class P2PFrame
         this.isByteOrderBig = isBigEndian;
     }
 
-    public static P2PFrame parse(byte[] data, boolean isBigEndian)
+    public static P2PFrame parse(byte[] data, int offset, boolean isBigEndian)
     {
         P2PFrame frame = new P2PFrame(isBigEndian);
 
-        frame.commandType = P2PPacker.byteArrayToShort(data, 0, isBigEndian);
-        frame.commandNumber = P2PPacker.byteArrayToShort(data, 2, isBigEndian);
-        frame.exHeaderSize = P2PPacker.byteArrayToShort(data, 4, isBigEndian);
-        frame.dataSize = P2PPacker.byteArrayToShort(data, 6, isBigEndian);
-        frame.authResult = P2PPacker.byteArrayToInt(data, 8, isBigEndian);
+        frame.commandType = P2PPacker.byteArrayToShort(data, offset, isBigEndian);
+        frame.commandNumber = P2PPacker.byteArrayToShort(data, offset + 2, isBigEndian);
+        frame.exHeaderSize = P2PPacker.byteArrayToShort(data, offset + 4, isBigEndian);
+        frame.dataSize = P2PPacker.byteArrayToShort(data, offset + 6, isBigEndian);
+        frame.authResult = P2PPacker.byteArrayToInt(data, offset + 8, isBigEndian);
 
         return frame;
     }

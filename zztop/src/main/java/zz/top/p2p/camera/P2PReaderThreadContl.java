@@ -18,22 +18,22 @@ public class P2PReaderThreadContl extends P2PReaderThread
     @Override
     public boolean handleData(byte[] data, int size)
     {
-        P2PFrame head = P2PFrame.parse(data, session.isBigEndian);
+        P2PFrame frame = P2PFrame.parse(data, 0, session.isBigEndian);
 
         Log.d(LOGTAG, "handleData:"
-                + " command=" + head.commandType
-                + " seq=" + head.commandNumber
-                + " exsize=" + head.exHeaderSize
-                + " datasize=" + head.dataSize);
+                + " command=" + frame.commandType
+                + " seq=" + frame.commandNumber
+                + " exsize=" + frame.exHeaderSize
+                + " datasize=" + frame.dataSize);
 
-        int dataOffset = P2PFrame.FRAME_SIZE + head.exHeaderSize;
+        int dataOffset = P2PFrame.FRAME_SIZE + frame.exHeaderSize;
         int dataSize = size - dataOffset;
 
-        Log.d(LOGTAG, "handleData: head.authResult=" + head.authResult);
+        Log.d(LOGTAG, "handleData: head.authResult=" + frame.authResult);
 
-        if (head.authResult != 0) return false;
+        if (frame.authResult != 0) return false;
 
-        if ((head.exHeaderSize < 0) || (head.dataSize != dataSize))
+        if ((frame.exHeaderSize < 0) || (frame.dataSize != dataSize))
         {
             Log.d(LOGTAG, "handleData: corrupt...");
 
@@ -44,8 +44,8 @@ public class P2PReaderThreadContl extends P2PReaderThread
             byte[] dataBuffer = new byte[ dataSize ];
             System.arraycopy(data, dataOffset, dataBuffer, 0, dataSize);
 
-            if ((head.commandType == CommandCodes.IPCAM_DEVINFO_RESP)
-             || (head.commandType == CommandCodes.IPCAM_SET_DAYNIGHT_MODE_RESP))
+            if ((frame.commandType == CommandCodes.IPCAM_DEVINFO_RESP)
+             || (frame.commandType == CommandCodes.IPCAM_SET_DAYNIGHT_MODE_RESP))
             {
                 DeviceInfoData deviceInfo = new DeviceInfoData(session, dataBuffer);
                 session.onDeviceInfoReceived(deviceInfo);
@@ -55,8 +55,8 @@ public class P2PReaderThreadContl extends P2PReaderThread
                 return true;
             }
 
-            if ((head.commandType == CommandCodes.IPCAM_SET_RESOLUTION_RESP)
-                || (head.commandType == CommandCodes.IPCAM_GET_RESOLUTION_RESP))
+            if ((frame.commandType == CommandCodes.IPCAM_SET_RESOLUTION_RESP)
+                || (frame.commandType == CommandCodes.IPCAM_GET_RESOLUTION_RESP))
             {
                 ResolutionData resolution = new ResolutionData(session, dataBuffer);
                 session.onResolutionReceived(resolution);
@@ -64,7 +64,7 @@ public class P2PReaderThreadContl extends P2PReaderThread
                 return true;
             }
 
-            Log.d(LOGTAG, "handleData: unhandled commandType=" + head.commandType);
+            Log.d(LOGTAG, "handleData: unhandled commandType=" + frame.commandType);
         }
 
         return true;
