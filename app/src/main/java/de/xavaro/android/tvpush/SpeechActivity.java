@@ -6,8 +6,8 @@ import android.view.Gravity;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import de.xavaro.android.common.BaseActivity;
-import de.xavaro.android.common.Simple;
+import de.xavaro.android.base.BaseActivity;
+import de.xavaro.android.simple.Simple;
 
 public class SpeechActivity extends BaseActivity
 {

@@ -15,7 +15,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-import de.xavaro.android.common.Simple;
+import de.xavaro.android.simple.Simple;
 
 public class SpeechRecognition implements RecognitionListener
 {

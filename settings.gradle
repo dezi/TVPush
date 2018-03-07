@@ -1,1 +1,1 @@
-include ':app', ':zztop'
+include ':app', ':common', ':zztop'

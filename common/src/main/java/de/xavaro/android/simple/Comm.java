@@ -1,4 +1,4 @@
-package de.xavaro.android.common;
+package de.xavaro.android.simple;
 
 import android.content.Context;
 import android.util.Log;

@@ -1,4 +1,4 @@
-package de.xavaro.android.common;
+package de.xavaro.android.base;
 
 import android.annotation.SuppressLint;
 import android.support.annotation.Nullable;
@@ -7,6 +7,8 @@ import android.app.Application;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+
+import de.xavaro.android.simple.Simple;
 
 @SuppressLint("Registered")
 public class BaseApplication extends Application implements Application.ActivityLifecycleCallbacks

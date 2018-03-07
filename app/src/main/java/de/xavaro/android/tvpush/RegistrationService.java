@@ -15,11 +15,11 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketTimeoutException;
 
-import de.xavaro.android.common.Comm;
+import de.xavaro.android.simple.Comm;
 import zz.top.cam.Cameras;
 
-import de.xavaro.android.common.Json;
-import de.xavaro.android.common.Simple;
+import de.xavaro.android.simple.Json;
+import de.xavaro.android.simple.Simple;
 
 public class RegistrationService extends Service
 {

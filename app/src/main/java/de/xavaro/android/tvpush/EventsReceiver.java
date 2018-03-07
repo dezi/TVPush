@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.widget.Toast;
 import android.util.Log;
 
-import de.xavaro.android.common.BaseApplication;
+import de.xavaro.android.base.BaseApplication;
 
 public class EventsReceiver extends BroadcastReceiver
 {

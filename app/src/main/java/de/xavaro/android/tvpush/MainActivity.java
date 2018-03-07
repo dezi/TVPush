@@ -6,7 +6,6 @@ import android.media.MediaFormat;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.graphics.drawable.ColorDrawable;
-import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.widget.FrameLayout;
@@ -26,7 +25,7 @@ import zz.top.cam.Cameras;
 
 import java.nio.ByteBuffer;
 
-import de.xavaro.android.common.Simple;
+import de.xavaro.android.simple.Simple;
 
 public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback
 {

@@ -2,7 +2,7 @@ package de.xavaro.android.tvpush;
 
 import android.os.Handler;
 
-import de.xavaro.android.common.BaseApplication;
+import de.xavaro.android.base.BaseApplication;
 
 public class ApplicationBase extends BaseApplication
 {

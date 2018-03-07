@@ -5,7 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 
-import de.xavaro.android.common.BaseActivity;
+import de.xavaro.android.base.BaseActivity;
 
 public class StartActivity extends BaseActivity
 {
