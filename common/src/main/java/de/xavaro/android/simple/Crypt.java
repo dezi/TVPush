@@ -24,8 +24,6 @@ import javax.crypto.spec.SecretKeySpec;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.crashlytics.android.Crashlytics;
-
 public class Crypt
 {
     /*

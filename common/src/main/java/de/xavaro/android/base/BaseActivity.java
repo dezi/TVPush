@@ -13,8 +13,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import de.xavaro.android.tvpush.SpeechActivity;
-
 @SuppressLint("Registered")
 public class BaseActivity extends AppCompatActivity
 {
@@ -81,9 +79,10 @@ public class BaseActivity extends AppCompatActivity
     {
         if (keyCode == KeyEvent.KEYCODE_SEARCH)
         {
-            if (((BaseApplication) getApplicationContext()).getCurrentActivityClass() != SpeechActivity.class)
+            if (((BaseApplication) getApplicationContext()).getCurrentActivityClass()
+                    != BaseRegistration.speechRecognitionActivity)
             {
-                Intent myIntent = new Intent(this, SpeechActivity.class);
+                Intent myIntent = new Intent(this, BaseRegistration.speechRecognitionActivity);
                 this.startActivity(myIntent);
             }
 

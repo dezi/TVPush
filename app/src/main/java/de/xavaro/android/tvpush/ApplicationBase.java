@@ -3,6 +3,7 @@ package de.xavaro.android.tvpush;
 import android.os.Handler;
 
 import de.xavaro.android.base.BaseApplication;
+import de.xavaro.android.base.BaseRegistration;
 
 public class ApplicationBase extends BaseApplication
 {
@@ -14,6 +15,8 @@ public class ApplicationBase extends BaseApplication
     public void onCreate()
     {
         super.onCreate();
+
+        speechRecognitionActivity = SpeechActivity.class;
 
         //RegistrationService.startService(this);
     }
