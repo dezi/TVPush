@@ -27,19 +27,19 @@ public class P2PLogin
     private static final String urlLogin = urlBase + "/users/login";
     private static final String urlList = urlBase + "/devices/list";
 
-    public String loginEmail;
-    public String loginPass;
-    public int loginUserId;
+    private String loginEmail;
+    private String loginPass;
+    private int loginUserId;
 
-    public JSONObject loginData;
-    public JSONArray listData;
+    private JSONObject loginData;
+    private JSONArray listData;
 
     public P2PLogin(String email)
     {
         loginEmail = email;
     }
 
-    public void login(String password, final Runnable success, final Runnable failure)
+    public void login(String password)
     {
         loginPass = encryptUserPW(password);
 
@@ -71,21 +71,19 @@ public class P2PLogin
                         {
                             Log.d(LOGTAG, "OnRestApiResult: login: success.");
 
-                            if (success != null) success.run();
+                            deviceList();
 
                             return;
                         }
                     }
                 }
 
-                if (failure != null) failure.run();
-
-                Log.d(LOGTAG, "OnRestApiResult: login: failed.");
+                onLoginFailure("OnRestApiResult: login: failed.");
             }
         });
     }
 
-    public void deviceList(final Runnable success, final Runnable failure)
+    public void deviceList()
     {
         int userid = Json.getInt(loginData, "userid");
         String token = Json.getString(loginData, "token");
@@ -98,7 +96,7 @@ public class P2PLogin
 
         if ((userid == 0) || (token == null) || (token_secret == null))
         {
-            failure.run();
+            onLoginFailure("OnRestApiResult: list: no credentials found.");
 
             return;
         }
@@ -139,17 +137,25 @@ public class P2PLogin
 
                         Log.d(LOGTAG, "OnRestApiResult: list: success.");
 
-                        if (success != null) success.run();
+                        onLoginSuccess();
 
                         return;
                     }
                 }
 
-                if (failure != null) failure.run();
-
-                Log.d(LOGTAG, "OnRestApiResult: list: failed.");
+                onLoginFailure("OnRestApiResult: list: failed.");
             }
         });
+    }
+
+    protected void onLoginFailure(String message)
+    {
+        Log.d(LOGTAG, message);
+    }
+
+    protected void onLoginSuccess()
+    {
+        Log.d(LOGTAG, "Login success.");
     }
 
     private void buildCameraDescription(JSONObject rawDevice)
