@@ -79,10 +79,13 @@ public class BaseActivity extends AppCompatActivity
     {
         if (keyCode == KeyEvent.KEYCODE_SEARCH)
         {
-            if (BaseApplication.getCurrentActivityClass(this) != BaseRegistration.speechRecognitionActivityClass)
+            if (BaseRegistration.speechRecognitionActivityClass != null)
             {
-                Intent myIntent = new Intent(this, BaseRegistration.speechRecognitionActivityClass);
-                this.startActivity(myIntent);
+                if (BaseApplication.getCurrentActivityClass(this) != BaseRegistration.speechRecognitionActivityClass)
+                {
+                    Intent myIntent = new Intent(this, BaseRegistration.speechRecognitionActivityClass);
+                    startActivity(myIntent);
+                }
             }
 
             return true;

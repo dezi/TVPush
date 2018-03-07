@@ -158,15 +158,20 @@ public class SpeechRecognitionActivity extends BaseActivity
         }
     }
 
-    private void onResults(Bundle results)
-    {
-        speechText.setTextColor(Color.WHITE);
-        speechText.setText(recognition.getBestResult(results));
-    }
-
     private void onPartialResults(Bundle partialResults)
     {
         speechText.setTextColor(Color.WHITE);
         speechText.setText(recognition.getBestResult(partialResults));
+    }
+
+    private void onResults(Bundle results)
+    {
+        String bestresult = recognition.getBestResult(results);
+
+        if ((bestresult != null) && ! bestresult.isEmpty())
+        {
+            speechText.setTextColor(Color.WHITE);
+            speechText.setText(bestresult);
+        }
     }
 }
