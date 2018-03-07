@@ -3,6 +3,7 @@ package zz.top.p2p.camera;
 import android.support.annotation.Nullable;
 import android.util.Base64;
 
+import java.net.URLEncoder;
 import java.security.Key;
 import java.util.Random;
 
@@ -76,6 +77,22 @@ public class P2PUtil
         }
     }
 
+    public static byte[] getHexStringToBytes(String str)
+    {
+        if (str == null) return null;
+
+        int length = str.length() / 2;
+
+        byte[] data = new byte[length];
+
+        for (int inx = 0; inx < length; inx++)
+        {
+            data[inx] = (byte) Integer.parseInt(str.substring(inx * 2, (inx * 2) + 2), 16);
+        }
+
+        return data;
+    }
+
     public static String getHexBytesToString(byte[] bytes)
     {
         return getHexBytesToString(bytes, 0, bytes.length);
@@ -111,5 +128,18 @@ public class P2PUtil
         }
 
         return String.valueOf(hexChars);
+    }
+
+    private static String urlEncode(String str)
+    {
+        try
+        {
+            return URLEncoder.encode(str, "utf-8");
+        }
+        catch (Exception ignore)
+        {
+        }
+
+        return str;
     }
 }

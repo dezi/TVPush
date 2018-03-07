@@ -1,5 +1,7 @@
 package zz.top.p2p.camera;
 
+import android.support.annotation.Nullable;
+
 import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
@@ -7,8 +9,9 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.net.URLEncoder;
+import java.security.Key;
 
+import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -35,15 +38,10 @@ public class P2PLogin
 
     public void login(String password, final Runnable success, final Runnable failure)
     {
-        //
-        // https://api.eu.xiaoyi.com/v4/users/login?devType=SM-T555&password=4qZE0g6wmupcJ1yxFJZxLQXSRBH1i%2FE7mD8dp4O8ezU%3D&dev_os_version=Android+7.1.1&devName=samsung&seq=1&account=dezi%40kappa-mm.de
-        // https://api.eu.xiaoyi.com/v4/users/login?devType=SM-T555&password=4qZE0g6wmupcJ1yxFJZxLQXSRBH1i%2FE7mD8dp4O8ezU%3D&dev_os_version=Android+7.1.1&devName=samsung&seq=1&account=dezi%40kappa-mm.de
-        //
-
         JSONObject params = new JSONObject();
 
         Json.put(params, "devType", Build.MODEL);
-        Json.put(params, "password", encryptPW(password));
+        Json.put(params, "password", encryptUserPW(password));
         Json.put(params, "dev_os_version", "Android " + Build.VERSION.RELEASE);
         Json.put(params, "devName", Build.BRAND);
         Json.put(params, "seq", 1);
@@ -130,6 +128,21 @@ public class P2PLogin
 
                     if (listData != null)
                     {
+                        for (int inx = 0; inx < listData.length(); inx++)
+                        {
+                            JSONObject device = Json.getObject(listData, inx);
+
+                            String p2p_id = Json.getString(device, "uid");
+                            String p2p_pw = Json.getString(device, "password");
+
+                            p2p_pw = decryptDevicePW(p2p_id, p2p_pw);
+
+                            Json.put(device, "p2p_id", p2p_id);
+                            Json.put(device, "p2p_pw", p2p_pw);
+
+                            Log.d(LOGTAG, "OnRestApiResult: list: p2p_id=" + p2p_id + " p2p_pw=" + p2p_pw);
+                        }
+
                         Log.d(LOGTAG, "OnRestApiResult: list: success.");
 
                         if (success != null) success.run();
@@ -145,34 +158,29 @@ public class P2PLogin
         });
     }
 
-    public void deviceInfo(String uid, final Runnable success, final Runnable failure)
-    {
-
-    }
-
-    //5B7AFB8BC0DDFF7C9DF15D787EF1A9D9
-    //5B7AFB8BC0DDFF7C9DF15D787EF1A9D9
-    //UN75kdC3y0bx3D1
-
-    public JSONObject getLoginData()
-    {
-        return loginData;
-    }
-
-    private static String urlEncode(String str)
+    @Nullable
+    public static String decryptDevicePW(String uid, String pwd)
     {
         try
         {
-            return URLEncoder.encode(str, "utf-8");
+            byte[] key = uid.substring(0,16).getBytes();
+            byte[] data = P2PUtil.getHexStringToBytes(pwd);
+
+            Key secretKeySpec = new SecretKeySpec(key, "AES");
+            Cipher instance = Cipher.getInstance("AES/ECB/NoPadding");
+            instance.init(2, secretKeySpec);
+
+            return new String(instance.doFinal(data));
         }
-        catch (Exception ignore)
+        catch (Exception ex)
         {
+            ex.printStackTrace();
         }
 
-        return str;
+        return null;
     }
 
-    private static String encryptPW(String password)
+    private static String encryptUserPW(String password)
     {
         String key = "KXLiUdAsO81ycDyEJAeETC$KklXdz3AC";
 
