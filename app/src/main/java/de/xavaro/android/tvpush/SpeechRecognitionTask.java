@@ -8,7 +8,6 @@ import android.speech.SpeechRecognizer;
 import android.media.AudioManager;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -17,9 +16,9 @@ import java.util.ArrayList;
 
 import de.xavaro.android.simple.Simple;
 
-public class SpeechRecognition implements RecognitionListener
+public class SpeechRecognitionTask implements RecognitionListener
 {
-    private static final String LOGTAG = SpeechRecognition.class.getSimpleName();
+    private static final String LOGTAG = SpeechRecognitionTask.class.getSimpleName();
 
     private Handler handler = new Handler();
 
@@ -30,7 +29,7 @@ public class SpeechRecognition implements RecognitionListener
     private boolean lockStart;
     private boolean isEnabled;
 
-    public SpeechRecognition(Context context)
+    public SpeechRecognitionTask(Context context)
     {
         this.context = context;
 
@@ -46,6 +45,17 @@ public class SpeechRecognition implements RecognitionListener
         else
         {
             Log.d(LOGTAG, "SpeechRecognizer: no speech.");
+        }
+    }
+
+    public void destroy()
+    {
+        if (recognizer != null)
+        {
+            recognizer.stopListening();
+            recognizer.cancel();
+            recognizer.destroy();
+            recognizer = null;
         }
     }
 
@@ -87,6 +97,7 @@ public class SpeechRecognition implements RecognitionListener
         isEnabled = false;
 
         recognizer.stopListening();
+        recognizer.cancel();
     }
 
     private final Runnable startListeningRunnable = new Runnable()
@@ -191,8 +202,6 @@ public class SpeechRecognition implements RecognitionListener
     public void onPartialResults(Bundle partialResults)
     {
         Log.d(LOGTAG, "onPartialResults:");
-
-        dumpResults(partialResults);
     }
 
     @Override
@@ -206,42 +215,13 @@ public class SpeechRecognition implements RecognitionListener
     {
         Log.d(LOGTAG, "onResults: " + results);
 
-        dumpResults(results);
-
-        String text = getBestResult(results);
-
-        if (text != null)
-        {
-            Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
-
-            if (text.equalsIgnoreCase("mach den ton aus"))
-            {
-                turnBeepOff();
-            }
-
-            if (text.equalsIgnoreCase("mach den ton an"))
-            {
-                turnBeepOn();
-            }
-
-            if (text.equalsIgnoreCase("mach den ton an"))
-            {
-                turnBeepOn();
-            }
-
-            if (text.equalsIgnoreCase("spracherkennung aus"))
-            {
-                stopListening();
-            }
-        }
-
         lockStart = false;
 
         if (isEnabled) startListening();
     }
 
     @Nullable
-    private String getBestResult(Bundle results)
+    public String getBestResult(Bundle results)
     {
         ArrayList<String> text = results.getStringArrayList(android.speech.SpeechRecognizer.RESULTS_RECOGNITION);
         float[] conf = results.getFloatArray(android.speech.SpeechRecognizer.CONFIDENCE_SCORES);
@@ -257,7 +237,7 @@ public class SpeechRecognition implements RecognitionListener
         return null;
     }
 
-    private void dumpResults(Bundle results)
+    public void dumpResults(Bundle results)
     {
         ArrayList<String> text = results.getStringArrayList(android.speech.SpeechRecognizer.RESULTS_RECOGNITION);
         float[] conf = results.getFloatArray(android.speech.SpeechRecognizer.CONFIDENCE_SCORES);
@@ -285,6 +265,8 @@ public class SpeechRecognition implements RecognitionListener
         if (! Simple.isTV())
         {
             AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            if (audioManager == null) return;
+
             audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_MUTE, 0);
         }
     }
@@ -294,6 +276,8 @@ public class SpeechRecognition implements RecognitionListener
         if (! Simple.isTV())
         {
             AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            if (audioManager == null) return;
+
             audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_UNMUTE, 0);
         }
     }

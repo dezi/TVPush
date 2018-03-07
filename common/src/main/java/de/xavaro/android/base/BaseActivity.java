@@ -89,6 +89,8 @@ public class BaseActivity extends AppCompatActivity
             return true;
         }
 
-        return false;
+        Log.d(LOGTAG, "onKeyDown: event=" + event);
+
+        return super.onKeyDown(keyCode, event);
     }
 }

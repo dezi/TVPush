@@ -8,6 +8,8 @@ import android.util.Log;
 
 import de.xavaro.android.base.BaseApplication;
 
+import de.xavaro.android.simple.Dump;
+
 public class EventsReceiver extends BroadcastReceiver
 {
     private static final String LOGTAG = EventsReceiver.class.getSimpleName();
@@ -20,10 +22,12 @@ public class EventsReceiver extends BroadcastReceiver
         {
             if (intent.getAction().equals("android.bluetooth.input.profile.action.MIC_INFO_RECEIVED"))
             {
-                if (((BaseApplication) context.getApplicationContext()).getCurrentActivityClass() != SpeechActivity.class)
+                Dump.dumpIntent(intent);
+
+                if (((BaseApplication) context.getApplicationContext()).getCurrentActivityClass() != SpeechRecognitionActivity.class)
                 {
-                    Intent myIntent = new Intent(context, SpeechActivity.class);
-                    context.startActivity(myIntent);
+                    Intent myIntent = new Intent(context, SpeechRecognitionActivity.class);
+                    //context.startActivity(myIntent);
                 }
 
                 return;

@@ -16,7 +16,7 @@ public class ApplicationBase extends BaseApplication
     {
         super.onCreate();
 
-        BaseRegistration.speechRecognitionActivity = SpeechActivity.class;
+        BaseRegistration.speechRecognitionActivity = SpeechRecognitionActivity.class;
 
         //RegistrationService.startService(this);
     }

@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private FrameLayout topframe;
     private FrameLayout videoView;
 
-    private SpeechRecognition recognition;
+    private SpeechRecognitionTask recognition;
 
     private static final String SAMPLE = Environment.getExternalStorageDirectory() + "/video.mp4";
     private PlayerThread mPlayer = null;
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     {
         if (recognition == null)
         {
-            recognition = new SpeechRecognition(this);
+            recognition = new SpeechRecognitionTask(this);
         }
 
         String text = voiceButton.getText().toString();
