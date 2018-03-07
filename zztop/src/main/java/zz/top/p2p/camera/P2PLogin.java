@@ -178,7 +178,13 @@ public class P2PLogin
         String driver = "yi-p2p";
         String capability = getCapabilities(Json.getString(rawDevice, "model"));
 
-        Log.d(LOGTAG, "buildCameraDescription: p2p_id=" + p2p_id + " p2p_pw=" + p2p_pw);
+        String uuid = P2PUtil.hmacSha1UUID(id, mac);
+
+        Log.d(LOGTAG, "buildCameraDescription:"
+                + " uuid=" + uuid
+                + " p2p_id=" + p2p_id
+                + " p2p_pw=" + p2p_pw
+                + " p2p_pw_len=" + p2p_pw.length());
 
         JSONObject camera = new JSONObject();
 
@@ -191,7 +197,7 @@ public class P2PLogin
         JSONObject network = new JSONObject();
         Json.put(camera, "network", network);
 
-        Json.put(device, "uuid", "????");
+        Json.put(device, "uuid", uuid);
 
         Json.put(device, "id", id);
         Json.put(device, "name", name);
@@ -214,7 +220,7 @@ public class P2PLogin
         Json.put(network, "ssid", ssid);
         Json.put(network, "mac", mac);
 
-        Cameras.addCamera(device);
+        Cameras.addCamera(camera);
     }
 
     private String getModelName(String modelNo)
@@ -264,7 +270,7 @@ public class P2PLogin
             Cipher instance = Cipher.getInstance("AES/ECB/NoPadding");
             instance.init(Cipher.DECRYPT_MODE, secretKeySpec);
 
-            return new String(instance.doFinal(data));
+            return new String(instance.doFinal(data)).substring(0, 15);
         }
         catch (Exception ex)
         {

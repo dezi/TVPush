@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             @Override
             public void run()
             {
-                String name = "Dezi's Domcam #1";
+                String name = "Dezi's Orwell #1 Wohnnzimmer";
 
                 camera = Cameras.createCameraByName(name);
 

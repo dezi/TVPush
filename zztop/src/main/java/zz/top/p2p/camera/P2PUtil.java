@@ -4,8 +4,10 @@ import android.support.annotation.Nullable;
 import android.util.Base64;
 
 import java.net.URLEncoder;
+import java.nio.ByteBuffer;
 import java.security.Key;
 import java.util.Random;
+import java.util.UUID;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -36,6 +38,33 @@ public class P2PUtil
         }
 
         return new String(cArr);
+    }
+
+    @Nullable
+    public static String hmacSha1UUID(String key, String data)
+    {
+        try
+        {
+            Key secretKeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "HmacSHA1");
+            Mac instance = Mac.getInstance("HmacSHA1");
+            instance.init(secretKeySpec);
+
+            byte[] bytes = instance.doFinal(data.getBytes("UTF-8"));
+
+            ByteBuffer bb = ByteBuffer.wrap(bytes,0 , 16);
+
+            long high = bb.getLong();
+            long low = bb.getLong();
+
+            UUID uuid = new UUID(high, low);
+
+            return uuid.toString();
+        }
+        catch (Exception ignore)
+        {
+        }
+
+        return null;
     }
 
     public static String hmacSha1(String key, String data)
