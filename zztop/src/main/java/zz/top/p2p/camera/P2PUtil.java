@@ -24,23 +24,6 @@ public class P2PUtil
                     '4', '5', '6', '7', '8', '9'
             };
 
-    public String getSecretHash(String str)
-    {
-        String b = "KXLiUdAsO81ycDyEJAeETC$KklXdz3AC";
-
-        try
-        {
-            Mac instance = Mac.getInstance("HmacSHA256");
-            instance.init(new SecretKeySpec(b.getBytes("UTF-8"), instance.getAlgorithm()));
-            return new String(Base64.encode(instance.doFinal(str.getBytes()), 2));
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public static String genNonce(int length)
     {
         Random rnd = new Random();

@@ -15,6 +15,7 @@ import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import zz.top.cam.Cameras;
 import zz.top.utl.Json;
 
 public class P2PLogin
@@ -27,6 +28,8 @@ public class P2PLogin
     private static final String urlList = urlBase + "/devices/list";
 
     public String loginEmail;
+    public String loginPass;
+    public int loginUserId;
 
     public JSONObject loginData;
     public JSONArray listData;
@@ -38,10 +41,12 @@ public class P2PLogin
 
     public void login(String password, final Runnable success, final Runnable failure)
     {
+        loginPass = encryptUserPW(password);
+
         JSONObject params = new JSONObject();
 
         Json.put(params, "devType", Build.MODEL);
-        Json.put(params, "password", encryptUserPW(password));
+        Json.put(params, "password", loginPass);
         Json.put(params, "dev_os_version", "Android " + Build.VERSION.RELEASE);
         Json.put(params, "devName", Build.BRAND);
         Json.put(params, "seq", 1);
@@ -52,7 +57,7 @@ public class P2PLogin
             @Override
             public void OnRestApiResult(String what, JSONObject params, JSONObject result)
             {
-                //Log.d(LOGTAG, "OnRestApiResult: login: " + Json.toPretty(result));
+                Log.d(LOGTAG, "OnRestApiResult: login: " + Json.toPretty(result));
 
                 if (Json.equals(result, "code", "20000"))
                 {
@@ -60,11 +65,16 @@ public class P2PLogin
 
                     if (loginData != null)
                     {
-                        Log.d(LOGTAG, "OnRestApiResult: login: success.");
+                        loginUserId = Json.getInt(loginData, "userid");
 
-                        if (success != null) success.run();
+                        if (loginUserId > 0)
+                        {
+                            Log.d(LOGTAG, "OnRestApiResult: login: success.");
 
-                        return;
+                            if (success != null) success.run();
+
+                            return;
+                        }
                     }
                 }
 
@@ -112,7 +122,7 @@ public class P2PLogin
             @Override
             public void OnRestApiResult(String what, JSONObject params, JSONObject result)
             {
-                //Log.d(LOGTAG, "OnRestApiResult: list: " + Json.toPretty(result));
+                Log.d(LOGTAG, "OnRestApiResult: list: " + Json.toPretty(result));
 
                 if (Json.equals(result, "code", "20000"))
                 {
@@ -124,15 +134,7 @@ public class P2PLogin
                         {
                             JSONObject device = Json.getObject(listData, inx);
 
-                            String p2p_id = Json.getString(device, "uid");
-                            String p2p_pw = Json.getString(device, "password");
-
-                            p2p_pw = decryptDevicePW(p2p_id, p2p_pw);
-
-                            Json.put(device, "p2p_id", p2p_id);
-                            Json.put(device, "p2p_pw", p2p_pw);
-
-                            Log.d(LOGTAG, "OnRestApiResult: list: p2p_id=" + p2p_id + " p2p_pw=" + p2p_pw);
+                            buildCameraDescription(device);
                         }
 
                         Log.d(LOGTAG, "OnRestApiResult: list: success.");
@@ -150,8 +152,108 @@ public class P2PLogin
         });
     }
 
+    private void buildCameraDescription(JSONObject rawDevice)
+    {
+        JSONObject rawipcParam = Json.getObject(rawDevice, "ipcParam");
+
+        String id = Json.getString(rawDevice, "uid");
+        String name = Json.getString(rawDevice, "name");
+        String nick = Json.getString(rawDevice, "nickname");
+        String model = getModelName(Json.getString(rawDevice, "model"));
+        String version = getModelName(Json.getString(rawDevice, "type"));
+
+        String p2p_id = Json.getString(rawDevice, "uid");
+        String p2p_pw = decryptDevicePW(id, Json.getString(rawDevice, "password"));
+        boolean p2p_en = Json.equals(rawipcParam, "p2p_encrypt", "true");
+
+        int cloud_id = loginUserId;
+        String cloud_em = loginEmail;
+        String cloud_pw = loginPass;
+
+        String ip = Json.getString(rawipcParam, "ip");
+        String ssid = Json.getString(rawipcParam, "ssid");
+        String mac = Json.getString(rawipcParam, "mac");
+
+        String category = "camera";
+        String driver = "yi-p2p";
+        String capability = getCapabilities(Json.getString(rawDevice, "model"));
+
+        Log.d(LOGTAG, "buildCameraDescription: p2p_id=" + p2p_id + " p2p_pw=" + p2p_pw);
+
+        JSONObject camera = new JSONObject();
+
+        JSONObject device = new JSONObject();
+        Json.put(camera, "device", device);
+
+        JSONObject credentials = new JSONObject();
+        Json.put(camera, "credentials", credentials);
+
+        JSONObject network = new JSONObject();
+        Json.put(camera, "network", network);
+
+        Json.put(device, "uuid", "????");
+
+        Json.put(device, "id", id);
+        Json.put(device, "name", name);
+        Json.put(device, "nick", nick);
+        Json.put(device, "model", model);
+        Json.put(device, "version", version);
+        Json.put(device, "category", category);
+        Json.put(device, "capability", capability);
+        Json.put(device, "driver", driver);
+
+        Json.put(credentials, "p2p_id", p2p_id);
+        Json.put(credentials, "p2p_pw", p2p_pw);
+        Json.put(credentials, "p2p_en", p2p_en);
+
+        Json.put(credentials, "cloud_id", cloud_id);
+        Json.put(credentials, "cloud_em", cloud_em);
+        Json.put(credentials, "cloud_pw", cloud_pw);
+
+        Json.put(network, "ip", ip);
+        Json.put(network, "ssid", ssid);
+        Json.put(network, "mac", mac);
+
+        Cameras.addCamera(device);
+    }
+
+    private String getModelName(String modelNo)
+    {
+        // @formatter:off
+
+        if ( "2".equals(modelNo)) return "YI Home Kamera 1080P (H21)";
+        if ( "3".equals(modelNo)) return "YI Dome Kamera (H19)";
+        if ( "4".equals(modelNo)) return "YI Home Kamera (M10/MIJIA)";
+        if ( "5".equals(modelNo)) return "YI Dome Kamera 1080p (H20)";
+        if ( "6".equals(modelNo)) return "YI Home Kamera 1080P (Y20)";
+        if ( "7".equals(modelNo)) return "YI Außenkamera 1080p (H30)";
+        if ( "9".equals(modelNo)) return "YI Home Kamera Cloud Edition (Y10)";
+        if ("14".equals(modelNo)) return "YI Home Kamera (Y19)";
+
+        // @formatter:on
+
+        return "YI Home Kamera (V1/" + modelNo + ")";
+    }
+    private String getCapabilities(String modelNo)
+    {
+        // @formatter:off
+
+        if ( "2".equals(modelNo)) return "camera|hd|speaker|mic|1080p|";
+        if ( "3".equals(modelNo)) return "camera|hd|speaker|mic|720p|pan|tilt";
+        if ( "4".equals(modelNo)) return "camera|hd|speaker|mic|720p";
+        if ( "5".equals(modelNo)) return "camera|hd|speaker|mic|1080p|pan|tilt";
+        if ( "6".equals(modelNo)) return "camera|hd|speaker|mic|1080p";
+        if ( "7".equals(modelNo)) return "camera|hd|speaker|mic|1080p";
+        if ( "9".equals(modelNo)) return "camera|hd|speaker|mic|720p";
+        if ("14".equals(modelNo)) return "camera|hd|speaker|mic|720p";
+
+        // @formatter:on
+
+        return "YI Home Kamera (V1/" + modelNo + ")";
+    }
+
     @Nullable
-    public static String decryptDevicePW(String uid, String pwd)
+    private String decryptDevicePW(String uid, String pwd)
     {
         try
         {
@@ -173,7 +275,7 @@ public class P2PLogin
     }
 
     @Nullable
-    private static String encryptUserPW(String password)
+    private String encryptUserPW(String password)
     {
         String key = "KXLiUdAsO81ycDyEJAeETC$KklXdz3AC";
 
@@ -181,6 +283,7 @@ public class P2PLogin
         {
             Mac instance = Mac.getInstance("HmacSHA256");
             instance.init(new SecretKeySpec(key.getBytes("UTF-8"), instance.getAlgorithm()));
+
             return new String(Base64.encode(instance.doFinal(password.getBytes()), 2));
         }
         catch (Exception ex)
