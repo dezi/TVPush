@@ -1,11 +1,11 @@
 package de.xavaro.android.base;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.support.annotation.Nullable;
 
 import android.app.Application;
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -28,6 +28,8 @@ public class BaseApplication extends Application implements Application.Activity
         registerActivityLifecycleCallbacks(this);
 
         Simple.checkFeatures(this);
+
+        Log.d(LOGTAG, "onCreate: model=" + Simple.getDeviceModelName());
     }
 
     @Override

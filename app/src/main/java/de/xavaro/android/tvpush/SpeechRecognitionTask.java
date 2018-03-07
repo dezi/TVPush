@@ -161,6 +161,12 @@ public class SpeechRecognitionTask implements RecognitionListener
 
             case SpeechRecognizer.ERROR_NETWORK:
                 message = "Network error";
+
+                if (Simple.getDeviceModelName().startsWith("SONY"))
+                {
+                    onPleaseActivate();
+                }
+
                 break;
 
             case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
@@ -195,6 +201,11 @@ public class SpeechRecognitionTask implements RecognitionListener
             handler.removeCallbacks(startListeningRunnable);
             handler.postDelayed(startListeningRunnable, millis);
         }
+    }
+
+    public void onPleaseActivate()
+    {
+        Log.d(LOGTAG, "onPleaseActivate:");
     }
 
     @Override

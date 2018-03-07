@@ -8,6 +8,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.graphics.drawable.GradientDrawable;
 import android.media.AudioManager;
+import android.os.Build;
 import android.provider.Settings;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -145,6 +146,19 @@ public class Simple
     public static String getDeviceUserName(Context context)
     {
         return Settings.Secure.getString(context.getContentResolver(), "bluetooth_name");
+    }
+
+    public static String getDeviceModelName()
+    {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+
+        if (model.startsWith(manufacturer))
+        {
+            return model.toUpperCase();
+        }
+
+        return manufacturer.toUpperCase() + " " + model.toUpperCase();
     }
 
     public static String getFCMToken()

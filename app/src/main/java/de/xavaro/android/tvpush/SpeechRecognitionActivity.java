@@ -16,6 +16,7 @@ public class SpeechRecognitionActivity extends BaseActivity
 
     private SpeechRecognitionTask recognition;
     private TextView speechText;
+    private boolean hadResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -38,7 +39,7 @@ public class SpeechRecognitionActivity extends BaseActivity
 
         speechText = new TextView(this);
         speechText.setTextColor(Color.WHITE);
-        Simple.setTextSizeDip(speechText, 36);
+        Simple.setTextSizeDip(speechText, 30);
         Simple.setPaddingDip(speechText, Simple.PADDING_SMALL);
 
         center.addView(speechText);
@@ -53,6 +54,22 @@ public class SpeechRecognitionActivity extends BaseActivity
 
         recognition = new SpeechRecognitionTask(this)
         {
+            @Override
+            public void onPleaseActivate()
+            {
+                super.onPleaseActivate();
+
+                SpeechRecognitionActivity.this.onPleaseActivate();
+            }
+
+            @Override
+            public void onReadyForSpeech(Bundle params)
+            {
+                super.onReadyForSpeech(params);
+
+                SpeechRecognitionActivity.this.onReadyForSpeech(params);
+            }
+
             @Override
             public void onResults(Bundle results)
             {
@@ -101,13 +118,30 @@ public class SpeechRecognitionActivity extends BaseActivity
         }
     }
 
+    private void onPleaseActivate()
+    {
+        speechText.setTextColor(Color.GRAY);
+        speechText.setText("Bitte drücken Sie die Mikrofon-Taste auf der Fernbedienung.");
+    }
+
+    private void onReadyForSpeech(Bundle params)
+    {
+        if (! hadResult)
+        {
+            speechText.setTextColor(Color.GRAY);
+            speechText.setText("Bitte sprechen Sie jetzt.");
+        }
+    }
+
     private void onResults(Bundle results)
     {
+        speechText.setTextColor(Color.WHITE);
         speechText.setText(recognition.getBestResult(results));
     }
 
     private void onPartialResults(Bundle partialResults)
     {
+        speechText.setTextColor(Color.WHITE);
         speechText.setText(recognition.getBestResult(partialResults));
     }
 }
