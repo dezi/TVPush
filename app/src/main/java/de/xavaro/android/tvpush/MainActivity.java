@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
                     camera.setResolution(Camera.RESOLUTION_720P);
 
-                    //camera.startRealtimeVideo();
+                    camera.startRealtimeVideo();
                     //camera.startRealtimeAudio();
                     //camera.startFaceDetection(true);
                 }

@@ -1,5 +1,6 @@
 package zz.top.p2p.camera;
 
+import android.support.annotation.Nullable;
 import android.util.Base64;
 
 import java.security.Key;
@@ -59,7 +60,7 @@ public class P2PUtil
         return hmacSha1.length() > 15 ? hmacSha1.substring(0, 15) : hmacSha1;
     }
 
-    private static String hmacSha1(String key, String data)
+    public static String hmacSha1(String key, String data)
     {
         try
         {
@@ -67,7 +68,7 @@ public class P2PUtil
             Mac instance = Mac.getInstance("HmacSHA1");
             instance.init(secretKeySpec);
 
-            return new String(Base64.encode(instance.doFinal(data.getBytes("UTF-8")), 0));
+            return new String(Base64.encode(instance.doFinal(data.getBytes("UTF-8")), 2));
         }
         catch (Exception e)
         {

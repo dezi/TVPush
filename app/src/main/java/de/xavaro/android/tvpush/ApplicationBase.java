@@ -20,8 +20,57 @@ public class ApplicationBase extends BaseApplication
 
         BaseRegistration.speechRecognitionActivityClass = SpeechRecognitionActivity.class;
 
-        P2PLogin.login("dezi@kappa-mm.de", "blabla1234!");
+        p2pAppLogin("dezi@kappa-mm.de", "blabla1234!");
 
-        //RegistrationService.startService(this);
+        RegistrationService.startService(this);
+    }
+
+    public P2PLogin p2plogin;
+
+    private void p2pAppLogin(String email, String password)
+    {
+        p2plogin = new P2PLogin(email);
+
+        p2plogin.login(password,
+                new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        Log.d(LOGTAG, "onCreate: p2plogin success.");
+
+                        p2pAppDeviceList();
+                    }
+                },
+                new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        Log.d(LOGTAG, "onCreate: p2plogin failed.");
+                    }
+                });
+    }
+
+    private void p2pAppDeviceList()
+    {
+        p2plogin.deviceList(
+                new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        Log.d(LOGTAG, "onCreate: p2plist success.");
+                    }
+                },
+                new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        Log.d(LOGTAG, "onCreate: p2plist failed.");
+                    }
+                }
+        );
     }
 }
