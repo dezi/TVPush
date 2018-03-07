@@ -1,33 +1,20 @@
 package de.xavaro.android.tvpush;
 
-import android.app.Application;
 import android.os.Handler;
-import android.util.Log;
 
-import de.xavaro.android.common.Simple;
+import de.xavaro.android.common.AppBase;
 
-public class ApplicationBase extends Application
+public class ApplicationBase extends AppBase
 {
     private static final String LOGTAG = ApplicationBase.class.getSimpleName();
 
     public static final Handler handler = new Handler();
 
-    static
-    {
-    }
-
     @Override
     public void onCreate()
     {
-        Log.d(LOGTAG, "onCreate...");
-
         super.onCreate();
 
-        Log.d(LOGTAG, "onCreate: devicename=" + Simple.getDeviceUserName(this));
-        Log.d(LOGTAG, "onCreate: fcmtoken=" + Simple.getFCMToken());
-
-        Simple.checkFeatures(this);
-
-        RegistrationService.startService(this);
+        //RegistrationService.startService(this);
     }
 }

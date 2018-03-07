@@ -5,16 +5,44 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.Context;
+import android.graphics.Point;
+import android.graphics.drawable.GradientDrawable;
 import android.provider.Settings;
-import android.util.DisplayMetrics;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.TypedValue;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
 public class Simple
 {
+    //region Basic defines.
+
+    // @formatter:off
+
+    public static final int MP = ViewGroup.LayoutParams.MATCH_PARENT;
+    public static final int WC = ViewGroup.LayoutParams.WRAP_CONTENT;
+
+    public static final int PADDING_ZERO     = Simple.isTablet() ?  0 :  0;
+    public static final int PADDING_TINY     = Simple.isTablet() ?  4 :  2;
+    public static final int PADDING_SMALL    = Simple.isTablet() ?  8 :  4;
+    public static final int PADDING_MEDIUM   = Simple.isTablet() ? 16 : 12;
+    public static final int PADDING_NORMAL   = Simple.isTablet() ? 24 : 18;
+    public static final int PADDING_LARGE    = Simple.isTablet() ? 32 : 26;
+    public static final int PADDING_XLARGE   = Simple.isTablet() ? 40 : 30;
+
+    public static final int ROUNDED_SMALL    = Simple.isTablet() ?  8 :  4;
+    public static final int ROUNDED_MEDIUM   = Simple.isTablet() ? 16 : 12;
+
+    // @formatter:on
+
+    //endregion Basic defines.
+
     //region Device features.
 
     private static boolean istv;
@@ -22,9 +50,6 @@ public class Simple
     private static boolean istablet;
     private static boolean iswidescreen;
     private static boolean isspeech;
-
-    public static final int MP = ViewGroup.LayoutParams.MATCH_PARENT;
-    public static final int WC = ViewGroup.LayoutParams.WRAP_CONTENT;
 
     public static void checkFeatures(Context context)
     {
@@ -65,7 +90,7 @@ public class Simple
         return iswidescreen;
     }
 
-    public static boolean isIsspeech()
+    public static boolean isSpeech()
     {
         return isspeech;
     }
@@ -80,20 +105,41 @@ public class Simple
         return (netInfo != null) && netInfo.isConnectedOrConnecting();
     }
 
-
     public static int getDeviceWidth(Context context)
     {
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return metrics.widthPixels;
+        WindowManager wm = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE));
+        if (wm == null) return 0;
+
+        Point size = new Point();
+        wm.getDefaultDisplay().getSize(size);
+
+        return size.x;
     }
 
     public static int getDeviceHeight(Context context)
     {
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return metrics.heightPixels;
+        WindowManager wm = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE));
+        if (wm == null) return 0;
+
+        Point size = new Point();
+        wm.getDefaultDisplay().getSize(size);
+
+        return size.y;
     }
 
-    //endregion
+    public static int dipToPx(int dp)
+    {
+        return Math.round(dp * Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    public static int pxToDip(int px)
+    {
+        return Math.round(px / Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    //endregion Device features.
+
+    //region Simple getters.
 
     public static String getDeviceUserName(Context context)
     {
@@ -105,20 +151,90 @@ public class Simple
         return FirebaseInstanceId.getInstance().getToken();
     }
 
-    public static String getHexBytesToString(byte[] bytes, int offset, int length)
-    {
-        char[] hexArray = "0123456789ABCDEF".toCharArray();
-        char[] hexChars = new char[ length << 1 ];
+    //endregion Simple getters.
 
-        for (int inx = offset; inx < (length + offset); inx++)
+    //region View manipulation.
+
+    public static void setSizeNODip(View view, int width, int height)
+    {
+        if (view.getLayoutParams() == null)
         {
-            //noinspection PointlessArithmeticExpression
-            hexChars[ ((inx - offset) << 1) + 0 ] = hexArray[ (bytes[ inx ] >> 4) & 0x0f ];
-            //noinspection PointlessBitwiseExpression
-            hexChars[ ((inx - offset) << 1) + 1 ] = hexArray[ (bytes[ inx ] >> 0) & 0x0f ];
+            view.setLayoutParams(new ViewGroup.MarginLayoutParams(WC, WC));
         }
 
-        return String.valueOf(hexChars);
+        view.getLayoutParams().width = width;
+        view.getLayoutParams().height = height;
     }
 
+    public static void setSizeDip(View view, int width, int height)
+    {
+        if (view.getLayoutParams() == null)
+        {
+            view.setLayoutParams(new ViewGroup.MarginLayoutParams(WC, WC));
+        }
+
+        view.getLayoutParams().width = width > 0 ? dipToPx(width) : width;
+        view.getLayoutParams().height = height > 0 ? dipToPx(height) : height;
+    }
+
+    public static void setTextSizeDip(TextView textView, int size)
+    {
+        float real = size / textView.getContext().getResources().getConfiguration().fontScale;
+
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, real);
+    }
+
+    public static void setPaddingDip(View view, int pad)
+    {
+        view.setPadding(dipToPx(pad), dipToPx(pad), dipToPx(pad), dipToPx(pad));
+    }
+
+    public static void setPaddingDip(View view, int left, int top, int right, int bottom)
+    {
+        view.setPadding(dipToPx(left), dipToPx(top), dipToPx(right), dipToPx(bottom));
+    }
+
+    public static void setMarginDip(View view, int margin)
+    {
+        if (view.getLayoutParams() == null)
+            view.setLayoutParams(new LinearLayout.LayoutParams(WC, WC));
+
+        ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).leftMargin = dipToPx(margin);
+        ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).topMargin = dipToPx(margin);
+        ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).rightMargin = dipToPx(margin);
+        ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).bottomMargin = dipToPx(margin);
+    }
+
+    public static void setMarginDip(View view, int left, int top, int right, int bottom)
+    {
+        if (view.getLayoutParams() == null)
+            view.setLayoutParams(new LinearLayout.LayoutParams(WC, WC));
+
+        ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).leftMargin = dipToPx(left);
+        ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).topMargin = dipToPx(top);
+        ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).rightMargin = dipToPx(right);
+        ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).bottomMargin = dipToPx(bottom);
+    }
+
+    public static void setRoundedCorners(View view, int radiusdip, int color)
+    {
+        setRoundedCorners(view, radiusdip, color, color);
+    }
+
+    public static void setRoundedCorners(View view, int radiusdip, int innerColor, int strokeColor)
+    {
+        GradientDrawable shape = new GradientDrawable();
+        shape.setCornerRadius(dipToPx(radiusdip));
+
+        shape.setColor(innerColor);
+
+        if (innerColor != strokeColor)
+        {
+            shape.setStroke(dipToPx(2), strokeColor);
+        }
+
+        view.setBackground(shape);
+    }
+
+    //enregion View manipulation.
 }

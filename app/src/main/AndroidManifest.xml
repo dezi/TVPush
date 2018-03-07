@@ -7,16 +7,13 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission
         android:name="android.permission.ACCESS_COARSE_LOCATION"
         android:required="true"/>
     <uses-permission
         android:name="android.permission.ACCESS_WIFI_STATE"
-        android:required="true"/>
-    <uses-permission
-        android:name="android.permission.CHANGE_WIFI_STATE"
         android:required="true"/>
 
     <uses-feature
@@ -34,29 +31,40 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <receiver android:name=".AutoStartReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
 
-        <activity android:name=".DecodeActivity"
-                  android:theme="@style/Theme.FloatingWindow.Popup">
+        <activity android:name=".StartActivity"
+                  android:theme="@style/DeziTheme.Transparent.Activity">
+        </activity>
+
+        <activity android:name=".SpeechActivity"
+                  android:theme="@style/DeziTheme.Transparent.Activity"
+                  android:launchMode="singleTask">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER"/>
+            </intent-filter>
+
         </activity>
 
         <activity
+            android:name=".DecodeActivity"
+            android:theme="@style/Theme.FloatingWindow.Popup">
+        </activity>
+        <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.FloatingWindow.Popup">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LEANBACK_LAUNCHER"/>
-            </intent-filter>
         </activity>
 
         <service
@@ -66,7 +74,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
-
         <service
             android:name=".FirebaseTokenRefreshService"
             android:exported="false">
@@ -74,12 +81,25 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
-
         <service
             android:name=".RegistrationService"
             android:enabled="true"
             android:exported="false">
         </service>
+
+        <receiver
+            android:name=".EventsReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="-2">
+                <action android:name="com.sony.dtv.sonyselect.action.launchapp"/>
+                <action android:name="com.sony.dtv.picturemodecontrol.intent.action.CHANGE_INPUT_TYPE"/>
+                <action android:name="com.sony.dtv.tvplayer.intent.action.INPUT_CHANGED"/>
+                <action android:name="com.sony.dtv.scrums.action.intent.action.ACTIVITY_STATUS_CHANGED"/>
+                <action android:name="com.sony.dtv.tvinput.datamgr.programs"/>
+                <action android:name="android.bluetooth.input.profile.action.MIC_INFO_RECEIVED"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 

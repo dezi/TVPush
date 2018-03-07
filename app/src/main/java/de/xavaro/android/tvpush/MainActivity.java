@@ -6,6 +6,7 @@ import android.media.MediaFormat;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.graphics.drawable.ColorDrawable;
+import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.widget.FrameLayout;
@@ -139,10 +140,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
                     camera.setResolution(Camera.RESOLUTION_720P);
 
-                    camera.startRealtimeVideo();
+                    //camera.startRealtimeVideo();
                     //camera.startRealtimeAudio();
-
-                    camera.startFaceDetection(true);
+                    //camera.startFaceDetection(true);
                 }
             }
 
@@ -171,15 +171,35 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     @Override
+    public void onStart()
+    {
+        super.onStart();
+
+        Log.d(LOGTAG, "onStart:");
+    }
+
+    @Override
     public void onResume()
     {
         super.onResume();
+
+        Log.d(LOGTAG, "onResume:");
     }
 
     @Override
     public void onPause()
     {
         super.onPause();
+
+        Log.d(LOGTAG, "onPause:");
+    }
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+
+        Log.d(LOGTAG, "onStop:");
     }
 
     @Override

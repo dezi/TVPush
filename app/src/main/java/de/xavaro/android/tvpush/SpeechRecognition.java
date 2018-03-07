@@ -34,7 +34,7 @@ public class SpeechRecognition implements RecognitionListener
     {
         this.context = context;
 
-        if (Simple.isIsspeech())
+        if (Simple.isSpeech())
         {
             Log.d(LOGTAG, "SpeechRecognizer: init.");
 
