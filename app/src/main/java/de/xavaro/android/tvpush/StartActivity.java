@@ -5,9 +5,9 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 
-import de.xavaro.android.common.ActBase;
+import de.xavaro.android.common.BaseActivity;
 
-public class StartActivity extends ActBase
+public class StartActivity extends BaseActivity
 {
     private final static String LOGTAG = StartActivity.class.getSimpleName();
 

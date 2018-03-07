@@ -2,9 +2,9 @@ package de.xavaro.android.tvpush;
 
 import android.os.Handler;
 
-import de.xavaro.android.common.AppBase;
+import de.xavaro.android.common.BaseApplication;
 
-public class ApplicationBase extends AppBase
+public class ApplicationBase extends BaseApplication
 {
     private static final String LOGTAG = ApplicationBase.class.getSimpleName();
 

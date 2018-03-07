@@ -2,7 +2,6 @@ package de.xavaro.android.common;
 
 import android.annotation.SuppressLint;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.PixelFormat;
@@ -10,16 +9,16 @@ import android.graphics.Color;
 import android.widget.FrameLayout;
 import android.view.WindowManager;
 import android.view.KeyEvent;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import de.xavaro.android.tvpush.SpeechActivity;
 
 @SuppressLint("Registered")
-public class ActBase extends AppCompatActivity
+public class BaseActivity extends AppCompatActivity
 {
-    private final static String LOGTAG = ActBase.class.getSimpleName();
+    private final static String LOGTAG = BaseActivity.class.getSimpleName();
 
     public FrameLayout topframe;
 
@@ -80,11 +79,9 @@ public class ActBase extends AppCompatActivity
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
-        Log.d(LOGTAG, "onKeyDown: keyCode=" + keyCode + " event=" + event);
-
         if (keyCode == KeyEvent.KEYCODE_SEARCH)
         {
-            if (((AppBase) getApplicationContext()).getCurrentActivityClass() != SpeechActivity.class)
+            if (((BaseApplication) getApplicationContext()).getCurrentActivityClass() != SpeechActivity.class)
             {
                 Intent myIntent = new Intent(this, SpeechActivity.class);
                 this.startActivity(myIntent);

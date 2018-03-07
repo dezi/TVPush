@@ -6,10 +6,10 @@ import android.view.Gravity;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import de.xavaro.android.common.ActBase;
+import de.xavaro.android.common.BaseActivity;
 import de.xavaro.android.common.Simple;
 
-public class SpeechActivity extends ActBase
+public class SpeechActivity extends BaseActivity
 {
     private final static String LOGTAG = SpeechActivity.class.getSimpleName();
 

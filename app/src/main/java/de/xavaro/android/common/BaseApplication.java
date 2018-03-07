@@ -1,19 +1,19 @@
 package de.xavaro.android.common;
 
 import android.annotation.SuppressLint;
-
-import android.app.Activity;
-import android.app.Application;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
+
+import android.app.Application;
+import android.app.Activity;
+import android.os.Bundle;
 import android.util.Log;
 
 @SuppressLint("Registered")
-public class AppBase extends Application implements Application.ActivityLifecycleCallbacks
+public class BaseApplication extends Application implements Application.ActivityLifecycleCallbacks
 {
-    private static final String LOGTAG = AppBase.class.getSimpleName();
+    private static final String LOGTAG = BaseApplication.class.getSimpleName();
 
-    private Class currentActivity;
+    private Activity currentActivity;
 
     @Override
     public void onCreate()
@@ -45,17 +45,17 @@ public class AppBase extends Application implements Application.ActivityLifecycl
     @Override
     public void onActivityResumed(Activity activity)
     {
-        currentActivity = activity.getClass();
+        currentActivity = activity;
 
-        Log.d(LOGTAG, "onActivityResumed: activity=" + currentActivity.getSimpleName());
+        Log.d(LOGTAG, "onActivityResumed: activity=" + currentActivity.getClass().getSimpleName());
     }
 
     @Override
     public void onActivityPaused(Activity activity)
     {
-        if (currentActivity == activity.getClass())
+        if (currentActivity == activity)
         {
-            Log.d(LOGTAG, "onActivityPaused: activity=" + currentActivity.getSimpleName());
+            Log.d(LOGTAG, "onActivityPaused: activity=" + currentActivity.getClass().getSimpleName());
 
             currentActivity = null;
         }
@@ -72,8 +72,14 @@ public class AppBase extends Application implements Application.ActivityLifecycl
     }
 
     @Nullable
-    public Class getCurrentActivityClass()
+    public Activity getCurrentActivity()
     {
         return currentActivity;
+    }
+
+    @Nullable
+    public Class getCurrentActivityClass()
+    {
+        return (currentActivity != null) ? currentActivity.getClass() : null;
     }
 }

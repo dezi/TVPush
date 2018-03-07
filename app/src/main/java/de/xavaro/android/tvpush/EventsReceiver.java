@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.widget.Toast;
 import android.util.Log;
 
-import de.xavaro.android.common.AppBase;
+import de.xavaro.android.common.BaseApplication;
 
 public class EventsReceiver extends BroadcastReceiver
 {
@@ -20,7 +20,7 @@ public class EventsReceiver extends BroadcastReceiver
         {
             if (intent.getAction().equals("android.bluetooth.input.profile.action.MIC_INFO_RECEIVED"))
             {
-                if (((AppBase) context.getApplicationContext()).getCurrentActivityClass() != SpeechActivity.class)
+                if (((BaseApplication) context.getApplicationContext()).getCurrentActivityClass() != SpeechActivity.class)
                 {
                     Intent myIntent = new Intent(context, SpeechActivity.class);
                     context.startActivity(myIntent);
