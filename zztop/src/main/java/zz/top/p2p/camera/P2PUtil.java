@@ -55,12 +55,6 @@ public class P2PUtil
         return new String(cArr);
     }
 
-    public static String getPassword(String key, String data)
-    {
-        String hmacSha1 = hmacSha1(key, "user=xiaoyiuser&nonce=" + data);
-        return hmacSha1.length() > 15 ? hmacSha1.substring(0, 15) : hmacSha1;
-    }
-
     public static String hmacSha1(String key, String data)
     {
         try
@@ -71,7 +65,7 @@ public class P2PUtil
 
             return new String(Base64.encode(instance.doFinal(data.getBytes("UTF-8")), 2));
         }
-        catch (Exception e)
+        catch (Exception ignore)
         {
             return "";
         }

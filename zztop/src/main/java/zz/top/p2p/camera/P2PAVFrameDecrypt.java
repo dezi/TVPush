@@ -52,7 +52,7 @@ public class P2PAVFrameDecrypt
             Key secretKeySpec = new SecretKeySpec(password.getBytes("ASCII"), "AES");
 
             Cipher instance = Cipher.getInstance("AES/ECB/NoPadding");
-            instance.init(2, secretKeySpec);
+            instance.init(Cipher.DECRYPT_MODE, secretKeySpec);
 
             return instance;
         }

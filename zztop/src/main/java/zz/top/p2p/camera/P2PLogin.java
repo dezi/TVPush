@@ -52,7 +52,7 @@ public class P2PLogin
             @Override
             public void OnRestApiResult(String what, JSONObject params, JSONObject result)
             {
-                Log.d(LOGTAG, "OnRestApiResult: login: " + Json.toPretty(result));
+                //Log.d(LOGTAG, "OnRestApiResult: login: " + Json.toPretty(result));
 
                 if (Json.equals(result, "code", "20000"))
                 {
@@ -77,14 +77,6 @@ public class P2PLogin
 
     public void deviceList(final Runnable success, final Runnable failure)
     {
-        //
-        // https://api.eu.xiaoyi.com/v4/devices/list?userid=310145&seq=1&hmac=83EhSkvYGsp4Q%2FzQMzCsF6ofDdE%3D
-        //
-
-        // data:seq=1&userid=310145
-        // key:aa7d0009fa293b702d59cf31ecd55216&e84be9bbce0405d55acc3e8bd9c609af
-        // result:83EhSkvYGsp4Q/zQMzCsF6ofDdE=
-
         int userid = Json.getInt(loginData, "userid");
         String token = Json.getString(loginData, "token");
         String token_secret = Json.getString(loginData, "token_secret");
@@ -120,7 +112,7 @@ public class P2PLogin
             @Override
             public void OnRestApiResult(String what, JSONObject params, JSONObject result)
             {
-                Log.d(LOGTAG, "OnRestApiResult: list: " + Json.toPretty(result));
+                //Log.d(LOGTAG, "OnRestApiResult: list: " + Json.toPretty(result));
 
                 if (Json.equals(result, "code", "20000"))
                 {
@@ -168,7 +160,7 @@ public class P2PLogin
 
             Key secretKeySpec = new SecretKeySpec(key, "AES");
             Cipher instance = Cipher.getInstance("AES/ECB/NoPadding");
-            instance.init(2, secretKeySpec);
+            instance.init(Cipher.DECRYPT_MODE, secretKeySpec);
 
             return new String(instance.doFinal(data));
         }
@@ -180,6 +172,7 @@ public class P2PLogin
         return null;
     }
 
+    @Nullable
     private static String encryptUserPW(String password)
     {
         String key = "KXLiUdAsO81ycDyEJAeETC$KklXdz3AC";

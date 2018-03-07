@@ -1,6 +1,12 @@
 package zz.top.p2p.camera;
 
+import android.util.Base64;
 import android.util.Log;
+
+import java.security.Key;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 import zz.top.gls.GLSFrame;
 import zz.top.p2p.commands.DeviceInfoData;
@@ -241,7 +247,7 @@ public class P2PSession
         if (! isFreetouse)
         {
             auth1 = P2PUtil.genNonce(15);
-            auth2 = P2PUtil.getPassword(auth2, auth1);
+            auth2 = getPassword(auth2, auth1);
         }
 
         Log.d(LOGTAG, "packDatAndSend: dezihack: " + auth1);
@@ -272,6 +278,12 @@ public class P2PSession
         );
 
         return (xfer == data.length);
+    }
+
+    public String getPassword(String key, String data)
+    {
+        String hmacSha1 = P2PUtil.hmacSha1(key, "user=xiaoyiuser&nonce=" + data);
+        return hmacSha1.length() > 15 ? hmacSha1.substring(0, 15) : hmacSha1;
     }
 
     //region Listener section.
