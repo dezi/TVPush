@@ -2,5 +2,5 @@ package de.xavaro.android.base;
 
 public class BaseRegistration
 {
-    public static Class speechRecognitionActivity;
+    public static Class speechRecognitionActivityClass;
 }

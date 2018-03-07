@@ -75,15 +75,30 @@ public class SpeechRecognitionActivity extends BaseActivity
     }
 
     @Override
+    public void onBackPressed()
+    {
+        Log.d(LOGTAG, "onBackPressed:");
+
+        if (recognition != null)
+        {
+            recognition.destroy();
+            recognition = null;
+        }
+    }
+
+    @Override
     public void onPause()
     {
         Log.d(LOGTAG, "onPause:");
 
         super.onPause();
 
-        recognition.stopListening();
-        recognition.destroy();
-        recognition = null;
+        if (recognition != null)
+        {
+            recognition.stopListening();
+            recognition.destroy();
+            recognition = null;
+        }
     }
 
     private void onResults(Bundle results)

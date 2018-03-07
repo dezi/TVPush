@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.drawable.GradientDrawable;
+import android.media.AudioManager;
 import android.provider.Settings;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -236,5 +237,30 @@ public class Simple
         view.setBackground(shape);
     }
 
-    //enregion View manipulation.
+    //endregion View manipulation.
+
+    //region Smart helpers.
+
+    public static void turnBeepOff(Context context)
+    {
+        if (! Simple.isTV())
+        {
+            AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            if (audioManager == null) return;
+
+            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_MUTE, 0);
+        }
+    }
+
+    public static void turnBeepOn(Context context)
+    {
+        if (! Simple.isTV())
+        {
+            AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            if (audioManager == null) return;
+
+            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_UNMUTE, 0);
+        }
+    }
+    //endregion Smart helpers.
 }

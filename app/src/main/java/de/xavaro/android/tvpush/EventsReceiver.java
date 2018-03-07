@@ -8,6 +8,7 @@ import android.util.Log;
 
 import de.xavaro.android.base.BaseApplication;
 
+import de.xavaro.android.base.BaseRegistration;
 import de.xavaro.android.simple.Dump;
 
 public class EventsReceiver extends BroadcastReceiver
@@ -17,21 +18,27 @@ public class EventsReceiver extends BroadcastReceiver
     public void onReceive(Context context, Intent intent)
     {
         Log.d(LOGTAG, "onReceive: intent=" + intent);
+        if (intent.getAction() == null) return;
 
-        if (intent.getAction() != null)
+        if (intent.getAction().equals("android.bluetooth.input.profile.action.MIC_INFO_RECEIVED"))
         {
-            if (intent.getAction().equals("android.bluetooth.input.profile.action.MIC_INFO_RECEIVED"))
+            Dump.dumpIntent(intent);
+
+            if (intent.getExtras() != null)
             {
-                Dump.dumpIntent(intent);
+                int state = intent.getExtras().getInt("android.bluetooth.BluetoothInputDevice.extra.MIC_STATE");
 
-                if (((BaseApplication) context.getApplicationContext()).getCurrentActivityClass() != SpeechRecognitionActivity.class)
+                if ((state == 1) && (BaseRegistration.speechRecognitionActivityClass != null))
                 {
-                    Intent myIntent = new Intent(context, SpeechRecognitionActivity.class);
-                    //context.startActivity(myIntent);
+                    if (BaseApplication.getCurrentActivityClass(context) != BaseRegistration.speechRecognitionActivityClass)
+                    {
+                        Intent myIntent = new Intent(context, SpeechRecognitionActivity.class);
+                        //context.startActivity(myIntent);
+                    }
                 }
-
-                return;
             }
+
+            return;
         }
 
         Toast.makeText(context, intent.getAction(), Toast.LENGTH_SHORT).show();

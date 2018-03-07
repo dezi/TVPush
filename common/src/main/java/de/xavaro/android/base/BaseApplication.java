@@ -1,6 +1,7 @@
 package de.xavaro.android.base;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.support.annotation.Nullable;
 
 import android.app.Application;
@@ -74,14 +75,15 @@ public class BaseApplication extends Application implements Application.Activity
     }
 
     @Nullable
-    public Activity getCurrentActivity()
+    public static Activity getCurrentActivity(Context context)
     {
-        return currentActivity;
+        return ((BaseApplication) context.getApplicationContext()).currentActivity;
     }
 
     @Nullable
-    public Class getCurrentActivityClass()
+    public static Class getCurrentActivityClass(Context context)
     {
-        return (currentActivity != null) ? currentActivity.getClass() : null;
+        Activity current = getCurrentActivity(context);
+        return (current != null) ? current.getClass() : null;
     }
 }

@@ -37,7 +37,7 @@ public class SpeechRecognitionTask implements RecognitionListener
         {
             Log.d(LOGTAG, "SpeechRecognizer: init.");
 
-            turnBeepOn();
+            Simple.turnBeepOn(context);
 
             recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
             recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
@@ -50,10 +50,10 @@ public class SpeechRecognitionTask implements RecognitionListener
 
     public void destroy()
     {
+        Log.d(LOGTAG, "destroy:");
+
         if (recognizer != null)
         {
-            recognizer.stopListening();
-            recognizer.cancel();
             recognizer.destroy();
             recognizer = null;
         }
@@ -85,19 +85,18 @@ public class SpeechRecognitionTask implements RecognitionListener
             @Override
             public void run()
             {
-                turnBeepOff();
+                Simple.turnBeepOff(context);
             }
         }, 1000);
     }
 
     public void stopListening()
     {
-        turnBeepOn();
+        Simple.turnBeepOn(context);
 
         isEnabled = false;
 
         recognizer.stopListening();
-        recognizer.cancel();
     }
 
     private final Runnable startListeningRunnable = new Runnable()
@@ -199,21 +198,21 @@ public class SpeechRecognitionTask implements RecognitionListener
     }
 
     @Override
-    public void onPartialResults(Bundle partialResults)
-    {
-        Log.d(LOGTAG, "onPartialResults:");
-    }
-
-    @Override
     public void onEvent(int eventType, Bundle params)
     {
         Log.d(LOGTAG, "onEvent:");
     }
 
     @Override
+    public void onPartialResults(Bundle partialResults)
+    {
+        Log.d(LOGTAG, "onPartialResults: result=" + getBestResult(partialResults));
+    }
+
+    @Override
     public void onResults(Bundle results)
     {
-        Log.d(LOGTAG, "onResults: " + results);
+        Log.d(LOGTAG, "onResults: result=" + getBestResult(results));
 
         lockStart = false;
 
@@ -257,28 +256,6 @@ public class SpeechRecognitionTask implements RecognitionListener
 
                 Log.d(LOGTAG, "result=" + logline);
             }
-        }
-    }
-
-    private void turnBeepOff()
-    {
-        if (! Simple.isTV())
-        {
-            AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-            if (audioManager == null) return;
-
-            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_MUTE, 0);
-        }
-    }
-
-    private void turnBeepOn()
-    {
-        if (! Simple.isTV())
-        {
-            AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-            if (audioManager == null) return;
-
-            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_UNMUTE, 0);
         }
     }
 }
