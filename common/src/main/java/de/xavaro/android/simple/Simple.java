@@ -262,7 +262,14 @@ public class Simple
             AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
             if (audioManager == null) return;
 
-            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_MUTE, 0);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            {
+                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_MUTE, 0);
+            }
+            else
+            {
+                audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+            }
         }
     }
 
@@ -273,7 +280,14 @@ public class Simple
             AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
             if (audioManager == null) return;
 
-            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_UNMUTE, 0);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            {
+                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_UNMUTE, 0);
+            }
+            else
+            {
+                audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+            }
         }
     }
     //endregion Smart helpers.
