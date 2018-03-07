@@ -32,8 +32,11 @@ public class EventsReceiver extends BroadcastReceiver
                 {
                     if (BaseApplication.getCurrentActivityClass(context) != BaseRegistration.speechRecognitionActivityClass)
                     {
-                        Intent myIntent = new Intent(context, SpeechRecognitionActivity.class);
-                        //context.startActivity(myIntent);
+                        if (BaseRegistration.speechRecognitionInhibitUntil < System.currentTimeMillis())
+                        {
+                            Intent myIntent = new Intent(context, SpeechRecognitionActivity.class);
+                            context.startActivity(myIntent);
+                        }
                     }
                 }
             }

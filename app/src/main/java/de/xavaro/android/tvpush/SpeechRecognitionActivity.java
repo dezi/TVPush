@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import de.xavaro.android.base.BaseActivity;
+import de.xavaro.android.base.BaseRegistration;
 import de.xavaro.android.simple.Simple;
 
 public class SpeechRecognitionActivity extends BaseActivity
@@ -46,11 +47,11 @@ public class SpeechRecognitionActivity extends BaseActivity
     }
 
     @Override
-    public void onResume()
+    public void onStart()
     {
-        Log.d(LOGTAG, "onResume:");
+        Log.d(LOGTAG, "onStart:");
 
-        super.onResume();
+        super.onStart();
 
         recognition = new SpeechRecognitionTask(this)
         {
@@ -87,20 +88,16 @@ public class SpeechRecognitionActivity extends BaseActivity
                 SpeechRecognitionActivity.this.onPartialResults(partialResults);
             }
         };
-
-        recognition.startListening();
     }
 
     @Override
-    public void onBackPressed()
+    public void onResume()
     {
-        Log.d(LOGTAG, "onBackPressed:");
+        Log.d(LOGTAG, "onResume:");
 
-        if (recognition != null)
-        {
-            recognition.destroy();
-            recognition = null;
-        }
+        super.onResume();
+
+        recognition.startListening();
     }
 
     @Override
@@ -113,9 +110,37 @@ public class SpeechRecognitionActivity extends BaseActivity
         if (recognition != null)
         {
             recognition.stopListening();
+        }
+    }
+
+    @Override
+    public void onStop()
+    {
+        Log.d(LOGTAG, "onStop:");
+
+        super.onStop();
+
+        if (recognition != null)
+        {
             recognition.destroy();
             recognition = null;
         }
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        Log.d(LOGTAG, "onBackPressed:");
+
+        if (recognition != null)
+        {
+            recognition.destroy();
+            recognition = null;
+
+            BaseRegistration.speechRecognitionInhibitUntil = System.currentTimeMillis() + (8 * 1000);
+        }
+
+        super.onBackPressed();
     }
 
     private void onPleaseActivate()
