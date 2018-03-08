@@ -1,6 +1,7 @@
 package de.xavaro.android.simple;
 
 import android.app.UiModeManager;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -9,11 +10,11 @@ import android.graphics.Point;
 import android.graphics.drawable.GradientDrawable;
 import android.media.AudioManager;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.TypedValue;
-import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -47,9 +48,12 @@ public class Simple
     private static WindowManager windowManager;
     private static PackageManager packageManager;
     private static ConnectivityManager connectivityManager;
+    private static SharedPreferences prefs;
 
     public static void checkFeatures(Context context)
     {
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
         windowManager = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE));
 
         if (windowManager != null)
@@ -197,6 +201,11 @@ public class Simple
         }
 
         return manufacturer.toUpperCase() + " " + model.toUpperCase();
+    }
+
+    public static SharedPreferences getPrefs()
+    {
+        return prefs;
     }
 
     public static String getFCMToken()

@@ -1,14 +1,17 @@
 package de.xavaro.android.iot;
 
+import android.content.SharedPreferences;
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Iterator;
 
-import zz.top.utl.Json;
+import de.xavaro.android.simple.Json;
+import de.xavaro.android.simple.Simple;
 
 public abstract class IOTBase
 {
@@ -47,9 +50,9 @@ public abstract class IOTBase
         return Json.toPretty(toJson());
     }
 
-    public void fromJsonString(String json)
+    public boolean fromJsonString(String json)
     {
-        fromJson(Json.fromStringObject(json));
+        return fromJson(Json.fromStringObject(json));
     }
 
     public JSONObject toJson()
@@ -66,6 +69,7 @@ public abstract class IOTBase
                 if ((modifier & Modifier.STATIC) == Modifier.STATIC) continue;
 
                 Object ival = field.get(this);
+                if (ival == null) continue;
 
                 if ((ival instanceof JSONObject)
                         || (ival instanceof JSONArray)
@@ -89,8 +93,10 @@ public abstract class IOTBase
         return json;
     }
 
-    public void fromJson(JSONObject json)
+    public boolean fromJson(JSONObject json)
     {
+        if (json == null) return false;
+
         for (Field field : getClass().getDeclaredFields())
         {
             try
@@ -123,7 +129,48 @@ public abstract class IOTBase
             }
             catch (Exception ignore)
             {
+                return false;
             }
         }
+
+        return true;
+    }
+
+    private String getKey()
+    {
+        return "iot." + getClass().getSimpleName() + "." + uuid;
+    }
+
+    public boolean saveToStorage()
+    {
+        boolean ok = false;
+
+        if ((uuid != null) && ! uuid.isEmpty())
+        {
+            String key = getKey();
+            String json = toJsonString();
+
+            SharedPreferences prefs = Simple.getPrefs();
+
+            ok = prefs.edit().putString(key, json).commit();
+
+            Log.d(LOGTAG, "saveToStorage: uuid=" + uuid + " ok=" + ok + " json=" + json);
+        }
+
+        return ok;
+    }
+
+    public boolean loadFromStorage()
+    {
+        SharedPreferences prefs = Simple.getPrefs();
+
+        String key = getKey();
+        String json = prefs.getString(key, null);
+
+        boolean ok = fromJsonString(json);
+
+        Log.d(LOGTAG, "loadFromStorage: uuid=" + uuid + " ok=" + ok + " json=" + json);
+
+        return ok;
     }
 }
