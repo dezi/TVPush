@@ -250,18 +250,18 @@ public class P2PCloud
     {
         // @formatter:off
 
-        if ( "2".equals(modelNo)) return "camera|hd|speaker|mic|1080p|";
-        if ( "3".equals(modelNo)) return "camera|hd|speaker|mic|720p|pan|tilt";
-        if ( "4".equals(modelNo)) return "camera|hd|speaker|mic|720p";
-        if ( "5".equals(modelNo)) return "camera|hd|speaker|mic|1080p|pan|tilt";
-        if ( "6".equals(modelNo)) return "camera|hd|speaker|mic|1080p";
-        if ( "7".equals(modelNo)) return "camera|hd|speaker|mic|1080p";
-        if ( "9".equals(modelNo)) return "camera|hd|speaker|mic|720p";
-        if ("14".equals(modelNo)) return "camera|hd|speaker|mic|720p";
+        if ( "2".equals(modelNo)) return "camera|hd|speaker|mic|fixed|1080p|";
+        if ( "3".equals(modelNo)) return "camera|hd|speaker|mic|fixed|720p|pan|tilt";
+        if ( "4".equals(modelNo)) return "camera|hd|speaker|mic|fixed|720p";
+        if ( "5".equals(modelNo)) return "camera|hd|speaker|mic|fixed|1080p|pan|tilt";
+        if ( "6".equals(modelNo)) return "camera|hd|speaker|mic|fixed|1080p";
+        if ( "7".equals(modelNo)) return "camera|hd|speaker|mic|fixed|1080p";
+        if ( "9".equals(modelNo)) return "camera|hd|speaker|mic|fixed|720p";
+        if ("14".equals(modelNo)) return "camera|hd|speaker|mic|fixed|720p";
 
         // @formatter:on
 
-        return "YI Home Kamera (V1/" + modelNo + ")";
+        return "camera|hd|speaker|mic|fixed|720p";
     }
 
     @Nullable
