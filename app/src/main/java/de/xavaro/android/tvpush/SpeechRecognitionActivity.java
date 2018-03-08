@@ -79,7 +79,14 @@ public class SpeechRecognitionActivity extends BaseActivity
         }
         else
         {
-            outerFrame.setGravity(Gravity.BOTTOM);
+            if (Simple.isTV())
+            {
+                outerFrame.setGravity(Gravity.BOTTOM);
+            }
+            else
+            {
+                outerFrame.setGravity(Gravity.TOP);
+            }
 
             outerFrame.setBackgroundColor(Color.TRANSPARENT);
             colorFrame.setBackgroundColor(Color.TRANSPARENT);
