@@ -1,6 +1,8 @@
 package de.xavaro.android.simple;
 
+import android.app.Application;
 import android.app.UiModeManager;
+import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -9,6 +11,8 @@ import android.content.Context;
 import android.graphics.Point;
 import android.graphics.drawable.GradientDrawable;
 import android.media.AudioManager;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -25,9 +29,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
-import java.util.List;
 
 public class Simple
 {
@@ -51,16 +53,24 @@ public class Simple
     private static int deviceHeight;
     private static float deviceDensity;
 
+    private static WifiManager wifiManager;
     private static WindowManager windowManager;
     private static PackageManager packageManager;
     private static ConnectivityManager connectivityManager;
+
+    private static ContentResolver contentResolver;
     private static SharedPreferences prefs;
 
-    public static void checkFeatures(Context context)
+    public static void checkFeatures(Application app)
     {
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        prefs = PreferenceManager.getDefaultSharedPreferences(app);
 
-        windowManager = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE));
+        packageManager = app.getPackageManager();
+        contentResolver = app.getContentResolver();
+
+        wifiManager = (WifiManager) app.getSystemService(Context.WIFI_SERVICE);
+        windowManager = ((WindowManager) app.getSystemService(Context.WINDOW_SERVICE));
+        connectivityManager = (ConnectivityManager) app.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         if (windowManager != null)
         {
@@ -73,12 +83,9 @@ public class Simple
 
         deviceDensity = Resources.getSystem().getDisplayMetrics().density;
 
-        connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        UiModeManager uiModeManager = (UiModeManager) context.getSystemService(Context.UI_MODE_SERVICE);
+        UiModeManager uiModeManager = (UiModeManager) app.getSystemService(Context.UI_MODE_SERVICE);
         istv = (uiModeManager != null) && (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION);
 
-        packageManager = context.getPackageManager();
         istouch = packageManager.hasSystemFeature("android.hardware.touchscreen");
 
         istablet = ((Resources.getSystem().getConfiguration().screenLayout
@@ -87,7 +94,7 @@ public class Simple
 
         iswidescreen = (deviceWidth / (float) deviceHeight) > (4 / 3f);
 
-        isspeech = android.speech.SpeechRecognizer.isRecognitionAvailable(context);
+        isspeech = android.speech.SpeechRecognizer.isRecognitionAvailable(app);
 
         isretina = (deviceDensity >= 2.0);
     }
@@ -191,22 +198,52 @@ public class Simple
 
     //region Simple getters.
 
-    public static String getDeviceUserName(Context context)
+    public static String getConnectedWifiName()
     {
-        return Settings.Secure.getString(context.getContentResolver(), "bluetooth_name");
+        String wifi = wifiManager.getConnectionInfo().getSSID();
+        return wifi.replace("\"", "");
+    }
+
+    public static String getDeviceType()
+    {
+        if (isTV()) return "tv";
+        if (isPhone()) return "phone";
+        if (isTablet()) return "tablet";
+
+        return "unknown";
+    }
+
+    public static String getDeviceUserName()
+    {
+        return Settings.Secure.getString(contentResolver, "bluetooth_name");
+    }
+
+    public static String getDeviceBrandName()
+    {
+        return Build.BRAND.toUpperCase();
     }
 
     public static String getDeviceModelName()
     {
-        String manufacturer = Build.MANUFACTURER;
-        String model = Build.MODEL;
+        return Build.MODEL.toUpperCase();
+    }
 
-        if (model.startsWith(manufacturer))
+    public static String getDeviceFullName()
+    {
+        String brand = Build.BRAND.toUpperCase();
+        String model = Build.MODEL.toUpperCase();
+
+        if (model.startsWith(brand))
         {
-            return model.toUpperCase();
+            return model;
         }
 
-        return manufacturer.toUpperCase() + " " + model.toUpperCase();
+        return brand + " " + model;
+    }
+
+    public static String getAndroidVersion()
+    {
+        return "Android " + Build.VERSION.RELEASE;
     }
 
     public static SharedPreferences getPrefs()
@@ -346,6 +383,11 @@ public class Simple
         Collections.sort(list);
 
         return list.iterator();
+    }
+
+    public static void removeALLPrefs()
+    {
+        prefs.edit().clear().commit();
     }
 
     //endregion Smart helpers.

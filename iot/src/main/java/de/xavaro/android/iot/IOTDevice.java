@@ -22,5 +22,13 @@ public class IOTDevice extends IOTBase
 
     public JSONArray capabilities = new JSONArray();
 
+    public IOTDevice()
+    {
+        super();
+    }
 
+    public IOTDevice(String uuid)
+    {
+        super(uuid);
+    }
 }

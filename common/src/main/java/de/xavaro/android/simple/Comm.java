@@ -56,7 +56,7 @@ public class Comm extends Thread
     public void updateProfile(Context context)
     {
         myDevice = new JSONObject();
-        Json.put(myDevice, "name", Simple.getDeviceUserName(context));
+        Json.put(myDevice, "name", Simple.getDeviceUserName());
 
         myCredentials = new JSONObject();
 

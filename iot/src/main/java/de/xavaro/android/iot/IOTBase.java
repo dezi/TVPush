@@ -51,8 +51,9 @@ public abstract class IOTBase
             {
                 int modifiers = field.getModifiers();
 
-                if ((modifiers & Modifier.PUBLIC) != Modifier.PUBLIC) continue;
+                if ((modifiers & Modifier.FINAL) == Modifier.FINAL) continue;
                 if ((modifiers & Modifier.STATIC) == Modifier.STATIC) continue;
+                if ((modifiers & Modifier.PUBLIC) != Modifier.PUBLIC) continue;
 
                 Object ival = field.get(this);
                 if (ival == null) continue;
@@ -92,8 +93,9 @@ public abstract class IOTBase
                 String name = field.getName();
                 int modifiers = field.getModifiers();
 
-                if ((modifiers & Modifier.PUBLIC) != Modifier.PUBLIC) continue;
+                if ((modifiers & Modifier.FINAL) == Modifier.FINAL) continue;
                 if ((modifiers & Modifier.STATIC) == Modifier.STATIC) continue;
+                if ((modifiers & Modifier.PUBLIC) != Modifier.PUBLIC) continue;
 
                 if (Json.has(json, name))
                 {
@@ -159,8 +161,8 @@ public abstract class IOTBase
 
         boolean ok = fromJsonString(json);
 
-        Log.d(LOGTAG, "loadFromStorage: key=" + key + " ok=" + ok + " json=");
-        Log.d(LOGTAG, json);
+        Log.d(LOGTAG, "loadFromStorage: key=" + key + " ok=" + ok + " json=" + ((json == null) ? "null" : ""));
+        if (json != null) Log.d(LOGTAG, json);
 
         return ok;
     }

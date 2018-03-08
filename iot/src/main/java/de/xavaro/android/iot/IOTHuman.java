@@ -8,4 +8,14 @@ public class IOTHuman extends IOTBase
     public String firstname;
     public String middlename;
     public String lastname;
+
+    public IOTHuman()
+    {
+        super();
+    }
+
+    public IOTHuman(String uuid)
+    {
+        super(uuid);
+    }
 }

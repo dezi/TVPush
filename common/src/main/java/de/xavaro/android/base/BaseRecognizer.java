@@ -177,7 +177,7 @@ public class BaseRecognizer implements RecognitionListener
             case SpeechRecognizer.ERROR_NETWORK:
                 message = "Network error";
 
-                if (Simple.getDeviceModelName().startsWith("SONY"))
+                if (Simple.getDeviceFullName().startsWith("SONY"))
                 {
                     onPleaseActivate();
                 }
