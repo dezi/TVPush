@@ -1,9 +1,7 @@
 package de.xavaro.android.tvpush;
 
-import android.graphics.drawable.ColorDrawable;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.graphics.drawable.GradientDrawable;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,7 +9,7 @@ import android.view.Gravity;
 import android.util.Log;
 
 import de.xavaro.android.base.BaseActivity;
-import de.xavaro.android.base.BaseRainbowView;
+import de.xavaro.android.base.BaseViewRainbow;
 import de.xavaro.android.base.BaseRegistration;
 import de.xavaro.android.base.BaseRecognizer;
 import de.xavaro.android.simple.Defs;
@@ -24,7 +22,7 @@ public class SpeechRecognitionActivity extends BaseActivity
     private final Handler handler = new Handler();
 
     private BaseRecognizer recognition;
-    private BaseRainbowView colorFrame;
+    private BaseViewRainbow colorFrame;
     private TextView speechText;
     private boolean hadResult;
     private int orient;
@@ -39,7 +37,7 @@ public class SpeechRecognitionActivity extends BaseActivity
 
         topframe.addView(outerFrame);
 
-        colorFrame = new BaseRainbowView(this);
+        colorFrame = new BaseViewRainbow(this);
         Simple.setSizeDip(colorFrame, Simple.MP, Simple.MP);
 
         outerFrame.addView(colorFrame);

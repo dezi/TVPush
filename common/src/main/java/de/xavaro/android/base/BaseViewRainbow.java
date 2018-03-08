@@ -9,7 +9,7 @@ import android.content.Context;
 import de.xavaro.android.simple.Defs;
 import de.xavaro.android.simple.Simple;
 
-public class BaseRainbowView extends RelativeLayout
+public class BaseViewRainbow extends RelativeLayout
 {
     private int orient;
     private boolean isActive;
@@ -35,7 +35,7 @@ public class BaseRainbowView extends RelativeLayout
                     GradientDrawable.Orientation.TL_BR
             };
 
-    public BaseRainbowView(Context context)
+    public BaseViewRainbow(Context context)
     {
         super(context);
     }

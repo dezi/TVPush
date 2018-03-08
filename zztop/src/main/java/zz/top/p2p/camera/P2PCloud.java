@@ -2,8 +2,8 @@ package zz.top.p2p.camera;
 
 import android.support.annotation.Nullable;
 
-import android.os.Build;
 import android.util.Base64;
+import android.os.Build;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -11,16 +11,16 @@ import org.json.JSONObject;
 
 import java.security.Key;
 
+import javax.crypto.spec.SecretKeySpec;
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 
 import zz.top.cam.Cameras;
 import zz.top.utl.Json;
 
-public class P2PLogin
+public class P2PCloud
 {
-    public static final String LOGTAG = P2PLogin.class.getSimpleName();
+    public static final String LOGTAG = P2PCloud.class.getSimpleName();
 
     private static final String urlBase = "https://api.eu.xiaoyi.com/v4";
 
@@ -34,7 +34,7 @@ public class P2PLogin
     private JSONObject loginData;
     private JSONArray listData;
 
-    public P2PLogin(String email)
+    public P2PCloud(String email)
     {
         loginEmail = email;
     }
@@ -189,8 +189,7 @@ public class P2PLogin
         Log.d(LOGTAG, "buildCameraDescription:"
                 + " uuid=" + uuid
                 + " p2p_id=" + p2p_id
-                + " p2p_pw=" + p2p_pw
-                + " p2p_pw_len=" + p2p_pw.length());
+                + " p2p_pw=" + p2p_pw);
 
         JSONObject camera = new JSONObject();
 
@@ -229,7 +228,7 @@ public class P2PLogin
         Cameras.addCamera(camera);
     }
 
-    private String getModelName(String modelNo)
+    public static String getModelName(String modelNo)
     {
         // @formatter:off
 
@@ -247,7 +246,7 @@ public class P2PLogin
         return "YI Home Kamera (V1/" + modelNo + ")";
     }
 
-    private String getCapabilities(String modelNo)
+    public static String getCapabilities(String modelNo)
     {
         // @formatter:off
 

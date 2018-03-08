@@ -1,11 +1,10 @@
 package de.xavaro.android.tvpush;
 
 import android.os.Handler;
-import android.util.Log;
 
 import de.xavaro.android.base.BaseApplication;
 import de.xavaro.android.base.BaseRegistration;
-import zz.top.p2p.camera.P2PLogin;
+import zz.top.p2p.camera.P2PCloud;
 
 public class ApplicationBase extends BaseApplication
 {
@@ -13,7 +12,7 @@ public class ApplicationBase extends BaseApplication
 
     public static final Handler handler = new Handler();
 
-    public P2PLogin p2plogin;
+    public P2PCloud p2plogin;
 
     @Override
     public void onCreate()
@@ -22,7 +21,7 @@ public class ApplicationBase extends BaseApplication
 
         BaseRegistration.speechRecognitionActivityClass = SpeechRecognitionActivity.class;
 
-        p2plogin = new P2PLogin("dezi@kappa-mm.de")
+        p2plogin = new P2PCloud("dezi@kappa-mm.de")
         {
             @Override
             protected void onLoginFailure(String message)
