@@ -46,7 +46,7 @@ public class SpeechRecognitionActivity extends BaseActivity
 
         RelativeLayout centerCont = new RelativeLayout(this);
         centerCont.setGravity(Gravity.CENTER_VERTICAL + Gravity.CENTER_HORIZONTAL);
-        Simple.setMarginDip(centerCont, Simple.PADDING_XLARGE, Simple.PADDING_NORMAL, Simple.PADDING_XLARGE, Simple.PADDING_NORMAL);
+        Simple.setMarginDip(centerCont, Defs.PADDING_XLARGE, Defs.PADDING_NORMAL, Defs.PADDING_XLARGE, Defs.PADDING_NORMAL);
 
         colorFrame.addView(centerCont);
 
@@ -69,10 +69,10 @@ public class SpeechRecognitionActivity extends BaseActivity
 
             speechText.setMinLines(3);
 
-            Simple.setPaddingDip(outerFrame, Simple.PADDING_LARGE);
-            Simple.setPaddingDip(colorFrame, Simple.PADDING_LARGE);
-            Simple.setPaddingDip(centerCont, Simple.PADDING_LARGE);
-            Simple.setPaddingDip(speechText, Simple.PADDING_LARGE);
+            Simple.setPaddingDip(outerFrame, Defs.PADDING_LARGE);
+            Simple.setPaddingDip(colorFrame, Defs.PADDING_LARGE);
+            Simple.setPaddingDip(centerCont, Defs.PADDING_LARGE);
+            Simple.setPaddingDip(speechText, Defs.PADDING_LARGE);
         }
         else
         {
@@ -80,8 +80,8 @@ public class SpeechRecognitionActivity extends BaseActivity
 
             Simple.setSizeDip(centerCont, Simple.MP, Simple.WC);
 
-            Simple.setRoundedCorners(centerCont, Simple.ROUNDED_MEDIUM, Defs.COLOR_LIGHT_TRANSPARENT);
-            Simple.setPaddingDip(speechText, Simple.PADDING_SMALL);
+            Simple.setRoundedCorners(centerCont, Defs.ROUNDED_MEDIUM, Defs.COLOR_LIGHT_TRANSPARENT);
+            Simple.setPaddingDip(speechText, Defs.PADDING_SMALL);
         }
     }
 

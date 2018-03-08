@@ -26,23 +26,8 @@ public class Simple
 {
     //region Basic defines.
 
-    // @formatter:off
-
     public static final int MP = ViewGroup.LayoutParams.MATCH_PARENT;
     public static final int WC = ViewGroup.LayoutParams.WRAP_CONTENT;
-
-    public static final int PADDING_ZERO     = Simple.isTablet() ?  0 :  0;
-    public static final int PADDING_TINY     = Simple.isTablet() ?  4 :  2;
-    public static final int PADDING_SMALL    = Simple.isTablet() ?  8 :  4;
-    public static final int PADDING_MEDIUM   = Simple.isTablet() ? 16 : 12;
-    public static final int PADDING_NORMAL   = Simple.isTablet() ? 24 : 18;
-    public static final int PADDING_LARGE    = Simple.isTablet() ? 32 : 26;
-    public static final int PADDING_XLARGE   = Simple.isTablet() ? 40 : 30;
-
-    public static final int ROUNDED_SMALL    = Simple.isTablet() ?  8 :  4;
-    public static final int ROUNDED_MEDIUM   = Simple.isTablet() ? 16 : 12;
-
-    // @formatter:on
 
     //endregion Basic defines.
 
@@ -313,9 +298,19 @@ public class Simple
         return Math.round(dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
+    public static float dipToPx(float dp)
+    {
+        return dp * Resources.getSystem().getDisplayMetrics().density;
+    }
+
     public static int pxToDip(int px)
     {
         return Math.round(px / Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    public static float pxToDip(float px)
+    {
+        return px / Resources.getSystem().getDisplayMetrics().density;
     }
 
     public static void turnBeepOnOff(Context context, boolean on)

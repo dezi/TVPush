@@ -6,6 +6,9 @@ import android.graphics.Color;
 import android.widget.RelativeLayout;
 import android.content.Context;
 
+import de.xavaro.android.simple.Defs;
+import de.xavaro.android.simple.Simple;
+
 public class BaseRainbowView extends RelativeLayout
 {
     private int orient;
@@ -59,7 +62,10 @@ public class BaseRainbowView extends RelativeLayout
         public void run()
         {
             int next = orient++ % rainBowOrients.length;
+
             GradientDrawable rainbow = new GradientDrawable(rainBowOrients[ next ], rainBowColors);
+            rainbow.setCornerRadius(Simple.dipToPx(Defs.ROUNDED_NORMAL));
+
             setBackground(rainbow);
 
             getHandler().postDelayed(this, 100);
