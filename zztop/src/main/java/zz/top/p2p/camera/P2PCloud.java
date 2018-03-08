@@ -29,7 +29,10 @@ public class P2PCloud
 
     private String loginEmail;
     private String loginPass;
-    private int loginUserId;
+
+    private int userId;
+    private String token;
+    private String token_secret;
 
     private JSONObject loginData;
     private JSONArray listData;
@@ -65,46 +68,39 @@ public class P2PCloud
 
                     if (loginData != null)
                     {
-                        loginUserId = Json.getInt(loginData, "userid");
+                        userId = Json.getInt(loginData, "userid");
+                        token = Json.getString(loginData, "token");
+                        token_secret = Json.getString(loginData, "token_secret");
 
-                        if (loginUserId > 0)
+                        if ((userId > 0)
+                                && (token != null) && (! token.isEmpty())
+                                && (token_secret != null) && (! token_secret.isEmpty()))
                         {
-                            Log.d(LOGTAG, "OnRestApiResult: login: success.");
+                            Log.d(LOGTAG, "OnRestApiResult: login: success "
+                                    + " userid=" + userId
+                                    + " token=" + token
+                                    + " token_secret=" + token_secret);
 
                             deviceList();
+
+                            onLoginSuccess(what, params, result);
 
                             return;
                         }
                     }
                 }
 
-                onLoginFailure("OnRestApiResult: login: failed.");
+                onRestApiFailure("OnRestApiResult: login: failed.", what, params, result);
             }
         });
     }
 
     public void deviceList()
     {
-        int userid = Json.getInt(loginData, "userid");
-        String token = Json.getString(loginData, "token");
-        String token_secret = Json.getString(loginData, "token_secret");
-
-        Log.d(LOGTAG, "deviceList:"
-                + " userid=" + userid
-                + " token=" + token
-                + " token_secret=" + token_secret);
-
-        if ((userid == 0) || (token == null) || (token_secret == null))
-        {
-            onLoginFailure("OnRestApiResult: list: no credentials found.");
-
-            return;
-        }
-
         JSONObject params = new JSONObject();
 
         Json.put(params, "seq", 1);
-        Json.put(params, "userid", userid);
+        Json.put(params, "userid", userId);
 
         String key = token + "&" + token_secret;
         String query = P2PRestApi.getQueryDataString(params);
@@ -137,25 +133,30 @@ public class P2PCloud
 
                         Log.d(LOGTAG, "OnRestApiResult: list: success.");
 
-                        onLoginSuccess();
+                        onListSuccess(what, params, result);
 
                         return;
                     }
                 }
 
-                onLoginFailure("OnRestApiResult: list: failed.");
+                onRestApiFailure("OnRestApiResult: list: failed.", what, params, result);
             }
         });
     }
 
-    protected void onLoginFailure(String message)
+    protected void onRestApiFailure(String message, String what, JSONObject params, JSONObject result)
     {
         Log.d(LOGTAG, message);
     }
 
-    protected void onLoginSuccess()
+    protected void onLoginSuccess(String what, JSONObject params, JSONObject result)
     {
         Log.d(LOGTAG, "Login success.");
+    }
+
+    protected void onListSuccess(String what, JSONObject params, JSONObject result)
+    {
+        Log.d(LOGTAG, "List success.");
     }
 
     private void buildCameraDescription(JSONObject rawDevice)
@@ -172,7 +173,7 @@ public class P2PCloud
         String p2p_pw = decryptDevicePW(id, Json.getString(rawDevice, "password"));
         boolean p2p_en = Json.equals(rawipcParam, "p2p_encrypt", "true");
 
-        int cloud_id = loginUserId;
+        int cloud_id = userId;
         String cloud_em = loginEmail;
         String cloud_pw = loginPass;
 
