@@ -1,50 +1,88 @@
 package de.xavaro.android.tvpush;
 
-import android.graphics.Color;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
+import android.graphics.drawable.ColorDrawable;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.Gravity;
+import android.util.Log;
 
 import de.xavaro.android.base.BaseActivity;
+import de.xavaro.android.base.BaseRainbowView;
 import de.xavaro.android.base.BaseRegistration;
 import de.xavaro.android.base.BaseRecognizer;
+import de.xavaro.android.simple.Defs;
 import de.xavaro.android.simple.Simple;
 
 public class SpeechRecognitionActivity extends BaseActivity
 {
     private final static String LOGTAG = SpeechRecognitionActivity.class.getSimpleName();
 
+    private final Handler handler = new Handler();
+
     private BaseRecognizer recognition;
+    private BaseRainbowView colorFrame;
     private TextView speechText;
     private boolean hadResult;
+    private int orient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        RelativeLayout bottom = new RelativeLayout(this);
-        bottom.setGravity(Gravity.BOTTOM);
-        Simple.setSizeDip(bottom, Simple.MP, Simple.MP);
+        RelativeLayout outerFrame = new RelativeLayout(this);
+        Simple.setSizeDip(outerFrame, Simple.MP, Simple.MP);
 
-        topframe.addView(bottom);
+        topframe.addView(outerFrame);
 
-        RelativeLayout center = new RelativeLayout(this);
-        center.setGravity(Gravity.CENTER_VERTICAL + Gravity.CENTER_HORIZONTAL);
-        Simple.setSizeDip(center, Simple.MP, Simple.WC);
-        Simple.setMarginDip(center, Simple.PADDING_XLARGE, Simple.PADDING_NORMAL, Simple.PADDING_XLARGE, Simple.PADDING_NORMAL);
-        Simple.setRoundedCorners(center, Simple.ROUNDED_MEDIUM, 0x11ffffff);
+        colorFrame = new BaseRainbowView(this);
+        Simple.setSizeDip(colorFrame, Simple.MP, Simple.MP);
 
-        bottom.addView(center);
+        outerFrame.addView(colorFrame);
+
+        RelativeLayout centerCont = new RelativeLayout(this);
+        centerCont.setGravity(Gravity.CENTER_VERTICAL + Gravity.CENTER_HORIZONTAL);
+        Simple.setMarginDip(centerCont, Simple.PADDING_XLARGE, Simple.PADDING_NORMAL, Simple.PADDING_XLARGE, Simple.PADDING_NORMAL);
+
+        colorFrame.addView(centerCont);
 
         speechText = new TextView(this);
+        speechText.setGravity(Gravity.CENTER_HORIZONTAL);
         speechText.setTextColor(Color.WHITE);
-        Simple.setTextSizeDip(speechText, 30);
-        Simple.setPaddingDip(speechText, Simple.PADDING_SMALL);
+        Simple.setTextSizeDip(speechText, Defs.FONTSIZE_LARGE);
+        Simple.setSizeDip(speechText, Simple.WC, Simple.WC);
 
-        center.addView(speechText);
+        centerCont.addView(speechText);
+
+        if (Simple.isPhone())
+        {
+            outerFrame.setBackgroundColor(Color.BLACK);
+            centerCont.setBackgroundColor(Color.BLACK);
+            colorFrame.setBackgroundColor(Color.BLACK);
+            speechText.setBackgroundColor(Color.BLACK);
+
+            Simple.setSizeDip(centerCont, Simple.MP, Simple.MP);
+
+            speechText.setMinLines(3);
+
+            Simple.setPaddingDip(outerFrame, Simple.PADDING_LARGE);
+            Simple.setPaddingDip(colorFrame, Simple.PADDING_LARGE);
+            Simple.setPaddingDip(centerCont, Simple.PADDING_LARGE);
+            Simple.setPaddingDip(speechText, Simple.PADDING_LARGE);
+        }
+        else
+        {
+            outerFrame.setGravity(Gravity.BOTTOM);
+
+            Simple.setSizeDip(centerCont, Simple.MP, Simple.WC);
+
+            Simple.setRoundedCorners(centerCont, Simple.ROUNDED_MEDIUM, Defs.COLOR_LIGHT_TRANSPARENT);
+            Simple.setPaddingDip(speechText, Simple.PADDING_SMALL);
+        }
     }
 
     @Override
@@ -160,17 +198,23 @@ public class SpeechRecognitionActivity extends BaseActivity
 
     private void onReadyForSpeech(Bundle params)
     {
-        if (! hadResult)
-        {
-            speechText.setTextColor(Color.GRAY);
-            speechText.setText("Bitte sprechen Sie jetzt.");
-        }
+        handler.removeCallbacks(pleaseSpeekNow);
+        handler.postDelayed(pleaseSpeekNow, hadResult ? 3000 : 0);
     }
 
     private void onPartialResults(Bundle partialResults)
     {
-        speechText.setTextColor(Color.WHITE);
-        speechText.setText(recognition.getBestResult(partialResults));
+        String bestresult = recognition.getBestResult(partialResults);
+
+        if ((bestresult != null) && ! bestresult.isEmpty())
+        {
+            speechText.setTextColor(Color.WHITE);
+            speechText.setText(bestresult);
+
+            hadResult = true;
+
+            colorFrame.start();
+        }
     }
 
     private void onResults(Bundle results)
@@ -188,6 +232,17 @@ public class SpeechRecognitionActivity extends BaseActivity
 
     private void onEndOfSpeech()
     {
-
     }
+
+    private final Runnable pleaseSpeekNow = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            speechText.setTextColor(Color.GRAY);
+            speechText.setText("Bitte sprechen Sie jetzt.");
+
+            colorFrame.stop();
+        }
+    };
 }
