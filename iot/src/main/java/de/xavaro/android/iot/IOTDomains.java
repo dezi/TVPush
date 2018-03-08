@@ -2,9 +2,9 @@ package de.xavaro.android.iot;
 
 public class IOTDomains extends IOTList
 {
-    public static IOTDomains domains = new IOTDomains();
+    private static IOTDomains instance = new IOTDomains();
 
-    public IOTDomains()
+    private IOTDomains()
     {
         super((new IOTDomain()).getClassKey());
     }
@@ -15,8 +15,13 @@ public class IOTDomains extends IOTList
         return new IOTDomain(json, true);
     }
 
-    public IOTDomain getHuman(String uuid)
+    public static int getCount()
     {
-        return (IOTDomain) list.get(uuid);
+        return instance.getListSize();
+    }
+
+    public static IOTDomain getEntry(String uuid)
+    {
+        return (IOTDomain) instance.list.get(uuid);
     }
 }

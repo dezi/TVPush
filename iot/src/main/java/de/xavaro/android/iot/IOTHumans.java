@@ -2,9 +2,9 @@ package de.xavaro.android.iot;
 
 public class IOTHumans extends IOTList
 {
-    public static IOTHumans humans = new IOTHumans();
+    private static IOTHumans instance = new IOTHumans();
 
-    public IOTHumans()
+    private IOTHumans()
     {
         super((new IOTHuman()).getClassKey());
     }
@@ -15,8 +15,13 @@ public class IOTHumans extends IOTList
         return new IOTHuman(json, true);
     }
 
-    public IOTHuman getHuman(String uuid)
+    public static int getCount()
     {
-        return (IOTHuman) list.get(uuid);
+        return instance.getListSize();
+    }
+
+    public static IOTHuman getEntry(String uuid)
+    {
+        return (IOTHuman) instance.list.get(uuid);
     }
 }

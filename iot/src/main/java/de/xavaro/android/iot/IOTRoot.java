@@ -2,8 +2,6 @@ package de.xavaro.android.iot;
 
 import android.util.Log;
 
-import org.json.JSONArray;
-
 import de.xavaro.android.simple.Json;
 import de.xavaro.android.simple.Simple;
 
@@ -34,6 +32,10 @@ public class IOTRoot extends IOTBase
 
     private static void loadOwnIdentity()
     {
+        Log.d(LOGTAG, "loadOwnIdentity: domains=" + IOTDomains.getCount());
+        Log.d(LOGTAG, "loadOwnIdentity: devices=" + IOTDevices.getCount());
+        Log.d(LOGTAG, "loadOwnIdentity: humans=" + IOTHumans.getCount());
+
         root = new IOTRoot();
 
         if (! root.loadFromStorage())
@@ -103,23 +105,6 @@ public class IOTRoot extends IOTBase
         else
         {
             human = new IOTHuman(meme.memeHumanUUID);
-        }
-    }
-
-    private static void loadAllItems()
-    {
-        JSONArray list = IOTDevices.devices.getListUUIDs();
-
-        for (int inx = 0; inx < list.length(); inx++)
-        {
-            String uuid = Json.getString(list, inx);
-            if (uuid == null) continue;
-
-            IOTDevice device = IOTDevices.devices.getDevice(uuid);
-
-            Log.d(LOGTAG, "loadAllItems: IOTDevice:"
-                    + " uuid=" + device.uuid
-                    + " name=" + device.name);
         }
     }
 }

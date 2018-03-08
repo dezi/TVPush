@@ -2,9 +2,9 @@ package de.xavaro.android.iot;
 
 public class IOTDevices extends IOTList
 {
-    public static IOTDevices devices = new IOTDevices();
+    private static IOTDevices instance = new IOTDevices();
 
-    public IOTDevices()
+    private IOTDevices()
     {
         super((new IOTDevice()).getClassKey());
     }
@@ -15,8 +15,13 @@ public class IOTDevices extends IOTList
         return new IOTDevice(json, true);
     }
 
-    public IOTDevice getDevice(String uuid)
+    public static int getCount()
     {
-        return (IOTDevice) list.get(uuid);
+        return instance.getListSize();
+    }
+
+    public static IOTDevice getEntry(String uuid)
+    {
+        return (IOTDevice) instance.list.get(uuid);
     }
 }
