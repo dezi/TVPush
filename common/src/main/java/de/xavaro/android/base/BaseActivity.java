@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.PixelFormat;
 import android.graphics.Color;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.view.WindowManager;
 import android.view.KeyEvent;
@@ -17,6 +18,15 @@ import android.util.Log;
 public class BaseActivity extends AppCompatActivity
 {
     private final static String LOGTAG = BaseActivity.class.getSimpleName();
+
+    @SuppressLint("InlinedApi")
+    private final int uiOptions
+            = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            | View.SYSTEM_UI_FLAG_FULLSCREEN
+            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 
     public FrameLayout topframe;
 
@@ -38,6 +48,12 @@ public class BaseActivity extends AppCompatActivity
 
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
+        //
+        // Remove stupid menu bar.
+        //
+
+        if (getSupportActionBar() != null) getSupportActionBar().hide();
+
         topframe = new FrameLayout(this);
         setContentView(topframe);
     }
@@ -56,6 +72,8 @@ public class BaseActivity extends AppCompatActivity
         Log.d(LOGTAG, "onResume:");
 
         super.onResume();
+
+        setUiFlags();
     }
 
     @Override
@@ -72,6 +90,20 @@ public class BaseActivity extends AppCompatActivity
         Log.d(LOGTAG, "onStop:");
 
         super.onStop();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus)
+    {
+        super.onWindowFocusChanged(hasFocus);
+
+        setUiFlags();
+    }
+
+    public void setUiFlags()
+    {
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(uiOptions);
     }
 
     @Override

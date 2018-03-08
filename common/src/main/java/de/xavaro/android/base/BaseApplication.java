@@ -29,7 +29,12 @@ public class BaseApplication extends Application implements Application.Activity
 
         Simple.checkFeatures(this);
 
-        Log.d(LOGTAG, "onCreate: model=" + Simple.getDeviceModelName());
+        Log.d(LOGTAG, "onCreate:"
+                + " model=" + Simple.getDeviceModelName()
+                + " width=" + Simple.getDeviceWidth()
+                + " height=" + Simple.getDeviceHeight()
+                + " density=" + Simple.getDeviceDensity()
+        );
     }
 
     @Override

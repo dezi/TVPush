@@ -20,6 +20,7 @@ import android.view.View;
 import android.os.Bundle;
 import android.util.Log;
 
+import de.xavaro.android.base.BaseRecognizer;
 import zz.top.cam.Camera;
 import zz.top.cam.Cameras;
 
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private FrameLayout topframe;
     private FrameLayout videoView;
 
-    private SpeechRecognitionTask recognition;
+    private BaseRecognizer recognition;
 
     private static final String SAMPLE = Environment.getExternalStorageDirectory() + "/video.mp4";
     private PlayerThread mPlayer = null;
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             @Override
             public void onClick(View view)
             {
-                RegistrationService.requestHello(view.getContext());
+                //RegistrationService.requestHello(view.getContext());
             }
         });
 
@@ -152,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     {
         if (recognition == null)
         {
-            recognition = new SpeechRecognitionTask(this);
+            recognition = new BaseRecognizer(this);
         }
 
         String text = voiceButton.getText().toString();

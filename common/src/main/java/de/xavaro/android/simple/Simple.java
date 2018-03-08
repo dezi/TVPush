@@ -13,6 +13,7 @@ import android.provider.Settings;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -52,24 +53,48 @@ public class Simple
     private static boolean istablet;
     private static boolean iswidescreen;
     private static boolean isspeech;
+    private static boolean isretina;
+
+    private static int deviceWidth;
+    private static int deviceHeight;
+    private static float deviceDensity;
+
+    private static WindowManager windowManager;
+    private static PackageManager packageManager;
+    private static ConnectivityManager connectivityManager;
 
     public static void checkFeatures(Context context)
     {
+        windowManager = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE));
+
+        if (windowManager != null)
+        {
+            Point size = new Point();
+            windowManager.getDefaultDisplay().getRealSize(size);
+
+            deviceWidth = size.x;
+            deviceHeight = size.y;
+        }
+
+        deviceDensity = Resources.getSystem().getDisplayMetrics().density;
+
+        connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
         UiModeManager uiModeManager = (UiModeManager) context.getSystemService(Context.UI_MODE_SERVICE);
         istv = (uiModeManager != null) && (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION);
 
-        PackageManager pmManager = context.getPackageManager();
-        istouch = pmManager.hasSystemFeature("android.hardware.touchscreen");
+        packageManager = context.getPackageManager();
+        istouch = packageManager.hasSystemFeature("android.hardware.touchscreen");
 
         istablet = ((Resources.getSystem().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE);
 
-        int width = getDeviceWidth(context);
-        int height = getDeviceHeight(context);
-        iswidescreen = (width / (float) height) > (4 / 3f);
+        iswidescreen = (deviceWidth / (float) deviceHeight) > (4 / 3f);
 
         isspeech = android.speech.SpeechRecognizer.isRecognitionAvailable(context);
+
+        isretina = (deviceDensity >= 2.0);
     }
 
     public static boolean isTV()
@@ -82,6 +107,11 @@ public class Simple
         return istouch;
     }
 
+    public static boolean isPhone()
+    {
+        return ! istablet;
+    }
+
     public static boolean isTablet()
     {
         return istablet;
@@ -92,6 +122,11 @@ public class Simple
         return iswidescreen;
     }
 
+    public static boolean isRetina()
+    {
+        return isretina;
+    }
+
     public static boolean isSpeech()
     {
         return isspeech;
@@ -99,44 +134,62 @@ public class Simple
 
     public static boolean isOnline(Context context)
     {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (cm == null) return false;
+        if (connectivityManager == null) return false;
 
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
 
         return (netInfo != null) && netInfo.isConnectedOrConnecting();
     }
 
-    public static int getDeviceWidth(Context context)
+    public static int getDeviceOrientation()
     {
-        WindowManager wm = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE));
-        if (wm == null) return 0;
+        int orientation = Configuration.ORIENTATION_PORTRAIT;
 
-        Point size = new Point();
-        wm.getDefaultDisplay().getSize(size);
+        if (windowManager != null)
+        {
+            Point size = new Point();
+            windowManager.getDefaultDisplay().getRealSize(size);
 
-        return size.x;
+            if (size.x <= size.y)
+            {
+                orientation = Configuration.ORIENTATION_PORTRAIT;
+            }
+            else
+            {
+                orientation = Configuration.ORIENTATION_LANDSCAPE;
+            }
+        }
+
+        return orientation;
     }
 
-    public static int getDeviceHeight(Context context)
+    public static int getDeviceWidth()
     {
-        WindowManager wm = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE));
-        if (wm == null) return 0;
-
-        Point size = new Point();
-        wm.getDefaultDisplay().getSize(size);
-
-        return size.y;
+        if (getDeviceOrientation() == Configuration.ORIENTATION_PORTRAIT)
+        {
+            return Math.min(deviceWidth, deviceHeight);
+        }
+        else
+        {
+            return Math.max(deviceWidth, deviceHeight);
+        }
     }
 
-    public static int dipToPx(int dp)
+    public static int getDeviceHeight()
     {
-        return Math.round(dp * Resources.getSystem().getDisplayMetrics().density);
+        if (getDeviceOrientation() == Configuration.ORIENTATION_PORTRAIT)
+        {
+            return Math.max(deviceWidth, deviceHeight);
+        }
+        else
+        {
+            return Math.min(deviceWidth, deviceHeight);
+        }
     }
 
-    public static int pxToDip(int px)
+    public static float getDeviceDensity()
     {
-        return Math.round(px / Resources.getSystem().getDisplayMetrics().density);
+        return deviceDensity;
     }
 
     //endregion Device features.
@@ -255,7 +308,17 @@ public class Simple
 
     //region Smart helpers.
 
-    public static void turnBeepOff(Context context)
+    public static int dipToPx(int dp)
+    {
+        return Math.round(dp * Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    public static int pxToDip(int px)
+    {
+        return Math.round(px / Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    public static void turnBeepOnOff(Context context, boolean on)
     {
         if (! Simple.isTV())
         {
@@ -264,31 +327,15 @@ public class Simple
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             {
-                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_MUTE, 0);
+                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                        on ? AudioManager.ADJUST_UNMUTE : AudioManager.ADJUST_MUTE, 0);
             }
             else
             {
-                audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+                audioManager.setStreamMute(AudioManager.STREAM_MUSIC, ! on);
             }
         }
     }
 
-    public static void turnBeepOn(Context context)
-    {
-        if (! Simple.isTV())
-        {
-            AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-            if (audioManager == null) return;
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            {
-                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_UNMUTE, 0);
-            }
-            else
-            {
-                audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
-            }
-        }
-    }
     //endregion Smart helpers.
 }

@@ -9,13 +9,14 @@ import android.widget.TextView;
 
 import de.xavaro.android.base.BaseActivity;
 import de.xavaro.android.base.BaseRegistration;
+import de.xavaro.android.base.BaseRecognizer;
 import de.xavaro.android.simple.Simple;
 
 public class SpeechRecognitionActivity extends BaseActivity
 {
     private final static String LOGTAG = SpeechRecognitionActivity.class.getSimpleName();
 
-    private SpeechRecognitionTask recognition;
+    private BaseRecognizer recognition;
     private TextView speechText;
     private boolean hadResult;
 
@@ -53,7 +54,7 @@ public class SpeechRecognitionActivity extends BaseActivity
 
         super.onStart();
 
-        recognition = new SpeechRecognitionTask(this)
+        recognition = new BaseRecognizer(this)
         {
             @Override
             public void onPleaseActivate()
@@ -86,6 +87,14 @@ public class SpeechRecognitionActivity extends BaseActivity
                 super.onPartialResults(partialResults);
 
                 SpeechRecognitionActivity.this.onPartialResults(partialResults);
+            }
+
+            @Override
+            public void onEndOfSpeech()
+            {
+                super.onEndOfSpeech();
+
+                SpeechRecognitionActivity.this.onEndOfSpeech();
             }
         };
     }
@@ -172,6 +181,13 @@ public class SpeechRecognitionActivity extends BaseActivity
         {
             speechText.setTextColor(Color.WHITE);
             speechText.setText(bestresult);
+
+            hadResult = true;
         }
+    }
+
+    private void onEndOfSpeech()
+    {
+
     }
 }

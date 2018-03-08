@@ -1,11 +1,10 @@
-package de.xavaro.android.tvpush;
+package de.xavaro.android.base;
 
 import android.support.annotation.Nullable;
 
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
-import android.media.AudioManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,9 +15,9 @@ import java.util.ArrayList;
 
 import de.xavaro.android.simple.Simple;
 
-public class SpeechRecognitionTask implements RecognitionListener
+public class BaseRecognizer implements RecognitionListener
 {
-    private static final String LOGTAG = SpeechRecognitionTask.class.getSimpleName();
+    private static final String LOGTAG = BaseRecognizer.class.getSimpleName();
 
     private Handler handler = new Handler();
 
@@ -29,7 +28,7 @@ public class SpeechRecognitionTask implements RecognitionListener
     private boolean lockStart;
     private boolean isEnabled;
 
-    public SpeechRecognitionTask(Context context)
+    public BaseRecognizer(Context context)
     {
         this.context = context;
 
@@ -37,7 +36,7 @@ public class SpeechRecognitionTask implements RecognitionListener
         {
             Log.d(LOGTAG, "SpeechRecognizer: init.");
 
-            Simple.turnBeepOn(context);
+            Simple.turnBeepOnOff(context, true);
 
             recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
             recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
@@ -85,14 +84,14 @@ public class SpeechRecognitionTask implements RecognitionListener
             @Override
             public void run()
             {
-                Simple.turnBeepOff(context);
+                Simple.turnBeepOnOff(context, false);
             }
         }, 1000);
     }
 
     public void stopListening()
     {
-        Simple.turnBeepOn(context);
+        Simple.turnBeepOnOff(context, true);
 
         isEnabled = false;
 

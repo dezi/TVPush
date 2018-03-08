@@ -233,19 +233,20 @@ public class P2PLogin
     {
         // @formatter:off
 
-        if ( "2".equals(modelNo)) return "YI Home Kamera 1080P (H21)";
-        if ( "3".equals(modelNo)) return "YI Dome Kamera (H19)";
-        if ( "4".equals(modelNo)) return "YI Home Kamera (M10/MIJIA)";
-        if ( "5".equals(modelNo)) return "YI Dome Kamera 1080p (H20)";
-        if ( "6".equals(modelNo)) return "YI Home Kamera 1080P (Y20)";
-        if ( "7".equals(modelNo)) return "YI Außenkamera 1080p (H30)";
-        if ( "9".equals(modelNo)) return "YI Home Kamera Cloud Edition (Y10)";
-        if ("14".equals(modelNo)) return "YI Home Kamera (Y19)";
+        if ( "2".equals(modelNo)) return "YI Home Cam 1080P (H21)";
+        if ( "3".equals(modelNo)) return "YI Dome Cam (H19)";
+        if ( "4".equals(modelNo)) return "YI Home Cam (M10/MIJIA)";
+        if ( "5".equals(modelNo)) return "YI Dome Cam 1080p (H20)";
+        if ( "6".equals(modelNo)) return "YI Home Cam 1080P (Y20)";
+        if ( "7".equals(modelNo)) return "YI Outdoor Cam 1080p (H30)";
+        if ( "9".equals(modelNo)) return "YI Home Cam Cloud Edition (Y10)";
+        if ("14".equals(modelNo)) return "YI Home Cam (Y19)";
 
         // @formatter:on
 
         return "YI Home Kamera (V1/" + modelNo + ")";
     }
+
     private String getCapabilities(String modelNo)
     {
         // @formatter:off
