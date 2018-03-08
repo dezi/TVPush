@@ -119,7 +119,6 @@ public class SpeechRecognitionActivity extends BaseActivity
             @Override
             public void onPartialResults(Bundle partialResults)
             {
-
                 super.onPartialResults(partialResults);
 
                 SpeechRecognitionActivity.this.onPartialResults(partialResults);

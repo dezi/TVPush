@@ -167,6 +167,7 @@ public class P2PCloud
         String name = Json.getString(rawDevice, "name");
         String nick = Json.getString(rawDevice, "nickname");
         String model = getModelName(Json.getString(rawDevice, "model"));
+        String brand = "YI";
         String version = getModelName(Json.getString(rawDevice, "type"));
 
         String p2p_id = Json.getString(rawDevice, "uid");
@@ -209,6 +210,7 @@ public class P2PCloud
         Json.put(device, "name", name);
         Json.put(device, "nick", nick);
         Json.put(device, "model", model);
+        Json.put(device, "brand", brand);
         Json.put(device, "version", version);
         Json.put(device, "category", category);
         Json.put(device, "capability", capability);

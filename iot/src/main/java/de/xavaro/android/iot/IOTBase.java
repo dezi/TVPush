@@ -19,6 +19,7 @@ public abstract class IOTBase
 
     public String uuid;
     public String name;
+    public String nick;
 
     public IOTBase()
     {
@@ -33,6 +34,13 @@ public abstract class IOTBase
     {
         this.uuid = uuid;
         this.name = name;
+    }
+
+    public IOTBase(String uuid, String name, String nick)
+    {
+        this.uuid = uuid;
+        this.name = name;
+        this.nick = nick;
     }
 
     public IOTBase(JSONObject json)
