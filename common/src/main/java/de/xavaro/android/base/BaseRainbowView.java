@@ -17,8 +17,7 @@ public class BaseRainbowView extends RelativeLayout
     private int[] rainBowColors = new int[]
             {
                     Color.RED, Color.MAGENTA, Color.BLUE,
-                    Color.CYAN, Color.GREEN, Color.YELLOW,
-                    Color.RED
+                    Color.CYAN, Color.GREEN, Color.YELLOW
             };
 
     private GradientDrawable.Orientation[] rainBowOrients = new GradientDrawable.Orientation[]
@@ -26,10 +25,10 @@ public class BaseRainbowView extends RelativeLayout
                     GradientDrawable.Orientation.TOP_BOTTOM,
                     GradientDrawable.Orientation.TR_BL,
                     GradientDrawable.Orientation.RIGHT_LEFT ,
-                    GradientDrawable.Orientation.BL_TR,
-                    GradientDrawable.Orientation.BOTTOM_TOP,
                     GradientDrawable.Orientation.BR_TL,
-                    GradientDrawable.Orientation.RIGHT_LEFT,
+                    GradientDrawable.Orientation.BOTTOM_TOP,
+                    GradientDrawable.Orientation.BL_TR,
+                    GradientDrawable.Orientation.LEFT_RIGHT,
                     GradientDrawable.Orientation.TL_BR
             };
 
@@ -83,11 +82,7 @@ public class BaseRainbowView extends RelativeLayout
 
         getHandler().removeCallbacks(rainbowRotate);
 
-        setBackground(backgroundDrawable);
-
-        if (backgroundDrawable == null)
-        {
-            setBackgroundColor(backgroundColor);
-        }
+        setBackground(null);
+        setBackgroundColor(backgroundColor);
     }
 }

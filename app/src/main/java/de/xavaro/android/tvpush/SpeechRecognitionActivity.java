@@ -193,7 +193,7 @@ public class SpeechRecognitionActivity extends BaseActivity
     private void onPleaseActivate()
     {
         speechText.setTextColor(Color.GRAY);
-        speechText.setText("Bitte drücken Sie die Mikrofon-Taste auf der Fernbedienung.");
+        speechText.setText("Bitte drücken Sie die Mikrofon-Taste auf der Fernbedienung");
     }
 
     private void onReadyForSpeech(Bundle params)
@@ -240,7 +240,7 @@ public class SpeechRecognitionActivity extends BaseActivity
         public void run()
         {
             speechText.setTextColor(Color.GRAY);
-            speechText.setText("Bitte sprechen Sie jetzt.");
+            speechText.setText("Bitte sprechen Sie jetzt");
 
             colorFrame.stop();
         }
