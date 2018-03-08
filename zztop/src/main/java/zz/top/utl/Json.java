@@ -1,5 +1,6 @@
 package zz.top.utl;
 
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -88,9 +89,37 @@ public class Json
         json.remove(key);
     }
 
-    public static void remove(JSONArray json, int index)
+    public static JSONArray removeFromArray(JSONArray json, int index)
     {
-        json.remove(index);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+        {
+            json.remove(index);
+
+            return json;
+        }
+        else
+        {
+            //
+            // For the sake of my HTC. For HTC not updating
+            // their fucked phones to some reasonable
+            // Android version...
+            //
+
+            JSONArray copy = new JSONArray();
+
+            try
+            {
+                for (int inx = 0; inx < json.length(); inx++)
+                {
+                    if (inx != index) copy.put(json.get(inx));
+                }
+            }
+            catch (Exception ignore)
+            {
+            }
+
+            return copy;
+        }
     }
 
     public static boolean equals(JSONObject j1, String k1, String val)
@@ -156,7 +185,50 @@ public class Json
     {
         try
         {
-            json.put(key, val);
+            if (val instanceof ArrayList)
+            {
+                JSONArray array = new JSONArray();
+
+                ArrayList alist= (ArrayList) val;
+
+                if ((!alist.isEmpty()) && (alist.get(0) instanceof String))
+                {
+                    for (String subval : (ArrayList<String>) val)
+                    {
+                        array.put(subval);
+                    }
+                }
+
+                if ((!alist.isEmpty()) && (alist.get(0) instanceof Integer))
+                {
+                    for (Integer subval : (ArrayList<Integer>) val)
+                    {
+                        array.put(subval);
+                    }
+                }
+
+                if ((!alist.isEmpty()) && (alist.get(0) instanceof Long))
+                {
+                    for (Long subval : (ArrayList<Long>) val)
+                    {
+                        array.put(subval);
+                    }
+                }
+
+                if ((!alist.isEmpty()) && (alist.get(0) instanceof Boolean))
+                {
+                    for (Boolean subval : (ArrayList<Boolean>) val)
+                    {
+                        array.put(subval);
+                    }
+                }
+
+                json.put(key, array);
+            }
+            else
+            {
+                json.put(key, val);
+            }
         }
         catch (Exception ex)
         {
