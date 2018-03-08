@@ -1,26 +1,20 @@
 package de.xavaro.android.base;
 
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.Drawable;
-import android.widget.RelativeLayout;
 import android.graphics.Color;
 import android.content.Context;
 import android.view.View;
 
 import de.xavaro.android.simple.Defs;
 import de.xavaro.android.simple.Simple;
-import de.xavaro.android.skills.CanRestoreBackground;
+import de.xavaro.android.skills.CanRoundedCorners;
 
-public class BaseViewRainbow extends RelativeLayout implements CanRestoreBackground
+public class BaseRainbowLayout extends BaseRelativeLayout
 {
     private int orient;
     private boolean isActive;
 
-    private Drawable backgroundDrawable;
-    private int backgroundColor = Color.TRANSPARENT;
-
-    private Drawable savedBackgroundDrawable;
-    private int savedBackgroundColor;
+    private int rainBowRadiusDip = Defs.ROUNDED_NORMAL;
 
     private int[] rainBowColors = new int[]
             {
@@ -40,45 +34,9 @@ public class BaseViewRainbow extends RelativeLayout implements CanRestoreBackgro
                     GradientDrawable.Orientation.TL_BR
             };
 
-    public BaseViewRainbow(Context context)
+    public BaseRainbowLayout(Context context)
     {
         super(context);
-    }
-
-    @Override
-    public void setBackgroundColor(int color)
-    {
-        super.setBackgroundColor(color);
-
-        backgroundColor = color;
-    }
-
-    @Override
-    public void setBackground(Drawable drawable)
-    {
-        super.setBackground(drawable);
-
-        backgroundDrawable = drawable;
-    }
-
-    @Override
-    public void saveBackground()
-    {
-        savedBackgroundColor = backgroundColor;
-        savedBackgroundDrawable = backgroundDrawable;
-    }
-
-    @Override
-    public void restoreBackground()
-    {
-        if (savedBackgroundDrawable != null)
-        {
-            setBackground(savedBackgroundDrawable);
-        }
-        else
-        {
-            setBackgroundColor(savedBackgroundColor);
-        }
     }
 
     private final Runnable rainbowRotate = new Runnable()
@@ -89,7 +47,7 @@ public class BaseViewRainbow extends RelativeLayout implements CanRestoreBackgro
             int next = orient++ % rainBowOrients.length;
 
             GradientDrawable rainbow = new GradientDrawable(rainBowOrients[ next ], rainBowColors);
-            rainbow.setCornerRadius(Simple.dipToPx(Defs.ROUNDED_NORMAL));
+            rainbow.setCornerRadius(Simple.dipToPx(rainBowRadiusDip));
 
             setBackground(rainbow);
 
@@ -107,11 +65,18 @@ public class BaseViewRainbow extends RelativeLayout implements CanRestoreBackgro
 
             View child = getChildAt(0);
 
-            if ((child != null) && (child instanceof CanRestoreBackground))
+            if (child instanceof CanRoundedCorners)
             {
-                ((CanRestoreBackground) child).saveBackground();
+                CanRoundedCorners canRC = (CanRoundedCorners) child;
 
-                child.setBackgroundColor(Color.BLACK);
+                canRC.saveBackground();
+
+                rainBowRadiusDip = canRC.getRadiusDip();
+
+                int innerColor = canRC.getInnerColor();
+                int newColor = Simple.setRGBAlpha(innerColor, 0xff);
+
+                canRC.setRoundedCornersDip(rainBowRadiusDip, newColor);
             }
 
             rainbowRotate.run();
@@ -128,9 +93,9 @@ public class BaseViewRainbow extends RelativeLayout implements CanRestoreBackgro
 
             View child = getChildAt(0);
 
-            if ((child != null) && (child instanceof CanRestoreBackground))
+            if (child instanceof CanRoundedCorners)
             {
-                ((CanRestoreBackground) child).restoreBackground();
+                ((CanRoundedCorners) child).restoreBackground();
             }
 
             restoreBackground();

@@ -7,6 +7,9 @@ public interface CanRestoreBackground
     void setBackgroundColor(int color);
     void setBackground(Drawable drawable);
 
+    int getBackgroundColor();
+    Drawable getBackground();
+
     void saveBackground();
     void restoreBackground();
 }

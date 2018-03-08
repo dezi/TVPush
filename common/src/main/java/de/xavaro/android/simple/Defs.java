@@ -18,7 +18,7 @@ public class Defs
 
     public final static int FONTSIZE_LARGE = Simple.isTablet() ? 36 : 30;
 
-    public final static int COLOR_LIGHT_TRANSPARENT = 0x11ffffff;
+    public final static int COLOR_LIGHT_TRANSPARENT = 0x22000000;
 
     // @formatter:on
 }

@@ -4,13 +4,14 @@ import android.text.TextUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.graphics.Color;
+import android.view.Gravity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.Gravity;
 import android.util.Log;
 
 import de.xavaro.android.base.BaseActivity;
-import de.xavaro.android.base.BaseViewRainbow;
+import de.xavaro.android.base.BaseRelativeLayout;
+import de.xavaro.android.base.BaseRainbowLayout;
 import de.xavaro.android.base.BaseRegistration;
 import de.xavaro.android.base.BaseRecognizer;
 import de.xavaro.android.simple.Defs;
@@ -23,7 +24,7 @@ public class SpeechRecognitionActivity extends BaseActivity
     private final Handler handler = new Handler();
 
     private BaseRecognizer recognition;
-    private BaseViewRainbow colorFrame;
+    private BaseRainbowLayout colorFrame;
     private TextView speechText;
     private boolean hadResult;
     private int orient;
@@ -38,11 +39,11 @@ public class SpeechRecognitionActivity extends BaseActivity
 
         topframe.addView(outerFrame);
 
-        colorFrame = new BaseViewRainbow(this);
+        colorFrame = new BaseRainbowLayout(this);
 
         outerFrame.addView(colorFrame);
 
-        RelativeLayout centerCont = new RelativeLayout(this);
+        BaseRelativeLayout centerCont = new BaseRelativeLayout(this);
         centerCont.setGravity(Gravity.CENTER_VERTICAL + Gravity.CENTER_HORIZONTAL);
 
         colorFrame.addView(centerCont);
@@ -61,9 +62,10 @@ public class SpeechRecognitionActivity extends BaseActivity
         if (Simple.isPhone())
         {
             outerFrame.setBackgroundColor(Color.BLACK);
-            centerCont.setBackgroundColor(Color.BLACK);
             colorFrame.setBackgroundColor(Color.BLACK);
             speechText.setBackgroundColor(Color.BLACK);
+
+            centerCont.setRoundedCornersDip(Defs.ROUNDED_MEDIUM, Color.BLACK);
 
             Simple.setSizeDip(colorFrame, Simple.MP, Simple.MP);
             Simple.setSizeDip(centerCont, Simple.MP, Simple.MP);
@@ -79,18 +81,11 @@ public class SpeechRecognitionActivity extends BaseActivity
         {
             outerFrame.setGravity(Gravity.BOTTOM);
 
-            //Simple.setRoundedCorners(centerCont, Defs.ROUNDED_MEDIUM, Defs.COLOR_LIGHT_TRANSPARENT);
-
-            //Simple.setRoundedCorners(outerFrame, Defs.ROUNDED_MEDIUM, Color.GREEN);
-            //Simple.setRoundedCorners(colorFrame, Defs.ROUNDED_MEDIUM, Color.RED);
-            //Simple.setRoundedCorners(centerCont, Defs.ROUNDED_MEDIUM, Color.BLUE);
-            //Simple.setRoundedCorners(speechText, Defs.ROUNDED_MEDIUM, Color.BLACK);
-
             outerFrame.setBackgroundColor(Color.TRANSPARENT);
             colorFrame.setBackgroundColor(Color.TRANSPARENT);
             speechText.setBackgroundColor(Color.TRANSPARENT);
 
-            Simple.setRoundedCorners(centerCont, Defs.ROUNDED_MEDIUM, Color.GRAY);
+            centerCont.setRoundedCornersDip(Defs.ROUNDED_MEDIUM, Defs.COLOR_LIGHT_TRANSPARENT);
 
             Simple.setSizeDip(colorFrame, Simple.MP, Simple.WC);
             Simple.setSizeDip(centerCont, Simple.MP, Simple.WC);

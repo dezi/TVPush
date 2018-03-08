@@ -284,24 +284,14 @@ public class Simple
         ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).bottomMargin = dipToPx(bottom);
     }
 
-    public static void setRoundedCorners(View view, int radiusdip, int color)
+    public static int getRGBAlpha(int color)
     {
-        setRoundedCorners(view, radiusdip, color, color);
+        return (color >> 24) & 0xff;
     }
 
-    public static void setRoundedCorners(View view, int radiusdip, int innerColor, int strokeColor)
+    public static int setRGBAlpha(int color, int transparency)
     {
-        GradientDrawable shape = new GradientDrawable();
-        shape.setCornerRadius(dipToPx(radiusdip));
-
-        shape.setColor(innerColor);
-
-        if (innerColor != strokeColor)
-        {
-            shape.setStroke(dipToPx(2), strokeColor);
-        }
-
-        view.setBackground(shape);
+        return (color & 0x00ffffff) | (transparency << 24);
     }
 
     //endregion View manipulation.
