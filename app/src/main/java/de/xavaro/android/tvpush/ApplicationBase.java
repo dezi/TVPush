@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import de.xavaro.android.base.BaseApplication;
 import de.xavaro.android.base.BaseRegistration;
 
+import de.xavaro.android.iot.IOTRoot;
 import zz.top.p2p.camera.P2PCloud;
 
 public class ApplicationBase extends BaseApplication
@@ -49,5 +50,7 @@ public class ApplicationBase extends BaseApplication
         p2plogin.login("blabla1234!");
 
         RegistrationService.startService(this);
+
+        Log.d(LOGTAG, " IOTRoot.root=" + IOTRoot.root.uuid);
     }
 }

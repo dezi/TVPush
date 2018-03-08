@@ -62,6 +62,8 @@ public class BaseRecognizer implements RecognitionListener
     {
         Log.d(LOGTAG, "startListening:");
 
+        handler.removeCallbacks(stopListeningRunnable);
+
         isEnabled = true;
 
         if (recognizer == null)
@@ -78,6 +80,11 @@ public class BaseRecognizer implements RecognitionListener
 
             recognizer.startListening(recognizerIntent);
         }
+
+        //
+        // Turn off beep delayed, so the first
+        // beep is delivered to user.
+        //
 
         handler.postDelayed(new Runnable()
         {
@@ -104,6 +111,15 @@ public class BaseRecognizer implements RecognitionListener
         public void run()
         {
             startListening();
+        }
+    };
+
+    private final Runnable stopListeningRunnable = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            stopListening();
         }
     };
 
@@ -217,6 +233,13 @@ public class BaseRecognizer implements RecognitionListener
     public void onPartialResults(Bundle partialResults)
     {
         Log.d(LOGTAG, "onPartialResults: result=" + getBestResult(partialResults));
+
+        //
+        // Sometimes the recognition hangs here forever.
+        //
+
+        handler.removeCallbacks(stopListeningRunnable);
+        handler.postDelayed(stopListeningRunnable, 10 * 1000);
     }
 
     @Override

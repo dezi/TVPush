@@ -2,6 +2,7 @@ package de.xavaro.android.iot;
 
 import org.json.JSONArray;
 
+@SuppressWarnings("WeakerAccess")
 public class IOTDevice extends IOTBase
 {
     public final String TYPE_PC = "pc";
@@ -11,6 +12,8 @@ public class IOTDevice extends IOTBase
     public final String TYPE_LAPTOP = "laptop";
     public final String TYPE_CAMERA= "camera";
 
+    public String nick;
+    public String name;
     public String type;
     public String model;
     public String brand;

@@ -1,8 +1,8 @@
 package de.xavaro.android.iot;
 
-public class IOTDomain
+@SuppressWarnings("WeakerAccess")
+public class IOTDomain extends IOTBase
 {
-    public String uuid;
+    public String nick;
     public String name;
-
 }

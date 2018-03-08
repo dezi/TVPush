@@ -9,48 +9,26 @@ import org.json.JSONObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import de.xavaro.android.simple.Json;
 import de.xavaro.android.simple.Simple;
 
+@SuppressWarnings("WeakerAccess")
 public abstract class IOTBase
 {
     private final static String LOGTAG = IOTBase.class.getSimpleName();
 
     public String uuid;
-    public String name;
-    public String nick;
 
     public IOTBase()
     {
+        uuid = UUID.randomUUID().toString();
     }
 
     public IOTBase(String uuid)
     {
         this.uuid = uuid;
-    }
-
-    public IOTBase(String uuid, String name)
-    {
-        this.uuid = uuid;
-        this.name = name;
-    }
-
-    public IOTBase(String uuid, String name, String nick)
-    {
-        this.uuid = uuid;
-        this.name = name;
-        this.nick = nick;
-    }
-
-    public IOTBase(JSONObject json)
-    {
-        fromJson(json);
-    }
-
-    public IOTBase(String json, boolean dummy)
-    {
-        fromJsonString(json);
     }
 
     public String toJsonString()
@@ -67,14 +45,14 @@ public abstract class IOTBase
     {
         JSONObject json = new JSONObject();
 
-        for (Field field : getClass().getDeclaredFields())
+        for (Field field : getClass().getFields())
         {
             try
             {
-                int modifier = field.getModifiers();
+                int modifiers = field.getModifiers();
 
-                if ((modifier & Modifier.PUBLIC) != Modifier.PUBLIC) continue;
-                if ((modifier & Modifier.STATIC) == Modifier.STATIC) continue;
+                if ((modifiers & Modifier.PUBLIC) != Modifier.PUBLIC) continue;
+                if ((modifiers & Modifier.STATIC) == Modifier.STATIC) continue;
 
                 Object ival = field.get(this);
                 if (ival == null) continue;
@@ -105,16 +83,17 @@ public abstract class IOTBase
     {
         if (json == null) return false;
 
-        for (Field field : getClass().getDeclaredFields())
+        boolean ok = false;
+
+        for (Field field : getClass().getFields())
         {
             try
             {
-                int modifier = field.getModifiers();
-
-                if ((modifier & Modifier.PUBLIC) != Modifier.PUBLIC) continue;
-                if ((modifier & Modifier.STATIC) == Modifier.STATIC) continue;
-
                 String name = field.getName();
+                int modifiers = field.getModifiers();
+
+                if ((modifiers & Modifier.PUBLIC) != Modifier.PUBLIC) continue;
+                if ((modifiers & Modifier.STATIC) == Modifier.STATIC) continue;
 
                 if (Json.has(json, name))
                 {
@@ -132,6 +111,8 @@ public abstract class IOTBase
 
                     {
                         field.set(this, jval);
+
+                        ok = true;
                     }
                 }
             }
@@ -141,10 +122,10 @@ public abstract class IOTBase
             }
         }
 
-        return true;
+        return ok;
     }
 
-    private String getKey()
+    public String getKey()
     {
         return "iot." + getClass().getSimpleName() + "." + uuid;
     }
@@ -162,7 +143,8 @@ public abstract class IOTBase
 
             ok = prefs.edit().putString(key, json).commit();
 
-            Log.d(LOGTAG, "saveToStorage: uuid=" + uuid + " ok=" + ok + " json=" + json);
+            Log.d(LOGTAG, "saveToStorage: key=" + key + " ok=" + ok + " json=");
+            Log.d(LOGTAG, json);
         }
 
         return ok;
@@ -177,7 +159,8 @@ public abstract class IOTBase
 
         boolean ok = fromJsonString(json);
 
-        Log.d(LOGTAG, "loadFromStorage: uuid=" + uuid + " ok=" + ok + " json=" + json);
+        Log.d(LOGTAG, "loadFromStorage: key=" + key + " ok=" + ok + " json=");
+        Log.d(LOGTAG, json);
 
         return ok;
     }

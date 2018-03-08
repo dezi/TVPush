@@ -71,7 +71,7 @@ public class BaseRainbowLayout extends BaseRelativeLayout
 
                 canRC.saveBackground();
 
-                rainBowRadiusDip = Math.round(canRC.getRadiusDip() * 0.75f);
+                rainBowRadiusDip = Math.round(canRC.getRadiusDip() * 0.5f);
 
                 int innerColor = canRC.getInnerColor();
                 int newColor = Simple.setRGBAlpha(innerColor, 0xff);
