@@ -289,9 +289,9 @@ public class Simple
         return (color >> 24) & 0xff;
     }
 
-    public static int setRGBAlpha(int color, int transparency)
+    public static int setRGBAlpha(int color, int alpha)
     {
-        return (color & 0x00ffffff) | (transparency << 24);
+        return (color & 0x00ffffff) | (alpha << 24);
     }
 
     //endregion View manipulation.
