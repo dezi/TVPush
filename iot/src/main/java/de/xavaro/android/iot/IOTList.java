@@ -1,7 +1,5 @@
 package de.xavaro.android.iot;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 
 import java.util.HashMap;
@@ -14,7 +12,7 @@ public abstract class IOTList
 {
     private final static String LOGTAG = IOTList.class.getSimpleName();
 
-    public Map<String, IOTBase> list = new HashMap<>();
+    private Map<String, IOTBase> list = new HashMap<>();
 
     public IOTList(String classKey)
     {
@@ -40,7 +38,7 @@ public abstract class IOTList
         }
     }
 
-    public int getListSize()
+    private int getListSize()
     {
         return list.size();
     }
