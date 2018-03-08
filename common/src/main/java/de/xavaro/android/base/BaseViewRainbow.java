@@ -2,20 +2,25 @@ package de.xavaro.android.base;
 
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.Color;
 import android.widget.RelativeLayout;
+import android.graphics.Color;
 import android.content.Context;
+import android.view.View;
 
 import de.xavaro.android.simple.Defs;
 import de.xavaro.android.simple.Simple;
+import de.xavaro.android.skills.CanRestoreBackground;
 
-public class BaseViewRainbow extends RelativeLayout
+public class BaseViewRainbow extends RelativeLayout implements CanRestoreBackground
 {
     private int orient;
     private boolean isActive;
 
-    private int backgroundColor;
     private Drawable backgroundDrawable;
+    private int backgroundColor = Color.TRANSPARENT;
+
+    private Drawable savedBackgroundDrawable;
+    private int savedBackgroundColor;
 
     private int[] rainBowColors = new int[]
             {
@@ -56,6 +61,26 @@ public class BaseViewRainbow extends RelativeLayout
         backgroundDrawable = drawable;
     }
 
+    @Override
+    public void saveBackground()
+    {
+        savedBackgroundColor = backgroundColor;
+        savedBackgroundDrawable = backgroundDrawable;
+    }
+
+    @Override
+    public void restoreBackground()
+    {
+        if (savedBackgroundDrawable != null)
+        {
+            setBackground(savedBackgroundDrawable);
+        }
+        else
+        {
+            setBackgroundColor(savedBackgroundColor);
+        }
+    }
+
     private final Runnable rainbowRotate = new Runnable()
     {
         @Override
@@ -78,17 +103,37 @@ public class BaseViewRainbow extends RelativeLayout
         {
             isActive = true;
 
+            saveBackground();
+
+            View child = getChildAt(0);
+
+            if ((child != null) && (child instanceof CanRestoreBackground))
+            {
+                ((CanRestoreBackground) child).saveBackground();
+
+                child.setBackgroundColor(Color.BLACK);
+            }
+
             rainbowRotate.run();
         }
     }
 
     public void stop()
     {
-        isActive = false;
+        if (isActive)
+        {
+            isActive = false;
 
-        getHandler().removeCallbacks(rainbowRotate);
+            getHandler().removeCallbacks(rainbowRotate);
 
-        setBackground(null);
-        setBackgroundColor(backgroundColor);
+            View child = getChildAt(0);
+
+            if ((child != null) && (child instanceof CanRestoreBackground))
+            {
+                ((CanRestoreBackground) child).restoreBackground();
+            }
+
+            restoreBackground();
+        }
     }
 }

@@ -1,5 +1,6 @@
 package de.xavaro.android.tvpush;
 
+import android.text.TextUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.graphics.Color;
@@ -38,19 +39,20 @@ public class SpeechRecognitionActivity extends BaseActivity
         topframe.addView(outerFrame);
 
         colorFrame = new BaseViewRainbow(this);
-        Simple.setSizeDip(colorFrame, Simple.MP, Simple.MP);
 
         outerFrame.addView(colorFrame);
 
         RelativeLayout centerCont = new RelativeLayout(this);
         centerCont.setGravity(Gravity.CENTER_VERTICAL + Gravity.CENTER_HORIZONTAL);
-        Simple.setMarginDip(centerCont, Defs.PADDING_XLARGE, Defs.PADDING_NORMAL, Defs.PADDING_XLARGE, Defs.PADDING_NORMAL);
 
         colorFrame.addView(centerCont);
 
         speechText = new TextView(this);
         speechText.setGravity(Gravity.CENTER_HORIZONTAL);
         speechText.setTextColor(Color.WHITE);
+        speechText.setSingleLine(true);
+        speechText.setEllipsize(TextUtils.TruncateAt.START);
+
         Simple.setTextSizeDip(speechText, Defs.FONTSIZE_LARGE);
         Simple.setSizeDip(speechText, Simple.WC, Simple.WC);
 
@@ -63,6 +65,7 @@ public class SpeechRecognitionActivity extends BaseActivity
             colorFrame.setBackgroundColor(Color.BLACK);
             speechText.setBackgroundColor(Color.BLACK);
 
+            Simple.setSizeDip(colorFrame, Simple.MP, Simple.MP);
             Simple.setSizeDip(centerCont, Simple.MP, Simple.MP);
 
             speechText.setMinLines(3);
@@ -76,10 +79,26 @@ public class SpeechRecognitionActivity extends BaseActivity
         {
             outerFrame.setGravity(Gravity.BOTTOM);
 
+            //Simple.setRoundedCorners(centerCont, Defs.ROUNDED_MEDIUM, Defs.COLOR_LIGHT_TRANSPARENT);
+
+            //Simple.setRoundedCorners(outerFrame, Defs.ROUNDED_MEDIUM, Color.GREEN);
+            //Simple.setRoundedCorners(colorFrame, Defs.ROUNDED_MEDIUM, Color.RED);
+            //Simple.setRoundedCorners(centerCont, Defs.ROUNDED_MEDIUM, Color.BLUE);
+            //Simple.setRoundedCorners(speechText, Defs.ROUNDED_MEDIUM, Color.BLACK);
+
+            outerFrame.setBackgroundColor(Color.TRANSPARENT);
+            colorFrame.setBackgroundColor(Color.TRANSPARENT);
+            speechText.setBackgroundColor(Color.TRANSPARENT);
+
+            Simple.setRoundedCorners(centerCont, Defs.ROUNDED_MEDIUM, Color.GRAY);
+
+            Simple.setSizeDip(colorFrame, Simple.MP, Simple.WC);
             Simple.setSizeDip(centerCont, Simple.MP, Simple.WC);
 
-            Simple.setRoundedCorners(centerCont, Defs.ROUNDED_MEDIUM, Defs.COLOR_LIGHT_TRANSPARENT);
-            Simple.setPaddingDip(speechText, Defs.PADDING_SMALL);
+            Simple.setPaddingDip(outerFrame, Defs.PADDING_SMALL);
+            Simple.setPaddingDip(colorFrame, Defs.PADDING_SMALL);
+            Simple.setPaddingDip(centerCont, Defs.PADDING_SMALL);
+            Simple.setPaddingDip(speechText, Defs.PADDING_ZERO);
         }
     }
 
