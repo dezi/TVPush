@@ -18,4 +18,9 @@ public class IOTHuman extends IOTBase
     {
         super(uuid);
     }
+
+    public IOTHuman(String json, boolean dummy)
+    {
+        super(json, dummy);
+    }
 }

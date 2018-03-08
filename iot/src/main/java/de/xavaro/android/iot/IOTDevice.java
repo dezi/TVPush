@@ -31,4 +31,9 @@ public class IOTDevice extends IOTBase
     {
         super(uuid);
     }
+
+    public IOTDevice(String json, boolean dummy)
+    {
+        super(json, dummy);
+    }
 }

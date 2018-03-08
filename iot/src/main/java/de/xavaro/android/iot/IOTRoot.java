@@ -2,6 +2,8 @@ package de.xavaro.android.iot;
 
 import android.util.Log;
 
+import org.json.JSONArray;
+
 import de.xavaro.android.simple.Json;
 import de.xavaro.android.simple.Simple;
 
@@ -17,8 +19,21 @@ public class IOTRoot extends IOTBase
 
     static
     {
-        Simple.removeALLPrefs();
+        loadOwnIdentity();
+    }
 
+    @Override
+    public String getUUIDKey()
+    {
+        //
+        // This class is a singleton.
+        //
+
+        return "iot." + IOTRoot.class.getSimpleName();
+    }
+
+    private static void loadOwnIdentity()
+    {
         root = new IOTRoot();
 
         if (! root.loadFromStorage())
@@ -41,7 +56,10 @@ public class IOTRoot extends IOTBase
             meme.saveToStorage();
         }
 
-        Log.d(LOGTAG, "static: meme=" + meme.uuid);
+        Log.d(LOGTAG, "static:"
+                + " meme=" + meme.uuid
+                + " memeHumanUUID=" + meme.memeHumanUUID
+                + " memeDeviceUUID=" + meme.memeDeviceUUID);
 
         if ((meme.memeDeviceUUID == null) || meme.memeDeviceUUID.isEmpty())
         {
@@ -88,13 +106,20 @@ public class IOTRoot extends IOTBase
         }
     }
 
-    @Override
-    public String getKey()
+    private static void loadAllItems()
     {
-        //
-        // This class is a singleton.
-        //
+        JSONArray list = IOTDevices.devices.getListUUIDs();
 
-        return "iot." + IOTRoot.class.getSimpleName();
+        for (int inx = 0; inx < list.length(); inx++)
+        {
+            String uuid = Json.getString(list, inx);
+            if (uuid == null) continue;
+
+            IOTDevice device = IOTDevices.devices.getDevice(uuid);
+
+            Log.d(LOGTAG, "loadAllItems: IOTDevice:"
+                    + " uuid=" + device.uuid
+                    + " name=" + device.name);
+        }
     }
 }

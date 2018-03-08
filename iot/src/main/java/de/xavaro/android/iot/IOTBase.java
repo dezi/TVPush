@@ -1,6 +1,5 @@
 package de.xavaro.android.iot;
 
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import de.xavaro.android.simple.Json;
-import de.xavaro.android.simple.Simple;
+import de.xavaro.android.simple.Prefs;
 
 @SuppressWarnings("WeakerAccess")
 public abstract class IOTBase
@@ -29,6 +28,11 @@ public abstract class IOTBase
     public IOTBase(String uuid)
     {
         this.uuid = uuid;
+    }
+
+    public IOTBase(String json, boolean dummy)
+    {
+        fromJsonString(json);
     }
 
     public String toJsonString()
@@ -100,21 +104,17 @@ public abstract class IOTBase
                 if (Json.has(json, name))
                 {
                     Object jval = Json.get(json, name);
-                    Object ival = field.get(this);
 
-                    if (((jval instanceof JSONObject) && (ival instanceof JSONObject))
-                        || ((jval instanceof JSONArray) && (ival instanceof JSONArray))
-                        || ((jval instanceof ArrayList) && (ival instanceof ArrayList))
-                        || ((jval instanceof Integer) && (ival instanceof Integer))
-                        || ((jval instanceof Boolean) && (ival instanceof Boolean))
-                        || ((jval instanceof String) && (ival instanceof String))
-                        || ((jval instanceof Byte) && (ival instanceof Byte))
-                        || ((jval instanceof Long) && (ival instanceof Long)))
-
+                    try
                     {
                         field.set(this, jval);
-
                         ok = true;
+                    }
+                    catch (Exception ignore)
+                    {
+                        //
+                        // Someone changed the data type in between.
+                        //
                     }
                 }
             }
@@ -127,9 +127,14 @@ public abstract class IOTBase
         return ok;
     }
 
-    public String getKey()
+    public String getClassKey()
     {
-        return "iot." + getClass().getSimpleName() + "." + uuid;
+        return "iot." + getClass().getSimpleName() + ".";
+    }
+
+    public String getUUIDKey()
+    {
+        return getClassKey() + uuid;
     }
 
     public boolean saveToStorage()
@@ -138,12 +143,10 @@ public abstract class IOTBase
 
         if ((uuid != null) && ! uuid.isEmpty())
         {
-            String key = getKey();
+            String key = getUUIDKey();
             String json = toJsonString();
 
-            SharedPreferences prefs = Simple.getPrefs();
-
-            ok = prefs.edit().putString(key, json).commit();
+            ok = Prefs.setString(key, json);
 
             Log.d(LOGTAG, "saveToStorage: key=" + key + " ok=" + ok + " json=");
             Log.d(LOGTAG, json);
@@ -154,10 +157,8 @@ public abstract class IOTBase
 
     public boolean loadFromStorage()
     {
-        SharedPreferences prefs = Simple.getPrefs();
-
-        String key = getKey();
-        String json = prefs.getString(key, null);
+        String key = getUUIDKey();
+        String json = Prefs.getString(key);
 
         boolean ok = fromJsonString(json);
 

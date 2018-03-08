@@ -15,4 +15,10 @@ public class IOTDomain extends IOTBase
     {
         super(uuid);
     }
+
+    public IOTDomain(String json, boolean dummy)
+    {
+        super(json, dummy);
+    }
+
 }
