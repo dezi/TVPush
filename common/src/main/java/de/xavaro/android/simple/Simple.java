@@ -9,9 +9,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.Context;
 import android.graphics.Point;
-import android.graphics.drawable.GradientDrawable;
 import android.media.AudioManager;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -46,8 +44,9 @@ public class Simple
     private static boolean istouch;
     private static boolean istablet;
     private static boolean iswidescreen;
-    private static boolean isspeech;
+    private static boolean isspeechin;
     private static boolean isretina;
+    private static boolean iscamera;
 
     private static int deviceWidth;
     private static int deviceHeight;
@@ -86,6 +85,7 @@ public class Simple
         UiModeManager uiModeManager = (UiModeManager) app.getSystemService(Context.UI_MODE_SERVICE);
         istv = (uiModeManager != null) && (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION);
 
+        iscamera = packageManager.hasSystemFeature("android.hardware.camera");
         istouch = packageManager.hasSystemFeature("android.hardware.touchscreen");
 
         istablet = ((Resources.getSystem().getConfiguration().screenLayout
@@ -94,7 +94,7 @@ public class Simple
 
         iswidescreen = (deviceWidth / (float) deviceHeight) > (4 / 3f);
 
-        isspeech = android.speech.SpeechRecognizer.isRecognitionAvailable(app);
+        isspeechin = android.speech.SpeechRecognizer.isRecognitionAvailable(app);
 
         isretina = (deviceDensity >= 2.0);
     }
@@ -129,9 +129,14 @@ public class Simple
         return isretina;
     }
 
-    public static boolean isSpeech()
+    public static boolean isSpeechIn()
     {
-        return isspeech;
+        return isspeechin;
+    }
+
+    public static boolean isIscamera()
+    {
+        return iscamera;
     }
 
     public static boolean isOnline(Context context)
@@ -211,6 +216,66 @@ public class Simple
         if (isTablet()) return "tablet";
 
         return "unknown";
+    }
+
+    public static String getDeviceCapabilities()
+    {
+        String capa = "";
+
+        if (isTV())
+        {
+            capa += "tv|fixed|hd";
+
+            if (getDeviceModelName().contains("BRAVIA 4K"))
+            {
+                capa += "|1080p|uhd|4k|mic";
+            }
+            else
+            {
+                if (getDeviceWidth() >= 1080)
+                {
+                    capa += "|1080p";
+                }
+                else
+                {
+                    capa += "|720p";
+                }
+            }
+        }
+        else
+        {
+            if (isTablet())
+            {
+                capa += "tablet|mic";
+            }
+            else
+            {
+                if (isPhone())
+                {
+                    capa += "phone|mic";
+                }
+                else
+                {
+                    capa += "unknown";
+                }
+            }
+        }
+
+        capa += "|speaker|tcp|wifi";
+
+        if (isTouch()) capa += "|touch";
+        if (isIscamera()) capa += "|camera";
+        if (isWideScreen()) capa += "|widescreen";
+
+        if (isSpeechIn() && capa.contains("|mic|")) capa += "|spechin";
+        if (capa.contains("|speaker|")) capa += "|spechout";
+
+        if ((getFCMToken() != null) && ! getFCMToken().isEmpty())
+        {
+            capa += "|fcm";
+        }
+
+        return capa;
     }
 
     public static String getDeviceUserName()

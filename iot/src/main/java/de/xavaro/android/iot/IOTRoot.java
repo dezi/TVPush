@@ -2,6 +2,7 @@ package de.xavaro.android.iot;
 
 import android.util.Log;
 
+import de.xavaro.android.simple.Json;
 import de.xavaro.android.simple.Simple;
 
 @SuppressWarnings("WeakerAccess")
@@ -58,7 +59,10 @@ public class IOTRoot extends IOTBase
             device.brand = Simple.getDeviceBrandName();
             device.model = Simple.getDeviceModelName();
             device.version =  Simple.getAndroidVersion();
+
             device.location = "@" + Simple.getConnectedWifiName();
+
+            device.capabilities = Json.jsonArrayFromSeparatedString(Simple.getDeviceCapabilities(), "\\|");
 
             meme.memeDeviceUUID = device.uuid;
 

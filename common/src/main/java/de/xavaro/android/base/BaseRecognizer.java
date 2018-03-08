@@ -32,7 +32,7 @@ public class BaseRecognizer implements RecognitionListener
     {
         this.context = context;
 
-        if (Simple.isSpeech())
+        if (Simple.isSpeechIn())
         {
             Log.d(LOGTAG, "SpeechRecognizer: init.");
 
@@ -98,6 +98,8 @@ public class BaseRecognizer implements RecognitionListener
 
     public void stopListening()
     {
+        Log.d(LOGTAG, "stopListening:");
+
         Simple.turnBeepOnOff(context, true);
 
         isEnabled = false;
