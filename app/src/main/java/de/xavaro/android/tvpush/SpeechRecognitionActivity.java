@@ -51,26 +51,24 @@ public class SpeechRecognitionActivity extends BaseActivity
         speechText = new TextView(this);
         speechText.setGravity(Gravity.CENTER_HORIZONTAL);
         speechText.setTextColor(Color.WHITE);
-        speechText.setSingleLine(true);
-        speechText.setEllipsize(TextUtils.TruncateAt.START);
 
-        Simple.setTextSizeDip(speechText, Defs.FONTSIZE_LARGE);
-        Simple.setSizeDip(speechText, Simple.WC, Simple.WC);
+        Simple.setTextSizeDip(speechText, Defs.FONTSIZE_SPEECH);
 
         centerCont.addView(speechText);
 
         if (Simple.isPhone())
         {
+            speechText.setMinLines(3);
+
             outerFrame.setBackgroundColor(Color.BLACK);
             colorFrame.setBackgroundColor(Color.BLACK);
             speechText.setBackgroundColor(Color.BLACK);
 
-            centerCont.setRoundedCornersDip(Defs.ROUNDED_MEDIUM, Color.BLACK);
+            centerCont.setRoundedCornersDip(Defs.ROUNDED_XLARGE, Color.BLACK);
 
             Simple.setSizeDip(colorFrame, Simple.MP, Simple.MP);
             Simple.setSizeDip(centerCont, Simple.MP, Simple.MP);
-
-            speechText.setMinLines(3);
+            Simple.setSizeDip(speechText, Simple.MP, Simple.WC);
 
             Simple.setPaddingDip(outerFrame, Defs.PADDING_LARGE);
             Simple.setPaddingDip(colorFrame, Defs.PADDING_LARGE);
@@ -88,6 +86,9 @@ public class SpeechRecognitionActivity extends BaseActivity
                 outerFrame.setGravity(Gravity.TOP);
             }
 
+            speechText.setSingleLine(true);
+            speechText.setEllipsize(TextUtils.TruncateAt.START);
+
             outerFrame.setBackgroundColor(Color.TRANSPARENT);
             colorFrame.setBackgroundColor(Color.TRANSPARENT);
             speechText.setBackgroundColor(Color.TRANSPARENT);
@@ -96,6 +97,7 @@ public class SpeechRecognitionActivity extends BaseActivity
 
             Simple.setSizeDip(colorFrame, Simple.MP, Simple.WC);
             Simple.setSizeDip(centerCont, Simple.MP, Simple.WC);
+            Simple.setSizeDip(speechText, Simple.WC, Simple.WC);
 
             Simple.setPaddingDip(outerFrame, Defs.PADDING_SMALL);
             Simple.setPaddingDip(colorFrame, Defs.PADDING_SMALL);

@@ -15,8 +15,10 @@ public class Defs
     public static final int ROUNDED_SMALL    = Simple.isTablet() ?  8 :  4;
     public static final int ROUNDED_MEDIUM   = Simple.isTablet() ? 16 : 12;
     public static final int ROUNDED_NORMAL   = Simple.isTablet() ? 24 : 18;
+    public static final int ROUNDED_XLARGE   = Simple.isTablet() ? 40 : 30;
 
-    public final static int FONTSIZE_LARGE = Simple.isTablet() ? 36 : 30;
+    public final static int FONTSIZE_LARGE  = Simple.isTablet() ? 36 : 30;
+    public final static int FONTSIZE_SPEECH = Simple.isTablet() ? 30 : 30;
 
     public final static int COLOR_LIGHT_TRANSPARENT = 0x22000000;
 
