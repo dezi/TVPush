@@ -12,7 +12,7 @@ public abstract class IOTList
 {
     private final static String LOGTAG = IOTList.class.getSimpleName();
 
-    private Map<String, IOTBase> list = new HashMap<>();
+    public Map<String, IOTBase> list = new HashMap<>();
 
     public IOTList(String classKey)
     {
@@ -38,7 +38,7 @@ public abstract class IOTList
         }
     }
 
-    private int getListSize()
+    public int getListSize()
     {
         return list.size();
     }

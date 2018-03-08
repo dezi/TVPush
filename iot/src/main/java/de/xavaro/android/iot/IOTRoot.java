@@ -96,11 +96,27 @@ public class IOTRoot extends IOTBase
             device = new IOTDevice(meme.memeDeviceUUID);
         }
 
-        if ((meme.memeDeviceUUID == null) || meme.memeDeviceUUID.isEmpty())
+        if ((meme.memeHumanUUID == null) || meme.memeHumanUUID.isEmpty())
         {
             //
             // Only create if there are NO humans at all known.
             //
+
+            if (IOTHumans.getCount() == 0)
+            {
+                human = new IOTHuman();
+
+                Log.d(LOGTAG, "static: new human=" + human.uuid);
+
+                human.nick = Simple.getDeviceUserName();
+            }
+
+            meme.memeHumanUUID = human.uuid;
+
+            if (meme.saveToStorage())
+            {
+                human.saveToStorage();
+            }
         }
         else
         {
