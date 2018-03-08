@@ -1,23 +1,25 @@
 package de.xavaro.android.simple;
 
 import android.support.annotation.Nullable;
+
+import android.os.Build;
 import android.util.Log;
 
-import org.json.JSONObject;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-@SuppressWarnings({"WeakerAccess", "unused"})
+@SuppressWarnings({"WeakerAccess"})
 public class Json
 {
-    private static final String LOGTAG = Json.class.getSimpleName();
+    private static final String LOGTAG = zz.top.utl.Json.class.getSimpleName();
 
     @Nullable
     public static JSONObject fromStringObject(String jsonstr)
@@ -88,9 +90,37 @@ public class Json
         json.remove(key);
     }
 
-    public static void remove(JSONArray json, int index)
+    public static JSONArray removeFromArray(JSONArray json, int index)
     {
-        json.remove(index);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+        {
+            json.remove(index);
+
+            return json;
+        }
+        else
+        {
+            //
+            // For the sake of my HTC. For HTC not updating
+            // their fucked phones to some reasonable
+            // Android version...
+            //
+
+            JSONArray copy = new JSONArray();
+
+            try
+            {
+                for (int inx = 0; inx < json.length(); inx++)
+                {
+                    if (inx != index) copy.put(json.get(inx));
+                }
+            }
+            catch (Exception ignore)
+            {
+            }
+
+            return copy;
+        }
     }
 
     public static boolean equals(JSONObject j1, String k1, String val)
@@ -156,7 +186,50 @@ public class Json
     {
         try
         {
-            json.put(key, val);
+            if (val instanceof ArrayList)
+            {
+                JSONArray array = new JSONArray();
+
+                ArrayList alist= (ArrayList) val;
+
+                if ((!alist.isEmpty()) && (alist.get(0) instanceof String))
+                {
+                    for (String subval : (ArrayList<String>) val)
+                    {
+                        array.put(subval);
+                    }
+                }
+
+                if ((!alist.isEmpty()) && (alist.get(0) instanceof Integer))
+                {
+                    for (Integer subval : (ArrayList<Integer>) val)
+                    {
+                        array.put(subval);
+                    }
+                }
+
+                if ((!alist.isEmpty()) && (alist.get(0) instanceof Long))
+                {
+                    for (Long subval : (ArrayList<Long>) val)
+                    {
+                        array.put(subval);
+                    }
+                }
+
+                if ((!alist.isEmpty()) && (alist.get(0) instanceof Boolean))
+                {
+                    for (Boolean subval : (ArrayList<Boolean>) val)
+                    {
+                        array.put(subval);
+                    }
+                }
+
+                json.put(key, array);
+            }
+            else
+            {
+                json.put(key, val);
+            }
         }
         catch (Exception ex)
         {
@@ -378,12 +451,12 @@ public class Json
 
     public static String toJavaScript(JSONObject jsonObject)
     {
-        return (jsonObject == null) ? "{}" : Json.toPretty(jsonObject);
+        return (jsonObject == null) ? "{}" : zz.top.utl.Json.toPretty(jsonObject);
     }
 
     public static String toJavaScript(JSONArray jsonArray)
     {
-        return (jsonArray == null) ? "[]" : Json.toPretty(jsonArray);
+        return (jsonArray == null) ? "[]" : zz.top.utl.Json.toPretty(jsonArray);
     }
 
     public static void makeFormat(JSONObject jsonObject, String key, Object... args)

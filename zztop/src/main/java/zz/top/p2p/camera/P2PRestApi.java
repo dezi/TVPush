@@ -7,6 +7,8 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -180,7 +182,7 @@ public class P2PRestApi
     {
         String queryData = "";
 
-        Iterator<String> keysIterator = params.keys();
+        Iterator<String> keysIterator = sortedIterator(params.keys());
 
         while (keysIterator.hasNext())
         {
@@ -206,6 +208,17 @@ public class P2PRestApi
         }
 
         return queryData;
+    }
+
+    private static Iterator<String> sortedIterator(Iterator<String> iterator)
+    {
+        ArrayList<String> list = new ArrayList<>();
+
+        while (iterator.hasNext()) list.add(iterator.next());
+
+        Collections.sort(list);
+
+        return list.iterator();
     }
 
     public interface RestApiResultListener

@@ -23,6 +23,12 @@ import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+
 public class Simple
 {
     //region Basic defines.
@@ -339,6 +345,17 @@ public class Simple
                 audioManager.setStreamMute(AudioManager.STREAM_MUSIC, ! on);
             }
         }
+    }
+
+    public static Iterator<String> sortedIterator(Iterator<String> iterator)
+    {
+        ArrayList<String> list = new ArrayList<>();
+
+        while (iterator.hasNext()) list.add(iterator.next());
+
+        Collections.sort(list);
+
+        return list.iterator();
     }
 
     //endregion Smart helpers.
