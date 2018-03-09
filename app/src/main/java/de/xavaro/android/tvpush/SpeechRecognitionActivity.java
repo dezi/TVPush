@@ -1,6 +1,5 @@
 package de.xavaro.android.tvpush;
 
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -13,14 +12,13 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 import de.xavaro.android.base.BaseActivity;
 import de.xavaro.android.base.BaseRelativeLayout;
 import de.xavaro.android.base.BaseRainbowLayout;
 import de.xavaro.android.base.BaseRegistration;
 import de.xavaro.android.base.BaseSpeech;
 import de.xavaro.android.base.BaseSpeechCallback;
+
 import de.xavaro.android.iot.comm.IOTMessage;
 import de.xavaro.android.simple.Defs;
 import de.xavaro.android.simple.Json;
@@ -32,9 +30,8 @@ public class SpeechRecognitionActivity extends BaseActivity implements BaseSpeec
 
     private final Handler handler = new Handler();
 
-    private BaseSpeech recognition;
-
     private BaseRainbowLayout colorFrame;
+    private BaseSpeech recognition;
     private TextView speechText;
     private boolean hadResult;
 
@@ -181,18 +178,6 @@ public class SpeechRecognitionActivity extends BaseActivity implements BaseSpeec
         super.onBackPressed();
     }
 
-    private final Runnable pleaseSpeekNow = new Runnable()
-    {
-        @Override
-        public void run()
-        {
-            speechText.setTextColor(Color.GRAY);
-            speechText.setText("Bitte sprechen Sie jetzt");
-
-            colorFrame.stop();
-        }
-    };
-
     @Override
     public void onActivateRemote()
     {
@@ -213,23 +198,35 @@ public class SpeechRecognitionActivity extends BaseActivity implements BaseSpeec
     public void onSpeechResults(JSONObject speech)
     {
         JSONArray results = Json.getArray(speech, "results");
-        boolean partial = Json.getBoolean(speech, "partial");
+        if ((results == null) || (results.length() == 0)) return;
 
-        if (results.length() > 0)
-        {
-            JSONObject result = Json.getObject(results, 0);
+        JSONObject result = Json.getObject(results, 0);
 
-            String text = Json.getString(result, "text");
-            float conf = Json.getFloat(result, "conf");
+        String text = Json.getString(result, "text");
+        float conf = Json.getFloat(result, "conf");
 
-            Log.d(LOGTAG, "onSpeechResults: conf=" + conf + " text=" + text);
+        Log.d(LOGTAG, "onSpeechResults: conf=" + conf + " text=" + text);
 
-            speechText.setTextColor(Color.WHITE);
-            speechText.setText(text);
+        speechText.setTextColor(Color.WHITE);
+        speechText.setText(text);
 
-            hadResult = true;
+        colorFrame.start();
 
-            colorFrame.start();
-        }
+        hadResult = true;
+
+        IOTMessage.sendSTOT(speech);
     }
+
+    private final Runnable pleaseSpeekNow = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            speechText.setTextColor(Color.GRAY);
+            speechText.setText("Bitte sprechen Sie jetzt");
+
+            colorFrame.stop();
+        }
+    };
+
 }

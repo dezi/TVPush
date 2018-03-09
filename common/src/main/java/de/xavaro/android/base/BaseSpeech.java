@@ -247,13 +247,6 @@ public class BaseSpeech implements RecognitionListener
     @Override
     public void onPartialResults(Bundle partialResults)
     {
-        String bestresult = getBestResult(partialResults);
-
-        if (bestresult != null)
-        {
-            Log.d(LOGTAG, "onPartialResults: result=" + bestresult);
-        }
-
         JSONObject jresults = resultsToJSON(partialResults, true);
         if ((jresults != null) && (callback != null)) callback.onSpeechResults(jresults);
 
@@ -268,36 +261,12 @@ public class BaseSpeech implements RecognitionListener
     @Override
     public void onResults(Bundle results)
     {
-        String bestresult = getBestResult(results);
-
-        if (bestresult != null)
-        {
-            Log.d(LOGTAG, "onResults: result=" + bestresult);
-        }
-
         JSONObject jresults = resultsToJSON(results, true);
         if ((jresults != null) && (callback != null)) callback.onSpeechResults(jresults);
 
         lockStart = false;
 
         if (isEnabled) startListening();
-    }
-
-    @Nullable
-    public String getBestResult(Bundle results)
-    {
-        ArrayList<String> text = results.getStringArrayList(android.speech.SpeechRecognizer.RESULTS_RECOGNITION);
-        float[] conf = results.getFloatArray(android.speech.SpeechRecognizer.CONFIDENCE_SCORES);
-
-        if ((text != null) && (text.size() > 0))
-        {
-            if ((conf == null) || ((conf.length > 0) && (conf[ 0 ] > 0.0f)))
-            {
-               return text.get(0);
-            }
-        }
-
-        return null;
     }
 
     @Nullable
