@@ -17,7 +17,7 @@ public class ApplicationBase extends BaseApplication
 
         Simple.initialize(this);
 
-        Simple.removeALLPrefs();
+        //Simple.removeALLPrefs();
 
         IOT.initialize();
 
