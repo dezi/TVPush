@@ -31,6 +31,10 @@ public class IOTHandleStot extends IOTHandler
         JSONArray results = Json.getArray(speech, "results");
         if (results == null) return;
 
+        //
+        // Just for logging this message. We do not need it.
+        //
+        
         Log.d(LOGTAG, "receiveSTOT: words=" + results.length());
     }
 }
