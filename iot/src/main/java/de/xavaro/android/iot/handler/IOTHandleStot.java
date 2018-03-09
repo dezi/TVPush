@@ -29,12 +29,24 @@ public class IOTHandleStot extends IOTHandler
     {
         JSONObject speech = Json.getObject(message, "speech");
         JSONArray results = Json.getArray(speech, "results");
-        if (results == null) return;
+
+        if ((results == null) || (results.length() == 0))
+        {
+            //
+            // Bogus message.
+            //
+
+            return;
+        }
+
+        JSONObject result = Json.getObject(results, 0);
+        String text = Json.getString(result, "text");
+        float conf = Json.getFloat(result, "conf");
 
         //
         // Just for logging this message. We do not need it.
         //
-        
-        Log.d(LOGTAG, "receiveSTOT: words=" + results.length());
+
+        Log.d(LOGTAG, "receiveSTOT: conf=" + conf + " text=" + text);
     }
 }

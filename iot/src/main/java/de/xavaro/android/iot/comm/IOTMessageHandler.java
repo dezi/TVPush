@@ -73,25 +73,7 @@ public class IOTMessageHandler
     {
         String type = Json.getString(message, "type");
 
-        JSONObject device = Json.getObject(message, "device");
-        JSONObject origin = Json.getObject(message, "origin");
-        String deviceUUID = Json.getString(device, "uuid");
-
         if (type == null) return;
-        if (deviceUUID == null) return;
-
-        if (deviceUUID.equals(IOT.device.uuid))
-        {
-            //
-            // Broadcasted message from ourself.
-            //
-
-            return;
-        }
-
-        Log.d(LOGTAG, "receiveMessage: message"
-                + " type=" + type
-                + " ipaddr=" + Json.getString(origin, "ipaddr"));
 
         //
         // Call type handlers.
