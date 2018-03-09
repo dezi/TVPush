@@ -28,6 +28,8 @@ public abstract class IOTObject
     public IOTObject(String uuid)
     {
         this.uuid = uuid;
+
+        loadFromStorage();
     }
 
     public IOTObject(String jsonstr, boolean dummy)
@@ -163,8 +165,7 @@ public abstract class IOTObject
             ok = Prefs.setString(key, json);
 
             Log.d(LOGTAG, "saveToStorage: key=" + key + " ok=" + ok + " json=" + ((json == null) ? "null" : "ok"));
-
-            //Log.d(LOGTAG, json);
+            //if (json != null) Log.d(LOGTAG, json);
         }
 
         return ok;
@@ -178,7 +179,6 @@ public abstract class IOTObject
         boolean ok = fromJsonString(json);
 
         Log.d(LOGTAG, "loadFromStorage: key=" + key + " ok=" + ok + " json=" + ((json == null) ? "null" : "ok"));
-
         //if (json != null) Log.d(LOGTAG, json);
 
         return ok;

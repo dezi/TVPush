@@ -27,6 +27,9 @@ public class IOTMessage implements IOTMessageReceiver
         Json.put(message, "human", IOT.human.toJson());
         Json.put(message, "device", IOT.device.toJson());
 
+        //Log.d(LOGTAG,"sendHelo name=" + IOT.device.name);
+        //Log.d(LOGTAG,"sendHelo json=" + IOT.device.toJson());
+
         Log.d(LOGTAG, "sendHELO: human=" + IOT.human.nick);
         Log.d(LOGTAG, "sendHELO: device=" + IOT.device.nick);
 
