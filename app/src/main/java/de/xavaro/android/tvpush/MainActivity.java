@@ -20,7 +20,7 @@ import android.view.View;
 import android.os.Bundle;
 import android.util.Log;
 
-import de.xavaro.android.base.BaseRecognizer;
+import de.xavaro.android.base.BaseSpeech;
 import zz.top.cam.Camera;
 import zz.top.cam.Cameras;
 
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private FrameLayout topframe;
     private FrameLayout videoView;
 
-    private BaseRecognizer recognition;
+    private BaseSpeech recognition;
 
     private static final String SAMPLE = Environment.getExternalStorageDirectory() + "/video.mp4";
     private PlayerThread mPlayer = null;
@@ -151,11 +151,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     private void speechClick()
     {
-        if (recognition == null)
-        {
-            recognition = new BaseRecognizer(this);
-        }
-
         String text = voiceButton.getText().toString();
 
         if (text.equals("VOICE ON"))

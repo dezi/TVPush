@@ -11,16 +11,21 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
+import de.xavaro.android.simple.Json;
 import de.xavaro.android.simple.Simple;
 
-public class BaseRecognizer implements RecognitionListener
+public class BaseSpeech implements RecognitionListener
 {
-    private static final String LOGTAG = BaseRecognizer.class.getSimpleName();
+    private static final String LOGTAG = BaseSpeech.class.getSimpleName();
 
     private Handler handler = new Handler();
 
+    private BaseSpeechCallback callback;
     private SpeechRecognizer recognizer;
     private Intent recognizerIntent;
     private Context context;
@@ -28,9 +33,10 @@ public class BaseRecognizer implements RecognitionListener
     private boolean lockStart;
     private boolean isEnabled;
 
-    public BaseRecognizer(Context context)
+    public BaseSpeech(Context context, BaseSpeechCallback callback)
     {
         this.context = context;
+        this.callback = callback;
 
         if (Simple.isSpeechIn())
         {
@@ -127,10 +133,19 @@ public class BaseRecognizer implements RecognitionListener
         }
     };
 
+    public void onPleaseActivate()
+    {
+        Log.d(LOGTAG, "onPleaseActivate:");
+
+        if (callback != null) callback.onActivateRemote();
+    }
+
     @Override
     public void onReadyForSpeech(Bundle params)
     {
         Log.d(LOGTAG, "onReadyForSpeech:");
+
+        if (callback != null) callback.onSpeechReady();
     }
 
     @Override
@@ -223,11 +238,6 @@ public class BaseRecognizer implements RecognitionListener
         }
     }
 
-    public void onPleaseActivate()
-    {
-        Log.d(LOGTAG, "onPleaseActivate:");
-    }
-
     @Override
     public void onEvent(int eventType, Bundle params)
     {
@@ -243,6 +253,9 @@ public class BaseRecognizer implements RecognitionListener
         {
             Log.d(LOGTAG, "onPartialResults: result=" + bestresult);
         }
+
+        JSONObject jresults = resultsToJSON(partialResults, true);
+        if ((jresults != null) && (callback != null)) callback.onSpeechResults(jresults);
 
         //
         // Sometimes the recognition hangs here forever.
@@ -261,6 +274,9 @@ public class BaseRecognizer implements RecognitionListener
         {
             Log.d(LOGTAG, "onResults: result=" + bestresult);
         }
+
+        JSONObject jresults = resultsToJSON(results, true);
+        if ((jresults != null) && (callback != null)) callback.onSpeechResults(jresults);
 
         lockStart = false;
 
@@ -284,8 +300,15 @@ public class BaseRecognizer implements RecognitionListener
         return null;
     }
 
-    public void dumpResults(Bundle results)
+    @Nullable
+    public JSONObject resultsToJSON(Bundle results, boolean partial)
     {
+        JSONObject jobject = new JSONObject();
+        JSONArray jarray = new JSONArray();
+
+        Json.put(jobject, "partial", partial);
+        Json.put(jobject, "results", jarray);
+
         ArrayList<String> text = results.getStringArrayList(android.speech.SpeechRecognizer.RESULTS_RECOGNITION);
         float[] conf = results.getFloatArray(android.speech.SpeechRecognizer.CONFIDENCE_SCORES);
 
@@ -293,17 +316,19 @@ public class BaseRecognizer implements RecognitionListener
         {
             for (int inx = 0; inx < text.size(); inx++)
             {
-                String logline = text.get(inx);
+                String words = text.get(inx);
 
-                if (conf != null)
+                if (! words.isEmpty())
                 {
-                    int percent = Math.round(conf[inx] * 100);
+                    JSONObject one = new JSONObject();
+                    Json.put(jarray, one);
 
-                    logline += " (" + percent + "%)";
+                    Json.put(one, "text", words);
+                    Json.put(one, "conf", (conf != null) ? conf[inx] : -1f);
                 }
-
-                Log.d(LOGTAG, "result=" + logline);
             }
         }
+
+        return (jarray.length() > 0) ? jobject : null;
     }
 }

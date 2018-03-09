@@ -19,19 +19,21 @@ import de.xavaro.android.base.BaseActivity;
 import de.xavaro.android.base.BaseRelativeLayout;
 import de.xavaro.android.base.BaseRainbowLayout;
 import de.xavaro.android.base.BaseRegistration;
-import de.xavaro.android.base.BaseRecognizer;
+import de.xavaro.android.base.BaseSpeech;
+import de.xavaro.android.base.BaseSpeechCallback;
 import de.xavaro.android.iot.comm.IOTMessage;
 import de.xavaro.android.simple.Defs;
 import de.xavaro.android.simple.Json;
 import de.xavaro.android.simple.Simple;
 
-public class SpeechRecognitionActivity extends BaseActivity
+public class SpeechRecognitionActivity extends BaseActivity implements BaseSpeechCallback
 {
     private final static String LOGTAG = SpeechRecognitionActivity.class.getSimpleName();
 
     private final Handler handler = new Handler();
 
-    private BaseRecognizer recognition;
+    private BaseSpeech recognition;
+
     private BaseRainbowLayout colorFrame;
     private TextView speechText;
     private boolean hadResult;
@@ -120,48 +122,7 @@ public class SpeechRecognitionActivity extends BaseActivity
 
         super.onStart();
 
-        recognition = new BaseRecognizer(this)
-        {
-            @Override
-            public void onPleaseActivate()
-            {
-                super.onPleaseActivate();
-
-                SpeechRecognitionActivity.this.onPleaseActivate();
-            }
-
-            @Override
-            public void onReadyForSpeech(Bundle params)
-            {
-                super.onReadyForSpeech(params);
-
-                SpeechRecognitionActivity.this.onReadyForSpeech(params);
-            }
-
-            @Override
-            public void onResults(Bundle results)
-            {
-                super.onResults(results);
-
-                SpeechRecognitionActivity.this.onResults(results);
-            }
-
-            @Override
-            public void onPartialResults(Bundle partialResults)
-            {
-                super.onPartialResults(partialResults);
-
-                SpeechRecognitionActivity.this.onPartialResults(partialResults);
-            }
-
-            @Override
-            public void onEndOfSpeech()
-            {
-                super.onEndOfSpeech();
-
-                SpeechRecognitionActivity.this.onEndOfSpeech();
-            }
-        };
+        recognition = new BaseSpeech(this, this);
     }
 
     @Override
@@ -220,56 +181,6 @@ public class SpeechRecognitionActivity extends BaseActivity
         super.onBackPressed();
     }
 
-    private void onPleaseActivate()
-    {
-        speechText.setTextColor(Color.GRAY);
-        speechText.setText("Bitte drücken Sie die Mikrofon-Taste auf der Fernbedienung");
-    }
-
-    private void onReadyForSpeech(Bundle params)
-    {
-        handler.removeCallbacks(pleaseSpeekNow);
-        handler.postDelayed(pleaseSpeekNow, hadResult ? 3000 : 0);
-    }
-
-    private void onPartialResults(Bundle partialResults)
-    {
-        String bestresult = recognition.getBestResult(partialResults);
-
-        if ((bestresult != null) && ! bestresult.isEmpty())
-        {
-            speechText.setTextColor(Color.WHITE);
-            speechText.setText(bestresult);
-
-            hadResult = true;
-
-            colorFrame.start();
-        }
-
-        JSONObject jresults = resultsToJSON(partialResults, true);
-        if (jresults != null) IOTMessage.sendSTOT(jresults);
-    }
-
-    private void onResults(Bundle results)
-    {
-        String bestresult = recognition.getBestResult(results);
-
-        if ((bestresult != null) && ! bestresult.isEmpty())
-        {
-            speechText.setTextColor(Color.WHITE);
-            speechText.setText(bestresult);
-
-            hadResult = true;
-        }
-
-        JSONObject jresults = resultsToJSON(results, false);
-        if (jresults != null) IOTMessage.sendSTOT(jresults);
-    }
-
-    private void onEndOfSpeech()
-    {
-    }
-
     private final Runnable pleaseSpeekNow = new Runnable()
     {
         @Override
@@ -282,44 +193,43 @@ public class SpeechRecognitionActivity extends BaseActivity
         }
     };
 
-    @Nullable
-    public JSONObject resultsToJSON(Bundle results, boolean partial)
+    @Override
+    public void onActivateRemote()
     {
-        JSONObject jobject = new JSONObject();
+        speechText.setTextColor(Color.GRAY);
+        speechText.setText("Bitte drücken Sie die Mikrofon-Taste auf der Fernbedienung");
+    }
 
-        JSONArray jarray = new JSONArray();
+    @Override
+    public void onSpeechReady()
+    {
+        handler.removeCallbacks(pleaseSpeekNow);
+        handler.postDelayed(pleaseSpeekNow, hadResult ? 3000 : 0);
 
-        Json.put(jobject, "partial", partial);
-        Json.put(jobject, "results", jarray);
+        hadResult = false;
+    }
 
-        ArrayList<String> text = results.getStringArrayList(android.speech.SpeechRecognizer.RESULTS_RECOGNITION);
-        float[] conf = results.getFloatArray(android.speech.SpeechRecognizer.CONFIDENCE_SCORES);
+    @Override
+    public void onSpeechResults(JSONObject speech)
+    {
+        JSONArray results = Json.getArray(speech, "results");
+        boolean partial = Json.getBoolean(speech, "partial");
 
-        if (text != null)
+        if (results.length() > 0)
         {
-            for (int inx = 0; inx < text.size(); inx++)
-            {
-                String logline = text.get(inx);
+            JSONObject result = Json.getObject(results, 0);
 
-                JSONObject one = new JSONObject();
+            String text = Json.getString(result, "text");
+            float conf = Json.getFloat(result, "conf");
 
-                Json.put(jarray, one);
+            Log.d(LOGTAG, "onSpeechResults: conf=" + conf + " text=" + text);
 
-                Json.put(one, "text", logline);
-                Json.put(one, "conf", -1f);
+            speechText.setTextColor(Color.WHITE);
+            speechText.setText(text);
 
-                if (conf != null)
-                {
-                    Json.put(one, "conf", conf[inx]);
+            hadResult = true;
 
-                    int percent = Math.round(conf[inx] * 100);
-                    logline += " (" + percent + "%)";
-                }
-
-                Log.d(LOGTAG, "result=" + logline);
-            }
+            colorFrame.start();
         }
-
-        return (jarray.length() > 0) ? jobject : null;
     }
 }
