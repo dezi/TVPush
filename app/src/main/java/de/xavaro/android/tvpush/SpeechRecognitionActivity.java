@@ -306,13 +306,13 @@ public class SpeechRecognitionActivity extends BaseActivity
                 Json.put(jarray, one);
 
                 Json.put(one, "text", logline);
+                Json.put(one, "conf", -1f);
 
                 if (conf != null)
                 {
-                    int percent = Math.round(conf[inx] * 100);
-
                     Json.put(one, "conf", conf[inx]);
 
+                    int percent = Math.round(conf[inx] * 100);
                     logline += " (" + percent + "%)";
                 }
 
