@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         topframe.addView(voiceButton, new FrameLayout.LayoutParams(Simple.WC, Simple.WC, Gravity.BOTTOM + Gravity.END));
 
-        ApplicationBase.handler.postDelayed(new Runnable()
+        Simple.getHandler().postDelayed(new Runnable()
         {
             @Override
             public void run()

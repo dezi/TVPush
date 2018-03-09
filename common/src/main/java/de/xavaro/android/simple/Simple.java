@@ -12,6 +12,7 @@ import android.graphics.Point;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.net.ConnectivityManager;
@@ -52,6 +53,7 @@ public class Simple
     private static int deviceHeight;
     private static float deviceDensity;
 
+    private static Handler handler;
     private static WifiManager wifiManager;
     private static WindowManager windowManager;
     private static PackageManager packageManager;
@@ -60,8 +62,10 @@ public class Simple
     private static ContentResolver contentResolver;
     private static SharedPreferences prefs;
 
-    public static void checkFeatures(Application app)
+    public static void initialize(Application app)
     {
+        handler = new Handler();
+
         prefs = PreferenceManager.getDefaultSharedPreferences(app);
 
         packageManager = app.getPackageManager();
@@ -202,6 +206,11 @@ public class Simple
     //endregion Device features.
 
     //region Simple getters.
+
+    public static Handler getHandler()
+    {
+        return handler;
+    }
 
     public static String getConnectedWifiName()
     {

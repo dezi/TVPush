@@ -27,7 +27,7 @@ public class BaseApplication extends Application implements Application.Activity
 
         registerActivityLifecycleCallbacks(this);
 
-        Simple.checkFeatures(this);
+        Simple.initialize(this);
 
         Log.d(LOGTAG, "onCreate:"
                 + " model=" + Simple.getDeviceFullName()
