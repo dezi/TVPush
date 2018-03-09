@@ -62,26 +62,18 @@ public class IOTRoot extends IOTBase
         Log.d(LOGTAG, "loadOwnIdentity: memeHumanUUID=" + meme.memeHumanUUID);
         Log.d(LOGTAG, "loadOwnIdentity: memeDeviceUUID=" + meme.memeDeviceUUID);
 
+        IOTHuman localHuman = IOTHuman.buildLocalHuman();
+        IOTDevice localDevice = IOTDevice.buildLocalDevice();
+
         if ((meme.memeDeviceUUID == null) || meme.memeDeviceUUID.isEmpty())
         {
             //
             // Create device entry.
             //
 
-            device = new IOTDevice();
+            device = localDevice;
 
             Log.d(LOGTAG, "static: new device=" + device.uuid);
-
-            device.type = Simple.getDeviceType();
-            device.nick = Simple.getDeviceUserName();
-            device.name = Simple.getDeviceUserName();
-            device.brand = Simple.getDeviceBrandName();
-            device.model = Simple.getDeviceModelName();
-            device.version =  Simple.getAndroidVersion();
-
-            device.location = "@" + Simple.getConnectedWifiName();
-
-            device.capabilities = Json.jsonArrayFromSeparatedString(Simple.getDeviceCapabilities(), "\\|");
 
             meme.memeDeviceUUID = device.uuid;
 
@@ -93,6 +85,7 @@ public class IOTRoot extends IOTBase
         else
         {
             device = new IOTDevice(meme.memeDeviceUUID);
+            device.checkAndMergeContent(localDevice, false);
         }
 
         if ((meme.memeHumanUUID == null) || meme.memeHumanUUID.isEmpty())
@@ -103,23 +96,22 @@ public class IOTRoot extends IOTBase
 
             if (IOTHumans.getCount() == 0)
             {
-                human = new IOTHuman();
+                human = localHuman;
 
                 Log.d(LOGTAG, "static: new human=" + human.uuid);
 
-                human.nick = Simple.getDeviceUserName();
-            }
+                meme.memeHumanUUID = human.uuid;
 
-            meme.memeHumanUUID = human.uuid;
-
-            if (meme.saveToStorage())
-            {
-                human.saveToStorage();
+                if (meme.saveToStorage())
+                {
+                    human.saveToStorage();
+                }
             }
         }
         else
         {
             human = new IOTHuman(meme.memeHumanUUID);
+            human.checkAndMergeContent(localHuman, false);
         }
     }
 }

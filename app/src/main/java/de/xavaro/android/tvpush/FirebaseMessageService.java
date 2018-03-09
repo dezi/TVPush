@@ -21,8 +21,6 @@ public class FirebaseMessageService extends FirebaseMessagingService
         Log.d(LOGTAG, "onCreate...");
 
         super.onCreate();
-
-        RegistrationService.startService(this);
     }
 
     @Override

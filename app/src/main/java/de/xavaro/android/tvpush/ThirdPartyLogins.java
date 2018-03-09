@@ -4,32 +4,28 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.iot.base.IOTRegister;
 import zz.top.p2p.camera.P2PCloud;
 
 public class ThirdPartyLogins
 {
-    public static P2PCloud p2plogin;
-
     public static void initialize()
+    {
+        initialize_p2p();
+    }
+
+    private static P2PCloud p2plogin;
+
+    public static void initialize_p2p()
     {
         p2plogin = new P2PCloud("dezi@kappa-mm.de")
         {
             @Override
-            protected void onRestApiFailure(String message, String what, JSONObject params, JSONObject result)
+            protected void onDeviceFound(JSONObject device)
             {
-                Log.d(LOGTAG, message);
-            }
+                Log.d(LOGTAG, "onDeviceFound:");
 
-            @Override
-            protected void onLoginSuccess(String what, JSONObject params, JSONObject result)
-            {
-                Log.d(LOGTAG, "Login success.");
-            }
-
-            @Override
-            protected void onListSuccess(String what, JSONObject params, JSONObject result)
-            {
-                Log.d(LOGTAG, "List success.");
+                IOTRegister.registerDevice(device);
             }
         };
 

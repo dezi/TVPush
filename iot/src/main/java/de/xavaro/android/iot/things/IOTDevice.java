@@ -1,6 +1,10 @@
 package de.xavaro.android.iot.things;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
+
+import de.xavaro.android.simple.Json;
+import de.xavaro.android.simple.Simple;
 
 @SuppressWarnings("WeakerAccess")
 public class IOTDevice extends IOTBase
@@ -12,11 +16,13 @@ public class IOTDevice extends IOTBase
     public final String TYPE_LAPTOP = "laptop";
     public final String TYPE_CAMERA= "camera";
 
+    public String did;
     public String nick;
     public String name;
     public String type;
     public String model;
     public String brand;
+    public String driver;
     public String version;
     public String location;
 
@@ -32,8 +38,61 @@ public class IOTDevice extends IOTBase
         super(uuid);
     }
 
-    public IOTDevice(String json, boolean dummy)
+    public IOTDevice(JSONObject json)
     {
-        super(json, dummy);
+        super(json);
+    }
+
+    public IOTDevice(String jsonstr, boolean dummy)
+    {
+        super(jsonstr, dummy);
+    }
+
+    public static IOTDevice buildLocalDevice()
+    {
+        IOTDevice local = new IOTDevice();
+
+        local.did = Simple.getDeviceId();
+        local.type = Simple.getDeviceType();
+        local.nick = Simple.getDeviceUserName();
+        local.name = Simple.getDeviceUserName();
+        local.brand = Simple.getDeviceBrandName();
+        local.model = Simple.getDeviceModelName();
+        local.version =  Simple.getAndroidVersion();
+        local.location = Simple.getConnectedWifiName();
+
+        local.driver = "iot";
+
+        local.capabilities = Json.jsonArrayFromSeparatedString(Simple.getDeviceCapabilities(), "\\|");
+
+        return local;
+    }
+
+    public void checkAndMergeContent(IOTDevice check, boolean external)
+    {
+        //
+        // Update possibly from software update.
+        //
+
+        this.did = check.did;
+        this.type = check.type;
+        this.brand = check.brand;
+        this.model = check.model;
+        this.driver = check.driver;
+        this.version = check.version;
+        this.capabilities = check.capabilities;
+
+        if (external)
+        {
+            //
+            // Update possibly from user.
+            //
+
+            this.nick = check.nick;
+            this.name = check.name;
+            this.location = check.location;
+        }
+
+        saveToStorage();
     }
 }

@@ -30,9 +30,14 @@ public abstract class IOTBase
         this.uuid = uuid;
     }
 
-    public IOTBase(String json, boolean dummy)
+    public IOTBase(String jsonstr, boolean dummy)
     {
-        fromJsonString(json);
+        fromJsonString(jsonstr);
+    }
+
+    public IOTBase(JSONObject json)
+    {
+        fromJson(json);
     }
 
     public String toJsonString()
@@ -116,12 +121,21 @@ public abstract class IOTBase
                         // Someone changed the data type in between.
                         //
                     }
+
+                    Json.remove(json, name);
                 }
             }
             catch (Exception ignore)
             {
                 return false;
             }
+        }
+
+        String uncomsumed = json.toString();
+
+        if (! uncomsumed.equals("{}"))
+        {
+            Log.d(LOGTAG, "fromJson: uncomsumed=" + uncomsumed);
         }
 
         return ok;

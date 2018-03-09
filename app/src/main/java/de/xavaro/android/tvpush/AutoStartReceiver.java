@@ -16,7 +16,5 @@ public class AutoStartReceiver extends BroadcastReceiver
     public void onReceive(Context context, Intent intent)
     {
         Log.d(LOGTAG, "onReceive...");
-
-        RegistrationService.startService(context);
     }
 }

@@ -146,17 +146,22 @@ public class P2PCloud
 
     protected void onRestApiFailure(String message, String what, JSONObject params, JSONObject result)
     {
-        Log.d(LOGTAG, message);
+        Log.d(LOGTAG, "onRestApiFailure: message=" + message);
     }
 
     protected void onLoginSuccess(String what, JSONObject params, JSONObject result)
     {
-        Log.d(LOGTAG, "Login success.");
+        Log.d(LOGTAG, "onLoginSuccess: what=" + what);
     }
 
     protected void onListSuccess(String what, JSONObject params, JSONObject result)
     {
-        Log.d(LOGTAG, "List success.");
+        Log.d(LOGTAG, "onListSuccess: what=" + what);
+    }
+
+    protected void onDeviceFound(JSONObject device)
+    {
+        Log.d(LOGTAG, "onDeviceFound:");
     }
 
     private void buildCameraDescription(JSONObject rawDevice)
@@ -182,9 +187,8 @@ public class P2PCloud
         String ssid = Json.getString(rawipcParam, "ssid");
         String mac = Json.getString(rawipcParam, "mac");
 
-        String category = "camera";
         String driver = "yi-p2p";
-        String capability = getCapabilities(Json.getString(rawDevice, "model"));
+        String capabilities = getCapabilities(Json.getString(rawDevice, "model"));
 
         String uuid = P2PUtil.hmacSha1UUID(id, mac);
 
@@ -206,14 +210,13 @@ public class P2PCloud
 
         Json.put(device, "uuid", uuid);
 
-        Json.put(device, "id", id);
+        Json.put(device, "did", id);
         Json.put(device, "name", name);
         Json.put(device, "nick", nick);
         Json.put(device, "model", model);
         Json.put(device, "brand", brand);
         Json.put(device, "version", version);
-        Json.put(device, "category", category);
-        Json.put(device, "capability", capability);
+        Json.put(device, "capabilities", capabilities);
         Json.put(device, "driver", driver);
 
         Json.put(credentials, "p2p_id", p2p_id);
@@ -229,6 +232,8 @@ public class P2PCloud
         Json.put(network, "mac", mac);
 
         Cameras.addCamera(camera);
+
+        onDeviceFound(camera);
     }
 
     public static String getModelName(String modelNo)
@@ -253,20 +258,20 @@ public class P2PCloud
     {
         // @formatter:off
 
-        String capa = "camera|hd|speaker|mic|fixed|tcp|wifi|stupid";
+        String caps = "camera|hd|speaker|mic|fixed|tcp|wifi|stupid";
 
-        if ( "2".equals(modelNo)) return capa + "|1080p|";
-        if ( "3".equals(modelNo)) return capa + "|720p|pan|tilt";
-        if ( "4".equals(modelNo)) return capa + "|720p";
-        if ( "5".equals(modelNo)) return capa + "|1080p|pan|tilt";
-        if ( "6".equals(modelNo)) return capa + "|1080p";
-        if ( "7".equals(modelNo)) return capa + "|1080p";
-        if ( "9".equals(modelNo)) return capa + "|720p";
-        if ("14".equals(modelNo)) return capa + "|720p";
+        if ( "2".equals(modelNo)) return caps + "|1080p|";
+        if ( "3".equals(modelNo)) return caps + "|720p|pan|tilt";
+        if ( "4".equals(modelNo)) return caps + "|720p";
+        if ( "5".equals(modelNo)) return caps + "|1080p|pan|tilt";
+        if ( "6".equals(modelNo)) return caps + "|1080p";
+        if ( "7".equals(modelNo)) return caps + "|1080p";
+        if ( "9".equals(modelNo)) return caps + "|720p";
+        if ("14".equals(modelNo)) return caps + "|720p";
 
         // @formatter:on
 
-        return capa  + "|720p";
+        return caps  + "|720p";
     }
 
     @Nullable

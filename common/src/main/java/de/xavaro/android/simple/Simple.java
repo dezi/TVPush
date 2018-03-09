@@ -1,5 +1,6 @@
 package de.xavaro.android.simple;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.app.UiModeManager;
 import android.content.ContentResolver;
@@ -229,25 +230,25 @@ public class Simple
 
     public static String getDeviceCapabilities()
     {
-        String capa = "";
+        String caps = "";
 
         if (isTV())
         {
-            capa += "tv|fixed|hd";
+            caps += "tv|fixed|hd";
 
             if (getDeviceModelName().contains("BRAVIA 4K"))
             {
-                capa += "|1080p|uhd|4k|mic";
+                caps += "|1080p|uhd|4k|mic";
             }
             else
             {
                 if (getDeviceWidth() >= 1080)
                 {
-                    capa += "|1080p";
+                    caps += "|1080p";
                 }
                 else
                 {
-                    capa += "|720p";
+                    caps += "|720p";
                 }
             }
         }
@@ -255,36 +256,36 @@ public class Simple
         {
             if (isTablet())
             {
-                capa += "tablet|mic";
+                caps += "tablet|mic";
             }
             else
             {
                 if (isPhone())
                 {
-                    capa += "phone|mic";
+                    caps += "phone|mic";
                 }
                 else
                 {
-                    capa += "unknown";
+                    caps += "unknown";
                 }
             }
         }
 
-        capa += "|speaker|tcp|wifi";
+        caps += "|speaker|tcp|wifi";
 
-        if (isTouch()) capa += "|touch";
-        if (isIscamera()) capa += "|camera";
-        if (isWideScreen()) capa += "|widescreen";
+        if (isTouch()) caps += "|touch";
+        if (isIscamera()) caps += "|camera";
+        if (isWideScreen()) caps += "|widescreen";
 
-        if (isSpeechIn() && capa.contains("|mic|")) capa += "|spechin";
-        if (capa.contains("|speaker|")) capa += "|spechout";
+        if (isSpeechIn() && caps.contains("|mic|")) caps += "|spechin";
+        if (caps.contains("|speaker|")) caps += "|spechout";
 
         if ((getFCMToken() != null) && ! getFCMToken().isEmpty())
         {
-            capa += "|fcm";
+            caps += "|fcm";
         }
 
-        return capa;
+        return caps;
     }
 
     public static String getDeviceUserName()
@@ -313,6 +314,12 @@ public class Simple
         }
 
         return brand + " " + model;
+    }
+
+    @SuppressLint("HardwareIds")
+    public static String getDeviceId()
+    {
+        return Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID);
     }
 
     public static String getAndroidVersion()
@@ -459,6 +466,7 @@ public class Simple
         return list.iterator();
     }
 
+    @SuppressLint("ApplySharedPref")
     public static void removeALLPrefs()
     {
         prefs.edit().clear().commit();
