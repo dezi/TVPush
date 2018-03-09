@@ -27,7 +27,6 @@ public class SpeechRecognitionActivity extends BaseActivity
     private BaseRainbowLayout colorFrame;
     private TextView speechText;
     private boolean hadResult;
-    private int orient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -164,7 +163,10 @@ public class SpeechRecognitionActivity extends BaseActivity
 
         super.onResume();
 
-        recognition.startListening();
+        if (recognition != null)
+        {
+            recognition.startListening();
+        }
     }
 
     @Override
