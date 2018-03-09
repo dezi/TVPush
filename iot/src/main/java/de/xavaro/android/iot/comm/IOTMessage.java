@@ -52,17 +52,6 @@ public class IOTMessage implements IOTMessageReceiver
         IOTMessageService.sendMessage(message);
     }
 
-    public static void sendMEME(JSONObject destination, IOTDevice device)
-    {
-        JSONObject message = new JSONObject();
-
-        Json.put(message, "type", "MEME");
-        Json.put(message, "device", device.toJson());
-        Json.put(message, "destination", destination);
-
-        IOTMessageService.sendMessage(message);
-    }
-
     @Override
     public void receiveMessage(JSONObject message)
     {

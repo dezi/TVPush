@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import de.xavaro.android.iot.base.IOTObject;
+import de.xavaro.android.iot.base.IOTSimple;
 import de.xavaro.android.simple.Json;
 import de.xavaro.android.simple.Simple;
 
@@ -87,24 +88,30 @@ public class IOTDevice extends IOTObject
         else
         {
             IOTDevice newdevice = new IOTDevice(check);
-            oldDevice.checkAndMergeContent(newdevice, true);
+            oldDevice.checkAndMergeContent(newdevice, external);
         }
     }
 
     public void checkAndMergeContent(IOTDevice check, boolean external)
     {
+        boolean changed = false;
+
         //
         // Update possibly from software update.
         //
 
-        this.did = check.did;
-        this.type = check.type;
-        this.brand = check.brand;
-        this.model = check.model;
-        this.driver = check.driver;
-        this.version = check.version;
-        this.fixedwifi = check.fixedwifi;
-        this.capabilities = check.capabilities;
+        // @formatter:off
+
+        if (changed |= IOTSimple.nequals(did,          check.did         )) did          = check.did;
+        if (changed |= IOTSimple.nequals(type,         check.type        )) type         = check.type;
+        if (changed |= IOTSimple.nequals(brand,        check.brand       )) brand        = check.brand;
+        if (changed |= IOTSimple.nequals(model,        check.model       )) model        = check.model;
+        if (changed |= IOTSimple.nequals(driver,       check.driver      )) driver       = check.driver;
+        if (changed |= IOTSimple.nequals(version,      check.version     )) version      = check.version;
+        if (changed |= IOTSimple.nequals(fixedwifi,    check.fixedwifi   )) fixedwifi    = check.fixedwifi;
+        if (changed |= IOTSimple.nequals(capabilities, check.capabilities)) capabilities = check.capabilities;
+
+        // @formatter:on
 
         if (external)
         {
@@ -112,11 +119,18 @@ public class IOTDevice extends IOTObject
             // Update possibly from user.
             //
 
-            this.nick = check.nick;
-            this.name = check.name;
-            this.location = check.location;
+            // @formatter:off
+
+            if (changed |= IOTSimple.nequals(nick,     check.nick    )) nick     = check.nick;
+            if (changed |= IOTSimple.nequals(name,     check.name    )) name     = check.name;
+            if (changed |= IOTSimple.nequals(location, check.location)) location = check.location;
+
+            // @formatter:on
         }
 
-        saveToStorage();
+        if (changed)
+        {
+            saveToStorage();
+        }
     }
 }

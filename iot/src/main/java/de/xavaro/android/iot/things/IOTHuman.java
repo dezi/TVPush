@@ -3,6 +3,7 @@ package de.xavaro.android.iot.things;
 import org.json.JSONObject;
 
 import de.xavaro.android.iot.base.IOTObject;
+import de.xavaro.android.iot.base.IOTSimple;
 import de.xavaro.android.simple.Json;
 import de.xavaro.android.simple.Simple;
 
@@ -67,6 +68,8 @@ public class IOTHuman extends IOTObject
 
     public void checkAndMergeContent(IOTHuman check, boolean external)
     {
+        boolean changed = false;
+
         //
         // Update possibly from software update.
         //
@@ -81,12 +84,19 @@ public class IOTHuman extends IOTObject
             // Update possibly from user.
             //
 
-            this.nick = check.nick;
-            this.firstname = check.firstname;
-            this.middlename = check.middlename;
-            this.lastname = check.lastname;
+            // @formatter:off
+
+            if (changed |= IOTSimple.nequals(nick,      check.nick      )) nick       = check.nick;
+            if (changed |= IOTSimple.nequals(firstname, check.firstname )) firstname  = check.firstname;
+            if (changed |= IOTSimple.nequals(middlename,check.middlename)) middlename = check.middlename;
+            if (changed |= IOTSimple.nequals(lastname,  check.lastname  )) lastname   = check.lastname;
+
+            // @formatter:on
         }
 
-        saveToStorage();
+        if (changed)
+        {
+            saveToStorage();
+        }
     }
 }
