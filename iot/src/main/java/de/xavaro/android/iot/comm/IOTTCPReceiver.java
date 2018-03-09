@@ -15,12 +15,10 @@ public class IOTTCPReceiver extends Thread
 {
     private static final String LOGTAG = IOTTCPReceiver.class.getSimpleName();
 
-    private static boolean running;
-
-    private static final ArrayList<String> messageQueue = new ArrayList<>();
+    private static final ArrayList<JSONObject> messageQueue = new ArrayList<>();
 
     @Nullable
-    public static String receiveMessage()
+    public static JSONObject receiveMessage()
     {
         synchronized (messageQueue)
         {
@@ -33,7 +31,9 @@ public class IOTTCPReceiver extends Thread
         return null;
     }
 
-    public static void stopService()
+    private boolean running;
+
+    public void stopRunning()
     {
         running = false;
     }
@@ -55,16 +55,6 @@ public class IOTTCPReceiver extends Thread
 
                 String message = new String(rxpack.getData(), 0, rxpack.getLength());
 
-                if (message.length() == 4)
-                {
-                    Log.d(LOGTAG, "run: simple "
-                            + " ip=" + rxpack.getAddress()
-                            + " port=" + rxpack.getPort()
-                            + " simple=" + message);
-
-                    continue;
-                }
-
                 JSONObject jsonmess = Json.fromStringObject(message);
 
                 if (jsonmess == null)
@@ -77,9 +67,15 @@ public class IOTTCPReceiver extends Thread
                     continue;
                 }
 
+                JSONObject origin = new JSONObject();
+                Json.put(jsonmess, "origin", origin);
+
+                Json.put(origin, "ipaddr", rxpack.getAddress());
+                Json.put(origin, "ipport", rxpack.getPort());
+
                 synchronized (messageQueue)
                 {
-                    messageQueue.add(message);
+                    messageQueue.add(jsonmess);
                 }
             }
             catch (SocketTimeoutException ignore)

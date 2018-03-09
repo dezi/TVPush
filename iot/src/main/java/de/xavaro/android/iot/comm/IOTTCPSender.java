@@ -14,11 +14,9 @@ public class IOTTCPSender extends Thread
 {
     private static final String LOGTAG = IOTTCPReceiver.class.getSimpleName();
 
-    private static boolean running;
+    private static final ArrayList<JSONObject> messageQueue = new ArrayList<>();
 
-    private static final ArrayList<String> messageQueue = new ArrayList<>();
-
-    public static void sendMessage(String message)
+    public static void sendMessage(JSONObject message)
     {
         synchronized (messageQueue)
         {
@@ -26,7 +24,9 @@ public class IOTTCPSender extends Thread
         }
     }
 
-    public static void stopService()
+    private boolean running;
+
+    public void stopRunning()
     {
         running = false;
     }
@@ -42,7 +42,7 @@ public class IOTTCPSender extends Thread
         {
             try
             {
-                String message = null;
+                JSONObject message = null;
 
                 synchronized (messageQueue)
                 {
@@ -59,20 +59,20 @@ public class IOTTCPSender extends Thread
                     continue;
                 }
 
-                JSONObject json = Json.fromStringObject(message);
-                String type = Json.getString(json, "type");
+                String type = Json.getString(message, "type");
 
-                if ((json == null) || (type == null))
+                if (type == null)
                 {
                     Log.d(LOGTAG, "run: junk" + " message=" + message);
 
                     continue;
                 }
 
-                byte[] txbuff = message.getBytes();
-                DatagramPacket txpack = new DatagramPacket(txbuff, txbuff.length);
+                JSONObject dest = Json.getObject(message, "destination");
+                Json.remove(message, "destination");
 
-                JSONObject dest = Json.getObject(json, "destination");
+                byte[] txbuff = message.toString().getBytes();
+                DatagramPacket txpack = new DatagramPacket(txbuff, txbuff.length);
 
                 if (dest == null)
                 {
@@ -88,8 +88,6 @@ public class IOTTCPSender extends Thread
                     //
                     // Dedicated.
                     //
-
-                    Json.remove(json, "destination");
 
                     String ipaddr = Json.getString(dest, "ipaddr");
                     int ipport = Json.getInt(dest, "ipport");

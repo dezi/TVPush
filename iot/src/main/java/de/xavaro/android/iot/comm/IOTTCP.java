@@ -43,6 +43,8 @@ public class IOTTCP
 
     public static void startService()
     {
+        Log.d(LOGTAG, "startService.");
+
         if (receiver == null)
         {
             receiver = new IOTTCPReceiver();
@@ -58,14 +60,18 @@ public class IOTTCP
 
     public static void stopService()
     {
+        Log.d(LOGTAG, "stopService.");
+
         if (receiver != null)
         {
+            receiver.stopRunning();
             receiver.interrupt();
             receiver = null;
         }
 
         if (sender != null)
         {
+            sender.stopRunning();
             sender.interrupt();
             sender = null;
         }
