@@ -1,22 +1,20 @@
-package de.xavaro.android.tvpush;
+package de.xavaro.android.iot.base;
 
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 import android.os.IBinder;
 import android.util.Log;
 
 import de.xavaro.android.iot.comm.IOTMessaging;
-import de.xavaro.android.simple.Comm;
 
-public class RegistrationService extends Service
+public class IOTService extends Service
 {
-    private final static String LOGTAG = RegistrationService.class.getSimpleName();
+    private final static String LOGTAG = IOTService.class.getSimpleName();
 
     public static void startService(Context context)
     {
-        Intent serviceIntent = new Intent(context, RegistrationService.class);
+        Intent serviceIntent = new Intent(context, IOTService.class);
         context.startService(serviceIntent);
     }
 
@@ -52,3 +50,4 @@ public class RegistrationService extends Service
         IOTMessaging.stopService();
     }
 }
+

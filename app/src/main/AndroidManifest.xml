@@ -83,7 +83,7 @@
         </service>
 
         <service
-            android:name=".RegistrationService"
+            android:name="de.xavaro.android.iot.base.IOTService"
             android:enabled="true"
             android:exported="false">
         </service>

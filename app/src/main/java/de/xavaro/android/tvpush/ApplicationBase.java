@@ -15,14 +15,12 @@ public class ApplicationBase extends BaseApplication
     {
         super.onCreate();
 
-        BaseRegistration.speechRecognitionActivityClass = SpeechRecognitionActivity.class;
-
         Simple.initialize(this);
-
-        RegistrationService.startService(this);
 
         IOT.initialize();
 
         ThirdPartyLogins.initialize();
+
+        BaseRegistration.speechRecognitionActivityClass = SpeechRecognitionActivity.class;
     }
 }
