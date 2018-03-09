@@ -2,6 +2,8 @@ package de.xavaro.android.iot.base;
 
 import org.json.JSONArray;
 
+import java.util.UUID;
+
 import de.xavaro.android.simple.Json;
 
 public class IOTSimple
@@ -29,5 +31,10 @@ public class IOTSimple
     public static boolean nequals(JSONArray json1, JSONArray json2)
     {
         return ! equals(json1, json2);
+    }
+
+    public static String s()
+    {
+        return UUID.randomUUID().toString();
     }
 }

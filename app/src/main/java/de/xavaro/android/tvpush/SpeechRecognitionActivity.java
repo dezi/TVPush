@@ -19,7 +19,7 @@ import de.xavaro.android.base.BaseRegistration;
 import de.xavaro.android.base.BaseSpeech;
 import de.xavaro.android.base.BaseSpeechCallback;
 
-import de.xavaro.android.iot.comm.IOTMessage;
+import de.xavaro.android.iot.comm.IOTMessageHandler;
 import de.xavaro.android.simple.Defs;
 import de.xavaro.android.simple.Json;
 import de.xavaro.android.simple.Simple;
@@ -214,7 +214,7 @@ public class SpeechRecognitionActivity extends BaseActivity implements BaseSpeec
 
         hadResult = true;
 
-        IOTMessage.sendSTOT(speech);
+        IOTMessageHandler.sendSTOT(speech);
     }
 
     private final Runnable pleaseSpeekNow = new Runnable()

@@ -4,7 +4,7 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import de.xavaro.android.iot.base.IOT;
 
 public class IOTMessageService extends Thread
 {
@@ -12,33 +12,9 @@ public class IOTMessageService extends Thread
 
     private static IOTMessageService receiver;
 
-    private static final ArrayList<IOTMessageReceiver> subscribers = new ArrayList<>();
-
     public static void sendMessage(JSONObject json)
     {
         IOTTCPSender.sendMessage(json);
-    }
-
-    public static void doSubscribe(IOTMessageReceiver subscriber)
-    {
-        synchronized (subscribers)
-        {
-            if (! subscribers.contains(subscriber))
-            {
-                subscribers.add(subscriber);
-            }
-        }
-    }
-
-    public static void unSubscribe(IOTMessageReceiver subscriber)
-    {
-        synchronized (subscribers)
-        {
-            if (subscribers.contains(subscriber))
-            {
-                subscribers.remove(subscriber);
-            }
-        }
     }
 
     public static void startService()
@@ -105,13 +81,7 @@ public class IOTMessageService extends Thread
                     continue;
                 }
 
-                synchronized (subscribers)
-                {
-                    for (IOTMessageReceiver subscriber : subscribers)
-                    {
-                        subscriber.receiveMessage(message);
-                    }
-                }
+                IOT.message.receiveMessage(message);
             }
             catch (Exception ex)
             {
