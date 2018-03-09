@@ -100,7 +100,7 @@ public class IOTTCP
         {
             Log.d(LOGTAG, "stopService: sender: already stopped.");
         }
-        
+
         if (receiver != null)
         {
             Log.d(LOGTAG, "stopService: receiver: stopping.");
