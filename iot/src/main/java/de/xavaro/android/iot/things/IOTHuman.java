@@ -3,6 +3,7 @@ package de.xavaro.android.iot.things;
 import org.json.JSONObject;
 
 import de.xavaro.android.iot.base.IOTObject;
+import de.xavaro.android.simple.Json;
 import de.xavaro.android.simple.Simple;
 
 @SuppressWarnings("WeakerAccess")
@@ -41,6 +42,27 @@ public class IOTHuman extends IOTObject
         local.nick = Simple.getDeviceUserName();
 
         return local;
+    }
+
+    public static void checkAndMergeContent(JSONObject check, boolean external)
+    {
+        if (check == null) return;
+
+        String humanUUID = Json.getString(check, "uuid");
+        if (humanUUID == null) return;
+
+        IOTHuman oldHuman = IOTHumans.getEntry(humanUUID);
+
+        if (oldHuman == null)
+        {
+            oldHuman = new IOTHuman(check);
+            oldHuman.saveToStorage();
+        }
+        else
+        {
+            IOTHuman newhuman = new IOTHuman(check);
+            oldHuman.checkAndMergeContent(newhuman, true);
+        }
     }
 
     public void checkAndMergeContent(IOTHuman check, boolean external)

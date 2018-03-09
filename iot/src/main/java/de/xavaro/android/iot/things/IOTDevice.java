@@ -70,6 +70,27 @@ public class IOTDevice extends IOTObject
         return local;
     }
 
+    public static void checkAndMergeContent(JSONObject check, boolean external)
+    {
+        if (check == null) return;
+
+        String deviceUUID = Json.getString(check, "uuid");
+        if (deviceUUID == null) return;
+
+        IOTDevice oldDevice = IOTDevices.getEntry(deviceUUID);
+
+        if (oldDevice == null)
+        {
+            oldDevice = new IOTDevice(check);
+            oldDevice.saveToStorage();
+        }
+        else
+        {
+            IOTDevice newdevice = new IOTDevice(check);
+            oldDevice.checkAndMergeContent(newdevice, true);
+        }
+    }
+
     public void checkAndMergeContent(IOTDevice check, boolean external)
     {
         //
