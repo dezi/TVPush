@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import de.xavaro.android.simple.Simple;
 
 @SuppressWarnings("WeakerAccess")
-public class IOTHuman extends IOTBase
+public class IOTHuman extends IOTBaseThing
 {
     public String nick;
 

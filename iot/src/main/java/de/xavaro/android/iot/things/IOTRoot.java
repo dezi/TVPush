@@ -2,11 +2,8 @@ package de.xavaro.android.iot.things;
 
 import android.util.Log;
 
-import de.xavaro.android.simple.Json;
-import de.xavaro.android.simple.Simple;
-
 @SuppressWarnings("WeakerAccess")
-public class IOTRoot extends IOTBase
+public class IOTRoot extends IOTBaseThing
 {
     private final static String LOGTAG = IOTRoot.class.getSimpleName();
 

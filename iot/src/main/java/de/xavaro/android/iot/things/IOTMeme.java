@@ -1,7 +1,7 @@
 package de.xavaro.android.iot.things;
 
 @SuppressWarnings("WeakerAccess")
-public class IOTMeme extends IOTBase
+public class IOTMeme extends IOTBaseThing
 {
     public String memeHumanUUID;
     public String memeDeviceUUID;

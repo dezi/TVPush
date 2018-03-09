@@ -2,7 +2,7 @@ package de.xavaro.android.iot.things;
 
 import android.util.Log;
 
-public class IOTDevices extends IOTList
+public class IOTDevices extends IOTBaseList
 {
     private final static String LOGTAG = IOTDevices.class.getSimpleName();
 
@@ -14,7 +14,7 @@ public class IOTDevices extends IOTList
     }
 
     @Override
-    public IOTBase loadFromJson(String json)
+    public IOTBaseThing loadFromJson(String json)
     {
         return new IOTDevice(json, true);
     }

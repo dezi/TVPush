@@ -1,6 +1,6 @@
 package de.xavaro.android.iot.things;
 
-public class IOTHumans extends IOTList
+public class IOTHumans extends IOTBaseList
 {
     private static IOTHumans instance = new IOTHumans();
 
@@ -10,7 +10,7 @@ public class IOTHumans extends IOTList
     }
 
     @Override
-    public IOTBase loadFromJson(String json)
+    public IOTBaseThing loadFromJson(String json)
     {
         return new IOTHuman(json, true);
     }

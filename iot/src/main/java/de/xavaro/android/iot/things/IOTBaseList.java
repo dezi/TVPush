@@ -8,18 +8,18 @@ import java.util.Map;
 import de.xavaro.android.simple.Json;
 import de.xavaro.android.simple.Prefs;
 
-public abstract class IOTList
+public abstract class IOTBaseList
 {
-    private final static String LOGTAG = IOTList.class.getSimpleName();
+    private final static String LOGTAG = IOTBaseList.class.getSimpleName();
 
-    public Map<String, IOTBase> list = new HashMap<>();
+    public Map<String, IOTBaseThing> list = new HashMap<>();
 
-    public IOTList(String classKey)
+    public IOTBaseList(String classKey)
     {
         load(classKey);
     }
 
-    public abstract IOTBase loadFromJson(String json);
+    public abstract IOTBaseThing loadFromJson(String json);
 
     private void load(String classKey)
     {
@@ -31,7 +31,7 @@ public abstract class IOTList
 
             String json = Prefs.getString(prefkey);
 
-            IOTBase iotbase = loadFromJson(json);
+            IOTBaseThing iotbase = loadFromJson(json);
             if (iotbase == null) continue;
 
             list.put(iotbase.uuid, iotbase);
@@ -47,7 +47,7 @@ public abstract class IOTList
     {
         JSONArray result = new JSONArray();
 
-        for (Map.Entry<String, IOTBase> entry : list.entrySet())
+        for (Map.Entry<String, IOTBaseThing> entry : list.entrySet())
         {
             Json.put(result, entry.getKey());
         }
