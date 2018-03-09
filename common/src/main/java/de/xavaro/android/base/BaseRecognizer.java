@@ -11,12 +11,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
-import de.xavaro.android.simple.Json;
 import de.xavaro.android.simple.Simple;
 
 public class BaseRecognizer implements RecognitionListener
@@ -66,7 +62,7 @@ public class BaseRecognizer implements RecognitionListener
     {
         Log.d(LOGTAG, "startListening:");
 
-        handler.removeCallbacks(stopListeningRunnable);
+        handler.removeCallbacks(restartListeningRunnable);
 
         isEnabled = true;
 
@@ -120,7 +116,7 @@ public class BaseRecognizer implements RecognitionListener
         }
     };
 
-    private final Runnable stopListeningRunnable = new Runnable()
+    private final Runnable restartListeningRunnable = new Runnable()
     {
         @Override
         public void run()
@@ -247,8 +243,8 @@ public class BaseRecognizer implements RecognitionListener
         // Sometimes the recognition hangs here forever.
         //
 
-        handler.removeCallbacks(stopListeningRunnable);
-        handler.postDelayed(stopListeningRunnable, 10 * 1000);
+        handler.removeCallbacks(restartListeningRunnable);
+        handler.postDelayed(restartListeningRunnable, 10 * 1000);
     }
 
     @Override
