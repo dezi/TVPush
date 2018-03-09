@@ -15,11 +15,6 @@ public class IOTRoot extends IOTBase
     public static IOTHuman human;
     public static IOTDevice device;
 
-    static
-    {
-        loadOwnIdentity();
-    }
-
     @Override
     public String getUUIDKey()
     {
@@ -28,6 +23,11 @@ public class IOTRoot extends IOTBase
         //
 
         return "iot." + IOTRoot.class.getSimpleName();
+    }
+
+    public static void initialize()
+    {
+        loadOwnIdentity();
     }
 
     private static void loadOwnIdentity()
@@ -58,10 +58,9 @@ public class IOTRoot extends IOTBase
             meme.saveToStorage();
         }
 
-        Log.d(LOGTAG, "static:"
-                + " meme=" + meme.uuid
-                + " memeHumanUUID=" + meme.memeHumanUUID
-                + " memeDeviceUUID=" + meme.memeDeviceUUID);
+        Log.d(LOGTAG, "loadOwnIdentity: meme=" + meme.uuid);
+        Log.d(LOGTAG, "loadOwnIdentity: memeHumanUUID=" + meme.memeHumanUUID);
+        Log.d(LOGTAG, "loadOwnIdentity: memeDeviceUUID=" + meme.memeDeviceUUID);
 
         if ((meme.memeDeviceUUID == null) || meme.memeDeviceUUID.isEmpty())
         {

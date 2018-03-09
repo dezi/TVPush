@@ -12,7 +12,7 @@ import de.xavaro.android.simple.Json;
 
 public class IOTTCPSender extends Thread
 {
-    private static final String LOGTAG = IOTTCPReceiver.class.getSimpleName();
+    private static final String LOGTAG = IOTTCPSender.class.getSimpleName();
 
     private static final ArrayList<JSONObject> messageQueue = new ArrayList<>();
 

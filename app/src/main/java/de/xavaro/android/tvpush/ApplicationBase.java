@@ -51,6 +51,6 @@ public class ApplicationBase extends BaseApplication
 
         RegistrationService.startService(this);
 
-        Log.d(LOGTAG, " IOTRoot.root=" + IOTRoot.root.uuid);
+        IOTRoot.initialize();
     }
 }

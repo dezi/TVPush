@@ -148,8 +148,9 @@ public abstract class IOTBase
 
             ok = Prefs.setString(key, json);
 
-            Log.d(LOGTAG, "saveToStorage: key=" + key + " ok=" + ok + " json=");
-            Log.d(LOGTAG, json);
+            Log.d(LOGTAG, "saveToStorage: key=" + key + " ok=" + ok + " json=" + ((json == null) ? "null" : "ok"));
+
+            //Log.d(LOGTAG, json);
         }
 
         return ok;
@@ -162,8 +163,9 @@ public abstract class IOTBase
 
         boolean ok = fromJsonString(json);
 
-        Log.d(LOGTAG, "loadFromStorage: key=" + key + " ok=" + ok + " json=" + ((json == null) ? "null" : ""));
-        if (json != null) Log.d(LOGTAG, json);
+        Log.d(LOGTAG, "loadFromStorage: key=" + key + " ok=" + ok + " json=" + ((json == null) ? "null" : "ok"));
+
+        //if (json != null) Log.d(LOGTAG, json);
 
         return ok;
     }

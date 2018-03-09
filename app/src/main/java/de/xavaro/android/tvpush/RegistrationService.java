@@ -7,13 +7,12 @@ import android.widget.Toast;
 import android.os.IBinder;
 import android.util.Log;
 
+import de.xavaro.android.iot.comm.IOTMessaging;
 import de.xavaro.android.simple.Comm;
 
 public class RegistrationService extends Service
 {
     private final static String LOGTAG = RegistrationService.class.getSimpleName();
-
-    private Thread worker = null;
 
     public static void startService(Context context)
     {
@@ -38,13 +37,9 @@ public class RegistrationService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        Toast.makeText(this, "RegistrationService started", Toast.LENGTH_SHORT).show();
+        Log.d(LOGTAG, "onStartCommand.");
 
-        if (worker == null)
-        {
-            worker = new Comm(this);
-            worker.start();
-        }
+        IOTMessaging.startService();
 
         return START_NOT_STICKY; //START_STICKY;
     }
@@ -52,21 +47,8 @@ public class RegistrationService extends Service
     @Override
     public void onDestroy()
     {
-        Log.d(LOGTAG, "onDestroy...");
+        Log.d(LOGTAG, "onDestroy.");
 
-        try
-        {
-            if (worker != null)
-            {
-                worker.interrupt();
-                worker.join();
-                worker = null;
-            }
-        }
-        catch (InterruptedException ignore)
-        {
-        }
-
-        Toast.makeText(this, "RegistrationService Stopped", Toast.LENGTH_SHORT).show();
+        IOTMessaging.stopService();
     }
 }

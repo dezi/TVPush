@@ -14,11 +14,6 @@ public class IOTMessaging extends Thread
 
     private static final ArrayList<IOTMessageReceiver> subscribers = new ArrayList<>();
 
-    static
-    {
-        startService();
-    }
-
     public static void sendMessage(JSONObject json)
     {
         IOTTCPSender.sendMessage(json);
@@ -48,24 +43,36 @@ public class IOTMessaging extends Thread
 
     public static void startService()
     {
-        Log.d(LOGTAG, "startService.");
-
         if (receiver == null)
         {
+            Log.d(LOGTAG, "startService: starting.");
+
             receiver = new IOTMessaging();
             receiver.start();
         }
+        else
+        {
+            Log.d(LOGTAG, "startService: already started.");
+        }
+
+        IOTTCP.startService();
     }
 
     public static void stopService()
     {
-        Log.d(LOGTAG, "stopService.");
+        IOTTCP.stopService();
 
         if (receiver != null)
         {
+            Log.d(LOGTAG, "stopService: stopping");
+
             receiver.stopRunning();
             receiver.interrupt();
             receiver = null;
+        }
+        else
+        {
+            Log.d(LOGTAG, "stopService: already stopped");
         }
    }
 
