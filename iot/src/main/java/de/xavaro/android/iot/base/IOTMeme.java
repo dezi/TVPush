@@ -1,4 +1,6 @@
-package de.xavaro.android.iot.things;
+package de.xavaro.android.iot.base;
+
+import de.xavaro.android.iot.things.IOTThing;
 
 @SuppressWarnings("WeakerAccess")
 public class IOTMeme extends IOTThing
