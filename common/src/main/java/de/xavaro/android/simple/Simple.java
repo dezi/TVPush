@@ -472,5 +472,11 @@ public class Simple
         prefs.edit().clear().commit();
     }
 
+    @SuppressLint("ApplySharedPref")
+    public static void removeALLPrefs(Context context)
+    {
+        PreferenceManager.getDefaultSharedPreferences(context).edit().clear().commit();
+    }
+
     //endregion Smart helpers.
 }

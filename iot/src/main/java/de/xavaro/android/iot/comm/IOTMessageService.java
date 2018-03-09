@@ -6,11 +6,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class IOTMessaging extends Thread
+public class IOTMessageService extends Thread
 {
-    private static final String LOGTAG = IOTMessaging.class.getSimpleName();
+    private static final String LOGTAG = IOTMessageService.class.getSimpleName();
 
-    private static IOTMessaging receiver;
+    private static IOTMessageService receiver;
 
     private static final ArrayList<IOTMessageReceiver> subscribers = new ArrayList<>();
 
@@ -47,7 +47,7 @@ public class IOTMessaging extends Thread
         {
             Log.d(LOGTAG, "startService: starting.");
 
-            receiver = new IOTMessaging();
+            receiver = new IOTMessageService();
             receiver.start();
         }
         else

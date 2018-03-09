@@ -4,5 +4,5 @@ import org.json.JSONObject;
 
 public interface IOTMessageReceiver
 {
-    JSONObject receiveMessage(JSONObject message);
+    void receiveMessage(JSONObject message);
 }

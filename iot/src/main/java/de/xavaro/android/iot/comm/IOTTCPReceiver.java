@@ -67,11 +67,19 @@ public class IOTTCPReceiver extends Thread
                     continue;
                 }
 
+                String type  = Json.getString(jsonmess, "type");
+                String ipaddr = rxpack.getAddress().toString().substring(1);
+                int ipport = rxpack.getPort();
+
+                Log.d(LOGTAG, "run:"
+                        + " recv=" + ipaddr + ":" + ipport
+                        + " type=" + type);
+
                 JSONObject origin = new JSONObject();
                 Json.put(jsonmess, "origin", origin);
 
-                Json.put(origin, "ipaddr", rxpack.getAddress());
-                Json.put(origin, "ipport", rxpack.getPort());
+                Json.put(origin, "ipaddr", ipaddr);
+                Json.put(origin, "ipport", ipport);
 
                 synchronized (messageQueue)
                 {

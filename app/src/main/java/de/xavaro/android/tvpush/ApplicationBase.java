@@ -15,13 +15,13 @@ public class ApplicationBase extends BaseApplication
     {
         super.onCreate();
 
+        //Simple.removeALLPrefs(this);
+
         Simple.initialize(this);
 
-        //Simple.removeALLPrefs();
+        IOT.initialize(this);
 
-        IOT.initialize();
-
-        ThirdPartyLogins.initialize();
+        ThirdParty.initialize();
 
         BaseRegistration.speechRecognitionActivityClass = SpeechRecognitionActivity.class;
     }

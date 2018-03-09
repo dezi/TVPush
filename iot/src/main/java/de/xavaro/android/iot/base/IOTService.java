@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
-import de.xavaro.android.iot.comm.IOTMessaging;
+import de.xavaro.android.iot.comm.IOTMessageService;
 
 public class IOTService extends Service
 {
@@ -37,7 +37,7 @@ public class IOTService extends Service
     {
         Log.d(LOGTAG, "onStartCommand.");
 
-        IOTMessaging.startService();
+        IOTMessageService.startService();
 
         return START_NOT_STICKY; //START_STICKY;
     }
@@ -47,7 +47,7 @@ public class IOTService extends Service
     {
         Log.d(LOGTAG, "onDestroy.");
 
-        IOTMessaging.stopService();
+        IOTMessageService.stopService();
     }
 }
 

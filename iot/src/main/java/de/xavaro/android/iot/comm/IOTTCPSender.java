@@ -96,8 +96,11 @@ public class IOTTCPSender extends Thread
                     txpack.setPort(ipport);
                 }
 
+                String ipaddr = txpack.getAddress().toString().substring(1);
+                int ipport = txpack.getPort();
+
                 Log.d(LOGTAG, "run:"
-                                + " send=" + txpack.getAddress().toString() + ":" + txpack.getPort()
+                                + " send=" + ipaddr + ":" + ipport
                                 + " type=" + type);
 
                 IOTTCP.socket.send(txpack);

@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import de.xavaro.android.iot.base.IOTRegister;
 import zz.top.p2p.camera.P2PCloud;
 
-public class ThirdPartyLogins
+public class ThirdParty
 {
     public static void initialize()
     {
@@ -16,7 +16,7 @@ public class ThirdPartyLogins
 
     private static P2PCloud p2plogin;
 
-    public static void initialize_p2p()
+    private static void initialize_p2p()
     {
         p2plogin = new P2PCloud("dezi@kappa-mm.de")
         {
