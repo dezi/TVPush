@@ -7,7 +7,7 @@ import de.xavaro.android.simple.Json;
 import de.xavaro.android.simple.Simple;
 
 @SuppressWarnings("WeakerAccess")
-public class IOTDevice extends IOTBaseThing
+public class IOTDevice extends IOTThing
 {
     public final String TYPE_PC = "pc";
     public final String TYPE_TV = "tv";

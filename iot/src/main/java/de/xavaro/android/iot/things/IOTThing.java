@@ -14,28 +14,28 @@ import de.xavaro.android.simple.Json;
 import de.xavaro.android.simple.Prefs;
 
 @SuppressWarnings("WeakerAccess")
-public abstract class IOTBaseThing
+public abstract class IOTThing
 {
-    private final static String LOGTAG = IOTBaseThing.class.getSimpleName();
+    private final static String LOGTAG = IOTThing.class.getSimpleName();
 
     public String uuid;
 
-    public IOTBaseThing()
+    public IOTThing()
     {
         uuid = UUID.randomUUID().toString();
     }
 
-    public IOTBaseThing(String uuid)
+    public IOTThing(String uuid)
     {
         this.uuid = uuid;
     }
 
-    public IOTBaseThing(String jsonstr, boolean dummy)
+    public IOTThing(String jsonstr, boolean dummy)
     {
         fromJsonString(jsonstr);
     }
 
-    public IOTBaseThing(JSONObject json)
+    public IOTThing(JSONObject json)
     {
         fromJson(json);
     }
