@@ -1,4 +1,4 @@
-package de.xavaro.android.iot.things;
+package de.xavaro.android.iot.base;
 
 import org.json.JSONArray;
 
@@ -12,14 +12,14 @@ public abstract class IOTList
 {
     private final static String LOGTAG = IOTList.class.getSimpleName();
 
-    public Map<String, IOTThing> list = new HashMap<>();
+    public Map<String, IOTObject> list = new HashMap<>();
 
     public IOTList(String classKey)
     {
         load(classKey);
     }
 
-    public abstract IOTThing loadFromJson(String json);
+    public abstract IOTObject loadFromJson(String json);
 
     private void load(String classKey)
     {
@@ -31,7 +31,7 @@ public abstract class IOTList
 
             String json = Prefs.getString(prefkey);
 
-            IOTThing iotbase = loadFromJson(json);
+            IOTObject iotbase = loadFromJson(json);
             if (iotbase == null) continue;
 
             list.put(iotbase.uuid, iotbase);
@@ -47,7 +47,7 @@ public abstract class IOTList
     {
         JSONArray result = new JSONArray();
 
-        for (Map.Entry<String, IOTThing> entry : list.entrySet())
+        for (Map.Entry<String, IOTObject> entry : list.entrySet())
         {
             Json.put(result, entry.getKey());
         }

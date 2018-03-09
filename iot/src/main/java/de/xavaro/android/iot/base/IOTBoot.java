@@ -7,10 +7,9 @@ import de.xavaro.android.iot.things.IOTDevices;
 import de.xavaro.android.iot.things.IOTDomains;
 import de.xavaro.android.iot.things.IOTHuman;
 import de.xavaro.android.iot.things.IOTHumans;
-import de.xavaro.android.iot.things.IOTThing;
 
 @SuppressWarnings("WeakerAccess")
-public class IOTBoot extends IOTThing
+public class IOTBoot extends IOTObject
 {
     private final static String LOGTAG = IOTBoot.class.getSimpleName();
 
@@ -103,7 +102,7 @@ public class IOTBoot extends IOTThing
 
                 if (IOT.meme.saveToStorage())
                 {
-                    IOT.meme.saveToStorage();
+                    IOT.human.saveToStorage();
                 }
             }
         }

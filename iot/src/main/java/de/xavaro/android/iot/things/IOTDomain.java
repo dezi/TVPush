@@ -2,8 +2,10 @@ package de.xavaro.android.iot.things;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.iot.base.IOTObject;
+
 @SuppressWarnings("WeakerAccess")
-public class IOTDomain extends IOTThing
+public class IOTDomain extends IOTObject
 {
     public String nick;
     public String name;

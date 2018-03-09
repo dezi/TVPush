@@ -1,4 +1,4 @@
-package de.xavaro.android.iot.things;
+package de.xavaro.android.iot.base;
 
 import android.util.Log;
 
@@ -14,28 +14,28 @@ import de.xavaro.android.simple.Json;
 import de.xavaro.android.simple.Prefs;
 
 @SuppressWarnings("WeakerAccess")
-public abstract class IOTThing
+public abstract class IOTObject
 {
-    private final static String LOGTAG = IOTThing.class.getSimpleName();
+    private final static String LOGTAG = IOTObject.class.getSimpleName();
 
     public String uuid;
 
-    public IOTThing()
+    public IOTObject()
     {
         uuid = UUID.randomUUID().toString();
     }
 
-    public IOTThing(String uuid)
+    public IOTObject(String uuid)
     {
         this.uuid = uuid;
     }
 
-    public IOTThing(String jsonstr, boolean dummy)
+    public IOTObject(String jsonstr, boolean dummy)
     {
         fromJsonString(jsonstr);
     }
 
-    public IOTThing(JSONObject json)
+    public IOTObject(JSONObject json)
     {
         fromJson(json);
     }

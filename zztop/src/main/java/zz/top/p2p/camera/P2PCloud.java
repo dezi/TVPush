@@ -218,6 +218,8 @@ public class P2PCloud
         Json.put(device, "version", version);
         Json.put(device, "capabilities", capabilities);
         Json.put(device, "driver", driver);
+        Json.put(device, "location", ssid);
+        Json.put(device, "fixedwifi", ssid);
 
         Json.put(credentials, "p2p_id", p2p_id);
         Json.put(credentials, "p2p_pw", p2p_pw);

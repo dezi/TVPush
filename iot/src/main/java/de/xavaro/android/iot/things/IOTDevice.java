@@ -3,11 +3,12 @@ package de.xavaro.android.iot.things;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.simple.Json;
 import de.xavaro.android.simple.Simple;
 
 @SuppressWarnings("WeakerAccess")
-public class IOTDevice extends IOTThing
+public class IOTDevice extends IOTObject
 {
     public final String TYPE_PC = "pc";
     public final String TYPE_TV = "tv";
@@ -25,6 +26,7 @@ public class IOTDevice extends IOTThing
     public String driver;
     public String version;
     public String location;
+    public String fixedwifi;
 
     public JSONArray capabilities = new JSONArray();
 
@@ -80,6 +82,7 @@ public class IOTDevice extends IOTThing
         this.model = check.model;
         this.driver = check.driver;
         this.version = check.version;
+        this.fixedwifi = check.fixedwifi;
         this.capabilities = check.capabilities;
 
         if (external)
