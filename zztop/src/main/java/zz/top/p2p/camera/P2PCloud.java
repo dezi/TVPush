@@ -60,7 +60,7 @@ public class P2PCloud
             @Override
             public void OnRestApiResult(String what, JSONObject params, JSONObject result)
             {
-                Log.d(LOGTAG, "OnRestApiResult: login: " + Json.toPretty(result));
+                //Log.d(LOGTAG, "OnRestApiResult: login: " + Json.toPretty(result));
 
                 if (Json.equals(result, "code", "20000"))
                 {
@@ -116,7 +116,7 @@ public class P2PCloud
             @Override
             public void OnRestApiResult(String what, JSONObject params, JSONObject result)
             {
-                Log.d(LOGTAG, "OnRestApiResult: list: " + Json.toPretty(result));
+                //Log.d(LOGTAG, "OnRestApiResult: list: " + Json.toPretty(result));
 
                 if (Json.equals(result, "code", "20000"))
                 {

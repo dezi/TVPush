@@ -1,5 +1,6 @@
 package de.xavaro.android.tvpush;
 
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -9,12 +10,19 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 import de.xavaro.android.base.BaseActivity;
 import de.xavaro.android.base.BaseRelativeLayout;
 import de.xavaro.android.base.BaseRainbowLayout;
 import de.xavaro.android.base.BaseRegistration;
 import de.xavaro.android.base.BaseRecognizer;
+import de.xavaro.android.iot.comm.IOTMessage;
 import de.xavaro.android.simple.Defs;
+import de.xavaro.android.simple.Json;
 import de.xavaro.android.simple.Simple;
 
 public class SpeechRecognitionActivity extends BaseActivity
@@ -237,6 +245,9 @@ public class SpeechRecognitionActivity extends BaseActivity
 
             colorFrame.start();
         }
+
+        JSONObject jresults = resultsToJSON(partialResults, true);
+        if (jresults != null) IOTMessage.sendSTOT(jresults);
     }
 
     private void onResults(Bundle results)
@@ -250,6 +261,9 @@ public class SpeechRecognitionActivity extends BaseActivity
 
             hadResult = true;
         }
+
+        JSONObject jresults = resultsToJSON(results, false);
+        if (jresults != null) IOTMessage.sendSTOT(jresults);
     }
 
     private void onEndOfSpeech()
@@ -267,4 +281,45 @@ public class SpeechRecognitionActivity extends BaseActivity
             colorFrame.stop();
         }
     };
+
+    @Nullable
+    public JSONObject resultsToJSON(Bundle results, boolean partial)
+    {
+        JSONObject jobject = new JSONObject();
+
+        JSONArray jarray = new JSONArray();
+
+        Json.put(jobject, "partial", partial);
+        Json.put(jobject, "results", jarray);
+
+        ArrayList<String> text = results.getStringArrayList(android.speech.SpeechRecognizer.RESULTS_RECOGNITION);
+        float[] conf = results.getFloatArray(android.speech.SpeechRecognizer.CONFIDENCE_SCORES);
+
+        if (text != null)
+        {
+            for (int inx = 0; inx < text.size(); inx++)
+            {
+                String logline = text.get(inx);
+
+                JSONObject one = new JSONObject();
+
+                Json.put(jarray, one);
+
+                Json.put(one, "text", logline);
+
+                if (conf != null)
+                {
+                    int percent = Math.round(conf[inx] * 100);
+
+                    Json.put(one, "conf", conf[inx]);
+
+                    logline += " (" + percent + "%)";
+                }
+
+                Log.d(LOGTAG, "result=" + logline);
+            }
+        }
+
+        return (jarray.length() > 0) ? jobject : null;
+    }
 }

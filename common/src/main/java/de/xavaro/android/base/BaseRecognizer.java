@@ -11,8 +11,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
+import de.xavaro.android.simple.Json;
 import de.xavaro.android.simple.Simple;
 
 public class BaseRecognizer implements RecognitionListener
@@ -122,6 +126,8 @@ public class BaseRecognizer implements RecognitionListener
         public void run()
         {
             stopListening();
+
+            handler.postDelayed(startListeningRunnable, 250);
         }
     };
 
@@ -184,6 +190,7 @@ public class BaseRecognizer implements RecognitionListener
                     onPleaseActivate();
                 }
 
+                millis = 3 * 1000;
                 break;
 
             case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:

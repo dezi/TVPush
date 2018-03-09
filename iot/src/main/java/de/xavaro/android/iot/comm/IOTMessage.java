@@ -2,13 +2,12 @@ package de.xavaro.android.iot.comm;
 
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.things.IOTDevice;
-import de.xavaro.android.iot.things.IOTDevices;
 import de.xavaro.android.iot.things.IOTHuman;
-import de.xavaro.android.iot.things.IOTHumans;
 
 import de.xavaro.android.simple.Json;
 
@@ -37,6 +36,22 @@ public class IOTMessage implements IOTMessageReceiver
         IOTMessageService.sendMessage(message);
     }
 
+    public static void sendSTOT(JSONObject speech)
+    {
+        JSONObject deviceShort = new JSONObject();
+        Json.put(deviceShort, "uuid", IOT.device.uuid);
+
+        JSONObject message = new JSONObject();
+
+        Json.put(message, "type", "STOT");
+        Json.put(message, "device", deviceShort);
+        Json.put(message, "speech", speech);
+
+        Log.d(LOGTAG, "sendSTOT: device=" + IOT.device.nick);
+
+        IOTMessageService.sendMessage(message);
+    }
+
     public static void sendMEME(JSONObject destination)
     {
         JSONObject message = new JSONObject();
@@ -61,12 +76,6 @@ public class IOTMessage implements IOTMessageReceiver
         JSONObject origin = Json.getObject(message, "origin");
         String deviceUUID = Json.getString(device, "uuid");
 
-        Log.d(LOGTAG, "receiveMessage: message"
-                + " type=" + type
-                + " uuid=" + deviceUUID
-                + " name=" + Json.getString(device, "name")
-                + " ipaddr=" + Json.getString(origin, "ipaddr"));
-
         if (type == null) return;
         if (deviceUUID == null) return;
 
@@ -79,8 +88,13 @@ public class IOTMessage implements IOTMessageReceiver
             return;
         }
 
+        Log.d(LOGTAG, "receiveMessage: message"
+                + " type=" + type
+                + " ipaddr=" + Json.getString(origin, "ipaddr"));
+
         if (type.equals("HELO")) receiveHELO(message);
         if (type.equals("MEME")) receiveMEME(message);
+        if (type.equals("STOT")) receiveSTOT(message);
     }
 
     private void receiveHELO(JSONObject message)
@@ -102,5 +116,14 @@ public class IOTMessage implements IOTMessageReceiver
 
         JSONObject device = Json.getObject(message, "device");
         IOTDevice.checkAndMergeContent(device, true);
+    }
+
+    private void receiveSTOT(JSONObject message)
+    {
+        JSONObject speech = Json.getObject(message, "speech");
+        JSONArray results = Json.getArray(speech, "results");
+        if (results == null) return;
+
+        Log.d(LOGTAG, "receiveSTOT: words=" + results.length());
     }
 }
