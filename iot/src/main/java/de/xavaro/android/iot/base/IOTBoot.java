@@ -3,6 +3,7 @@ package de.xavaro.android.iot.base;
 import android.util.Log;
 
 import de.xavaro.android.iot.comm.IOTMessageHandler;
+import de.xavaro.android.iot.handler.IOTHandleHelo;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 import de.xavaro.android.iot.things.IOTDomains;
@@ -112,7 +113,5 @@ public class IOTBoot extends IOTObject
             IOT.human = new IOTHuman(IOT.meme.memeHumanUUID);
             IOT.human.checkAndMergeContent(localHuman, false);
         }
-
-        IOTMessageHandler.sendHELO();
     }
 }
