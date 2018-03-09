@@ -1,4 +1,4 @@
-package de.xavaro.android.iot;
+package de.xavaro.android.iot.things;
 
 public class IOTHumans extends IOTList
 {

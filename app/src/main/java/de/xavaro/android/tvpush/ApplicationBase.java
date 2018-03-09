@@ -8,7 +8,7 @@ import org.json.JSONObject;
 import de.xavaro.android.base.BaseApplication;
 import de.xavaro.android.base.BaseRegistration;
 
-import de.xavaro.android.iot.IOTRoot;
+import de.xavaro.android.iot.things.IOTRoot;
 import zz.top.p2p.camera.P2PCloud;
 
 public class ApplicationBase extends BaseApplication
