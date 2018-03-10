@@ -1,8 +1,5 @@
 package de.xavaro.android.iot.comm;
 
-import android.util.Log;
-
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -11,7 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import de.xavaro.android.iot.base.IOT;
-import de.xavaro.android.iot.base.IOTHandler;
+import de.xavaro.android.iot.handler.IOTHandle;
 import de.xavaro.android.iot.handler.IOTHandleHelo;
 import de.xavaro.android.iot.handler.IOTHandleMeme;
 import de.xavaro.android.iot.handler.IOTHandleStot;
@@ -28,7 +25,7 @@ public class IOTMessageHandler
         IOT.message.initializeBasicSubscribers();
     }
 
-    private final Map<String, ArrayList<IOTHandler>> subscribers = new HashMap<>();
+    private final Map<String, ArrayList<IOTHandle>> subscribers = new HashMap<>();
 
     private void initializeBasicSubscribers()
     {
@@ -37,9 +34,9 @@ public class IOTMessageHandler
         subscribe("STOT", new IOTHandleStot());
     }
 
-    public void subscribe(String type, IOTHandler handler)
+    public void subscribe(String type, IOTHandle handler)
     {
-        ArrayList<IOTHandler> typeHandlers = subscribers.get(type);
+        ArrayList<IOTHandle> typeHandlers = subscribers.get(type);
 
         if (typeHandlers == null)
         {
@@ -79,10 +76,10 @@ public class IOTMessageHandler
         // Call type handlers.
         //
 
-        ArrayList<IOTHandler> typeHandlers = subscribers.get(type);
+        ArrayList<IOTHandle> typeHandlers = subscribers.get(type);
         if (typeHandlers == null) return;
 
-        for (IOTHandler typeHandler : typeHandlers)
+        for (IOTHandle typeHandler : typeHandlers)
         {
             typeHandler.onMessageReived(message);
         }

@@ -2,8 +2,13 @@ package zz.top.tpl.comm;
 
 import android.util.Log;
 
+import org.json.JSONObject;
+
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.Iterator;
+
+import zz.top.utl.Json;
 
 public class TPLUDP
 {
@@ -147,5 +152,24 @@ public class TPLUDP
         }
 
         return new String(data, offset, len);
+    }
+
+    public static String getMessageType(JSONObject message)
+    {
+        String type = "unknown";
+
+        JSONObject system = Json.getObject(message, "system");
+
+        if (system != null)
+        {
+            Iterator<String> keys = system.keys();
+
+            if  (keys.hasNext())
+            {
+                type = keys.next();
+            }
+        }
+
+        return type;
     }
 }

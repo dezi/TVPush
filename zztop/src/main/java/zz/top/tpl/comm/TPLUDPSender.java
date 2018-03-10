@@ -59,7 +59,7 @@ public class TPLUDPSender extends Thread
                     continue;
                 }
 
-                String type = "todo";
+                String type = TPLUDP.getMessageType(message);
 
                 JSONObject dest = Json.getObject(message, "destination");
                 Json.remove(message, "destination");

@@ -53,11 +53,11 @@ public class TPLUDPReceiver extends Thread
                 DatagramPacket rxpack = new DatagramPacket(rxbuff, rxbuff.length);
                 TPLUDP.socket.receive(rxpack);
 
-                String message = TPLUDP.decryptMessage(rxpack.getData(), rxpack.getOffset(), rxpack.getLength());
+                String strmess = TPLUDP.decryptMessage(rxpack.getData(), rxpack.getOffset(), rxpack.getLength());
 
-                JSONObject jsonmess = Json.fromStringObject(message);
+                JSONObject message = Json.fromStringObject(strmess);
 
-                if (jsonmess == null)
+                if (message == null)
                 {
                     Log.d(LOGTAG, "run: junk"
                             + " ip=" + rxpack.getAddress()
@@ -67,7 +67,7 @@ public class TPLUDPReceiver extends Thread
                     continue;
                 }
 
-                String type  = "todo";
+                String type  = TPLUDP.getMessageType(message);
                 String ipaddr = rxpack.getAddress().toString().substring(1);
                 int ipport = rxpack.getPort();
 
@@ -76,14 +76,14 @@ public class TPLUDPReceiver extends Thread
                         + " type=" + type);
 
                 JSONObject origin = new JSONObject();
-                Json.put(jsonmess, "origin", origin);
+                Json.put(message, "origin", origin);
 
                 Json.put(origin, "ipaddr", ipaddr);
                 Json.put(origin, "ipport", ipport);
 
                 synchronized (messageQueue)
                 {
-                    messageQueue.add(jsonmess);
+                    messageQueue.add(message);
                 }
             }
             catch (SocketTimeoutException ignore)

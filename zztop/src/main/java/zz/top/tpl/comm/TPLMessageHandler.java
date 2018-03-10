@@ -26,7 +26,7 @@ public class TPLMessageHandler
 
     private void initializeBasicSubscribers()
     {
-        subscribe("SysInfo", new TPLHandlerSysInfo());
+        subscribe("get_sysinfo", new TPLHandlerSysInfo());
     }
 
     public void subscribe(String type, TPLHandler handler)
@@ -52,7 +52,7 @@ public class TPLMessageHandler
 
     public void receiveMessage(JSONObject message)
     {
-        String type = Json.getString(message, "type");
+        String type = TPLUDP.getMessageType(message);
 
         if (type == null) return;
 

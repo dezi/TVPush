@@ -132,7 +132,7 @@ public class SpeechRecognitionActivity extends BaseActivity implements BaseSpeec
 
         if (recognition != null)
         {
-            recognition.startListening();
+            //recognition.startListening();
         }
     }
 

@@ -5,8 +5,8 @@ import de.xavaro.android.base.BaseRegistration;
 
 import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.simple.Simple;
-import zz.top.tpl.comm.TPLUDP;
-import zz.top.tpl.comm.TPLUDPDiscover;
+
+import zz.top.tpl.base.TPL;
 
 public class ApplicationBase extends BaseApplication
 {
@@ -21,13 +21,12 @@ public class ApplicationBase extends BaseApplication
 
         Simple.initialize(this);
 
-        IOT.initialize(this);
+        //IOT.initialize(this);
 
-        ThirdParty.initialize();
+        //ThirdParty.initialize();
 
         BaseRegistration.speechRecognitionActivityClass = SpeechRecognitionActivity.class;
 
-        TPLUDP.startService();
-        TPLUDPDiscover.discover();
+        TPL.initialize(this);
     }
 }

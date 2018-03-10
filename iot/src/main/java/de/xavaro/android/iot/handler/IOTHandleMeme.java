@@ -1,17 +1,14 @@
 package de.xavaro.android.iot.handler;
 
-import android.util.Log;
-
 import org.json.JSONObject;
 
 import de.xavaro.android.iot.base.IOT;
-import de.xavaro.android.iot.base.IOTHandler;
 import de.xavaro.android.iot.base.IOTSimple;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTHuman;
 import de.xavaro.android.simple.Json;
 
-public class IOTHandleMeme extends IOTHandler
+public class IOTHandleMeme extends IOTHandle
 {
     public static void sendMEME(JSONObject destination)
     {

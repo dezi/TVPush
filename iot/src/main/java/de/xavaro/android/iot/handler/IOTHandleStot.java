@@ -6,11 +6,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import de.xavaro.android.iot.base.IOT;
-import de.xavaro.android.iot.base.IOTHandler;
 
 import de.xavaro.android.simple.Json;
 
-public class IOTHandleStot extends IOTHandler
+public class IOTHandleStot extends IOTHandle
 {
     private static final String LOGTAG = IOTHandleStot.class.getSimpleName();
 
