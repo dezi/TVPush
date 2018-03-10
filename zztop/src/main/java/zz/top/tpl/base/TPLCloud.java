@@ -29,4 +29,9 @@ public class TPLCloud
     {
         Log.d(LOGTAG, "onDeviceFound:");
     }
+
+    public void onDeviceAlive(JSONObject device)
+    {
+        Log.d(LOGTAG, "onDeviceAlive:");
+    }
 }

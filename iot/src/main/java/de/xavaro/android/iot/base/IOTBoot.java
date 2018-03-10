@@ -22,7 +22,7 @@ public class IOTBoot extends IOTObject
         // This class is a singleton.
         //
 
-        return "iot.root";
+        return "iot." + getClass().getSimpleName();
     }
 
     public static void initialize()

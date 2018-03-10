@@ -27,13 +27,12 @@ public class TPLHandlerSysInfo extends TPLHandler
     {
         //Log.d(LOGTAG, Json.toPretty(message));
 
-        JSONObject system = Json.getObject(message, "system");
-
-        buildDeviceDescription(system);
+        buildDeviceDescription(message);
     }
 
-    private void buildDeviceDescription(JSONObject system)
+    private void buildDeviceDescription(JSONObject message)
     {
+        JSONObject system = Json.getObject(message, "system");
         JSONObject sysinfo = Json.getObject(system, "get_sysinfo");
 
         if (! Json.has(sysinfo, "deviceId"))
@@ -45,7 +44,7 @@ public class TPLHandlerSysInfo extends TPLHandler
             return;
         }
 
-        JSONObject origin = Json.getObject(system, "origin");
+        JSONObject origin = Json.getObject(message, "origin");
 
         String brand = "TP-LINK";
 
@@ -59,8 +58,8 @@ public class TPLHandlerSysInfo extends TPLHandler
 
         String ssid = Simple.getConnectedWifiName();
         String mac = Json.getString(sysinfo, "mac");
-        String ip = Json.getString(origin, "ipaddr");
-        int port = Json.getInt(origin, "ipport");
+        String ipaddr = Json.getString(origin, "ipaddr");
+        int ipport = Json.getInt(origin, "ipport");
 
         String type = "smartplug";
         String driver = "tpl";
@@ -99,12 +98,22 @@ public class TPLHandlerSysInfo extends TPLHandler
         Json.put(device, "location", ssid);
         Json.put(device, "fixedwifi", ssid);
 
-        Json.put(network, "ip", ip);
-        Json.put(network, "port", port);
+        Json.put(network, "ipaddr", ipaddr);
+        Json.put(network, "ipport", ipport);
         Json.put(network, "ssid", ssid);
         Json.put(network, "mac", mac);
 
         TPL.cloud.onDeviceFound(tplinkdev);
+
+        JSONObject alive = new JSONObject();
+
+        JSONObject devsmall = new JSONObject();
+        Json.put(devsmall, "uuid", uuid);
+
+        Json.put(alive, "device", devsmall);
+        Json.put(alive, "network", network);
+
+        TPL.cloud.onDeviceAlive(alive);
     }
 
     private static String getCapabilities(String type)

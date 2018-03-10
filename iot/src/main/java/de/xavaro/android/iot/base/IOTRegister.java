@@ -42,4 +42,21 @@ public class IOTRegister
 
         IOTDevices.addEntry(newDevice, false);
     }
+
+    public static void registerDeviceAlive(JSONObject register)
+    {
+        JSONObject device = Json.getObject(register, "device");
+        JSONObject network = Json.getObject(register, "network");
+
+        String uuid = Json.getString(device, "uuid");
+
+        if ((uuid == null) || (network == null))
+        {
+            Log.e(LOGTAG, "registerDeviceAlive: no device.");
+        }
+
+        String ipaddr = Json.getString(network, "ipaddr");
+
+        Log.e(LOGTAG, "registerDeviceAlive: uuid=" + uuid + " ipaddr=" + ipaddr);
+    }
 }

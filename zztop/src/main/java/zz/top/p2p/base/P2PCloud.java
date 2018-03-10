@@ -1,7 +1,6 @@
-package zz.top.p2p.camera;
+package zz.top.p2p.base;
 
 import android.app.Application;
-import android.content.Context;
 import android.support.annotation.Nullable;
 
 import android.util.Base64;
@@ -18,8 +17,12 @@ import javax.crypto.Cipher;
 import javax.crypto.Mac;
 
 import zz.top.cam.Cameras;
-import zz.top.utl.Json;
+
+import zz.top.p2p.camera.P2PRestApi;
+import zz.top.p2p.camera.P2PUtil;
+
 import zz.top.utl.Simple;
+import zz.top.utl.Json;
 
 public class P2PCloud
 {
@@ -99,7 +102,7 @@ public class P2PCloud
         });
     }
 
-    public void deviceList()
+    private void deviceList()
     {
         JSONObject params = new JSONObject();
 
@@ -148,24 +151,19 @@ public class P2PCloud
         });
     }
 
-    protected void onRestApiFailure(String message, String what, JSONObject params, JSONObject result)
+    private void onRestApiFailure(String message, String what, JSONObject params, JSONObject result)
     {
         Log.d(LOGTAG, "onRestApiFailure: message=" + message);
     }
 
-    protected void onLoginSuccess(String what, JSONObject params, JSONObject result)
+    private void onLoginSuccess(String what, JSONObject params, JSONObject result)
     {
         Log.d(LOGTAG, "onLoginSuccess: what=" + what);
     }
 
-    protected void onListSuccess(String what, JSONObject params, JSONObject result)
+    private void onListSuccess(String what, JSONObject params, JSONObject result)
     {
         Log.d(LOGTAG, "onListSuccess: what=" + what);
-    }
-
-    public void onDeviceFound(JSONObject device)
-    {
-        Log.d(LOGTAG, "onDeviceFound:");
     }
 
     private void buildCameraDescription(JSONObject rawDevice)
@@ -235,16 +233,26 @@ public class P2PCloud
         Json.put(credentials, "cloud_em", cloud_em);
         Json.put(credentials, "cloud_pw", cloud_pw);
 
-        Json.put(network, "ip", ip);
+        Json.put(network, "ipaddr", ip);
         Json.put(network, "ssid", ssid);
-        Json.put(network, "mac", mac);
+        Json.put(network, "port", mac);
 
         Cameras.addCamera(camera);
 
         onDeviceFound(camera);
+
+        JSONObject alive = new JSONObject();
+
+        JSONObject devsmall = new JSONObject();
+        Json.put(devsmall, "uuid", uuid);
+
+        Json.put(alive, "device", devsmall);
+        Json.put(alive, "network", network);
+
+        onDeviceAlive(alive);
     }
 
-    public static String getModelName(String modelNo)
+    private static String getModelName(String modelNo)
     {
         // @formatter:off
 
@@ -262,7 +270,7 @@ public class P2PCloud
         return "YI Home Kamera (V1/" + modelNo + ")";
     }
 
-    public static String getCapabilities(String modelNo)
+    private static String getCapabilities(String modelNo)
     {
         // @formatter:off
 
@@ -322,5 +330,15 @@ public class P2PCloud
         }
 
         return null;
+    }
+
+    public void onDeviceFound(JSONObject device)
+    {
+        Log.d(LOGTAG, "onDeviceFound:");
+    }
+
+    public void onDeviceAlive(JSONObject device)
+    {
+        Log.d(LOGTAG, "onDeviceAlive:");
     }
 }

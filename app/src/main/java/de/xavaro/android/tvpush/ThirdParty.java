@@ -7,22 +7,22 @@ import org.json.JSONObject;
 
 import de.xavaro.android.iot.base.IOTRegister;
 
-import zz.top.p2p.camera.P2PCloud;
+import zz.top.p2p.base.P2PCloud;
 import zz.top.tpl.base.TPLCloud;
 
 public class ThirdParty
 {
     private static final String LOGTAG = ThirdParty.class.getSimpleName();
 
-    public static void initialize(Application context)
+    public static void initialize(Application appcontext)
     {
-        initialize_p2p(context);
-        initialize_tpl(context);
+        initialize_p2p(appcontext);
+        initialize_tpl(appcontext);
     }
 
-    private static void initialize_tpl(Application context)
+    private static void initialize_tpl(Application appcontext)
     {
-        tplCloud = new TPLCloud(context)
+        tplCloud = new TPLCloud(appcontext)
         {
             @Override
             public void onDeviceFound(JSONObject device)
@@ -31,15 +31,23 @@ public class ThirdParty
 
                 IOTRegister.registerDevice(device);
             }
+
+            @Override
+            public void onDeviceAlive(JSONObject device)
+            {
+                Log.d(LOGTAG, "onDeviceAlive:");
+
+                IOTRegister.registerDeviceAlive(device);
+            }
         };
     }
 
     private static TPLCloud tplCloud;
     private static P2PCloud p2pCloud;
 
-    private static void initialize_p2p(Application context)
+    private static void initialize_p2p(Application appcontext)
     {
-        p2pCloud = new P2PCloud(context)
+        p2pCloud = new P2PCloud(appcontext)
         {
             @Override
             public void onDeviceFound(JSONObject device)
@@ -47,6 +55,14 @@ public class ThirdParty
                 Log.d(LOGTAG, "onDeviceFound:");
 
                 IOTRegister.registerDevice(device);
+            }
+
+            @Override
+            public void onDeviceAlive(JSONObject device)
+            {
+                Log.d(LOGTAG, "onDeviceAlive:");
+
+                IOTRegister.registerDeviceAlive(device);
             }
         };
 
