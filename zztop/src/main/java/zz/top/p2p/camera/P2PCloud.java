@@ -195,7 +195,7 @@ public class P2PCloud
         String driver = "yi-p2p";
         String capabilities = getCapabilities(Json.getString(rawDevice, "model"));
 
-        String uuid = P2PUtil.hmacSha1UUID(id, mac);
+        String uuid = Simple.hmacSha1UUID(id, mac);
 
         Log.d(LOGTAG, "buildCameraDescription:"
                 + " uuid=" + uuid

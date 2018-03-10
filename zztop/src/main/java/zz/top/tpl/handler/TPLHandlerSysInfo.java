@@ -4,9 +4,8 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
-import zz.top.cam.Cameras;
-import zz.top.p2p.camera.P2PUtil;
 import zz.top.tpl.base.TPL;
+
 import zz.top.utl.Json;
 import zz.top.utl.Simple;
 
@@ -68,7 +67,7 @@ public class TPLHandlerSysInfo extends TPLHandler
 
         String capabilities = getCapabilities(Json.getString(sysinfo, "type"));
 
-        String uuid = P2PUtil.hmacSha1UUID(id, mac);
+        String uuid = Simple.hmacSha1UUID(id, mac);
 
         Log.d(LOGTAG, "buildDeviceDescription:"
                 + " uuid=" + uuid
