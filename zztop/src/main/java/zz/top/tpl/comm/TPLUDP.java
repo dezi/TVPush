@@ -170,6 +170,18 @@ public class TPLUDP
             }
         }
 
+        JSONObject emeter = Json.getObject(message, "emeter");
+
+        if (emeter != null)
+        {
+            Iterator<String> keys = emeter.keys();
+
+            if  (keys.hasNext())
+            {
+                type = keys.next();
+            }
+        }
+
         return type;
     }
 }

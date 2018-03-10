@@ -8,6 +8,7 @@ import java.util.Map;
 
 import zz.top.tpl.base.TPL;
 import zz.top.tpl.handler.TPLHandler;
+import zz.top.tpl.handler.TPLHandlerSmartPlug;
 import zz.top.tpl.handler.TPLHandlerSysInfo;
 
 import zz.top.utl.Json;
@@ -27,6 +28,8 @@ public class TPLMessageHandler
     private void initializeBasicSubscribers()
     {
         subscribe("get_sysinfo", new TPLHandlerSysInfo());
+        subscribe("set_led_off", new TPLHandlerSmartPlug());
+        subscribe("set_relay_state", new TPLHandlerSmartPlug());
     }
 
     public void subscribe(String type, TPLHandler handler)

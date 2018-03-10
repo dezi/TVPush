@@ -5,7 +5,7 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
-import zz.top.tpl.comm.TPLUDPReceiver;
+import zz.top.tpl.handler.TPLHandlerSmartPlug;
 import zz.top.tpl.handler.TPLHandlerSysInfo;
 
 public class TPLCloud
@@ -17,6 +17,10 @@ public class TPLCloud
         TPL.cloud = this;
 
         TPLHandlerSysInfo.sendSysInfoBroadcast();
+
+        TPLHandlerSmartPlug.sendPlugOnOff(true);
+        TPLHandlerSmartPlug.sendLEDOnOff(true);
+
     }
 
     public void onDeviceFound(JSONObject device)
