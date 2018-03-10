@@ -5,9 +5,9 @@ import android.util.Log;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
-public class IOTTCP
+public class IOTUDP
 {
-    private static final String LOGTAG = IOTTCP.class.getSimpleName();
+    private static final String LOGTAG = IOTUDP.class.getSimpleName();
 
     private static final int BCAST_PORT = 42742;
     private static final String BCAST_ADDR = "239.255.255.250";
@@ -16,8 +16,8 @@ public class IOTTCP
     public static InetAddress bcastip;
     public static int bcastport;
 
-    public static IOTTCPReceiver receiver;
-    public static IOTTCPSender sender;
+    public static IOTUDPReceiver receiver;
+    public static IOTUDPSender sender;
 
     public static void startService()
     {
@@ -53,7 +53,7 @@ public class IOTTCP
         {
             Log.d(LOGTAG, "startService: sender: starting.");
 
-            sender = new IOTTCPSender();
+            sender = new IOTUDPSender();
             sender.start();
         }
         else
@@ -65,7 +65,7 @@ public class IOTTCP
         {
             Log.d(LOGTAG, "startService: receiver: starting.");
 
-            receiver = new IOTTCPReceiver();
+            receiver = new IOTUDPReceiver();
             receiver.start();
         }
         else

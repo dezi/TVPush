@@ -14,7 +14,7 @@ public class IOTMessageService extends Thread
 
     public static void sendMessage(JSONObject json)
     {
-        IOTTCPSender.sendMessage(json);
+        IOTUDPSender.sendMessage(json);
     }
 
     public static void startService()
@@ -31,12 +31,12 @@ public class IOTMessageService extends Thread
             Log.d(LOGTAG, "startService: already started.");
         }
 
-        IOTTCP.startService();
+        IOTUDP.startService();
     }
 
     public static void stopService()
     {
-        IOTTCP.stopService();
+        IOTUDP.stopService();
 
         if (receiver != null)
         {
@@ -72,7 +72,7 @@ public class IOTMessageService extends Thread
             {
                 JSONObject message = null;
 
-                message = IOTTCPReceiver.receiveMessage();
+                message = IOTUDPReceiver.receiveMessage();
 
                 if (message == null)
                 {

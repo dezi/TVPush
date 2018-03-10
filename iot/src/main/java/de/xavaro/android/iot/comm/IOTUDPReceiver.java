@@ -11,9 +11,9 @@ import java.util.ArrayList;
 
 import de.xavaro.android.simple.Json;
 
-public class IOTTCPReceiver extends Thread
+public class IOTUDPReceiver extends Thread
 {
-    private static final String LOGTAG = IOTTCPReceiver.class.getSimpleName();
+    private static final String LOGTAG = IOTUDPReceiver.class.getSimpleName();
 
     private static final ArrayList<JSONObject> messageQueue = new ArrayList<>();
 
@@ -51,7 +51,7 @@ public class IOTTCPReceiver extends Thread
             {
                 byte[] rxbuff = new byte[8 * 1024];
                 DatagramPacket rxpack = new DatagramPacket(rxbuff, rxbuff.length);
-                IOTTCP.socket.receive(rxpack);
+                IOTUDP.socket.receive(rxpack);
 
                 String message = new String(rxpack.getData(), 0, rxpack.getLength());
 

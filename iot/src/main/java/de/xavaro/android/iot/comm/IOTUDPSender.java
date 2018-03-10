@@ -10,9 +10,9 @@ import java.util.ArrayList;
 
 import de.xavaro.android.simple.Json;
 
-public class IOTTCPSender extends Thread
+public class IOTUDPSender extends Thread
 {
-    private static final String LOGTAG = IOTTCPSender.class.getSimpleName();
+    private static final String LOGTAG = IOTUDPSender.class.getSimpleName();
 
     private static final ArrayList<JSONObject> messageQueue = new ArrayList<>();
 
@@ -80,8 +80,8 @@ public class IOTTCPSender extends Thread
                     // Broadcast.
                     //
 
-                    txpack.setAddress(IOTTCP.bcastip);
-                    txpack.setPort(IOTTCP.bcastport);
+                    txpack.setAddress(IOTUDP.bcastip);
+                    txpack.setPort(IOTUDP.bcastport);
                 }
                 else
                 {
@@ -103,7 +103,7 @@ public class IOTTCPSender extends Thread
                                 + " send=" + ipaddr + ":" + ipport
                                 + " type=" + type);
 
-                IOTTCP.socket.send(txpack);
+                IOTUDP.socket.send(txpack);
             }
             catch (Exception ex)
             {
