@@ -1,5 +1,6 @@
 package zz.top.p2p.camera;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 
 import android.util.Base64;
@@ -20,7 +21,7 @@ import zz.top.utl.Json;
 
 public class P2PCloud
 {
-    public static final String LOGTAG = P2PCloud.class.getSimpleName();
+    private static final String LOGTAG = P2PCloud.class.getSimpleName();
 
     private static final String urlBase = "https://api.eu.xiaoyi.com/v4";
 
@@ -37,13 +38,13 @@ public class P2PCloud
     private JSONObject loginData;
     private JSONArray listData;
 
-    public P2PCloud(String email)
+    public P2PCloud(Context context)
     {
-        loginEmail = email;
     }
 
-    public void login(String password)
+    public void login(String email, String password)
     {
+        loginEmail = email;
         loginPass = encryptUserPW(password);
 
         JSONObject params = new JSONObject();
@@ -159,7 +160,7 @@ public class P2PCloud
         Log.d(LOGTAG, "onListSuccess: what=" + what);
     }
 
-    protected void onDeviceFound(JSONObject device)
+    public void onDeviceFound(JSONObject device)
     {
         Log.d(LOGTAG, "onDeviceFound:");
     }
