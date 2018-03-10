@@ -27,9 +27,12 @@ public class IOTRegister
         Log.d(LOGTAG, "registerDevice: model=" + Json.getString(device, "model"));
         Log.d(LOGTAG, "registerDevice: capabilities=" + caps);
 
-        Log.d(LOGTAG, "registerDevice:"
-                + " p2p_id=" + Json.getString(credentials, "p2p_id")
-                + " p2p_pw=" + Json.getString(credentials, "p2p_pw"));
+        if (Json.has(credentials, "p2p_id"))
+        {
+            Log.d(LOGTAG, "registerDevice:"
+                    + " p2p_id=" + Json.getString(credentials, "p2p_id")
+                    + " p2p_pw=" + Json.getString(credentials, "p2p_pw"));
+        }
 
         JSONArray capabilities = Json.jsonArrayFromSeparatedString(Simple.getDeviceCapabilities(), "\\|");
 

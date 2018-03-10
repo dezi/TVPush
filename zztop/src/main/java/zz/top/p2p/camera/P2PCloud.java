@@ -1,5 +1,6 @@
 package zz.top.p2p.camera;
 
+import android.app.Application;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
@@ -18,6 +19,7 @@ import javax.crypto.Mac;
 
 import zz.top.cam.Cameras;
 import zz.top.utl.Json;
+import zz.top.utl.Simple;
 
 public class P2PCloud
 {
@@ -38,8 +40,9 @@ public class P2PCloud
     private JSONObject loginData;
     private JSONArray listData;
 
-    public P2PCloud(Context context)
+    public P2PCloud(Application context)
     {
+        Simple.initialize(context);
     }
 
     public void login(String email, String password)
