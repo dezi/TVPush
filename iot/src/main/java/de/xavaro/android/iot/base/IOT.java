@@ -9,20 +9,11 @@ import de.xavaro.android.iot.things.IOTHuman;
 
 public class IOT
 {
+    public static IOTCloud cloud;
+
     public static IOTMeme meme;
     public static IOTHuman human;
     public static IOTDevice device;
 
     public static IOTMessageHandler message;
-
-    public static void initialize(Context context)
-    {
-        IOTBoot.initialize();
-
-        IOTService.startService(context);
-
-        IOTMessageHandler.initialize();
-
-        IOTHandleHelo.sendHELO();
-    }
 }

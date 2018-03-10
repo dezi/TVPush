@@ -7,10 +7,4 @@ public class TPL
 {
     public static TPLCloud cloud;
     public static TPLMessageHandler message;
-
-    static
-    {
-        TPLMessageHandler.initialize();
-        TPLMessageService.startService();
-    }
 }

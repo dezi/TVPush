@@ -19,8 +19,6 @@ public class ApplicationBase extends BaseApplication
 
         Simple.initialize(this);
 
-        IOT.initialize(this);
-
         ThirdParty.initialize(this);
 
         BaseRegistration.speechRecognitionActivityClass = SpeechRecognitionActivity.class;

@@ -5,12 +5,20 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
+import zz.top.tpl.comm.TPLMessageHandler;
+import zz.top.tpl.comm.TPLMessageService;
 import zz.top.tpl.handler.TPLHandlerSysInfo;
 import zz.top.utl.Simple;
 
 public class TPLCloud
 {
     private static final String LOGTAG = TPLCloud.class.getSimpleName();
+
+    static
+    {
+        TPLMessageHandler.initialize();
+        TPLMessageService.startService();
+    }
 
     public TPLCloud(Application context)
     {
