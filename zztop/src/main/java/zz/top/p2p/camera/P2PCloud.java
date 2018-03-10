@@ -187,6 +187,7 @@ public class P2PCloud
         String ssid = Json.getString(rawipcParam, "ssid");
         String mac = Json.getString(rawipcParam, "mac");
 
+        String type = "camera";
         String driver = "yi-p2p";
         String capabilities = getCapabilities(Json.getString(rawDevice, "model"));
 
@@ -211,6 +212,7 @@ public class P2PCloud
         Json.put(device, "uuid", uuid);
 
         Json.put(device, "did", id);
+        Json.put(device, "type", type);
         Json.put(device, "name", name);
         Json.put(device, "nick", nick);
         Json.put(device, "model", model);
