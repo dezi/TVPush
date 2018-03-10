@@ -11,22 +11,48 @@ public class TPLHandlerSmartPlug extends TPLHandler
 {
     private static final String LOGTAG = TPLHandlerSmartPlug.class.getSimpleName();
 
-    public static void sendPlugOnOff(boolean on)
+    public static void sendAllPlugsOnOff(boolean on)
+    {
+        sendPlugOnOff(null, on);
+    }
+
+    public static void sendPlugOnOff(String ipaddr, boolean on)
     {
         String messOn = "{\"system\":{\"set_relay_state\":{\"state\":1}}}";
         String messOff = "{\"system\":{\"set_relay_state\":{\"state\":0}}}";
 
         JSONObject message = Json.fromStringObject(on ? messOn : messOff);
 
+        if ((ipaddr != null) && ! ipaddr.isEmpty())
+        {
+            JSONObject destination = new JSONObject();
+            Json.put(destination, "ipaddr", ipaddr);
+
+            Json.put(message, "destination", destination);
+        }
+
         TPL.message.sendMessage(message);
     }
 
-    public static void sendLEDOnOff(boolean on)
+    public static void sendAllLEDOnOff(boolean on)
+    {
+        sendLEDOnOff(null, on);
+    }
+
+    public static void sendLEDOnOff(String ipaddr, boolean on)
     {
         String messOn = "{\"system\":{\"set_led_off\":{\"off\": 1}}}";
         String messOff = "{\"system\":{\"set_led_off\":{\"off\": 0}}}";
 
         JSONObject message = Json.fromStringObject(on ? messOn : messOff);
+
+        if ((ipaddr != null) && ! ipaddr.isEmpty())
+        {
+            JSONObject destination = new JSONObject();
+            Json.put(destination, "ipaddr", ipaddr);
+
+            Json.put(message, "destination", destination);
+        }
 
         TPL.message.sendMessage(message);
     }

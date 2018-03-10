@@ -86,7 +86,7 @@ public class TPLUDPSender extends Thread
                     int ipport = Json.getInt(dest, "ipport");
 
                     txpack.setAddress(InetAddress.getByName(ipaddr));
-                    txpack.setPort(ipport);
+                    txpack.setPort((ipport != 0) ? ipport : TPLUDP.bcastport);
                 }
 
                 String ipaddr = txpack.getAddress().toString().substring(1);

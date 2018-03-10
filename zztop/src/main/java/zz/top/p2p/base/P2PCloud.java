@@ -45,6 +45,8 @@ public class P2PCloud
 
     public P2PCloud(Application context)
     {
+        P2P.cloud = this;
+
         Simple.initialize(context);
     }
 
