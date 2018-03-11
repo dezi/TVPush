@@ -1,11 +1,11 @@
-package de.xavaro.android.skills;
+package de.xavaro.android.gui.skills;
 
 import android.graphics.drawable.GradientDrawable;
 import android.view.View;
 
-import de.xavaro.android.simple.Simple;
+import de.xavaro.android.gui.simple.Simple;
 
-public class CanRoundedCornersDelegate implements CanRoundedCorners
+public class GUICanRoundedCornersDelegate implements GUICanRoundedCorners
 {
     public View view;
 
@@ -19,7 +19,7 @@ public class CanRoundedCornersDelegate implements CanRoundedCorners
     public int innerColorSaved;
     public int strokeColorSaved;
 
-    public CanRoundedCornersDelegate(View view)
+    public GUICanRoundedCornersDelegate(View view)
     {
         this.view = view;
     }

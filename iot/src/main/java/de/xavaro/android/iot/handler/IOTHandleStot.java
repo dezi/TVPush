@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 import de.xavaro.android.iot.base.IOT;
 
-import de.xavaro.android.simple.Json;
+import de.xavaro.android.gui.simple.Json;
 
 public class IOTHandleStot extends IOTHandle
 {

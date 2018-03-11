@@ -6,7 +6,7 @@ import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.base.IOTSimple;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTHuman;
-import de.xavaro.android.simple.Json;
+import de.xavaro.android.gui.simple.Json;
 
 public class IOTHandleHelo extends IOTHandle
 {

@@ -1,20 +1,20 @@
-package de.xavaro.android.base;
+package de.xavaro.android.gui.view;
 
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.Color;
 import android.content.Context;
 import android.view.View;
 
-import de.xavaro.android.simple.Defs;
-import de.xavaro.android.simple.Simple;
-import de.xavaro.android.skills.CanRoundedCorners;
+import de.xavaro.android.gui.base.GUIDefs;
+import de.xavaro.android.gui.simple.Simple;
+import de.xavaro.android.gui.skills.GUICanRoundedCorners;
 
-public class BaseRainbowLayout extends BaseRelativeLayout
+public class GUIRainbowLayout extends GUIRelativeLayout
 {
     private int orient;
     private boolean isActive;
 
-    private int rainBowRadiusDip = Defs.ROUNDED_NORMAL;
+    private int rainBowRadiusDip = GUIDefs.ROUNDED_NORMAL;
 
     private int[] rainBowColors = new int[]
             {
@@ -34,7 +34,7 @@ public class BaseRainbowLayout extends BaseRelativeLayout
                     GradientDrawable.Orientation.TL_BR
             };
 
-    public BaseRainbowLayout(Context context)
+    public GUIRainbowLayout(Context context)
     {
         super(context);
     }
@@ -65,9 +65,9 @@ public class BaseRainbowLayout extends BaseRelativeLayout
 
             View child = getChildAt(0);
 
-            if (child instanceof CanRoundedCorners)
+            if (child instanceof GUICanRoundedCorners)
             {
-                CanRoundedCorners canRC = (CanRoundedCorners) child;
+                GUICanRoundedCorners canRC = (GUICanRoundedCorners) child;
 
                 canRC.saveBackground();
 
@@ -93,9 +93,9 @@ public class BaseRainbowLayout extends BaseRelativeLayout
 
             View child = getChildAt(0);
 
-            if (child instanceof CanRoundedCorners)
+            if (child instanceof GUICanRoundedCorners)
             {
-                ((CanRoundedCorners) child).restoreBackground();
+                ((GUICanRoundedCorners) child).restoreBackground();
             }
 
             restoreBackground();

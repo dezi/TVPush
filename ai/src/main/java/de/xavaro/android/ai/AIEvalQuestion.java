@@ -2,7 +2,7 @@ package de.xavaro.android.ai;
 
 import org.json.JSONObject;
 
-import de.xavaro.android.simple.Json;
+import de.xavaro.android.gui.simple.Json;
 
 public class AIEvalQuestion
 {

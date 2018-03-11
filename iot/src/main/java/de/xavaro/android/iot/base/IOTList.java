@@ -5,8 +5,8 @@ import org.json.JSONArray;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.xavaro.android.simple.Json;
-import de.xavaro.android.simple.Prefs;
+import de.xavaro.android.gui.simple.Json;
+import de.xavaro.android.gui.simple.Prefs;
 
 public abstract class IOTList
 {

@@ -1,4 +1,4 @@
-package de.xavaro.android.base;
+package de.xavaro.android.gui.base;
 
 import android.annotation.SuppressLint;
 
@@ -14,10 +14,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import de.xavaro.android.gui.smart.GUIRegistration;
+
 @SuppressLint("Registered")
-public class BaseActivity extends AppCompatActivity
+public class GUIActivity extends AppCompatActivity
 {
-    private final static String LOGTAG = BaseActivity.class.getSimpleName();
+    private final static String LOGTAG = GUIActivity.class.getSimpleName();
 
     @SuppressLint("InlinedApi")
     private final int uiOptions
@@ -111,11 +113,11 @@ public class BaseActivity extends AppCompatActivity
     {
         if (keyCode == KeyEvent.KEYCODE_SEARCH)
         {
-            if (BaseRegistration.speechRecognitionActivityClass != null)
+            if (GUIRegistration.speechRecognitionActivityClass != null)
             {
-                if (BaseApplication.getCurrentActivityClass(this) != BaseRegistration.speechRecognitionActivityClass)
+                if (GUIApplication.getCurrentActivityClass(this) != GUIRegistration.speechRecognitionActivityClass)
                 {
-                    Intent myIntent = new Intent(this, BaseRegistration.speechRecognitionActivityClass);
+                    Intent myIntent = new Intent(this, GUIRegistration.speechRecognitionActivityClass);
                     startActivity(myIntent);
                 }
             }

@@ -20,13 +20,13 @@ import android.view.View;
 import android.os.Bundle;
 import android.util.Log;
 
-import de.xavaro.android.base.BaseSpeech;
+import de.xavaro.android.gui.smart.GUISpeech;
 import zz.top.cam.Camera;
 import zz.top.cam.Cameras;
 
 import java.nio.ByteBuffer;
 
-import de.xavaro.android.simple.Simple;
+import de.xavaro.android.gui.simple.Simple;
 
 public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback
 {
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private FrameLayout topframe;
     private FrameLayout videoView;
 
-    private BaseSpeech recognition;
+    private GUISpeech recognition;
 
     private static final String SAMPLE = Environment.getExternalStorageDirectory() + "/video.mp4";
     private PlayerThread mPlayer = null;

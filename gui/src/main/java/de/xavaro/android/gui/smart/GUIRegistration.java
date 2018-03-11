@@ -1,6 +1,6 @@
-package de.xavaro.android.base;
+package de.xavaro.android.gui.smart;
 
-public class BaseRegistration
+public class GUIRegistration
 {
     //
     // Class of speech recognition activity.

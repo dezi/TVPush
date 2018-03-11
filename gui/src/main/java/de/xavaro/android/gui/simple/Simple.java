@@ -1,4 +1,4 @@
-package de.xavaro.android.simple;
+package de.xavaro.android.gui.simple;
 
 import android.annotation.SuppressLint;
 import android.app.Application;

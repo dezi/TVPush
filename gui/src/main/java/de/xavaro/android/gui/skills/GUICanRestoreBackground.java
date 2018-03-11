@@ -1,8 +1,8 @@
-package de.xavaro.android.skills;
+package de.xavaro.android.gui.skills;
 
 import android.graphics.drawable.Drawable;
 
-public interface CanRestoreBackground
+public interface GUICanRestoreBackground
 {
     void setBackgroundColor(int color);
     void setBackground(Drawable drawable);

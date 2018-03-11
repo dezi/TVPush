@@ -1,6 +1,8 @@
-package de.xavaro.android.simple;
+package de.xavaro.android.gui.base;
 
-public class Defs
+import de.xavaro.android.gui.simple.Simple;
+
+public class GUIDefs
 {
     // @formatter:off
 

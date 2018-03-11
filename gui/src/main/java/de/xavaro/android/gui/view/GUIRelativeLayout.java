@@ -1,26 +1,26 @@
-package de.xavaro.android.base;
+package de.xavaro.android.gui.view;
 
-import android.support.v7.widget.AppCompatTextView;
-import android.graphics.drawable.Drawable;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.widget.RelativeLayout;
 
-import de.xavaro.android.skills.CanRestoreBackground;
-import de.xavaro.android.skills.CanRestoreBackgroundDelegate;
-import de.xavaro.android.skills.CanRoundedCorners;
-import de.xavaro.android.skills.CanRoundedCornersDelegate;
+import de.xavaro.android.gui.skills.GUICanRestoreBackground;
+import de.xavaro.android.gui.skills.GUICanRestoreBackgroundDelegate;
+import de.xavaro.android.gui.skills.GUICanRoundedCorners;
+import de.xavaro.android.gui.skills.GUICanRoundedCornersDelegate;
 
-public class BaseTextView extends AppCompatTextView
-        implements CanRoundedCorners, CanRestoreBackground
+public class GUIRelativeLayout extends RelativeLayout
+        implements GUICanRoundedCorners, GUICanRestoreBackground
 {
-    private CanRoundedCornersDelegate canRC;
-    private CanRestoreBackgroundDelegate canRB;
+    private GUICanRoundedCornersDelegate canRC;
+    private GUICanRestoreBackgroundDelegate canRB;
 
-    public BaseTextView(Context context)
+    public GUIRelativeLayout(Context context)
     {
         super(context);
 
-        canRC = new CanRoundedCornersDelegate(this);
-        canRB = new CanRestoreBackgroundDelegate(this);
+        canRB = new GUICanRestoreBackgroundDelegate(this);
+        canRC = new GUICanRoundedCornersDelegate(this);
     }
 
     @Override

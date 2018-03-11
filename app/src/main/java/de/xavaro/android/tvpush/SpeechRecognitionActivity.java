@@ -12,27 +12,26 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import de.xavaro.android.base.BaseActivity;
-import de.xavaro.android.base.BaseRelativeLayout;
-import de.xavaro.android.base.BaseRainbowLayout;
-import de.xavaro.android.base.BaseRegistration;
-import de.xavaro.android.base.BaseSpeech;
-import de.xavaro.android.base.BaseSpeechCallback;
+import de.xavaro.android.gui.base.GUIActivity;
+import de.xavaro.android.gui.view.GUIRelativeLayout;
+import de.xavaro.android.gui.view.GUIRainbowLayout;
+import de.xavaro.android.gui.smart.GUIRegistration;
+import de.xavaro.android.gui.smart.GUISpeech;
+import de.xavaro.android.gui.smart.GUISpeechCallback;
 
-import de.xavaro.android.iot.comm.IOTMessageHandler;
 import de.xavaro.android.iot.handler.IOTHandleStot;
-import de.xavaro.android.simple.Defs;
-import de.xavaro.android.simple.Json;
-import de.xavaro.android.simple.Simple;
+import de.xavaro.android.gui.base.GUIDefs;
+import de.xavaro.android.gui.simple.Json;
+import de.xavaro.android.gui.simple.Simple;
 
-public class SpeechRecognitionActivity extends BaseActivity implements BaseSpeechCallback
+public class SpeechRecognitionActivity extends GUIActivity implements GUISpeechCallback
 {
     private final static String LOGTAG = SpeechRecognitionActivity.class.getSimpleName();
 
     private final Handler handler = new Handler();
 
-    private BaseRainbowLayout colorFrame;
-    private BaseSpeech recognition;
+    private GUIRainbowLayout colorFrame;
+    private GUISpeech recognition;
     private TextView speechText;
     private boolean hadResult;
 
@@ -46,11 +45,11 @@ public class SpeechRecognitionActivity extends BaseActivity implements BaseSpeec
 
         topframe.addView(outerFrame);
 
-        colorFrame = new BaseRainbowLayout(this);
+        colorFrame = new GUIRainbowLayout(this);
 
         outerFrame.addView(colorFrame);
 
-        BaseRelativeLayout centerCont = new BaseRelativeLayout(this);
+        GUIRelativeLayout centerCont = new GUIRelativeLayout(this);
         centerCont.setGravity(Gravity.CENTER_VERTICAL + Gravity.CENTER_HORIZONTAL);
 
         colorFrame.addView(centerCont);
@@ -59,7 +58,7 @@ public class SpeechRecognitionActivity extends BaseActivity implements BaseSpeec
         speechText.setGravity(Gravity.CENTER_HORIZONTAL);
         speechText.setTextColor(Color.WHITE);
 
-        Simple.setTextSizeDip(speechText, Defs.FONTSIZE_SPEECH);
+        Simple.setTextSizeDip(speechText, GUIDefs.FONTSIZE_SPEECH);
 
         centerCont.addView(speechText);
 
@@ -71,16 +70,16 @@ public class SpeechRecognitionActivity extends BaseActivity implements BaseSpeec
             colorFrame.setBackgroundColor(Color.BLACK);
             speechText.setBackgroundColor(Color.BLACK);
 
-            centerCont.setRoundedCornersDip(Defs.ROUNDED_XLARGE, Color.BLACK);
+            centerCont.setRoundedCornersDip(GUIDefs.ROUNDED_XLARGE, Color.BLACK);
 
             Simple.setSizeDip(colorFrame, Simple.MP, Simple.MP);
             Simple.setSizeDip(centerCont, Simple.MP, Simple.MP);
             Simple.setSizeDip(speechText, Simple.MP, Simple.WC);
 
-            Simple.setPaddingDip(outerFrame, Defs.PADDING_LARGE);
-            Simple.setPaddingDip(colorFrame, Defs.PADDING_LARGE);
-            Simple.setPaddingDip(centerCont, Defs.PADDING_LARGE);
-            Simple.setPaddingDip(speechText, Defs.PADDING_LARGE);
+            Simple.setPaddingDip(outerFrame, GUIDefs.PADDING_LARGE);
+            Simple.setPaddingDip(colorFrame, GUIDefs.PADDING_LARGE);
+            Simple.setPaddingDip(centerCont, GUIDefs.PADDING_LARGE);
+            Simple.setPaddingDip(speechText, GUIDefs.PADDING_LARGE);
         }
         else
         {
@@ -100,16 +99,16 @@ public class SpeechRecognitionActivity extends BaseActivity implements BaseSpeec
             colorFrame.setBackgroundColor(Color.TRANSPARENT);
             speechText.setBackgroundColor(Color.TRANSPARENT);
 
-            centerCont.setRoundedCornersDip(Defs.ROUNDED_MEDIUM, Defs.COLOR_LIGHT_TRANSPARENT);
+            centerCont.setRoundedCornersDip(GUIDefs.ROUNDED_MEDIUM, GUIDefs.COLOR_LIGHT_TRANSPARENT);
 
             Simple.setSizeDip(colorFrame, Simple.MP, Simple.WC);
             Simple.setSizeDip(centerCont, Simple.MP, Simple.WC);
             Simple.setSizeDip(speechText, Simple.WC, Simple.WC);
 
-            Simple.setPaddingDip(outerFrame, Defs.PADDING_SMALL);
-            Simple.setPaddingDip(colorFrame, Defs.PADDING_SMALL);
-            Simple.setPaddingDip(centerCont, Defs.PADDING_SMALL);
-            Simple.setPaddingDip(speechText, Defs.PADDING_ZERO);
+            Simple.setPaddingDip(outerFrame, GUIDefs.PADDING_SMALL);
+            Simple.setPaddingDip(colorFrame, GUIDefs.PADDING_SMALL);
+            Simple.setPaddingDip(centerCont, GUIDefs.PADDING_SMALL);
+            Simple.setPaddingDip(speechText, GUIDefs.PADDING_ZERO);
         }
     }
 
@@ -120,7 +119,7 @@ public class SpeechRecognitionActivity extends BaseActivity implements BaseSpeec
 
         super.onStart();
 
-        recognition = new BaseSpeech(this, this);
+        recognition = new GUISpeech(this, this);
     }
 
     @Override
@@ -173,7 +172,7 @@ public class SpeechRecognitionActivity extends BaseActivity implements BaseSpeec
             recognition.destroy();
             recognition = null;
 
-            BaseRegistration.speechRecognitionInhibitUntil = System.currentTimeMillis() + (8 * 1000);
+            GUIRegistration.speechRecognitionInhibitUntil = System.currentTimeMillis() + (8 * 1000);
         }
 
         super.onBackPressed();

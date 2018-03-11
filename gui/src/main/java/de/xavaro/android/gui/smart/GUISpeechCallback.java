@@ -1,8 +1,8 @@
-package de.xavaro.android.base;
+package de.xavaro.android.gui.smart;
 
 import org.json.JSONObject;
 
-public interface BaseSpeechCallback
+public interface GUISpeechCallback
 {
     void onActivateRemote();
 

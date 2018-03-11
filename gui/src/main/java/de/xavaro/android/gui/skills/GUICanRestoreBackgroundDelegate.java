@@ -1,10 +1,10 @@
-package de.xavaro.android.skills;
+package de.xavaro.android.gui.skills;
 
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
-public class CanRestoreBackgroundDelegate implements CanRestoreBackground
+public class GUICanRestoreBackgroundDelegate implements GUICanRestoreBackground
 {
     public View view;
 
@@ -17,7 +17,7 @@ public class CanRestoreBackgroundDelegate implements CanRestoreBackground
     public int colorSaved;
     public Drawable drawableSaved;
 
-    public CanRestoreBackgroundDelegate(View view)
+    public GUICanRestoreBackgroundDelegate(View view)
     {
         this.view = view;
     }

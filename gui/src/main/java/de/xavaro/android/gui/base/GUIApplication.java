@@ -1,4 +1,4 @@
-package de.xavaro.android.base;
+package de.xavaro.android.gui.base;
 
 import android.annotation.SuppressLint;
 import android.support.annotation.Nullable;
@@ -9,12 +9,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
-import de.xavaro.android.simple.Simple;
+import de.xavaro.android.gui.simple.Simple;
 
 @SuppressLint("Registered")
-public class BaseApplication extends Application implements Application.ActivityLifecycleCallbacks
+public class GUIApplication extends Application implements Application.ActivityLifecycleCallbacks
 {
-    private static final String LOGTAG = BaseApplication.class.getSimpleName();
+    private static final String LOGTAG = GUIApplication.class.getSimpleName();
 
     private Activity currentActivity;
 
@@ -84,7 +84,7 @@ public class BaseApplication extends Application implements Application.Activity
     @Nullable
     public static Activity getCurrentActivity(Context context)
     {
-        return ((BaseApplication) context.getApplicationContext()).currentActivity;
+        return ((GUIApplication) context.getApplicationContext()).currentActivity;
     }
 
     @Nullable

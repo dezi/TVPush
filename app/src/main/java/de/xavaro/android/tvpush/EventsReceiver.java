@@ -6,10 +6,10 @@ import android.content.Intent;
 import android.widget.Toast;
 import android.util.Log;
 
-import de.xavaro.android.base.BaseApplication;
-import de.xavaro.android.base.BaseRegistration;
+import de.xavaro.android.gui.base.GUIApplication;
+import de.xavaro.android.gui.smart.GUIRegistration;
 
-import de.xavaro.android.simple.Simple;
+import de.xavaro.android.gui.simple.Simple;
 
 public class EventsReceiver extends BroadcastReceiver
 {
@@ -28,11 +28,11 @@ public class EventsReceiver extends BroadcastReceiver
             {
                 int state = intent.getExtras().getInt("android.bluetooth.BluetoothInputDevice.extra.MIC_STATE");
 
-                if ((state == 1) && (BaseRegistration.speechRecognitionActivityClass != null))
+                if ((state == 1) && (GUIRegistration.speechRecognitionActivityClass != null))
                 {
-                    if (BaseApplication.getCurrentActivityClass(context) != BaseRegistration.speechRecognitionActivityClass)
+                    if (GUIApplication.getCurrentActivityClass(context) != GUIRegistration.speechRecognitionActivityClass)
                     {
-                        if (BaseRegistration.speechRecognitionInhibitUntil < System.currentTimeMillis())
+                        if (GUIRegistration.speechRecognitionInhibitUntil < System.currentTimeMillis())
                         {
                             Intent myIntent = new Intent(context, SpeechRecognitionActivity.class);
                             context.startActivity(myIntent);

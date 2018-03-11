@@ -1,12 +1,11 @@
 package de.xavaro.android.tvpush;
 
-import de.xavaro.android.base.BaseApplication;
-import de.xavaro.android.base.BaseRegistration;
+import de.xavaro.android.gui.base.GUIApplication;
+import de.xavaro.android.gui.smart.GUIRegistration;
 
-import de.xavaro.android.iot.base.IOT;
-import de.xavaro.android.simple.Simple;
+import de.xavaro.android.gui.simple.Simple;
 
-public class ApplicationBase extends BaseApplication
+public class ApplicationBase extends GUIApplication
 {
     private static final String LOGTAG = ApplicationBase.class.getSimpleName();
 
@@ -21,6 +20,6 @@ public class ApplicationBase extends BaseApplication
 
         ThirdParty.initialize(this);
 
-        BaseRegistration.speechRecognitionActivityClass = SpeechRecognitionActivity.class;
+        GUIRegistration.speechRecognitionActivityClass = SpeechRecognitionActivity.class;
     }
 }

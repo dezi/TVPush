@@ -10,8 +10,8 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import de.xavaro.android.simple.Json;
-import de.xavaro.android.simple.Prefs;
+import de.xavaro.android.gui.simple.Json;
+import de.xavaro.android.gui.simple.Prefs;
 
 @SuppressWarnings("WeakerAccess")
 public abstract class IOTObject

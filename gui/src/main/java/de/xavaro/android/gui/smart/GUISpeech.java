@@ -1,4 +1,4 @@
-package de.xavaro.android.base;
+package de.xavaro.android.gui.smart;
 
 import android.support.annotation.Nullable;
 
@@ -16,16 +16,16 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import de.xavaro.android.simple.Json;
-import de.xavaro.android.simple.Simple;
+import de.xavaro.android.gui.simple.Json;
+import de.xavaro.android.gui.simple.Simple;
 
-public class BaseSpeech implements RecognitionListener
+public class GUISpeech implements RecognitionListener
 {
-    private static final String LOGTAG = BaseSpeech.class.getSimpleName();
+    private static final String LOGTAG = GUISpeech.class.getSimpleName();
 
     private Handler handler = new Handler();
 
-    private BaseSpeechCallback callback;
+    private GUISpeechCallback callback;
     private SpeechRecognizer recognizer;
     private Intent recognizerIntent;
     private Context context;
@@ -33,7 +33,7 @@ public class BaseSpeech implements RecognitionListener
     private boolean lockStart;
     private boolean isEnabled;
 
-    public BaseSpeech(Context context, BaseSpeechCallback callback)
+    public GUISpeech(Context context, GUISpeechCallback callback)
     {
         this.context = context;
         this.callback = callback;

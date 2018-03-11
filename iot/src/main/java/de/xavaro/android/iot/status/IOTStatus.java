@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.base.IOTSimple;
 
-import de.xavaro.android.simple.Json;
+import de.xavaro.android.gui.simple.Json;
 
 public class IOTStatus extends IOTObject
 {
