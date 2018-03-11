@@ -1,4 +1,4 @@
-package de.xavaro.android.gui.simple;
+package de.xavaro.android.iot.simple;
 
 import android.support.annotation.Nullable;
 

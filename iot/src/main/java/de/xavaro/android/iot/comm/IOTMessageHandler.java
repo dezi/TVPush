@@ -12,8 +12,7 @@ import de.xavaro.android.iot.handler.IOTHandle;
 import de.xavaro.android.iot.handler.IOTHandleHelo;
 import de.xavaro.android.iot.handler.IOTHandleMeme;
 import de.xavaro.android.iot.handler.IOTHandleStot;
-
-import de.xavaro.android.gui.simple.Json;
+import de.xavaro.android.iot.simple.Json;
 
 public class IOTMessageHandler
 {

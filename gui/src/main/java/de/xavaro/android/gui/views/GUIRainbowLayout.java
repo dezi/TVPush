@@ -4,7 +4,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.Color;
 import android.content.Context;
 import android.view.View;
-import android.view.WindowManager;
 
 import de.xavaro.android.gui.base.GUIApplication;
 import de.xavaro.android.gui.base.GUIDefs;

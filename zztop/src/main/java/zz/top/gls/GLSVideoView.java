@@ -10,7 +10,6 @@ import android.util.AttributeSet;
 
 import com.google.android.gms.vision.face.Face;
 
-
 public class GLSVideoView extends FrameLayout
 {
     private static final String LOGTAG = GLSVideoView.class.getSimpleName();

@@ -154,6 +154,22 @@ public class GUIActivity extends AppCompatActivity
     }
 
     @Override
+    public void onBackPressed()
+    {
+        Log.d(LOGTAG, "onBackpressed:");
+
+        for (int inx = 0; inx < topframe.getChildCount(); inx++)
+        {
+            if (topframe.getChildAt(inx) instanceof GUIWidget)
+            {
+                ((GUIWidget) topframe.getChildAt(inx)).onBackPressed();
+            }
+        }
+
+        super.onBackPressed();
+    }
+
+    @Override
     public void onWindowFocusChanged(boolean hasFocus)
     {
         super.onWindowFocusChanged(hasFocus);

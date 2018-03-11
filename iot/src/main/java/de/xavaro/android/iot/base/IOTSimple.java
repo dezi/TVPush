@@ -4,7 +4,7 @@ import org.json.JSONArray;
 
 import java.util.UUID;
 
-import de.xavaro.android.gui.simple.Json;
+import de.xavaro.android.iot.simple.Json;
 
 public class IOTSimple
 {

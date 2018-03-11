@@ -5,8 +5,8 @@ import org.json.JSONObject;
 
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.base.IOTSimple;
-import de.xavaro.android.gui.simple.Json;
-import de.xavaro.android.gui.simple.Simple;
+import de.xavaro.android.iot.simple.Json;
+import de.xavaro.android.iot.simple.Simple;
 
 @SuppressWarnings("WeakerAccess")
 public class IOTDevice extends IOTObject

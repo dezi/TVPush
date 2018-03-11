@@ -5,10 +5,10 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import de.xavaro.android.iot.simple.Json;
+import de.xavaro.android.iot.simple.Simple;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
-import de.xavaro.android.gui.simple.Json;
-import de.xavaro.android.gui.simple.Simple;
 
 public class IOTRegister
 {

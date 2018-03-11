@@ -1,21 +1,17 @@
 package de.xavaro.android.iot.base;
 
 import android.app.Application;
-import android.content.Context;
 import android.util.Log;
 
 import org.json.JSONObject;
 
 import de.xavaro.android.iot.comm.IOTMessageHandler;
 import de.xavaro.android.iot.handler.IOTHandleHelo;
-import zz.top.tpl.base.TPL;
-import zz.top.tpl.base.TPLCloud;
-import zz.top.tpl.handler.TPLHandlerSysInfo;
-import zz.top.utl.Simple;
+import de.xavaro.android.iot.simple.Simple;
 
 public class IOTCloud
 {
-    private static final String LOGTAG = TPLCloud.class.getSimpleName();
+    private static final String LOGTAG = IOTCloud.class.getSimpleName();
 
     public static void initialize(Application appcontext)
     {

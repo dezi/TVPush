@@ -33,4 +33,9 @@ public class GUIWidget extends FrameLayout
     public void onStop()
     {
     }
+
+    public void onBackPressed()
+    {
+
+    }
 }

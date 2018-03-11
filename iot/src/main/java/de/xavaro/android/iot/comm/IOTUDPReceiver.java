@@ -9,7 +9,7 @@ import java.net.DatagramPacket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
-import de.xavaro.android.gui.simple.Json;
+import de.xavaro.android.iot.simple.Json;
 
 public class IOTUDPReceiver extends Thread
 {
