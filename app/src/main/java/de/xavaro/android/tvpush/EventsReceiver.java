@@ -7,9 +7,9 @@ import android.widget.Toast;
 import android.util.Log;
 
 import de.xavaro.android.base.BaseApplication;
-
 import de.xavaro.android.base.BaseRegistration;
-import de.xavaro.android.simple.Dump;
+
+import de.xavaro.android.simple.Simple;
 
 public class EventsReceiver extends BroadcastReceiver
 {
@@ -22,7 +22,7 @@ public class EventsReceiver extends BroadcastReceiver
 
         if (intent.getAction().equals("android.bluetooth.input.profile.action.MIC_INFO_RECEIVED"))
         {
-            Dump.dumpIntent(intent);
+            Simple.dumpIntent(intent);
 
             if (intent.getExtras() != null)
             {

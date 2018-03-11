@@ -1,1 +1,1 @@
-include ':app', ':common', ':zztop', ':iot', ':ai'
+include ':app', ':gui', ':zztop', ':iot', ':ai'

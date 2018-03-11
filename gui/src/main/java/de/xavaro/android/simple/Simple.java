@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.app.UiModeManager;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -13,11 +14,13 @@ import android.graphics.Point;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +36,8 @@ import java.util.Iterator;
 
 public class Simple
 {
+    private static final String LOGTAG = Simple.class.getSimpleName();
+
     //region Basic defines.
 
     public static final int MP = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -476,6 +481,19 @@ public class Simple
     public static void removeALLPrefs(Context context)
     {
         PreferenceManager.getDefaultSharedPreferences(context).edit().clear().commit();
+    }
+
+    public static void dumpIntent(Intent intent)
+    {
+        Bundle bundle = intent.getExtras();
+        if (bundle == null) return;
+
+        for (String key : bundle.keySet())
+        {
+            Object value = bundle.get(key);
+
+            Log.d(LOGTAG, "dumpIntent: key=" + key + " value=" + value);
+        }
     }
 
     //endregion Smart helpers.
