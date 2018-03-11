@@ -13,8 +13,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import de.xavaro.android.gui.base.GUIActivity;
-import de.xavaro.android.gui.view.GUIRelativeLayout;
-import de.xavaro.android.gui.view.GUIRainbowLayout;
+import de.xavaro.android.gui.views.GUIRelativeLayout;
+import de.xavaro.android.gui.views.GUIRainbowLayout;
 import de.xavaro.android.gui.smart.GUIRegistration;
 import de.xavaro.android.gui.smart.GUISpeech;
 import de.xavaro.android.gui.smart.GUISpeechCallback;

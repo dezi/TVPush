@@ -1,4 +1,4 @@
-package de.xavaro.android.gui.view;
+package de.xavaro.android.gui.views;
 
 import android.support.v7.widget.AppCompatTextView;
 import android.graphics.drawable.Drawable;

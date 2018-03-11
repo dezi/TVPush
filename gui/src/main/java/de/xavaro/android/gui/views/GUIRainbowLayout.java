@@ -1,4 +1,4 @@
-package de.xavaro.android.gui.view;
+package de.xavaro.android.gui.views;
 
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.Color;
