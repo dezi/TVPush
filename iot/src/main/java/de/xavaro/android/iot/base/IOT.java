@@ -27,17 +27,24 @@ public class IOT implements InternetOfThingsHandler
 
     public IOT(Application appcontext)
     {
-        IOT.instance = this;
+        if (instance == null)
+        {
+            IOT.instance = this;
 
-        Simple.initialize(appcontext);
+            Simple.initialize(appcontext);
 
-        IOTBoot.initialize();
+            IOTBoot.initialize();
 
-        IOTService.startService(appcontext);
+            IOTService.startService(appcontext);
 
-        IOTMessageHandler.initialize();
+            IOTMessageHandler.initialize();
 
-        IOTHandleHelo.sendHELO();
+            IOTHandleHelo.sendHELO();
+        }
+        else
+        {
+            throw new RuntimeException("IOT system already initialized.");
+        }
     }
 
     @Override

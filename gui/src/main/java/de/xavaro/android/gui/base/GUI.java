@@ -14,7 +14,14 @@ public class GUI implements GraficalUserInterfaceHandler
 
     public GUI(Application appcontext)
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            throw new RuntimeException("GUI system already initialized.");
+        }
     }
 
     @Override
