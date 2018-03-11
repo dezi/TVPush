@@ -10,6 +10,7 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUIPlugin;
 import de.xavaro.android.gui.smart.GUISpeechCallback;
@@ -103,6 +104,22 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
             centerCont.setPaddingDip(GUIDefs.PADDING_SMALL);
             speechText.setPaddingDip(GUIDefs.PADDING_ZERO);
         }
+    }
+
+    @Override
+    public void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+
+        GUI.instance.recognition.setCallback(this);
+    }
+
+    @Override
+    public void onDetachedFromWindow()
+    {
+        GUI.instance.recognition.setCallback(null);
+
+        super.onDetachedFromWindow();
     }
 
     @Override

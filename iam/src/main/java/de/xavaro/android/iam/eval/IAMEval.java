@@ -4,11 +4,9 @@ import org.json.JSONObject;
 
 public class IAMEval
 {
-    public static JSONObject evaluate(String message)
+    public static JSONObject evaluateSpeech(String message)
     {
         JSONObject result = new JSONObject();
-
-
 
         return result;
     }

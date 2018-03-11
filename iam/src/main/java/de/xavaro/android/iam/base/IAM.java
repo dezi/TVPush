@@ -5,6 +5,7 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.iam.eval.IAMEvalQuickAndDirty;
 import de.xavaro.android.iam.simple.Json;
 import pub.android.interfaces.iam.ArtificialIntelligenceHandler;
 
@@ -36,11 +37,15 @@ public class IAM implements ArtificialIntelligenceHandler
     public void evaluateSpeech(JSONObject speech)
     {
         Log.d(LOGTAG, "evaluateSpeech: speech=" + speech.toString());
+
+        JSONObject actions = IAMEvalQuickAndDirty.evaluateSpeech(speech);
+        if (actions != null) onActionsFound(actions);
     }
 
     @Override
     public void evaluateMessage(JSONObject message)
     {
         Log.d(LOGTAG, "evaluateMessage: message=" + message.toString());
+
     }
 }
