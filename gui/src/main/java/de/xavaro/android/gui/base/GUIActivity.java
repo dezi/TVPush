@@ -55,12 +55,11 @@ public class GUIActivity extends AppCompatActivity
         // Setup background and sizes.
         //
 
-        if (Simple.isTV())
+        if (Simple.isPhone())
         {
-            getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            getWindow().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
         }
-
-        if (Simple.isTablet())
+        else
         {
             height = Simple.dipToPx(80);
 
@@ -71,11 +70,6 @@ public class GUIActivity extends AppCompatActivity
             getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
             setFinishOnTouchOutside(true);
-        }
-
-        if (Simple.isPhone())
-        {
-            getWindow().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
         }
 
         getWindow().setAttributes(windowParams);
@@ -91,15 +85,26 @@ public class GUIActivity extends AppCompatActivity
         topframe.setBackgroundColor(0x88880000);
 
         setContentView(topframe);
+
+        setUiFlags();
     }
 
     public void setWindowHeightDip(int heightDip)
     {
-        windowParams.height = Simple.dipToPx(heightDip);
-        getWindow().setAttributes(windowParams);
+        if (Simple.isPhone())
+        {
+            //
+            // Phones always use full screen.
+            //
+        }
+        else
+        {
+            windowParams.height = Simple.dipToPx(heightDip);
+            getWindow().setAttributes(windowParams);
 
-        topFrameParams.height = Simple.dipToPx(heightDip);
-        topframe.setLayoutParams(topFrameParams);
+            topFrameParams.height = Simple.dipToPx(heightDip);
+            topframe.setLayoutParams(topFrameParams);
+        }
     }
 
     @Override
