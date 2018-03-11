@@ -19,6 +19,7 @@ import de.xavaro.android.gui.smart.GUIRegistration;
 import de.xavaro.android.gui.smart.GUISpeech;
 import de.xavaro.android.gui.smart.GUISpeechCallback;
 
+import de.xavaro.android.gui.views.GUITextView;
 import de.xavaro.android.iot.handler.IOTHandleStot;
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.simple.Json;
@@ -31,8 +32,9 @@ public class SpeechRecognitionActivity extends GUIActivity implements GUISpeechC
     private final Handler handler = new Handler();
 
     private GUIRainbowLayout colorFrame;
+    private GUITextView speechText;
     private GUISpeech recognition;
-    private TextView speechText;
+
     private boolean hadResult;
 
     @Override
@@ -54,11 +56,10 @@ public class SpeechRecognitionActivity extends GUIActivity implements GUISpeechC
 
         colorFrame.addView(centerCont);
 
-        speechText = new TextView(this);
+        speechText = new GUITextView(this);
         speechText.setGravity(Gravity.CENTER_HORIZONTAL);
         speechText.setTextColor(Color.WHITE);
-
-        Simple.setTextSizeDip(speechText, GUIDefs.FONTSIZE_SPEECH);
+        speechText.setTextSizeDip(GUIDefs.FONTSIZE_SPEECH);
 
         centerCont.addView(speechText);
 
@@ -131,7 +132,7 @@ public class SpeechRecognitionActivity extends GUIActivity implements GUISpeechC
 
         if (recognition != null)
         {
-            //recognition.startListening();
+            recognition.startListening();
         }
     }
 

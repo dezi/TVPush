@@ -23,6 +23,8 @@ public class GUIRelativeLayout extends RelativeLayout
         canRC = new GUICanRoundedCornersDelegate(this);
     }
 
+    //region Skills implementation.
+
     @Override
     public void setBackgroundColor(int color)
     {
@@ -110,4 +112,6 @@ public class GUIRelativeLayout extends RelativeLayout
         canRB.restoreBackground();
         canRC.restoreBackground();
     }
+
+    //endregion Skills implementation.
 }

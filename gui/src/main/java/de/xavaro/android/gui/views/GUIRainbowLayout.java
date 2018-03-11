@@ -11,8 +11,8 @@ import de.xavaro.android.gui.skills.GUICanRoundedCorners;
 
 public class GUIRainbowLayout extends GUIRelativeLayout
 {
-    private int orient;
     private boolean isActive;
+    private int orient;
 
     private int rainBowRadiusDip = GUIDefs.ROUNDED_NORMAL;
 

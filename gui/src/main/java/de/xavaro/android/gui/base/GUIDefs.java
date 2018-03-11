@@ -20,7 +20,8 @@ public class GUIDefs
     public static final int ROUNDED_XLARGE   = Simple.isTablet() ? 40 : 30;
 
     public final static int FONTSIZE_LARGE  = Simple.isTablet() ? 36 : 30;
-    public final static int FONTSIZE_SPEECH = Simple.isTablet() ? 30 : 30;
+
+    public final static int FONTSIZE_SPEECH = Simple.isTablet() ? 24 : 30;
 
     public final static int COLOR_LIGHT_TRANSPARENT  = 0x22000000;
     public final static int COLOR_MEDIUM_TRANSPARENT = 0x44000000;

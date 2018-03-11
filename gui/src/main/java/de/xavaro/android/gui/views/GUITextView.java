@@ -3,6 +3,7 @@ package de.xavaro.android.gui.views;
 import android.support.v7.widget.AppCompatTextView;
 import android.graphics.drawable.Drawable;
 import android.content.Context;
+import android.util.TypedValue;
 
 import de.xavaro.android.gui.skills.GUICanRestoreBackground;
 import de.xavaro.android.gui.skills.GUICanRestoreBackgroundDelegate;
@@ -22,6 +23,15 @@ public class GUITextView extends AppCompatTextView
         canRC = new GUICanRoundedCornersDelegate(this);
         canRB = new GUICanRestoreBackgroundDelegate(this);
     }
+
+    public void setTextSizeDip(int textSizeDip)
+    {
+        float real = textSizeDip / getContext().getResources().getConfiguration().fontScale;
+
+        setTextSize(TypedValue.COMPLEX_UNIT_DIP, real);
+    }
+
+    //region Skills implementation.
 
     @Override
     public void setBackgroundColor(int color)
@@ -110,4 +120,6 @@ public class GUITextView extends AppCompatTextView
         canRB.restoreBackground();
         canRC.restoreBackground();
     }
+
+    //endregion Skills implementation.
 }
