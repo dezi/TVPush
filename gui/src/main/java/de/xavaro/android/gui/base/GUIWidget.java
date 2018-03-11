@@ -3,13 +3,19 @@ package de.xavaro.android.gui.base;
 import android.widget.FrameLayout;
 import android.content.Context;
 
-public class GUIWidget extends FrameLayout
+import de.xavaro.android.gui.views.GUIFrameLayout;
+
+public class GUIWidget extends GUIFrameLayout
 {
     private final static String LOGTAG = GUIWidget.class.getSimpleName();
+
+    public FrameLayout widgetFrame;
 
     public GUIWidget(Context context)
     {
         super(context);
+
+        widgetFrame = this;
 
         onCreate();
     }

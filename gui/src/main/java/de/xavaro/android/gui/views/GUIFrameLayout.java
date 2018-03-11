@@ -1,21 +1,20 @@
 package de.xavaro.android.gui.views;
 
-import android.graphics.drawable.Drawable;
-import android.widget.RelativeLayout;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
+import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.skills.GUICanRestoreBackground;
 import de.xavaro.android.gui.skills.GUICanRestoreBackgroundDelegate;
 import de.xavaro.android.gui.skills.GUICanRoundedCorners;
 import de.xavaro.android.gui.skills.GUICanRoundedCornersDelegate;
 
-import de.xavaro.android.gui.simple.Simple;
-
-public class GUIRelativeLayout extends RelativeLayout
+public class GUIFrameLayout extends FrameLayout
         implements GUICanRoundedCorners, GUICanRestoreBackground
 {
-    public GUIRelativeLayout(Context context)
+    public GUIFrameLayout(Context context)
     {
         super(context);
 

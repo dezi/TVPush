@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
-import android.widget.RelativeLayout;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -39,14 +38,9 @@ public class GUISpechRecogniton extends GUIWidget implements GUISpeechCallback
     {
         super(context);
 
-        RelativeLayout outerFrame = new RelativeLayout(context);
-        Simple.setSizeDip(outerFrame, Simple.MP, Simple.MP);
-
-        addView(outerFrame);
-        
         colorFrame = new GUIRainbowLayout(context);
 
-        outerFrame.addView(colorFrame);
+        widgetFrame.addView(colorFrame);
 
         GUIRelativeLayout centerCont = new GUIRelativeLayout(context);
         centerCont.setGravity(Gravity.CENTER_VERTICAL + Gravity.CENTER_HORIZONTAL);
@@ -64,7 +58,7 @@ public class GUISpechRecogniton extends GUIWidget implements GUISpeechCallback
         {
             speechText.setMinLines(3);
 
-            outerFrame.setBackgroundColor(Color.BLACK);
+            widgetFrame.setBackgroundColor(Color.BLACK);
             colorFrame.setBackgroundColor(Color.BLACK);
             speechText.setBackgroundColor(Color.BLACK);
 
@@ -74,26 +68,17 @@ public class GUISpechRecogniton extends GUIWidget implements GUISpeechCallback
             Simple.setSizeDip(centerCont, Simple.MP, Simple.MP);
             Simple.setSizeDip(speechText, Simple.MP, Simple.WC);
 
-            Simple.setPaddingDip(outerFrame, GUIDefs.PADDING_LARGE);
+            Simple.setPaddingDip(widgetFrame, GUIDefs.PADDING_LARGE);
             Simple.setPaddingDip(colorFrame, GUIDefs.PADDING_LARGE);
             Simple.setPaddingDip(centerCont, GUIDefs.PADDING_LARGE);
             Simple.setPaddingDip(speechText, GUIDefs.PADDING_LARGE);
         }
         else
         {
-            if (Simple.isTV())
-            {
-                outerFrame.setGravity(Gravity.BOTTOM);
-            }
-            else
-            {
-                outerFrame.setGravity(Gravity.TOP);
-            }
-
             speechText.setSingleLine(true);
             speechText.setEllipsize(TextUtils.TruncateAt.START);
 
-            outerFrame.setBackgroundColor(Color.TRANSPARENT);
+            widgetFrame.setBackgroundColor(Color.TRANSPARENT);
             colorFrame.setBackgroundColor(Color.TRANSPARENT);
             speechText.setBackgroundColor(Color.TRANSPARENT);
 
@@ -103,7 +88,7 @@ public class GUISpechRecogniton extends GUIWidget implements GUISpeechCallback
             Simple.setSizeDip(centerCont, Simple.MP, Simple.WC);
             Simple.setSizeDip(speechText, Simple.WC, Simple.WC);
 
-            Simple.setPaddingDip(outerFrame, GUIDefs.PADDING_SMALL);
+            Simple.setPaddingDip(widgetFrame, GUIDefs.PADDING_SMALL);
             Simple.setPaddingDip(colorFrame, GUIDefs.PADDING_SMALL);
             Simple.setPaddingDip(centerCont, GUIDefs.PADDING_SMALL);
             Simple.setPaddingDip(speechText, GUIDefs.PADDING_ZERO);

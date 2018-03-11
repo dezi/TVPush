@@ -13,16 +13,14 @@ import de.xavaro.android.gui.skills.GUICanRoundedCornersDelegate;
 public class GUITextView extends AppCompatTextView
         implements GUICanRoundedCorners, GUICanRestoreBackground
 {
-    private GUICanRoundedCornersDelegate canRC;
-    private GUICanRestoreBackgroundDelegate canRB;
-
     public GUITextView(Context context)
     {
         super(context);
 
-        canRC = new GUICanRoundedCornersDelegate(this);
-        canRB = new GUICanRestoreBackgroundDelegate(this);
+        initSkills();
     }
+
+    //region Dip implementation.
 
     public void setTextSizeDip(int textSizeDip)
     {
@@ -31,7 +29,18 @@ public class GUITextView extends AppCompatTextView
         setTextSize(TypedValue.COMPLEX_UNIT_DIP, real);
     }
 
+    //endregion Dip implementation.
+
     //region Skills implementation.
+
+    private GUICanRoundedCornersDelegate canRC;
+    private GUICanRestoreBackgroundDelegate canRB;
+
+    private void initSkills()
+    {
+        canRB = new GUICanRestoreBackgroundDelegate(this);
+        canRC = new GUICanRoundedCornersDelegate(this);
+    }
 
     @Override
     public void setBackgroundColor(int color)

@@ -18,7 +18,6 @@ public class SpeechRecognitionActivity extends GUIActivity
         super.onCreate(savedInstanceState);
 
         spechrecognition = new GUISpechRecogniton(this);
-
         topframe.addView(spechrecognition);
     }
 }
