@@ -17,8 +17,9 @@ public class GUI implements GraficalUserInterfaceHandler
     public static GUI instance;
 
     public GUIApplication application;
-    public GUIDesktopActivity desktop;
-    public GUISpeechListener recognition;
+
+    public GUISpeechListener speechListener;
+    public GUIDesktopActivity desktopActivity;
 
     public GUI(Application application)
     {
@@ -30,8 +31,8 @@ public class GUI implements GraficalUserInterfaceHandler
             {
                 this.application = (GUIApplication) application;
 
-                this.recognition = new GUISpeechListener(application);
-                this.recognition.startListening();
+                this.speechListener = new GUISpeechListener(application);
+                this.speechListener.startListening();
             }
             else
             {
@@ -63,7 +64,7 @@ public class GUI implements GraficalUserInterfaceHandler
     {
         Log.d(LOGTAG, "displaySpeechRecognition: show=" + show);
 
-        GUI.instance.desktop.displaySpeechRecognition(show);
+        GUI.instance.desktopActivity.displaySpeechRecognition(show);
     }
 
     @Override

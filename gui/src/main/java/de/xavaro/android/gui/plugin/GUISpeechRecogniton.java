@@ -111,13 +111,13 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
     {
         super.onAttachedToWindow();
 
-        GUI.instance.recognition.setCallback(this);
+        GUI.instance.speechListener.setCallback(this);
     }
 
     @Override
     public void onDetachedFromWindow()
     {
-        GUI.instance.recognition.setCallback(null);
+        GUI.instance.speechListener.setCallback(null);
 
         super.onDetachedFromWindow();
     }

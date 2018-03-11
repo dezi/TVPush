@@ -18,7 +18,7 @@ public class GUIDesktopActivity extends GUIActivity
     {
         super.onCreate(savedInstanceState);
 
-        GUI.instance.desktop = this;
+        GUI.instance.desktopActivity = this;
 
         speechRecognition = new GUISpeechRecogniton(this);
     }

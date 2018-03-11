@@ -12,13 +12,20 @@ public class IOTHandleHelo extends IOTHandle
 {
     public static void sendHELO()
     {
-        JSONObject message = new JSONObject();
+        if (IOT.device != null)
+        {
+            JSONObject message = new JSONObject();
 
-        Json.put(message, "type", "HELO");
-        Json.put(message, "human", IOT.human.toJson());
-        Json.put(message, "device", IOT.device.toJson());
+            Json.put(message, "type", "HELO");
+            Json.put(message, "device", IOT.device.toJson());
 
-        IOT.message.sendMessage(message);
+            if (IOT.human != null)
+            {
+                Json.put(message, "human", IOT.human.toJson());
+            }
+
+            IOT.message.sendMessage(message);
+        }
     }
 
     @Override

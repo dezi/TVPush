@@ -242,7 +242,7 @@ public class GUISpeechListener implements RecognitionListener
         if ((jresults != null) && (callback != null)) callback.onSpeechResults(jresults);
 
         //
-        // Sometimes the recognition hangs here forever.
+        // Sometimes the speechListener hangs here forever.
         //
 
         handler.removeCallbacks(restartListeningRunnable);
