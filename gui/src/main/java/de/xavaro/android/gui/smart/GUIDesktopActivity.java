@@ -12,7 +12,6 @@ public class GUIDesktopActivity extends GUIActivity
     private final static String LOGTAG = GUIDesktopActivity.class.getSimpleName();
 
     public GUISpeechRecogniton speechRecognition;
-    private GUISpeech recognition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -30,8 +29,6 @@ public class GUIDesktopActivity extends GUIActivity
         Log.d(LOGTAG, "onStart:");
 
         super.onStart();
-
-        recognition = new GUISpeech(this, speechRecognition);
     }
 
     @Override
@@ -40,11 +37,6 @@ public class GUIDesktopActivity extends GUIActivity
         Log.d(LOGTAG, "onResume:");
 
         super.onResume();
-
-        if (recognition != null)
-        {
-            recognition.startListening();
-        }
     }
 
     @Override
@@ -53,11 +45,6 @@ public class GUIDesktopActivity extends GUIActivity
         Log.d(LOGTAG, "onPause:");
 
         super.onPause();
-
-        if (recognition != null)
-        {
-            recognition.stopListening();
-        }
     }
 
     @Override
@@ -67,23 +54,12 @@ public class GUIDesktopActivity extends GUIActivity
 
         super.onStop();
 
-        if (recognition != null)
-        {
-            recognition.destroy();
-            recognition = null;
-        }
     }
 
     @Override
     public void onBackPressed()
     {
         Log.d(LOGTAG, "onBackPressed:");
-
-        if (recognition != null)
-        {
-            recognition.destroy();
-            recognition = null;
-        }
 
         super.onBackPressed();
     }

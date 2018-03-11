@@ -12,7 +12,6 @@ import org.json.JSONObject;
 
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUIPlugin;
-import de.xavaro.android.gui.smart.GUISpeech;
 import de.xavaro.android.gui.smart.GUISpeechCallback;
 import de.xavaro.android.gui.views.GUIRainbowLayout;
 import de.xavaro.android.gui.views.GUIRelativeLayout;

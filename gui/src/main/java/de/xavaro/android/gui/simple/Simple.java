@@ -62,6 +62,7 @@ public class Simple
 
     private static Handler handler;
     private static WifiManager wifiManager;
+    private static AudioManager audioManager;
     private static WindowManager windowManager;
     private static PackageManager packageManager;
     private static ConnectivityManager connectivityManager;
@@ -79,6 +80,7 @@ public class Simple
         contentResolver = app.getContentResolver();
 
         wifiManager = (WifiManager) app.getSystemService(Context.WIFI_SERVICE);
+        audioManager = (AudioManager) app.getSystemService(Context.AUDIO_SERVICE);
         windowManager = ((WindowManager) app.getSystemService(Context.WINDOW_SERVICE));
         connectivityManager = (ConnectivityManager) app.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -377,21 +379,18 @@ public class Simple
         return (color & 0x00ffffff) | (alpha << 24);
     }
 
-    public static void turnBeepOnOff(Context context, boolean on)
+    public static void turnBeepOnOff(boolean on)
     {
-        if (! Simple.isTV())
+        if ((audioManager != null) && !Simple.isTV())
         {
-            AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-            if (audioManager == null) return;
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             {
-                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
-                        on ? AudioManager.ADJUST_UNMUTE : AudioManager.ADJUST_MUTE, 0);
+                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, on
+                        ? AudioManager.ADJUST_UNMUTE : AudioManager.ADJUST_MUTE, 0);
             }
             else
             {
-                audioManager.setStreamMute(AudioManager.STREAM_MUSIC, ! on);
+                audioManager.setStreamMute(AudioManager.STREAM_MUSIC, !on);
             }
         }
     }

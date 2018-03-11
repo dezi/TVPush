@@ -19,33 +19,34 @@ import java.util.ArrayList;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
 
-public class GUISpeech implements RecognitionListener
+public class GUISpeechListener implements RecognitionListener
 {
-    private static final String LOGTAG = GUISpeech.class.getSimpleName();
+    private static final String LOGTAG = GUISpeechListener.class.getSimpleName();
 
     private Handler handler = new Handler();
 
     private GUISpeechCallback callback;
     private SpeechRecognizer recognizer;
     private Intent recognizerIntent;
-    private Context context;
 
     private boolean lockStart;
     private boolean isEnabled;
 
-    public GUISpeech(Context context, GUISpeechCallback callback)
+    public GUISpeechListener(Context context)
     {
-        this.context = context;
-        this.callback = callback;
-
         if (Simple.isSpeechIn())
         {
             Log.d(LOGTAG, "SpeechRecognizer: init.");
 
-            Simple.turnBeepOnOff(context, true);
+            Simple.turnBeepOnOff(true);
 
             recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
             recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+
+            Log.d(LOGTAG, "startListening: create");
+
+            recognizer = SpeechRecognizer.createSpeechRecognizer(context);
+            recognizer.setRecognitionListener(this);
         }
         else
         {
@@ -53,15 +54,9 @@ public class GUISpeech implements RecognitionListener
         }
     }
 
-    public void destroy()
+    public void setCallback(GUISpeechCallback callback)
     {
-        Log.d(LOGTAG, "destroy:");
-
-        if (recognizer != null)
-        {
-            recognizer.destroy();
-            recognizer = null;
-        }
+        this.callback = callback;
     }
 
     public void startListening()
@@ -71,14 +66,6 @@ public class GUISpeech implements RecognitionListener
         handler.removeCallbacks(restartListeningRunnable);
 
         isEnabled = true;
-
-        if (recognizer == null)
-        {
-            Log.d(LOGTAG, "startListening: create");
-
-            recognizer = SpeechRecognizer.createSpeechRecognizer(context);
-            recognizer.setRecognitionListener(this);
-        }
 
         if (!lockStart)
         {
@@ -97,7 +84,7 @@ public class GUISpeech implements RecognitionListener
             @Override
             public void run()
             {
-                Simple.turnBeepOnOff(context, false);
+                Simple.turnBeepOnOff(false);
             }
         }, 1000);
     }
@@ -106,7 +93,7 @@ public class GUISpeech implements RecognitionListener
     {
         Log.d(LOGTAG, "stopListening:");
 
-        Simple.turnBeepOnOff(context, true);
+        Simple.turnBeepOnOff(true);
 
         isEnabled = false;
 
@@ -248,9 +235,9 @@ public class GUISpeech implements RecognitionListener
     }
 
     @Override
-    public void onPartialResults(Bundle partialResults)
+    public void onPartialResults(Bundle resultsBundle)
     {
-        JSONObject jresults = resultsToJSON(partialResults, true);
+        JSONObject jresults = resultsToJSON(resultsBundle, true);
         if ((jresults != null) && (callback != null)) callback.onSpeechResults(jresults);
 
         //
@@ -262,10 +249,21 @@ public class GUISpeech implements RecognitionListener
     }
 
     @Override
-    public void onResults(Bundle results)
+    public void onResults(Bundle resultsBundle)
     {
-        JSONObject jresults = resultsToJSON(results, true);
-        if ((jresults != null) && (callback != null)) callback.onSpeechResults(jresults);
+        JSONObject speech = resultsToJSON(resultsBundle, false);
+
+        JSONArray results = Json.getArray(speech, "results");
+        if ((results == null) || (results.length() == 0)) return;
+
+        JSONObject result = Json.getObject(results, 0);
+
+        String text = Json.getString(result, "text");
+        float conf = Json.getFloat(result, "conf");
+
+        Log.d(LOGTAG, "onSpeechResults: conf=" + conf + " text=" + text);
+
+        if ((speech != null) && (callback != null)) callback.onSpeechResults(speech);
 
         lockStart = false;
 

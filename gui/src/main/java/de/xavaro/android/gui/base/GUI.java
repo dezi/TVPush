@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import de.xavaro.android.gui.smart.GUIDesktopActivity;
+import de.xavaro.android.gui.smart.GUISpeechListener;
 import pub.android.interfaces.cam.Camera;
 import pub.android.interfaces.gui.GraficalUserInterfaceHandler;
 
@@ -15,6 +16,7 @@ public class GUI implements GraficalUserInterfaceHandler
 
     public GUIApplication application;
     public GUIDesktopActivity desktop;
+    public GUISpeechListener recognition;
 
     public GUI(Application application)
     {
@@ -25,6 +27,9 @@ public class GUI implements GraficalUserInterfaceHandler
             if (application instanceof GUIApplication)
             {
                 this.application = (GUIApplication) application;
+
+                this.recognition = new GUISpeechListener(application);
+                this.recognition.startListening();
             }
             else
             {
