@@ -1,4 +1,4 @@
-package zz.top.p2p.base;
+package zz.top.p2p.camera;
 
 import android.app.Application;
 import android.support.annotation.Nullable;
@@ -18,8 +18,7 @@ import javax.crypto.Mac;
 
 import zz.top.cam.Cameras;
 
-import zz.top.p2p.camera.P2PRestApi;
-import zz.top.p2p.camera.P2PUtil;
+import zz.top.p2p.base.P2P;
 
 import zz.top.utl.Simple;
 import zz.top.utl.Json;
@@ -33,6 +32,8 @@ public class P2PCloud
     private static final String urlLogin = urlBase + "/users/login";
     private static final String urlList = urlBase + "/devices/list";
 
+    private P2P p2p;
+
     private String loginEmail;
     private String loginPass;
 
@@ -43,11 +44,9 @@ public class P2PCloud
     private JSONObject loginData;
     private JSONArray listData;
 
-    public P2PCloud(Application context)
+    public P2PCloud(P2P p2p)
     {
-        P2P.cloud = this;
-
-        Simple.initialize(context);
+        this.p2p = p2p;
     }
 
     public void login(String email, String password)
@@ -241,7 +240,7 @@ public class P2PCloud
 
         Cameras.addCamera(camera);
 
-        onDeviceFound(camera);
+        p2p.onDeviceFound(camera);
 
         JSONObject alive = new JSONObject();
 
@@ -251,7 +250,7 @@ public class P2PCloud
         Json.put(alive, "device", devsmall);
         Json.put(alive, "network", network);
 
-        onDeviceAlive(alive);
+        p2p.onDeviceAlive(alive);
     }
 
     private static String getModelName(String modelNo)
@@ -332,15 +331,5 @@ public class P2PCloud
         }
 
         return null;
-    }
-
-    public void onDeviceFound(JSONObject device)
-    {
-        Log.d(LOGTAG, "onDeviceFound:");
-    }
-
-    public void onDeviceAlive(JSONObject device)
-    {
-        Log.d(LOGTAG, "onDeviceAlive:");
     }
 }

@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 import de.xavaro.android.iot.base.IOTRegister;
 
-import zz.top.p2p.base.P2PCloud;
+import zz.top.p2p.camera.P2PCloud;
 
 public class Systems
 {
@@ -17,8 +17,7 @@ public class Systems
     private static SystemsIOT iot;
     private static SystemsTPL tpl;
     private static SystemsIAM iam;
-
-    private static P2PCloud p2pCloud;
+    private static SystemsP2P p2p;
 
     public static void initialize(Application application)
     {
@@ -27,30 +26,7 @@ public class Systems
         gui = new SystemsGUI(application);
         iam = new SystemsIAM(application);
 
-        initializeP2P(application);
-    }
-
-    private static void initializeP2P(Application appcontext)
-    {
-        p2pCloud = new P2PCloud(appcontext)
-        {
-            @Override
-            public void onDeviceFound(JSONObject device)
-            {
-                Log.d(LOGTAG, "onDeviceFound:");
-
-                IOTRegister.registerDevice(device);
-            }
-
-            @Override
-            public void onDeviceAlive(JSONObject device)
-            {
-                Log.d(LOGTAG, "onDeviceAlive:");
-
-                IOTRegister.registerDeviceAlive(device);
-            }
-        };
-
-        p2pCloud.login("dezi@kappa-mm.de", "blabla1234!");
+        p2p = new SystemsP2P(application);
+        p2p.login("dezi@kappa-mm.de", "blabla1234!");
     }
 }
