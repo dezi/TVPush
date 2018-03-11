@@ -4,7 +4,9 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.Color;
 import android.content.Context;
 import android.view.View;
+import android.view.WindowManager;
 
+import de.xavaro.android.gui.base.GUIApplication;
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.skills.GUICanRoundedCorners;
@@ -80,6 +82,8 @@ public class GUIRainbowLayout extends GUIRelativeLayout
             }
 
             rainbowRotate.run();
+
+            GUIApplication.setKeepScreenOnOff(getContext(), true);
         }
     }
 
@@ -99,6 +103,8 @@ public class GUIRainbowLayout extends GUIRelativeLayout
             }
 
             restoreBackground();
+
+            GUIApplication.setKeepScreenOnOff(getContext(), false);
         }
     }
 }

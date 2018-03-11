@@ -1,6 +1,7 @@
 package de.xavaro.android.tvpush;
 
 import android.text.TextUtils;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.graphics.Color;

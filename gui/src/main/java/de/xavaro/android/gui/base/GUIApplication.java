@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.WindowManager;
 
 import de.xavaro.android.gui.simple.Simple;
 
@@ -92,5 +93,23 @@ public class GUIApplication extends Application implements Application.ActivityL
     {
         Activity current = getCurrentActivity(context);
         return (current != null) ? current.getClass() : null;
+    }
+
+    @Nullable
+    public static void setKeepScreenOnOff(Context context, boolean keepon)
+    {
+        Activity current = getCurrentActivity(context);
+
+        if (current != null)
+        {
+            if (keepon)
+            {
+                current.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            }
+            else
+            {
+                current.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            }
+        }
     }
 }
