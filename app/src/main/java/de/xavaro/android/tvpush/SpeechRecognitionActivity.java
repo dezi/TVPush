@@ -66,8 +66,9 @@ public class SpeechRecognitionActivity extends GUIActivity
                     camera1.setResolution(Camera.RESOLUTION_720P);
 
                     camera1.startRealtimeVideo();
-                    //camera.startRealtimeAudio();
-                    //camera.startFaceDetection(true);
+                    camera1.startFaceDetection(true);
+
+                    //camera2.startRealtimeAudio();
                 }
 
                 String name2 = "Orwell Büro";
@@ -87,8 +88,9 @@ public class SpeechRecognitionActivity extends GUIActivity
                     camera2.setResolution(Camera.RESOLUTION_720P);
 
                     camera2.startRealtimeVideo();
-                    //camera.startRealtimeAudio();
-                    //camera.startFaceDetection(true);
+                    camera2.startFaceDetection(true);
+
+                    //camera2.startRealtimeAudio();
                 }
             }
 
