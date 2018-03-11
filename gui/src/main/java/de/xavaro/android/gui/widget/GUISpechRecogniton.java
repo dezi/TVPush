@@ -42,6 +42,8 @@ public class GUISpechRecogniton extends GUIWidget implements GUISpeechCallback
         RelativeLayout outerFrame = new RelativeLayout(context);
         Simple.setSizeDip(outerFrame, Simple.MP, Simple.MP);
 
+        addView(outerFrame);
+        
         colorFrame = new GUIRainbowLayout(context);
 
         outerFrame.addView(colorFrame);
