@@ -21,15 +21,6 @@ public class GUIActivity extends AppCompatActivity
 {
     private final static String LOGTAG = GUIActivity.class.getSimpleName();
 
-    @SuppressLint("InlinedApi")
-    private final int uiOptions
-            = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-            | View.SYSTEM_UI_FLAG_FULLSCREEN
-            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-
     public FrameLayout topframe;
 
     @Override
@@ -66,6 +57,14 @@ public class GUIActivity extends AppCompatActivity
         Log.d(LOGTAG, "onStart:");
 
         super.onStart();
+
+        for (int inx = 0; inx < topframe.getChildCount(); inx++)
+        {
+            if (topframe.getChildAt(inx) instanceof GUIWidget)
+            {
+                ((GUIWidget) topframe.getChildAt(inx)).onStart();
+            }
+        }
     }
 
     @Override
@@ -76,6 +75,14 @@ public class GUIActivity extends AppCompatActivity
         super.onResume();
 
         setUiFlags();
+
+        for (int inx = 0; inx < topframe.getChildCount(); inx++)
+        {
+            if (topframe.getChildAt(inx) instanceof GUIWidget)
+            {
+                ((GUIWidget) topframe.getChildAt(inx)).onResume();
+            }
+        }
     }
 
     @Override
@@ -84,6 +91,14 @@ public class GUIActivity extends AppCompatActivity
         Log.d(LOGTAG, "onPause:");
 
         super.onPause();
+
+        for (int inx = 0; inx < topframe.getChildCount(); inx++)
+        {
+            if (topframe.getChildAt(inx) instanceof GUIWidget)
+            {
+                ((GUIWidget) topframe.getChildAt(inx)).onPause();
+            }
+        }
     }
 
     @Override
@@ -92,6 +107,14 @@ public class GUIActivity extends AppCompatActivity
         Log.d(LOGTAG, "onStop:");
 
         super.onStop();
+
+        for (int inx = 0; inx < topframe.getChildCount(); inx++)
+        {
+            if (topframe.getChildAt(inx) instanceof GUIWidget)
+            {
+                ((GUIWidget) topframe.getChildAt(inx)).onStop();
+            }
+        }
     }
 
     @Override
@@ -100,12 +123,6 @@ public class GUIActivity extends AppCompatActivity
         super.onWindowFocusChanged(hasFocus);
 
         setUiFlags();
-    }
-
-    public void setUiFlags()
-    {
-        View decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(uiOptions);
     }
 
     @Override
@@ -128,5 +145,20 @@ public class GUIActivity extends AppCompatActivity
         Log.d(LOGTAG, "onKeyDown: event=" + event);
 
         return super.onKeyDown(keyCode, event);
+    }
+
+    private void setUiFlags()
+    {
+        @SuppressLint("InlinedApi")
+        int uiOptions
+                = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+        
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(uiOptions);
     }
 }
