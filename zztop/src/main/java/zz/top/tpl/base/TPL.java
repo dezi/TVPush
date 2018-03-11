@@ -1,10 +1,53 @@
 package zz.top.tpl.base;
 
+import android.app.Application;
+import android.util.Log;
+
+import org.json.JSONObject;
+
 import zz.top.tpl.comm.TPLMessageHandler;
 import zz.top.tpl.comm.TPLMessageService;
+import zz.top.tpl.handler.TPLHandlerSysInfo;
+import zz.top.utl.Simple;
 
-public class TPL
+import pub.android.interfaces.iot.InternetOfThingsHandler;
+
+public class TPL implements InternetOfThingsHandler
 {
-    public static TPLCloud cloud;
+    private static final String LOGTAG = TPL.class.getSimpleName();
+
+    public static TPL instance;
+
     public static TPLMessageHandler message;
+
+    public TPL(Application application)
+    {
+        if (instance == null)
+        {
+            instance = this;
+
+            Simple.initialize(application);
+
+            TPLMessageHandler.initialize();
+            TPLMessageService.startService();
+
+            TPLHandlerSysInfo.sendSysInfoBroadcast();
+        }
+        else
+        {
+            throw new RuntimeException("TPL system already initialized.");
+        }
+    }
+
+    @Override
+    public void onDeviceFound(JSONObject device)
+    {
+        Log.d(LOGTAG, "onDeviceFound:");
+    }
+
+    @Override
+    public void onDeviceAlive(JSONObject device)
+    {
+        Log.d(LOGTAG, "onDeviceAlive:");
+    }
 }

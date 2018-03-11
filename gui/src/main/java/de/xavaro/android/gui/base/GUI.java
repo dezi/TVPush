@@ -17,6 +17,7 @@ public class GUI implements GraficalUserInterfaceHandler
         instance = this;
     }
 
+    @Override
     public Camera onRequestCameraByUUID(String uuid)
     {
         Log.d(LOGTAG, "onRequestCameraByUUID: uuid=" + uuid);

@@ -103,7 +103,7 @@ public class TPLHandlerSysInfo extends TPLHandler
         Json.put(network, "ssid", ssid);
         Json.put(network, "mac", mac);
 
-        TPL.cloud.onDeviceFound(tplinkdev);
+        TPL.instance.onDeviceFound(tplinkdev);
 
         JSONObject alive = new JSONObject();
 
@@ -113,7 +113,7 @@ public class TPLHandlerSysInfo extends TPLHandler
         Json.put(alive, "device", devsmall);
         Json.put(alive, "network", network);
 
-        TPL.cloud.onDeviceAlive(alive);
+        TPL.instance.onDeviceAlive(alive);
     }
 
     private static String getCapabilities(String type)

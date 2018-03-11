@@ -11,7 +11,9 @@ import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTHuman;
 import de.xavaro.android.iot.simple.Simple;
 
-public class IOT
+import pub.android.interfaces.iot.InternetOfThingsHandler;
+
+public class IOT implements InternetOfThingsHandler
 {
     private static final String LOGTAG = IOT.class.getSimpleName();
 
@@ -38,11 +40,13 @@ public class IOT
         IOTHandleHelo.sendHELO();
     }
 
+    @Override
     public void onDeviceFound(JSONObject device)
     {
         Log.d(LOGTAG, "onDeviceFound:");
     }
 
+    @Override
     public void onDeviceAlive(JSONObject device)
     {
         Log.d(LOGTAG, "onDeviceAlive:");
