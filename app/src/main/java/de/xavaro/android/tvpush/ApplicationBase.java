@@ -18,7 +18,7 @@ public class ApplicationBase extends GUIApplication
 
         Simple.initialize(this);
 
-        ThirdParty.initialize(this);
+        Systems.initialize(this);
 
         GUIRegistration.speechRecognitionActivityClass = SpeechRecognitionActivity.class;
     }
