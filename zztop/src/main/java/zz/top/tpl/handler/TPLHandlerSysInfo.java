@@ -19,7 +19,7 @@ public class TPLHandlerSysInfo extends TPLHandler
 
         JSONObject message = Json.fromStringObject(mess);
 
-        TPL.message.sendMessage(message);
+        TPL.instance.message.sendMessage(message);
     }
 
     @Override

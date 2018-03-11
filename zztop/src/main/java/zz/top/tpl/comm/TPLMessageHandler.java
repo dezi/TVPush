@@ -19,8 +19,8 @@ public class TPLMessageHandler
 
     public static void initialize()
     {
-        TPL.message = new TPLMessageHandler();
-        TPL.message.initializeBasicSubscribers();
+        TPL.instance.message = new TPLMessageHandler();
+        TPL.instance.message.initializeBasicSubscribers();
     }
 
     private final Map<String, ArrayList<TPLHandler>> subscribers = new HashMap<>();

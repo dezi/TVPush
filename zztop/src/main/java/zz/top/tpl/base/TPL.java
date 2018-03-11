@@ -18,7 +18,7 @@ public class TPL implements InternetOfThingsHandler
 
     public static TPL instance;
 
-    public static TPLMessageHandler message;
+    public TPLMessageHandler message;
 
     public TPL(Application application)
     {

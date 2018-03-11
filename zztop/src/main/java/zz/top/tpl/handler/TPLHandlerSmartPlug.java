@@ -31,7 +31,7 @@ public class TPLHandlerSmartPlug extends TPLHandler
             Json.put(message, "destination", destination);
         }
 
-        TPL.message.sendMessage(message);
+        TPL.instance.message.sendMessage(message);
     }
 
     public static void sendAllLEDOnOff(boolean on)
@@ -54,7 +54,7 @@ public class TPLHandlerSmartPlug extends TPLHandler
             Json.put(message, "destination", destination);
         }
 
-        TPL.message.sendMessage(message);
+        TPL.instance.message.sendMessage(message);
     }
 
     @Override

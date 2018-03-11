@@ -81,7 +81,7 @@ public class TPLMessageService extends Thread
                     continue;
                 }
 
-                TPL.message.receiveMessage(message);
+                TPL.instance.message.receiveMessage(message);
             }
             catch (Exception ex)
             {
