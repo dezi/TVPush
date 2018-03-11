@@ -6,6 +6,7 @@ import android.util.Log;
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIActivity;
 import de.xavaro.android.gui.plugin.GUISpeechRecogniton;
+import de.xavaro.android.gui.simple.Simple;
 
 public class GUIDesktopActivity extends GUIActivity
 {
@@ -21,6 +22,11 @@ public class GUIDesktopActivity extends GUIActivity
         GUI.instance.desktopActivity = this;
 
         speechRecognition = new GUISpeechRecogniton(this);
+
+        if (Simple.isPhone())
+        {
+            displaySpeechRecognition(true);
+        }
     }
 
     @Override
