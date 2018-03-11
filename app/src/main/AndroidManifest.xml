@@ -42,7 +42,7 @@
                   android:theme="@style/DeziTheme.Transparent.Activity">
         </activity>
 
-        <activity android:name=".SpeechRecognitionActivity"
+        <activity android:name=".DesktopActivity"
                   android:theme="@style/DeziTheme.Transparent.Activity"
                   android:launchMode="singleTask">
 

@@ -31,4 +31,10 @@ public class GUI implements GraficalUserInterfaceHandler
 
         return null;
     }
+
+    @Override
+    public void displayCamera(String uuid)
+    {
+
+    }
 }

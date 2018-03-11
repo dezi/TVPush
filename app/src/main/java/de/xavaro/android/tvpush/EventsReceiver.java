@@ -34,7 +34,7 @@ public class EventsReceiver extends BroadcastReceiver
                     {
                         if (GUIRegistration.speechRecognitionInhibitUntil < System.currentTimeMillis())
                         {
-                            Intent myIntent = new Intent(context, SpeechRecognitionActivity.class);
+                            Intent myIntent = new Intent(context, DesktopActivity.class);
                             context.startActivity(myIntent);
                         }
                     }

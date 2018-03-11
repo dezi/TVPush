@@ -20,6 +20,6 @@ public class ApplicationBase extends GUIApplication
 
         Systems.initialize(this);
 
-        GUIRegistration.speechRecognitionActivityClass = SpeechRecognitionActivity.class;
+        GUIRegistration.speechRecognitionActivityClass = DesktopActivity.class;
     }
 }

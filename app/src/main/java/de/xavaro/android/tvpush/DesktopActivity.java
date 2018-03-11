@@ -12,9 +12,9 @@ import de.xavaro.android.gui.simple.Simple;
 import pub.android.interfaces.cam.Camera;
 import zz.top.cam.Cameras;
 
-public class SpeechRecognitionActivity extends GUIActivity
+public class DesktopActivity extends GUIActivity
 {
-    private final static String LOGTAG = SpeechRecognitionActivity.class.getSimpleName();
+    private final static String LOGTAG = DesktopActivity.class.getSimpleName();
 
     private GUISpeechRecogniton speechRecognition;
 
