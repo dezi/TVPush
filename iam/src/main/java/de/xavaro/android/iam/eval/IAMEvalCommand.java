@@ -1,8 +1,8 @@
-package de.xavaro.android.ai;
+package de.xavaro.android.iam.eval;
 
 import org.json.JSONObject;
 
-public class AIEval
+public class IAMEvalCommand
 {
     public static JSONObject evaluate(String message)
     {
@@ -12,4 +12,5 @@ public class AIEval
 
         return result;
     }
+
 }

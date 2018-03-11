@@ -1,10 +1,10 @@
-package de.xavaro.android.ai;
+package de.xavaro.android.iam.eval;
 
 import org.json.JSONObject;
 
 import de.xavaro.android.gui.simple.Json;
 
-public class AIEvalQuestion
+public class IAMEvalQuestion
 {
     public static JSONObject evaluate(String message)
     {

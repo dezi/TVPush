@@ -46,6 +46,8 @@ dependencies {
     compile 'com.google.firebase:firebase-core:11.8.0'
     compile 'com.google.firebase:firebase-messaging:11.8.0'
     compile 'com.google.android.gms:play-services-vision:11.8.0'
+
+    compile project(':iam')
     compile project(':gui')
     compile project(':zztop')
     compile project(':iot')
