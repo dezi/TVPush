@@ -61,8 +61,10 @@ public class GUIActivity extends AppCompatActivity
 
         if (Simple.isTablet())
         {
+            height = Simple.dipToPx(80);
+
             params.width = width;
-            params.height = 80;
+            params.height = height;
             params.gravity = Gravity.BOTTOM;
 
             getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

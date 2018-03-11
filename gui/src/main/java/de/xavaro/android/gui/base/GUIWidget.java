@@ -15,6 +15,10 @@ public class GUIWidget extends GUIFrameLayout
     {
         super(context);
 
+        //
+        // Courtesy copy to make things more transparent.
+        //
+
         widgetFrame = this;
 
         onCreate();
@@ -42,6 +46,5 @@ public class GUIWidget extends GUIFrameLayout
 
     public void onBackPressed()
     {
-
     }
 }

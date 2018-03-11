@@ -39,7 +39,6 @@ public class GUISpechRecogniton extends GUIWidget implements GUISpeechCallback
     public GUISpechRecogniton(Context context)
     {
         super(context);
-
     }
 
     @Override
