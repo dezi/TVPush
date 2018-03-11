@@ -198,8 +198,7 @@ public class GUIActivity extends AppCompatActivity
     {
         if (keyCode == KeyEvent.KEYCODE_SEARCH)
         {
-
-            GUI.instance.displaySpeechRecognition();
+            GUI.instance.displaySpeechRecognition(true);
 
             return true;
         }

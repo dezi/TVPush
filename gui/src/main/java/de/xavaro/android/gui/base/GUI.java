@@ -12,11 +12,22 @@ public class GUI implements GraficalUserInterfaceHandler
 
     public static GUI instance;
 
-    public GUI(Application appcontext)
+    public GUIApplication application;
+
+    public GUI(Application application)
     {
         if (instance == null)
         {
             instance = this;
+
+            if (application instanceof GUIApplication)
+            {
+                this.application = (GUIApplication) application;
+            }
+            else
+            {
+                throw new RuntimeException("Application does not extend GUIApplication.");
+            }
         }
         else
         {
@@ -33,13 +44,14 @@ public class GUI implements GraficalUserInterfaceHandler
     }
 
     @Override
-    public void displaySpeechRecognition()
+    public void displaySpeechRecognition(boolean show)
     {
+        Log.d(LOGTAG, "displaySpeechRecognition: show=" + show);
     }
 
     @Override
     public void displayCamera(String uuid)
     {
-
+        Log.d(LOGTAG, "displayCamera: uuid=" + uuid);
     }
 }

@@ -11,9 +11,9 @@ public class SystemsGUI extends GUI
 {
     private static final String LOGTAG = SystemsGUI.class.getSimpleName();
 
-    public SystemsGUI(Application appcontext)
+    public SystemsGUI(Application application)
     {
-        super(appcontext);
+        super(application);
     }
 
     @Override

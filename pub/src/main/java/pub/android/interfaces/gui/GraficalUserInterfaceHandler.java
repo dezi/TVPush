@@ -6,6 +6,6 @@ public interface GraficalUserInterfaceHandler
 {
     Camera onRequestCameraByUUID(String uuid);
 
-    void displaySpeechRecognition();
+    void displaySpeechRecognition(boolean show);
     void displayCamera(String uuid);
 }

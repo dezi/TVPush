@@ -27,7 +27,7 @@ public class EventsReceiver extends BroadcastReceiver
 
                 if (state == 1)
                 {
-                    SystemsGUI.instance.displaySpeechRecognition();
+                    SystemsGUI.instance.displaySpeechRecognition(true);
                 }
             }
 
