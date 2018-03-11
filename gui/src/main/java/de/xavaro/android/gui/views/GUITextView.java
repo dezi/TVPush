@@ -4,7 +4,9 @@ import android.support.v7.widget.AppCompatTextView;
 import android.graphics.drawable.Drawable;
 import android.content.Context;
 import android.util.TypedValue;
+import android.view.ViewGroup;
 
+import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.skills.GUICanRestoreBackground;
 import de.xavaro.android.gui.skills.GUICanRestoreBackgroundDelegate;
 import de.xavaro.android.gui.skills.GUICanRoundedCorners;
@@ -21,6 +23,27 @@ public class GUITextView extends AppCompatTextView
     }
 
     //region Dip implementation.
+
+    public void setSizeDip(int width, int height)
+    {
+        if (getLayoutParams() == null)
+        {
+            setLayoutParams(new ViewGroup.MarginLayoutParams(Simple.WC, Simple.WC));
+        }
+
+        getLayoutParams().width = width > 0 ? Simple.dipToPx(width) : width;
+        getLayoutParams().height = height > 0 ? Simple.dipToPx(height) : height;
+    }
+
+    public void setPaddingDip(int pad)
+    {
+        setPadding(Simple.dipToPx(pad), Simple.dipToPx(pad), Simple.dipToPx(pad), Simple.dipToPx(pad));
+    }
+
+    public void setPaddingDip(int left, int top, int right, int bottom)
+    {
+        setPadding(Simple.dipToPx(left), Simple.dipToPx(top), Simple.dipToPx(right), Simple.dipToPx(bottom));
+    }
 
     public void setTextSizeDip(int textSizeDip)
     {

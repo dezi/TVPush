@@ -345,81 +345,6 @@ public class Simple
 
     //endregion Simple getters.
 
-    //region View manipulation.
-
-    public static void setSizeNODip(View view, int width, int height)
-    {
-        if (view.getLayoutParams() == null)
-        {
-            view.setLayoutParams(new ViewGroup.MarginLayoutParams(WC, WC));
-        }
-
-        view.getLayoutParams().width = width;
-        view.getLayoutParams().height = height;
-    }
-
-    public static void setSizeDip(View view, int width, int height)
-    {
-        if (view.getLayoutParams() == null)
-        {
-            view.setLayoutParams(new ViewGroup.MarginLayoutParams(WC, WC));
-        }
-
-        view.getLayoutParams().width = width > 0 ? dipToPx(width) : width;
-        view.getLayoutParams().height = height > 0 ? dipToPx(height) : height;
-    }
-
-    public static void setTextSizeDip(TextView textView, int size)
-    {
-        float real = size / textView.getContext().getResources().getConfiguration().fontScale;
-
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, real);
-    }
-
-    public static void setPaddingDip(View view, int pad)
-    {
-        view.setPadding(dipToPx(pad), dipToPx(pad), dipToPx(pad), dipToPx(pad));
-    }
-
-    public static void setPaddingDip(View view, int left, int top, int right, int bottom)
-    {
-        view.setPadding(dipToPx(left), dipToPx(top), dipToPx(right), dipToPx(bottom));
-    }
-
-    public static void setMarginDip(View view, int margin)
-    {
-        if (view.getLayoutParams() == null)
-            view.setLayoutParams(new LinearLayout.LayoutParams(WC, WC));
-
-        ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).leftMargin = dipToPx(margin);
-        ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).topMargin = dipToPx(margin);
-        ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).rightMargin = dipToPx(margin);
-        ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).bottomMargin = dipToPx(margin);
-    }
-
-    public static void setMarginDip(View view, int left, int top, int right, int bottom)
-    {
-        if (view.getLayoutParams() == null)
-            view.setLayoutParams(new LinearLayout.LayoutParams(WC, WC));
-
-        ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).leftMargin = dipToPx(left);
-        ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).topMargin = dipToPx(top);
-        ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).rightMargin = dipToPx(right);
-        ((ViewGroup.MarginLayoutParams) view.getLayoutParams()).bottomMargin = dipToPx(bottom);
-    }
-
-    public static int getRGBAlpha(int color)
-    {
-        return (color >> 24) & 0xff;
-    }
-
-    public static int setRGBAlpha(int color, int alpha)
-    {
-        return (color & 0x00ffffff) | (alpha << 24);
-    }
-
-    //endregion View manipulation.
-
     //region Smart helpers.
 
     public static int dipToPx(int dp)
@@ -440,6 +365,16 @@ public class Simple
     public static float pxToDip(float px)
     {
         return px / Resources.getSystem().getDisplayMetrics().density;
+    }
+
+    public static int getRGBAlpha(int color)
+    {
+        return (color >> 24) & 0xff;
+    }
+
+    public static int setRGBAlpha(int color, int alpha)
+    {
+        return (color & 0x00ffffff) | (alpha << 24);
     }
 
     public static void turnBeepOnOff(Context context, boolean on)

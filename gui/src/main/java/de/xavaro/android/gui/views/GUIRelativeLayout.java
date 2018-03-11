@@ -35,6 +35,16 @@ public class GUIRelativeLayout extends RelativeLayout
         getLayoutParams().height = height > 0 ? Simple.dipToPx(height) : height;
     }
 
+    public void setPaddingDip(int pad)
+    {
+        setPadding(Simple.dipToPx(pad), Simple.dipToPx(pad), Simple.dipToPx(pad), Simple.dipToPx(pad));
+    }
+
+    public void setPaddingDip(int left, int top, int right, int bottom)
+    {
+        setPadding(Simple.dipToPx(left), Simple.dipToPx(top), Simple.dipToPx(right), Simple.dipToPx(bottom));
+    }
+
     //endregion Dip implementation.
 
     //region Skills implementation.

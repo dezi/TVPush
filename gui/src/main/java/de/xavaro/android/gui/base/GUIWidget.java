@@ -9,7 +9,7 @@ public class GUIWidget extends GUIFrameLayout
 {
     private final static String LOGTAG = GUIWidget.class.getSimpleName();
 
-    public FrameLayout widgetFrame;
+    public GUIFrameLayout widgetFrame;
 
     public GUIWidget(Context context)
     {

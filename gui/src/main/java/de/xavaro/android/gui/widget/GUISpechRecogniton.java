@@ -12,14 +12,16 @@ import org.json.JSONObject;
 
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUIWidget;
-import de.xavaro.android.gui.simple.Json;
-import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.smart.GUIRegistration;
 import de.xavaro.android.gui.smart.GUISpeech;
 import de.xavaro.android.gui.smart.GUISpeechCallback;
 import de.xavaro.android.gui.views.GUIRainbowLayout;
 import de.xavaro.android.gui.views.GUIRelativeLayout;
 import de.xavaro.android.gui.views.GUITextView;
+
+import de.xavaro.android.gui.simple.Json;
+import de.xavaro.android.gui.simple.Simple;
+
 import de.xavaro.android.iot.handler.IOTHandleStot;
 
 public class GUISpechRecogniton extends GUIWidget implements GUISpeechCallback
@@ -38,16 +40,25 @@ public class GUISpechRecogniton extends GUIWidget implements GUISpeechCallback
     {
         super(context);
 
-        colorFrame = new GUIRainbowLayout(context);
+    }
+
+    @Override
+    public void onCreate()
+    {
+        Log.d(LOGTAG, "onCreate:");
+
+        super.onCreate();
+
+        colorFrame = new GUIRainbowLayout(getContext());
 
         widgetFrame.addView(colorFrame);
 
-        GUIRelativeLayout centerCont = new GUIRelativeLayout(context);
+        GUIRelativeLayout centerCont = new GUIRelativeLayout(getContext());
         centerCont.setGravity(Gravity.CENTER_VERTICAL + Gravity.CENTER_HORIZONTAL);
 
         colorFrame.addView(centerCont);
 
-        speechText = new GUITextView(context);
+        speechText = new GUITextView(getContext());
         speechText.setGravity(Gravity.CENTER_HORIZONTAL);
         speechText.setTextColor(Color.WHITE);
         speechText.setTextSizeDip(GUIDefs.FONTSIZE_SPEECH);
@@ -64,14 +75,14 @@ public class GUISpechRecogniton extends GUIWidget implements GUISpeechCallback
 
             centerCont.setRoundedCornersDip(GUIDefs.ROUNDED_XLARGE, Color.BLACK);
 
-            Simple.setSizeDip(colorFrame, Simple.MP, Simple.MP);
-            Simple.setSizeDip(centerCont, Simple.MP, Simple.MP);
-            Simple.setSizeDip(speechText, Simple.MP, Simple.WC);
+            colorFrame.setSizeDip(Simple.MP, Simple.MP);
+            centerCont.setSizeDip(Simple.MP, Simple.MP);
+            speechText.setSizeDip(Simple.MP, Simple.WC);
 
-            Simple.setPaddingDip(widgetFrame, GUIDefs.PADDING_LARGE);
-            Simple.setPaddingDip(colorFrame, GUIDefs.PADDING_LARGE);
-            Simple.setPaddingDip(centerCont, GUIDefs.PADDING_LARGE);
-            Simple.setPaddingDip(speechText, GUIDefs.PADDING_LARGE);
+            widgetFrame.setPaddingDip(GUIDefs.PADDING_LARGE);
+            colorFrame.setPaddingDip(GUIDefs.PADDING_LARGE);
+            centerCont.setPaddingDip(GUIDefs.PADDING_LARGE);
+            speechText.setPaddingDip(GUIDefs.PADDING_LARGE);
         }
         else
         {
@@ -84,14 +95,14 @@ public class GUISpechRecogniton extends GUIWidget implements GUISpeechCallback
 
             centerCont.setRoundedCornersDip(GUIDefs.ROUNDED_MEDIUM, GUIDefs.COLOR_LIGHT_TRANSPARENT);
 
-            Simple.setSizeDip(colorFrame, Simple.MP, Simple.WC);
-            Simple.setSizeDip(centerCont, Simple.MP, Simple.WC);
-            Simple.setSizeDip(speechText, Simple.WC, Simple.WC);
+            colorFrame.setSizeDip(Simple.MP, Simple.WC);
+            centerCont.setSizeDip(Simple.MP, Simple.WC);
+            speechText.setSizeDip(Simple.WC, Simple.WC);
 
-            Simple.setPaddingDip(widgetFrame, GUIDefs.PADDING_SMALL);
-            Simple.setPaddingDip(colorFrame, GUIDefs.PADDING_SMALL);
-            Simple.setPaddingDip(centerCont, GUIDefs.PADDING_SMALL);
-            Simple.setPaddingDip(speechText, GUIDefs.PADDING_ZERO);
+            widgetFrame.setPaddingDip(GUIDefs.PADDING_SMALL);
+            colorFrame.setPaddingDip(GUIDefs.PADDING_SMALL);
+            centerCont.setPaddingDip(GUIDefs.PADDING_SMALL);
+            speechText.setPaddingDip(GUIDefs.PADDING_ZERO);
         }
     }
 

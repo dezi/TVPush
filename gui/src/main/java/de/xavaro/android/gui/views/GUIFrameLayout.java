@@ -2,6 +2,7 @@ package de.xavaro.android.gui.views;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
@@ -32,6 +33,16 @@ public class GUIFrameLayout extends FrameLayout
 
         getLayoutParams().width = width > 0 ? Simple.dipToPx(width) : width;
         getLayoutParams().height = height > 0 ? Simple.dipToPx(height) : height;
+    }
+
+    public void setPaddingDip(int pad)
+    {
+        setPadding(Simple.dipToPx(pad), Simple.dipToPx(pad), Simple.dipToPx(pad), Simple.dipToPx(pad));
+    }
+
+    public void setPaddingDip(int left, int top, int right, int bottom)
+    {
+        setPadding(Simple.dipToPx(left), Simple.dipToPx(top), Simple.dipToPx(right), Simple.dipToPx(bottom));
     }
 
     //endregion Dip implementation.
