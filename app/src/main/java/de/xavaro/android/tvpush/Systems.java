@@ -16,6 +16,7 @@ public class Systems
     private static SystemsGUI gui;
     private static SystemsIOT iot;
     private static SystemsTPL tpl;
+    private static SystemsIAM iam;
 
     private static P2PCloud p2pCloud;
 
@@ -24,6 +25,7 @@ public class Systems
         iot = new SystemsIOT(application);
         tpl = new SystemsTPL(application);
         gui = new SystemsGUI(application);
+        iam = new SystemsIAM(application);
 
         initializeP2P(application);
     }
