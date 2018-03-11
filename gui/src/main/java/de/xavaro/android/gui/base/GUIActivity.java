@@ -98,9 +98,9 @@ public class GUIActivity extends AppCompatActivity
 
         for (int inx = 0; inx < topframe.getChildCount(); inx++)
         {
-            if (topframe.getChildAt(inx) instanceof GUIWidget)
+            if (topframe.getChildAt(inx) instanceof GUIPlugin)
             {
-                ((GUIWidget) topframe.getChildAt(inx)).onStart();
+                ((GUIPlugin) topframe.getChildAt(inx)).onStart();
             }
         }
     }
@@ -116,9 +116,9 @@ public class GUIActivity extends AppCompatActivity
 
         for (int inx = 0; inx < topframe.getChildCount(); inx++)
         {
-            if (topframe.getChildAt(inx) instanceof GUIWidget)
+            if (topframe.getChildAt(inx) instanceof GUIPlugin)
             {
-                ((GUIWidget) topframe.getChildAt(inx)).onResume();
+                ((GUIPlugin) topframe.getChildAt(inx)).onResume();
             }
         }
     }
@@ -132,9 +132,9 @@ public class GUIActivity extends AppCompatActivity
 
         for (int inx = 0; inx < topframe.getChildCount(); inx++)
         {
-            if (topframe.getChildAt(inx) instanceof GUIWidget)
+            if (topframe.getChildAt(inx) instanceof GUIPlugin)
             {
-                ((GUIWidget) topframe.getChildAt(inx)).onPause();
+                ((GUIPlugin) topframe.getChildAt(inx)).onPause();
             }
         }
     }
@@ -148,9 +148,9 @@ public class GUIActivity extends AppCompatActivity
 
         for (int inx = 0; inx < topframe.getChildCount(); inx++)
         {
-            if (topframe.getChildAt(inx) instanceof GUIWidget)
+            if (topframe.getChildAt(inx) instanceof GUIPlugin)
             {
-                ((GUIWidget) topframe.getChildAt(inx)).onStop();
+                ((GUIPlugin) topframe.getChildAt(inx)).onStop();
             }
         }
     }
@@ -162,9 +162,9 @@ public class GUIActivity extends AppCompatActivity
 
         for (int inx = 0; inx < topframe.getChildCount(); inx++)
         {
-            if (topframe.getChildAt(inx) instanceof GUIWidget)
+            if (topframe.getChildAt(inx) instanceof GUIPlugin)
             {
-                ((GUIWidget) topframe.getChildAt(inx)).onBackPressed();
+                ((GUIPlugin) topframe.getChildAt(inx)).onBackPressed();
             }
         }
 

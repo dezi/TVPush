@@ -1,17 +1,16 @@
 package de.xavaro.android.gui.base;
 
-import android.widget.FrameLayout;
 import android.content.Context;
 
 import de.xavaro.android.gui.views.GUIFrameLayout;
 
-public class GUIWidget extends GUIFrameLayout
+public class GUIPlugin extends GUIFrameLayout
 {
-    private final static String LOGTAG = GUIWidget.class.getSimpleName();
+    private final static String LOGTAG = GUIPlugin.class.getSimpleName();
 
-    public GUIFrameLayout widgetFrame;
+    public GUIFrameLayout pluginFrame;
 
-    public GUIWidget(Context context)
+    public GUIPlugin(Context context)
     {
         super(context);
 
@@ -19,7 +18,7 @@ public class GUIWidget extends GUIFrameLayout
         // Courtesy copy to make things more transparent.
         //
 
-        widgetFrame = this;
+        pluginFrame = this;
 
         onCreate();
     }

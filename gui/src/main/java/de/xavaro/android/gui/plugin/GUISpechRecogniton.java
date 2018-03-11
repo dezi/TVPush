@@ -1,4 +1,4 @@
-package de.xavaro.android.gui.widget;
+package de.xavaro.android.gui.plugin;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -6,12 +6,13 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.widget.FrameLayout;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import de.xavaro.android.gui.base.GUIDefs;
-import de.xavaro.android.gui.base.GUIWidget;
+import de.xavaro.android.gui.base.GUIPlugin;
 import de.xavaro.android.gui.smart.GUIRegistration;
 import de.xavaro.android.gui.smart.GUISpeech;
 import de.xavaro.android.gui.smart.GUISpeechCallback;
@@ -24,7 +25,7 @@ import de.xavaro.android.gui.simple.Simple;
 
 import de.xavaro.android.iot.handler.IOTHandleStot;
 
-public class GUISpechRecogniton extends GUIWidget implements GUISpeechCallback
+public class GUISpechRecogniton extends GUIPlugin implements GUISpeechCallback
 {
     private final static String LOGTAG = GUISpechRecogniton.class.getSimpleName();
 
@@ -48,9 +49,11 @@ public class GUISpechRecogniton extends GUIWidget implements GUISpeechCallback
 
         super.onCreate();
 
+        pluginFrame.setLayoutParams(new FrameLayout.LayoutParams(Simple.MP, Simple.WC, Gravity.BOTTOM));
+
         colorFrame = new GUIRainbowLayout(getContext());
 
-        widgetFrame.addView(colorFrame);
+        pluginFrame.addView(colorFrame);
 
         GUIRelativeLayout centerCont = new GUIRelativeLayout(getContext());
         centerCont.setGravity(Gravity.CENTER_VERTICAL + Gravity.CENTER_HORIZONTAL);
@@ -68,7 +71,7 @@ public class GUISpechRecogniton extends GUIWidget implements GUISpeechCallback
         {
             speechText.setMinLines(3);
 
-            widgetFrame.setBackgroundColor(Color.BLACK);
+            pluginFrame.setBackgroundColor(Color.BLACK);
             colorFrame.setBackgroundColor(Color.BLACK);
             speechText.setBackgroundColor(Color.BLACK);
 
@@ -78,7 +81,7 @@ public class GUISpechRecogniton extends GUIWidget implements GUISpeechCallback
             centerCont.setSizeDip(Simple.MP, Simple.MP);
             speechText.setSizeDip(Simple.MP, Simple.WC);
 
-            widgetFrame.setPaddingDip(GUIDefs.PADDING_LARGE);
+            pluginFrame.setPaddingDip(GUIDefs.PADDING_LARGE);
             colorFrame.setPaddingDip(GUIDefs.PADDING_LARGE);
             centerCont.setPaddingDip(GUIDefs.PADDING_LARGE);
             speechText.setPaddingDip(GUIDefs.PADDING_LARGE);
@@ -88,7 +91,7 @@ public class GUISpechRecogniton extends GUIWidget implements GUISpeechCallback
             speechText.setSingleLine(true);
             speechText.setEllipsize(TextUtils.TruncateAt.START);
 
-            widgetFrame.setBackgroundColor(Color.TRANSPARENT);
+            pluginFrame.setBackgroundColor(Color.TRANSPARENT);
             colorFrame.setBackgroundColor(Color.TRANSPARENT);
             speechText.setBackgroundColor(Color.TRANSPARENT);
 
@@ -98,7 +101,7 @@ public class GUISpechRecogniton extends GUIWidget implements GUISpeechCallback
             centerCont.setSizeDip(Simple.MP, Simple.WC);
             speechText.setSizeDip(Simple.WC, Simple.WC);
 
-            widgetFrame.setPaddingDip(GUIDefs.PADDING_SMALL);
+            pluginFrame.setPaddingDip(GUIDefs.PADDING_SMALL);
             colorFrame.setPaddingDip(GUIDefs.PADDING_SMALL);
             centerCont.setPaddingDip(GUIDefs.PADDING_SMALL);
             speechText.setPaddingDip(GUIDefs.PADDING_ZERO);

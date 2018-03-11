@@ -1,13 +1,10 @@
 package de.xavaro.android.tvpush;
 
 import android.os.Bundle;
-import android.view.Gravity;
-import android.widget.FrameLayout;
 
 import de.xavaro.android.gui.base.GUIActivity;
 
-import de.xavaro.android.gui.simple.Simple;
-import de.xavaro.android.gui.widget.GUISpechRecogniton;
+import de.xavaro.android.gui.plugin.GUISpechRecogniton;
 
 public class SpeechRecognitionActivity extends GUIActivity
 {
@@ -22,8 +19,6 @@ public class SpeechRecognitionActivity extends GUIActivity
 
         spechrecognition = new GUISpechRecogniton(this);
 
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(Simple.MP, Simple.WC, Gravity.BOTTOM);
-
-        topframe.addView(spechrecognition, lp);
+        topframe.addView(spechrecognition);
     }
 }
