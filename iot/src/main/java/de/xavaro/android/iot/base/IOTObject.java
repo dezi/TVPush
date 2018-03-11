@@ -124,7 +124,7 @@ public abstract class IOTObject
                         //
                     }
 
-                    Json.remove(json, name);
+                    //Json.remove(json, name);
                 }
             }
             catch (Exception ignore)
@@ -133,12 +133,13 @@ public abstract class IOTObject
             }
         }
 
+        /*
         String uncomsumed = json.toString();
-
         if (! uncomsumed.equals("{}"))
         {
             Log.d(LOGTAG, "fromJson: uncomsumed=" + uncomsumed);
         }
+        */
 
         return ok;
     }

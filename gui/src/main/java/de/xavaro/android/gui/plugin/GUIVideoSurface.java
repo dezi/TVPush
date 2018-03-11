@@ -12,7 +12,7 @@ public class GUIVideoSurface extends GUIPlugin
 {
     private final static String LOGTAG = GUISpeechRecogniton.class.getSimpleName();
 
-    public GLSVideoView videoView;
+    private GLSVideoView glsVideoView;
 
     public GUIVideoSurface(Context context)
     {
@@ -29,15 +29,28 @@ public class GUIVideoSurface extends GUIPlugin
         pluginFrameParams.leftMargin = 50;
         pluginFrameParams.topMargin = 50;
 
-        pluginFrameParams.width = 480;
-        pluginFrameParams.height = 270;
+        pluginFrameParams.width = 320;
+        pluginFrameParams.height = 180;
 
         pluginFrameParams.gravity = Gravity.TOP;
 
         pluginFrame.setLayoutParams(pluginFrameParams);
 
-        videoView = new GLSVideoView(getContext());
+        glsVideoView = new GLSVideoView(getContext());
 
-        pluginFrame.addView(videoView);
+        pluginFrame.addView(glsVideoView);
+    }
+
+    public void setPosition(int left, int top)
+    {
+        pluginFrameParams.leftMargin = left;
+        pluginFrameParams.topMargin = top;
+
+        pluginFrame.setLayoutParams(pluginFrameParams);
+    }
+
+    public GLSVideoView getGLSVideoView()
+    {
+        return glsVideoView;
     }
 }

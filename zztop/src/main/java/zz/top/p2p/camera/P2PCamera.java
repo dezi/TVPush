@@ -2,13 +2,9 @@ package zz.top.p2p.camera;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.FrameLayout;
 
 import org.json.JSONObject;
 
-import zz.top.cam.Camera;
-import zz.top.cam.Cameras;
-import zz.top.utl.Json;
 import zz.top.p2p.commands.DayNightSend;
 import zz.top.p2p.commands.DeviceInfoQuery;
 import zz.top.p2p.commands.PTZControlStopSend;
@@ -21,7 +17,13 @@ import zz.top.p2p.commands.StartAudioSend;
 import zz.top.p2p.commands.StartVideoSend;
 import zz.top.p2p.commands.StopAudioSend;
 import zz.top.p2p.commands.StopVideoSend;
+
 import zz.top.gls.GLSVideoView;
+
+import zz.top.cam.Camera;
+import zz.top.cam.Cameras;
+
+import zz.top.utl.Json;
 
 public class P2PCamera extends Camera
 {
@@ -66,13 +68,19 @@ public class P2PCamera extends Camera
     //region Interface.
 
     @Override
-    public FrameLayout createSurface(Context context)
+    public GLSVideoView createSurface(Context context)
     {
         GLSVideoView videoView = new GLSVideoView(context);
 
         session.setVideoView(videoView);
 
         return videoView;
+    }
+
+    @Override
+    public void registerSurface(GLSVideoView videoView)
+    {
+        session.setVideoView(videoView);
     }
 
     @Override

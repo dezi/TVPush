@@ -1,7 +1,8 @@
 package zz.top.cam;
 
 import android.content.Context;
-import android.widget.FrameLayout;
+
+import zz.top.gls.GLSVideoView;
 
 public abstract class Camera
 {
@@ -17,7 +18,8 @@ public abstract class Camera
     public final static int PTZ_DIRECTION_LEFT = 3;
     public final static int PTZ_DIRECTION_RIGHT = 4;
 
-    public abstract FrameLayout createSurface(Context context);
+    public abstract GLSVideoView createSurface(Context context);
+    public abstract void registerSurface(GLSVideoView surface);
     public abstract void releaseSurface();
 
     public abstract boolean isOnline(String uuid);
