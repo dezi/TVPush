@@ -65,7 +65,7 @@ public class GUIActivity extends AppCompatActivity
             params.height = 80;
             params.gravity = Gravity.BOTTOM;
 
-            getWindow().setBackgroundDrawable(new ColorDrawable(0x44440000));
+            getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
             setFinishOnTouchOutside(true);
         }

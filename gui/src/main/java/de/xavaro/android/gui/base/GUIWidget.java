@@ -1,9 +1,7 @@
 package de.xavaro.android.gui.base;
 
-import android.content.Context;
-import android.view.KeyEvent;
 import android.widget.FrameLayout;
-import android.util.Log;
+import android.content.Context;
 
 public class GUIWidget extends FrameLayout
 {
