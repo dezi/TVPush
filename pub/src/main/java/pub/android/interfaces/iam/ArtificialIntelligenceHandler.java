@@ -6,5 +6,7 @@ public interface ArtificialIntelligenceHandler
 {
     void onActionsFound(JSONObject actions);
 
+    void evaluateSpeech(JSONObject speech);
+
     void evaluateMessage(JSONObject message);
 }

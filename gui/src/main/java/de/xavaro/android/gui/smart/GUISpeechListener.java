@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
 
@@ -261,7 +262,7 @@ public class GUISpeechListener implements RecognitionListener
         String text = Json.getString(result, "text");
         float conf = Json.getFloat(result, "conf");
 
-        Log.d(LOGTAG, "onSpeechResults: conf=" + conf + " text=" + text);
+        GUI.instance.onSpeechResults(speech);
 
         if ((speech != null) && (callback != null)) callback.onSpeechResults(speech);
 

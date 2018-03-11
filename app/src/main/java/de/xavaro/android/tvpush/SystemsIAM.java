@@ -22,4 +22,10 @@ public class SystemsIAM extends IAM
     {
         Log.d(LOGTAG, "onActionsFound: actions=" + Json.toPretty(actions));
     }
+
+    @Override
+    public void evaluateSpeech(JSONObject speech)
+    {
+        Log.d(LOGTAG, "evaluateSpeech: speech=" + speech.toString());
+    }
 }

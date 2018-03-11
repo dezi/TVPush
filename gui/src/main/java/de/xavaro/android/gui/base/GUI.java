@@ -3,6 +3,8 @@ package de.xavaro.android.gui.base;
 import android.app.Application;
 import android.util.Log;
 
+import org.json.JSONObject;
+
 import de.xavaro.android.gui.smart.GUIDesktopActivity;
 import de.xavaro.android.gui.smart.GUISpeechListener;
 import pub.android.interfaces.cam.Camera;
@@ -48,6 +50,12 @@ public class GUI implements GraficalUserInterfaceHandler
         Log.d(LOGTAG, "onRequestCameraByUUID: uuid=" + uuid);
 
         return null;
+    }
+
+    @Override
+    public void onSpeechResults(JSONObject speech)
+    {
+        Log.d(LOGTAG, "onSpeechResults: speech=" + speech.toString());
     }
 
     @Override
