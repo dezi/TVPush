@@ -52,7 +52,7 @@ public class GUIRainbowLayout extends GUIRelativeLayout
 
             setBackground(rainbow);
 
-            getHandler().postDelayed(this, 100);
+            Simple.getHandler().postDelayed(this, 100);
         }
     };
 
@@ -92,7 +92,7 @@ public class GUIRainbowLayout extends GUIRelativeLayout
         {
             isActive = false;
 
-            getHandler().removeCallbacks(rainbowRotate);
+            Simple.getHandler().removeCallbacks(rainbowRotate);
 
             View child = getChildAt(0);
 

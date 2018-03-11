@@ -3,20 +3,17 @@ package de.xavaro.android.tvpush;
 import android.os.Bundle;
 import android.util.Log;
 
-import de.xavaro.android.gui.base.GUIActivity;
-
 import de.xavaro.android.gui.plugin.GUISpeechRecogniton;
 import de.xavaro.android.gui.plugin.GUIVideoSurface;
 import de.xavaro.android.gui.simple.Simple;
 
+import de.xavaro.android.gui.smart.GUIDesktopActivity;
 import pub.android.interfaces.cam.Camera;
 import zz.top.cam.Cameras;
 
-public class DesktopActivity extends GUIActivity
+public class DesktopActivity extends GUIDesktopActivity
 {
     private final static String LOGTAG = DesktopActivity.class.getSimpleName();
-
-    private GUISpeechRecogniton speechRecognition;
 
     private GUIVideoSurface videoSurface1;
     private GUIVideoSurface videoSurface2;
@@ -29,12 +26,9 @@ public class DesktopActivity extends GUIActivity
     {
         super.onCreate(savedInstanceState);
 
-        speechRecognition = new GUISpeechRecogniton(this);
-
-        topframe.addView(speechRecognition);
-
         setWindowHeightDip(600);
 
+        /*
         videoSurface1 = new GUIVideoSurface(this);
         videoSurface2 = new GUIVideoSurface(this);
 
@@ -95,6 +89,6 @@ public class DesktopActivity extends GUIActivity
             }
 
         }, 2000);
-
+        */
     }
 }

@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.view.WindowManager;
 import android.view.KeyEvent;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 

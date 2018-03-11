@@ -3,6 +3,7 @@ package de.xavaro.android.gui.base;
 import android.app.Application;
 import android.util.Log;
 
+import de.xavaro.android.gui.smart.GUIDesktopActivity;
 import pub.android.interfaces.cam.Camera;
 import pub.android.interfaces.gui.GraficalUserInterfaceHandler;
 
@@ -13,6 +14,7 @@ public class GUI implements GraficalUserInterfaceHandler
     public static GUI instance;
 
     public GUIApplication application;
+    public GUIDesktopActivity desktop;
 
     public GUI(Application application)
     {
@@ -47,6 +49,8 @@ public class GUI implements GraficalUserInterfaceHandler
     public void displaySpeechRecognition(boolean show)
     {
         Log.d(LOGTAG, "displaySpeechRecognition: show=" + show);
+
+        GUI.instance.desktop.displaySpeechRecognition(show);
     }
 
     @Override

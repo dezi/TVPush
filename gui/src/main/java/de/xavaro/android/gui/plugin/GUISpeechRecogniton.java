@@ -31,7 +31,6 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
 
     private GUIRainbowLayout colorFrame;
     private GUITextView speechText;
-    private GUISpeech recognition;
 
     private boolean hadResult;
 
@@ -105,70 +104,6 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
             centerCont.setPaddingDip(GUIDefs.PADDING_SMALL);
             speechText.setPaddingDip(GUIDefs.PADDING_ZERO);
         }
-    }
-
-    @Override
-    public void onStart()
-    {
-        Log.d(LOGTAG, "onStart:");
-
-        super.onStart();
-
-        recognition = new GUISpeech(getContext(), this);
-    }
-
-    @Override
-    public void onResume()
-    {
-        Log.d(LOGTAG, "onResume:");
-
-        super.onResume();
-
-        if (recognition != null)
-        {
-            recognition.startListening();
-        }
-    }
-
-    @Override
-    public void onPause()
-    {
-        Log.d(LOGTAG, "onPause:");
-
-        super.onPause();
-
-        if (recognition != null)
-        {
-            recognition.stopListening();
-        }
-    }
-
-    @Override
-    public void onStop()
-    {
-        Log.d(LOGTAG, "onStop:");
-
-        super.onStop();
-
-        if (recognition != null)
-        {
-            recognition.destroy();
-            recognition = null;
-        }
-    }
-
-    @Override
-    public void onBackPressed()
-    {
-        Log.d(LOGTAG, "onBackPressed:");
-
-        if (recognition != null)
-        {
-            recognition.destroy();
-            recognition = null;
-        }
-
-        super.onBackPressed();
     }
 
     @Override

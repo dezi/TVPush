@@ -17,7 +17,7 @@ public class GUIApplication extends Application implements Application.ActivityL
 {
     private static final String LOGTAG = GUIApplication.class.getSimpleName();
 
-    private Activity currentActivity;
+    public Activity currentActivity;
 
     @Override
     public void onCreate()
