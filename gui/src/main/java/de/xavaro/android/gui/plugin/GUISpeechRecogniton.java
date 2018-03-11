@@ -25,9 +25,9 @@ import de.xavaro.android.gui.simple.Simple;
 
 import de.xavaro.android.iot.handler.IOTHandleStot;
 
-public class GUISpechRecogniton extends GUIPlugin implements GUISpeechCallback
+public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
 {
-    private final static String LOGTAG = GUISpechRecogniton.class.getSimpleName();
+    private final static String LOGTAG = GUISpeechRecogniton.class.getSimpleName();
 
     private final Handler handler = new Handler();
 
@@ -37,7 +37,7 @@ public class GUISpechRecogniton extends GUIPlugin implements GUISpeechCallback
 
     private boolean hadResult;
 
-    public GUISpechRecogniton(Context context)
+    public GUISpeechRecogniton(Context context)
     {
         super(context);
     }
@@ -49,7 +49,8 @@ public class GUISpechRecogniton extends GUIPlugin implements GUISpeechCallback
 
         super.onCreate();
 
-        pluginFrame.setLayoutParams(new FrameLayout.LayoutParams(Simple.MP, Simple.WC, Gravity.BOTTOM));
+        pluginFrameParams.gravity = Gravity.BOTTOM;
+        pluginFrame.setLayoutParams(pluginFrameParams);
 
         colorFrame = new GUIRainbowLayout(getContext());
 

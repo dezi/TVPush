@@ -23,6 +23,12 @@ public class GUIActivity extends AppCompatActivity
 {
     private final static String LOGTAG = GUIActivity.class.getSimpleName();
 
+    public WindowManager.LayoutParams windowParams;
+    public FrameLayout.LayoutParams topFrameParams;
+
+    public int width = Simple.getDeviceWidth();
+    public int height = Simple.getDeviceHeight();
+
     public FrameLayout topframe;
 
     @Override
@@ -40,19 +46,16 @@ public class GUIActivity extends AppCompatActivity
         // Window manager layout params.
         //
 
-        WindowManager.LayoutParams params = getWindow().getAttributes();
+        windowParams = getWindow().getAttributes();
 
-        params.type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
-        params.format = PixelFormat.TRANSLUCENT;
-        params.dimAmount = 0.0f;
-        params.alpha = 1.0f;
+        windowParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
+        windowParams.format = PixelFormat.TRANSLUCENT;
+        windowParams.dimAmount = 0.0f;
+        windowParams.alpha = 1.0f;
 
         //
         // Setup background and sizes.
         //
-
-        int width = Simple.getDeviceWidth();
-        int height = Simple.getDeviceHeight();
 
         if (Simple.isTV())
         {
@@ -63,9 +66,9 @@ public class GUIActivity extends AppCompatActivity
         {
             height = Simple.dipToPx(80);
 
-            params.width = width;
-            params.height = height;
-            params.gravity = Gravity.BOTTOM;
+            windowParams.width = width;
+            windowParams.height = height;
+            windowParams.gravity = Gravity.BOTTOM;
 
             getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
@@ -77,16 +80,28 @@ public class GUIActivity extends AppCompatActivity
             getWindow().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
         }
 
-        getWindow().setAttributes(params);
+        getWindow().setAttributes(windowParams);
 
         //
         // Create master frame with exact sizes.
         //
 
+        topFrameParams = new FrameLayout.LayoutParams(width, height, Gravity.TOP);
+
         topframe = new FrameLayout(this);
-        topframe.setLayoutParams(new FrameLayout.LayoutParams(width, height, Gravity.TOP));
+        topframe.setLayoutParams(topFrameParams);
+        topframe.setBackgroundColor(0x88880000);
 
         setContentView(topframe);
+    }
+
+    public void setWindowHeightDip(int heightDip)
+    {
+        windowParams.height = Simple.dipToPx(heightDip);
+        getWindow().setAttributes(windowParams);
+
+        topFrameParams.height = Simple.dipToPx(heightDip);
+        topframe.setLayoutParams(topFrameParams);
     }
 
     @Override

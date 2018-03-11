@@ -4,21 +4,29 @@ import android.os.Bundle;
 
 import de.xavaro.android.gui.base.GUIActivity;
 
-import de.xavaro.android.gui.plugin.GUISpechRecogniton;
+import de.xavaro.android.gui.plugin.GUISpeechRecogniton;
+import de.xavaro.android.gui.plugin.GUIVideoSurface;
 
 public class SpeechRecognitionActivity extends GUIActivity
 {
     private final static String LOGTAG = SpeechRecognitionActivity.class.getSimpleName();
 
-    private GUISpechRecogniton spechrecognition;
+    private GUISpeechRecogniton speechRecognition;
+    private GUIVideoSurface videoSurface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        spechrecognition = new GUISpechRecogniton(this);
+        speechRecognition = new GUISpeechRecogniton(this);
 
-        topframe.addView(spechrecognition);
+        topframe.addView(speechRecognition);
+
+        videoSurface = new GUIVideoSurface(this);
+
+        topframe.addView(videoSurface);
+
+        setWindowHeightDip(600);
     }
 }
