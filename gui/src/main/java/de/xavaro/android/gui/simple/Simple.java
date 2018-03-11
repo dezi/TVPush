@@ -1,6 +1,7 @@
 package de.xavaro.android.gui.simple;
 
 import android.annotation.SuppressLint;
+
 import android.app.Application;
 import android.app.UiModeManager;
 import android.content.ContentResolver;

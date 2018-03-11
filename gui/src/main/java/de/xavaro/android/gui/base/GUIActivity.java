@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.PixelFormat;
 import android.graphics.Color;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.view.WindowManager;
@@ -14,6 +15,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.smart.GUIRegistration;
 
 @SuppressLint("Registered")
@@ -28,26 +30,60 @@ public class GUIActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        setFinishOnTouchOutside(false);
-
-        WindowManager.LayoutParams params = getWindow().getAttributes();
-
-        params.alpha = 1.0f;
-        params.dimAmount = 0.0f;
-        params.type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
-        params.format = PixelFormat.TRANSLUCENT;
-
-        getWindow().setAttributes(params);
-
-        getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
         //
         // Remove stupid menu bar.
         //
 
         if (getSupportActionBar() != null) getSupportActionBar().hide();
 
+        //
+        // Window manager layout params.
+        //
+
+        WindowManager.LayoutParams params = getWindow().getAttributes();
+
+        params.type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
+        params.format = PixelFormat.TRANSLUCENT;
+        params.dimAmount = 0.0f;
+        params.alpha = 1.0f;
+
+        //
+        // Setup background and sizes.
+        //
+
+        int width = Simple.getDeviceWidth();
+        int height = Simple.getDeviceHeight();
+
+        if (Simple.isTV())
+        {
+            getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        if (Simple.isTablet())
+        {
+            params.width = width;
+            params.height = 80;
+            params.gravity = Gravity.BOTTOM;
+
+            getWindow().setBackgroundDrawable(new ColorDrawable(0x44440000));
+            
+            setFinishOnTouchOutside(true);
+        }
+
+        if (Simple.isPhone())
+        {
+            getWindow().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+        }
+
+        getWindow().setAttributes(params);
+
+        //
+        // Create master frame with exact sizes.
+        //
+
         topframe = new FrameLayout(this);
+        topframe.setLayoutParams(new FrameLayout.LayoutParams(width, height, Gravity.TOP));
+
         setContentView(topframe);
     }
 
@@ -157,7 +193,7 @@ public class GUIActivity extends AppCompatActivity
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-        
+
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(uiOptions);
     }

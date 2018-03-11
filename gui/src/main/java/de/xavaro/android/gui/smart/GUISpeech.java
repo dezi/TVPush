@@ -110,7 +110,10 @@ public class GUISpeech implements RecognitionListener
 
         isEnabled = false;
 
-        recognizer.stopListening();
+        if (recognizer != null)
+        {
+            recognizer.stopListening();
+        }
     }
 
     private final Runnable startListeningRunnable = new Runnable()
