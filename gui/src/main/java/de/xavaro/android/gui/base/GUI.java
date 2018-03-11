@@ -33,6 +33,11 @@ public class GUI implements GraficalUserInterfaceHandler
     }
 
     @Override
+    public void displaySpeechRecognition()
+    {
+    }
+
+    @Override
     public void displayCamera(String uuid)
     {
 

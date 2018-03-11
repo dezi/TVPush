@@ -2,18 +2,16 @@ package de.xavaro.android.gui.plugin;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
-import android.widget.FrameLayout;
+import android.os.Handler;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUIPlugin;
-import de.xavaro.android.gui.smart.GUIRegistration;
 import de.xavaro.android.gui.smart.GUISpeech;
 import de.xavaro.android.gui.smart.GUISpeechCallback;
 import de.xavaro.android.gui.views.GUIRainbowLayout;
@@ -168,8 +166,6 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
         {
             recognition.destroy();
             recognition = null;
-
-            GUIRegistration.speechRecognitionInhibitUntil = System.currentTimeMillis() + (8 * 1000);
         }
 
         super.onBackPressed();

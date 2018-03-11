@@ -1,7 +1,6 @@
 package de.xavaro.android.tvpush;
 
 import de.xavaro.android.gui.base.GUIApplication;
-import de.xavaro.android.gui.smart.GUIRegistration;
 
 import de.xavaro.android.gui.simple.Simple;
 
@@ -19,7 +18,5 @@ public class ApplicationBase extends GUIApplication
         Simple.initialize(this);
 
         Systems.initialize(this);
-
-        GUIRegistration.speechRecognitionActivityClass = DesktopActivity.class;
     }
 }

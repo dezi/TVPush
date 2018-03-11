@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import de.xavaro.android.gui.simple.Simple;
-import de.xavaro.android.gui.smart.GUIRegistration;
 
 @SuppressLint("Registered")
 public class GUIActivity extends AppCompatActivity
@@ -199,14 +198,8 @@ public class GUIActivity extends AppCompatActivity
     {
         if (keyCode == KeyEvent.KEYCODE_SEARCH)
         {
-            if (GUIRegistration.speechRecognitionActivityClass != null)
-            {
-                if (GUIApplication.getCurrentActivityClass(this) != GUIRegistration.speechRecognitionActivityClass)
-                {
-                    Intent myIntent = new Intent(this, GUIRegistration.speechRecognitionActivityClass);
-                    startActivity(myIntent);
-                }
-            }
+
+            GUI.instance.displaySpeechRecognition();
 
             return true;
         }
