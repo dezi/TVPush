@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/gui" />
             <option value="$PROJECT_DIR$/iot" />
+            <option value="$PROJECT_DIR$/pub" />
             <option value="$PROJECT_DIR$/zztop" />
           </set>
         </option>

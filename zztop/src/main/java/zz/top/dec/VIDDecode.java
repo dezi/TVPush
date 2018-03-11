@@ -1,11 +1,9 @@
 package zz.top.dec;
 
-import android.content.res.Resources;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
 
-import zz.top.cam.Camera;
 import zz.top.gls.GLSDecoder;
 
 public class VIDDecode extends GLSDecoder

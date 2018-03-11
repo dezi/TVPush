@@ -2,6 +2,7 @@ package zz.top.p2p.camera;
 
 import android.util.Base64;
 import android.util.Log;
+import android.widget.FrameLayout;
 
 import java.security.Key;
 
@@ -222,12 +223,24 @@ public class P2PSession
         }
     }
 
-    public void setVideoView(GLSVideoView videoView)
+    public boolean setVideoView(FrameLayout videoView)
     {
-        this.videoView = videoView;
+        if (videoView instanceof GLSVideoView)
+        {
+            this.videoView = (GLSVideoView) videoView;
+
+            return true;
+        }
+
+        return false;
     }
 
-    public GLSVideoView getVideoView()
+    public FrameLayout getVideoView()
+    {
+        return videoView;
+    }
+
+    public GLSVideoView getGLSVideoView()
     {
         return videoView;
     }

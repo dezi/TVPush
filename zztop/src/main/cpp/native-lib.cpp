@@ -2,13 +2,11 @@
 #include <string>
 #include <android/log.h>
 
-
 //
 //__android_log_print(ANDROID_LOG_INFO, "Hubuabddhdsds####%s####", "++++");
 //
 // javah -jni -classpath ../app/build/intermediates/classes/debug/ zz.top.dec.AACDecode
 //
-
 
 //
 // C native external functions.

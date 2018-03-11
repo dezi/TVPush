@@ -9,7 +9,7 @@ import de.xavaro.android.gui.plugin.GUISpeechRecogniton;
 import de.xavaro.android.gui.plugin.GUIVideoSurface;
 import de.xavaro.android.gui.simple.Simple;
 
-import zz.top.cam.Camera;
+import pub.android.interfaces.cam.Camera;
 import zz.top.cam.Cameras;
 
 public class SpeechRecognitionActivity extends GUIActivity

@@ -21,7 +21,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import de.xavaro.android.gui.smart.GUISpeech;
-import zz.top.cam.Camera;
 import zz.top.cam.Cameras;
 
 import java.nio.ByteBuffer;
@@ -34,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     private TextView voiceButton;
 
-    private Camera camera;
     private FrameLayout topframe;
     private FrameLayout videoView;
 
@@ -116,37 +114,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         });
 
         topframe.addView(voiceButton, new FrameLayout.LayoutParams(Simple.WC, Simple.WC, Gravity.BOTTOM + Gravity.END));
-
-        Simple.getHandler().postDelayed(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                String name = "Dezi's Orwell #1 Wohnnzimmer";
-
-                camera = Cameras.createCameraByName(name);
-
-                if (camera == null)
-                {
-                    Log.d(LOGTAG, "createCameraByName not fund name=" + name);
-                }
-                else
-                {
-                    videoView = camera.createSurface(MainActivity.this);
-
-                    topframe.addView(videoView, new FrameLayout.LayoutParams(640, 360, Gravity.TOP + Gravity.START));
-
-                    camera.connectCamera();
-
-                    camera.setResolution(Camera.RESOLUTION_720P);
-
-                    camera.startRealtimeVideo();
-                    //camera.startRealtimeAudio();
-                    //camera.startFaceDetection(true);
-                }
-            }
-
-        }, 2000);
     }
 
     private void speechClick()

@@ -2,9 +2,11 @@ package zz.top.p2p.camera;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.FrameLayout;
 
 import org.json.JSONObject;
 
+import pub.android.interfaces.cam.Camera;
 import zz.top.p2p.commands.DayNightSend;
 import zz.top.p2p.commands.DeviceInfoQuery;
 import zz.top.p2p.commands.PTZControlStopSend;
@@ -20,27 +22,13 @@ import zz.top.p2p.commands.StopVideoSend;
 
 import zz.top.gls.GLSVideoView;
 
-import zz.top.cam.Camera;
 import zz.top.cam.Cameras;
 
 import zz.top.utl.Json;
 
-public class P2PCamera extends Camera
+public class P2PCamera implements Camera
 {
     private static final String LOGTAG = P2PCamera.class.getSimpleName();
-
-    //
-    // send(1, 0x1311, 00 00 00 01 00 00 00 01 )
-    // send(1, 0x2345, 02 01 01 00 )
-    // send(1, 0x330, 00 00 00 00 )
-    // send(1, 0x1300, 00 00 00 00 )
-    // send(1, 0x2347, 00 00 00 00 07 E2 02 03 07 15 0F 00 07 E2 03 05 02 15 0F 00 00 00 00 00 )
-    //
-
-    //
-    // send(1, 0x1311=4881, 00 00 00 01 00 00 00 01)
-    // send(1, 0x2345=9029, 02 01 01 00)
-    //
 
     public final static byte RESOLUTION_AUTO = 0;
     public final static byte RESOLUTION_1080P = 1;
@@ -68,17 +56,15 @@ public class P2PCamera extends Camera
     //region Interface.
 
     @Override
-    public GLSVideoView createSurface(Context context)
+    public FrameLayout createSurface(Context context)
     {
-        GLSVideoView videoView = new GLSVideoView(context);
-
-        session.setVideoView(videoView);
+        FrameLayout videoView = new GLSVideoView(context);
 
         return videoView;
     }
 
     @Override
-    public void registerSurface(GLSVideoView videoView)
+    public void registerSurface(FrameLayout videoView)
     {
         session.setVideoView(videoView);
     }
@@ -164,8 +150,8 @@ public class P2PCamera extends Camera
     @Override
     public boolean startFaceDetection(boolean demodraw)
     {
-        session.getVideoView().setFaceDetecion(true);
-        session.getVideoView().setFaceDetecionDraw(demodraw);
+        session.getGLSVideoView().setFaceDetecion(true);
+        session.getGLSVideoView().setFaceDetecionDraw(demodraw);
 
         return true;
     }
@@ -173,7 +159,7 @@ public class P2PCamera extends Camera
     @Override
     public boolean stopFaceDetection()
     {
-        session.getVideoView().setFaceDetecion(false);
+        session.getGLSVideoView().setFaceDetecion(false);
 
         return true;
     }
