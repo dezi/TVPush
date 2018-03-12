@@ -233,9 +233,9 @@ public class P2PCloud
         Json.put(credentials, "cloud_em", cloud_em);
         Json.put(credentials, "cloud_pw", cloud_pw);
 
+        Json.put(network, "mac", mac);
+        Json.put(network, "wifi", ssid);
         Json.put(network, "ipaddr", ipaddr);
-        Json.put(network, "ssid", ssid);
-        Json.put(network, "port", mac);
 
         Cameras.addCamera(camera);
 

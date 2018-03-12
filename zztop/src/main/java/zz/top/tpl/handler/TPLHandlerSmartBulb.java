@@ -86,15 +86,16 @@ public class TPLHandlerSmartBulb extends TPLHandler
     @Override
     public void onMessageReived(JSONObject message)
     {
-        Log.d(LOGTAG, message.toString());
+        Log.d(LOGTAG, Json.toPretty(message));
 
         JSONObject origin = Json.getObject(message, "origin");
-        Json.put(origin, "ssid", Simple.getConnectedWifiName());
 
-        JSONObject alive = new JSONObject();
+        JSONObject status = new JSONObject();
 
-        Json.put(alive, "network", origin);
+        Json.put(status, "wifi", Simple.getConnectedWifiName());
+        Json.put(status, "ipaddr", Json.getString(origin, "ipaddr"));
+        Json.put(status, "ipport", Json.getInt(origin, "ipport"));
 
-        TPL.instance.onDeviceStatus(alive);
+        TPL.instance.onDeviceStatus(status);
     }
 }
