@@ -33,7 +33,7 @@ public class TPL implements InternetOfThingsHandler
             TPLMessageHandler.initialize();
             TPLMessageService.startService();
 
-            TPLHandlerSysInfo.sendSysInfoBroadcast();
+            TPLHandlerSysInfo.sendAllGetSysinfo();
         }
         else
         {

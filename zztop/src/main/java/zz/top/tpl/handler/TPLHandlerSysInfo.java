@@ -13,11 +13,24 @@ public class TPLHandlerSysInfo extends TPLHandler
 {
     private static final String LOGTAG = TPLHandlerSysInfo.class.getSimpleName();
 
-    public static void sendSysInfoBroadcast()
+    public static void sendAllGetSysinfo()
+    {
+        sendGetSysinfo(null);
+    }
+
+    public static void sendGetSysinfo(String ipaddr)
     {
         String mess = "{\"system\":{\"get_sysinfo\":{}}}";
 
         JSONObject message = Json.fromStringObject(mess);
+
+        if ((ipaddr != null) && ! ipaddr.isEmpty())
+        {
+            JSONObject destination = new JSONObject();
+            Json.put(destination, "ipaddr", ipaddr);
+
+            Json.put(message, "destination", destination);
+        }
 
         TPL.instance.message.sendMessage(message);
     }

@@ -61,16 +61,16 @@ public class TPLHandlerSmartPlug extends TPLHandler
     @Override
     public void onMessageReived(JSONObject message)
     {
-        Log.d(LOGTAG, Json.toPretty(message));
+        //Log.d(LOGTAG, Json.toPretty(message));
 
         JSONObject origin = Json.getObject(message, "origin");
+        String ipaddr = Json.getString(origin, "ipaddr");
 
-        JSONObject status = new JSONObject();
+        //
+        // Request sys info.
+        //
 
-        Json.put(status, "wifi", Simple.getConnectedWifiName());
-        Json.put(status, "ipaddr", Json.getString(origin, "ipaddr"));
-        Json.put(status, "ipport", Json.getInt(origin, "ipport"));
+        TPLHandlerSysInfo.sendGetSysinfo(ipaddr);
 
-        TPL.instance.onDeviceStatus(status);
     }
 }
