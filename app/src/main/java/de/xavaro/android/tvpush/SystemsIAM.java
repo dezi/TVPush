@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import de.xavaro.android.iam.base.IAM;
+import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 
@@ -49,13 +50,13 @@ public class SystemsIAM extends IAM
                 {
                     if (action.equals("open"))
                     {
-                        Systems.gui.instance.displaySpeechRecognition(true);
+                        Systems.gui.displaySpeechRecognition(true);
                         continue;
                     }
 
                     if (action.equals("close"))
                     {
-                        Systems.gui.instance.displaySpeechRecognition(false);
+                        Systems.gui.displaySpeechRecognition(false);
                         continue;
                     }
                 }
@@ -73,45 +74,37 @@ public class SystemsIAM extends IAM
                     IOTDevice device = IOTDevices.getEntry(uuid);
                     if ((device == null) || (device.type == null)) continue;
 
+                    JSONObject doaction = Json.clone(jaction);
+                    Json.remove(doaction, "devices");
+                    Json.put(doaction, "uuid", uuid);
+
                     if (device.type.equals("camera"))
                     {
                         if (action.equals("open"))
                         {
-                            Systems.gui.instance.displayCamera(true, uuid);
+                            Systems.gui.displayCamera(true, uuid);
                             continue;
                         }
 
                         if (action.equals("close"))
                         {
-                            Systems.gui.instance.displayCamera(false, uuid);
+                            Systems.gui.displayCamera(false, uuid);
                             continue;
                         }
                     }
 
-                    if (action.equals("switchonled"))
+                    if (device.driver.equals("p2p"))
                     {
-                        if (device.driver.equals("p2p"))
-                        {
-                            Systems.p2p.switchLED(uuid, true);
-                        }
-
-                        if (device.driver.equals("tpl"))
-                        {
-                            Systems.tpl.switchLED(uuid, true);
-                        }
+                        JSONObject network = (new IOTStatus(uuid)).toJson();
+                        Systems.p2p.doSomething(doaction, device.toJson(), network);
+                        continue;
                     }
 
-                    if (action.equals("switchoffled"))
+                    if (device.driver.equals("tpl"))
                     {
-                        if (device.driver.equals("p2p"))
-                        {
-                            Systems.p2p.switchLED(uuid, false);
-                        }
-
-                        if (device.driver.equals("tpl"))
-                        {
-                            Systems.tpl.switchLED(uuid, false);
-                        }
+                        JSONObject network = (new IOTStatus(uuid)).toJson();
+                        Systems.tpl.doSomething(doaction, device.toJson(), network);
+                        continue;
                     }
                 }
             }

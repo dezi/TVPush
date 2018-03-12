@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import de.xavaro.android.iot.comm.IOTMessageHandler;
 import de.xavaro.android.iot.handler.IOTHandleHelo;
+import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTHuman;
 import de.xavaro.android.iot.simple.Simple;
@@ -60,9 +61,9 @@ public class IOT implements InternetOfThingsHandler
     }
 
     @Override
-    public boolean switchLED(String uuid, boolean onoff)
+    public boolean doSomething(JSONObject action, JSONObject device, JSONObject network)
     {
-        Log.d(LOGTAG, "switchLED: uuid=" + uuid + " onoff=" + onoff);
+        Log.d(LOGTAG, "doSomething: action=" + Json.toPretty(action));
 
         return false;
     }

@@ -7,6 +7,8 @@ import org.json.JSONObject;
 
 import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Simple;
+import de.xavaro.android.iot.status.IOTStatus;
+import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 
@@ -35,7 +37,6 @@ public class IOTRegister
         }
 
         JSONArray capabilities = Json.jsonArrayFromSeparatedString(caps, "\\|");
-
         Json.put(device, "capabilities", capabilities);
 
         IOTDevice newDevice = new IOTDevice(device);
@@ -58,5 +59,11 @@ public class IOTRegister
         String ipaddr = Json.getString(network, "ipaddr");
 
         Log.e(LOGTAG, "registerDeviceAlive: uuid=" + uuid + " ipaddr=" + ipaddr);
+
+        Json.put(network, "uuid", uuid);
+
+        IOTStatus newDevice = new IOTStatus(network);
+
+        IOTStatusses.addEntry(newDevice, false);
     }
 }

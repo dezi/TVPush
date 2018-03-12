@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import pub.android.interfaces.iot.InternetOfThingsHandler;
 
 import zz.top.p2p.camera.P2PCloud;
+import zz.top.utl.Json;
 import zz.top.utl.Simple;
 
 public class P2P implements InternetOfThingsHandler
@@ -41,9 +42,9 @@ public class P2P implements InternetOfThingsHandler
     }
 
     @Override
-    public boolean switchLED(String uuid, boolean onoff)
+    public boolean doSomething(JSONObject action, JSONObject device, JSONObject network)
     {
-        Log.d(LOGTAG, "switchLED: uuid=" + uuid + " onoff=" + onoff);
+        Log.d(LOGTAG, "doSomething: action=" + Json.toPretty(action));
 
         return false;
     }

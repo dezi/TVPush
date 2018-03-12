@@ -41,8 +41,8 @@ public class TPLHandlerSmartPlug extends TPLHandler
 
     public static void sendLEDOnOff(String ipaddr, boolean on)
     {
-        String messOn = "{\"system\":{\"set_led_off\":{\"off\": 1}}}";
-        String messOff = "{\"system\":{\"set_led_off\":{\"off\": 0}}}";
+        String messOn = "{\"system\":{\"set_led_off\":{\"off\": 0}}}";
+        String messOff = "{\"system\":{\"set_led_off\":{\"off\": 1}}}";
 
         JSONObject message = Json.fromStringObject(on ? messOn : messOff);
 

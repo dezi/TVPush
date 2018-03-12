@@ -49,17 +49,12 @@ public class IOTStatus extends IOTObject
 
     public void checkAndMergeContent(IOTStatus check, boolean external)
     {
-        boolean changed = false;
+        if (IOTSimple.isBetter(check.wifi, wifi)) wifi = check.wifi;
+        if (IOTSimple.isBetter(check.ipaddr, ipaddr)) ipaddr = check.ipaddr;
+        if (IOTSimple.isBetter(check.ipport, ipport)) ipport = check.ipport;
 
-        if (changed |= IOTSimple.isBetter(check.wifi, wifi)) wifi = check.wifi;
-        if (changed |= IOTSimple.isBetter(check.ipaddr, ipaddr)) ipaddr = check.ipaddr;
-        if (changed |= IOTSimple.isBetter(check.ipport, ipport)) ipport = check.ipport;
+        lastseen = System.currentTimeMillis();
 
-        if (changed)
-        {
-            lastseen = System.currentTimeMillis();
-
-            saveToStorage();
-        }
+        saveToStorage();
     }
 }

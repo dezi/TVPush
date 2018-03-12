@@ -7,5 +7,5 @@ public interface InternetOfThingsHandler
     void onDeviceFound(JSONObject device);
     void onDeviceAlive(JSONObject device);
 
-    boolean switchLED(String uuid, boolean onoff);
+    boolean doSomething(JSONObject action, JSONObject device, JSONObject network);
 }
