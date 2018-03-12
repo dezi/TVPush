@@ -125,7 +125,7 @@ public class GUIDesktopActivity extends GUIActivity
 
     public void displaySpeechRecognition(boolean show)
     {
-        Log.d(LOGTAG, "displaySpeechRecognition: show=" + show);
+        //Log.d(LOGTAG, "displaySpeechRecognition: show=" + show);
 
         if (show)
         {

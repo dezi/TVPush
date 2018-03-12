@@ -133,7 +133,7 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
     public void onSpeechReady()
     {
         handler.removeCallbacks(pleaseSpeekNow);
-        handler.postDelayed(pleaseSpeekNow, hadResult ? 3000 : 0);
+        handler.postDelayed(pleaseSpeekNow, hadResult ? 1000 : 0);
 
         hadResult = false;
     }

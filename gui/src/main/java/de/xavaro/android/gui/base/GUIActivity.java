@@ -88,7 +88,8 @@ public class GUIActivity extends AppCompatActivity
 
         topframe = new FrameLayout(this);
         topframe.setLayoutParams(topFrameParams);
-        topframe.setBackgroundColor(0x44440000);
+
+        //topframe.setBackgroundColor(0x44440000);
 
         setContentView(topframe);
 
