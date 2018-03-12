@@ -11,6 +11,8 @@ import de.xavaro.android.gui.plugin.GUIVideoSurface;
 import de.xavaro.android.gui.simple.Simple;
 
 import pub.android.interfaces.cam.Camera;
+import zz.top.tpl.base.TPL;
+import zz.top.tpl.handler.TPLHandlerSmartBulb;
 
 public class GUIDesktopActivity extends GUIActivity
 {
@@ -32,7 +34,26 @@ public class GUIDesktopActivity extends GUIActivity
 
         speechRecognition = new GUISpeechRecogniton(this);
         topframe.addView(speechRecognition);
+
+        Simple.getHandler().postDelayed(pups, 1000);
     }
+
+    private int hue = 0;
+    private int saturation = 100;
+    private int brightness = 100;
+
+    private Runnable pups = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            TPLHandlerSmartBulb.sendBulbHSB("192.168.0.30", hue, saturation, brightness);
+
+            hue = (hue + 1) % 360;
+
+            Simple.getHandler().postDelayed(pups, 250);
+        }
+    };
 
     @Override
     public void onStart()

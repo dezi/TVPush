@@ -182,6 +182,18 @@ public class TPLUDP
             }
         }
 
+        JSONObject light = Json.getObject(message, "smartlife.iot.smartbulb.lightingservice");
+
+        if (light != null)
+        {
+            Iterator<String> keys = light.keys();
+
+            if  (keys.hasNext())
+            {
+                type = keys.next();
+            }
+        }
+
         return type;
     }
 }

@@ -147,15 +147,18 @@ public class TPLHandlerSysInfo extends TPLHandler
 
     private static String getCapabilities(String type, String model)
     {
-        // @formatter:off
-
         if ( "IOT.SMARTBULB".equals(type))
         {
             String caps = "smartbulb|fixed|tcp|wifi|stupid|bulbonoff";
 
+            if (model.equals("LB120(EU)"))
+            {
+                caps += "|dimmable|color|colortemp";
+            }
+
             if (model.equals("LB130(EU)"))
             {
-                caps += "|dimm|color|varcolor";
+                caps += "|dimmable|color|colorhsb|colortemp";
             }
 
             return caps;
@@ -165,8 +168,6 @@ public class TPLHandlerSysInfo extends TPLHandler
         {
             return "smartplug|fixed|tcp|wifi|stupid|energy|timer|plugonoff|ledonoff";
         }
-
-        // @formatter:on
 
         return "unknown";
     }
