@@ -3,6 +3,7 @@ package de.xavaro.android.tvpush;
 import android.app.Application;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import de.xavaro.android.gui.base.GUI;
@@ -19,20 +20,42 @@ public class SystemsIAM extends IAM
     }
 
     @Override
-    public void onActionsFound(JSONObject actions)
+    public void onActionsFound(JSONArray actions)
     {
-        Log.d(LOGTAG, "onActionsFound: actions=" + actions.toString());
-
-        String action = Json.getString(actions, "action");
-        if (action == null) return;
-
-        if (action.equals("displaySpeechRecognition"))
+        if ((actions == null) || (actions.length() == 0))
         {
-            boolean show = Json.getBoolean(actions, "param");
+            Log.d(LOGTAG, "onActionsFound: no actions found.");
+            return;
+        }
 
-            GUI.instance.displaySpeechRecognition(show);
+        Log.d(LOGTAG, "onActionsFound: actions=");
+        Log.d(LOGTAG, Json.toPretty(actions));
 
-            Log.d(LOGTAG, "onActionsFound: displaySpeechRecognition show=" + show);
+        for (int inx = 0; inx < actions.length(); inx++)
+        {
+            JSONObject jaction = Json.getObject(actions, inx);
+            if (jaction == null) continue;
+
+            String action = Json.getString(jaction, "action");
+            if (action == null) continue;
+
+            String object = Json.getString(jaction, "object");
+
+            if (object != null)
+            {
+                if (object.equals("speechlistener"))
+                {
+                    if (action.equals("open"))
+                    {
+                        GUI.instance.displaySpeechRecognition(true);
+                    }
+
+                    if (action.equals("close"))
+                    {
+                        GUI.instance.displaySpeechRecognition(false);
+                    }
+                }
+            }
         }
     }
 

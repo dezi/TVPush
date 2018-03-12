@@ -15,8 +15,13 @@ public class IOTHandleMeme extends IOTHandle
         JSONObject message = new JSONObject();
 
         Json.put(message, "type", "MEME");
-        Json.put(message, "human", IOT.human.toJson());
         Json.put(message, "device", IOT.device.toJson());
+
+        if (IOT.human != null)
+        {
+            Json.put(message, "human", IOT.human.toJson());
+        }
+
         Json.put(message, "destination", destination);
 
         IOT.message.sendMessage(message);

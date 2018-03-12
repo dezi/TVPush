@@ -107,6 +107,13 @@ public class IAMEval
             return;
         }
 
+        if (ifContainsRemove("Spracherkennung")
+                || ifContainsRemove("Erkennung"))
+        {
+            Json.put(result, "object", "speechlistener");
+            return;
+        }
+
         if (objects.length() > 0)
         {
             Json.put(result, "objects", objects);
@@ -122,8 +129,9 @@ public class IAMEval
             return;
         }
 
-        if (ifContainsRemove("anzeigen")
-                || ifContainsRemove("öffnen"))
+        if (ifContainsRemove("öffnen")
+                || ifContainsRemove("anzeigen")
+                || ifContainsRemove("einblenden"))
         {
             Json.put(result, "action", "open");
             return;
