@@ -88,6 +88,8 @@ public class TPLHandlerSmartBulb extends TPLHandler
     {
         Log.d(LOGTAG, Json.toPretty(message));
 
+        JSONObject service = Json.getObject(message, "smartlife.iot.smartbulb.lightingservice");
+        JSONObject light_state = Json.getObject(service, "transition_light_state");
         JSONObject origin = Json.getObject(message, "origin");
 
         JSONObject status = new JSONObject();
@@ -95,6 +97,34 @@ public class TPLHandlerSmartBulb extends TPLHandler
         Json.put(status, "wifi", Simple.getConnectedWifiName());
         Json.put(status, "ipaddr", Json.getString(origin, "ipaddr"));
         Json.put(status, "ipport", Json.getInt(origin, "ipport"));
+
+        if (light_state != null)
+        {
+            if (Json.has(light_state, "on_off"))
+            {
+                Json.put(status, "bulbstate", Json.getInt(light_state, "on_off"));
+            }
+
+            if (Json.has(light_state, "hue"))
+            {
+                Json.put(status, "hue", Json.getInt(light_state, "hue"));
+            }
+
+            if (Json.has(light_state, "saturation"))
+            {
+                Json.put(status, "saturation", Json.getInt(light_state, "saturation"));
+            }
+
+            if (Json.has(light_state, "brightness"))
+            {
+                Json.put(status, "brightness", Json.getInt(light_state, "brightness"));
+            }
+
+            if (Json.has(light_state, "color_temp"))
+            {
+                Json.put(status, "color_temp", Json.getInt(light_state, "color_temp"));
+            }
+        }
 
         TPL.instance.onDeviceStatus(status);
     }

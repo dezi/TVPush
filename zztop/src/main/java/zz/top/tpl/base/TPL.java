@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import zz.top.tpl.comm.TPLMessageHandler;
 import zz.top.tpl.comm.TPLMessageService;
+import zz.top.tpl.handler.TPLHandlerSmartBulb;
 import zz.top.tpl.handler.TPLHandlerSmartPlug;
 import zz.top.tpl.handler.TPLHandlerSysInfo;
 import zz.top.utl.Json;
@@ -54,13 +55,13 @@ public class TPL implements InternetOfThingsHandler
     }
 
     @Override
-    public boolean doSomething(JSONObject action, JSONObject device, JSONObject network)
+    public boolean doSomething(JSONObject action, JSONObject device, JSONObject status)
     {
         Log.d(LOGTAG, "doSomething: action=" + Json.toPretty(action));
-        Log.d(LOGTAG, "doSomething: network=" + Json.toPretty(network));
+        Log.d(LOGTAG, "doSomething: status=" + Json.toPretty(status));
 
         String actioncmd = Json.getString(action, "action");
-        String ipaddr = Json.getString(network, "ipaddr");
+        String ipaddr = Json.getString(status, "ipaddr");
 
         if ((actioncmd != null) && (ipaddr != null))
         {
@@ -85,6 +86,18 @@ public class TPL implements InternetOfThingsHandler
             if (actioncmd.equals("switchoffplug"))
             {
                 TPLHandlerSmartPlug.sendPlugOnOff(ipaddr, false);
+                return true;
+            }
+
+            if (actioncmd.equals("switchonbulb"))
+            {
+                TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, true);
+                return true;
+            }
+
+            if (actioncmd.equals("switchoffbulb"))
+            {
+                TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, false);
                 return true;
             }
         }

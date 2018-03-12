@@ -42,7 +42,7 @@ public class P2P implements InternetOfThingsHandler
     }
 
     @Override
-    public boolean doSomething(JSONObject action, JSONObject device, JSONObject network)
+    public boolean doSomething(JSONObject action, JSONObject device, JSONObject status)
     {
         Log.d(LOGTAG, "doSomething: action=" + Json.toPretty(action));
 

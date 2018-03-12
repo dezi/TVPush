@@ -1,6 +1,7 @@
 package de.xavaro.android.iam.eval;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -182,8 +183,11 @@ public class IAMEval
 
                 Json.put(object, "action", action);
                 Json.put(object, "plural", plural);
-                Json.put(object, "object", "light");
+                Json.put(object, "object", "bulb");
                 Json.put(object, "target", lastwrd);
+
+                getMatchingDevices(object);
+
                 suchwas = true;
             }
 
@@ -195,8 +199,11 @@ public class IAMEval
 
                 Json.put(object, "action", action);
                 Json.put(object, "plural", true);
-                Json.put(object, "object", "light");
+                Json.put(object, "object", "bulb");
                 Json.put(object, "target", lastwrd);
+
+                getMatchingDevices(object);
+
                 suchwas = true;
             }
 
@@ -289,6 +296,12 @@ public class IAMEval
         {
             newaction = action.equals("switchon") ? "switchonplug" : "switchoffplug";
             capability = "plugonoff";
+        }
+
+        if (objname.equals("bulb") && ((action.equals("switchon") || action.equals("switchoff"))))
+        {
+            newaction = action.equals("switchon") ? "switchonbulb" : "switchoffbulb";
+            capability = "bulbonoff";
         }
 
         if ((capability == null) || capability.isEmpty()) return;

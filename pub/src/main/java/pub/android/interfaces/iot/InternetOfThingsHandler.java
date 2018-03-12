@@ -7,5 +7,5 @@ public interface InternetOfThingsHandler
     void onDeviceFound(JSONObject device);
     void onDeviceStatus(JSONObject device);
 
-    boolean doSomething(JSONObject action, JSONObject device, JSONObject network);
+    boolean doSomething(JSONObject action, JSONObject device, JSONObject status);
 }
