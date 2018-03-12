@@ -185,7 +185,7 @@ public class P2PCloud
         String cloud_em = loginEmail;
         String cloud_pw = loginPass;
 
-        String ip = Json.getString(rawipcParam, "ip");
+        String ipaddr = Json.getString(rawipcParam, "ip");
         String ssid = Json.getString(rawipcParam, "ssid");
         String mac = Json.getString(rawipcParam, "mac");
 
@@ -233,7 +233,7 @@ public class P2PCloud
         Json.put(credentials, "cloud_em", cloud_em);
         Json.put(credentials, "cloud_pw", cloud_pw);
 
-        Json.put(network, "ipaddr", ip);
+        Json.put(network, "ipaddr", ipaddr);
         Json.put(network, "ssid", ssid);
         Json.put(network, "port", mac);
 
@@ -241,15 +241,13 @@ public class P2PCloud
 
         p2p.onDeviceFound(camera);
 
-        JSONObject alive = new JSONObject();
+        JSONObject status = new JSONObject();
 
-        JSONObject devsmall = new JSONObject();
-        Json.put(devsmall, "uuid", uuid);
+        Json.put(status, "uuid", uuid);
+        Json.put(status, "wifi", ssid);
+        Json.put(status, "ipaddr", ipaddr);
 
-        Json.put(alive, "device", devsmall);
-        Json.put(alive, "network", network);
-
-        p2p.onDeviceStatus(alive);
+        p2p.onDeviceStatus(status);
     }
 
     private static String getModelName(String modelNo)

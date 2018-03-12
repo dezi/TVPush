@@ -60,6 +60,7 @@ public abstract class IOTObject
         {
             try
             {
+                String name = field.getName();
                 int modifiers = field.getModifiers();
 
                 if ((modifiers & Modifier.FINAL) == Modifier.FINAL) continue;
@@ -78,8 +79,6 @@ public abstract class IOTObject
                         || (ival instanceof Byte)
                         || (ival instanceof Long))
                 {
-                    String name = field.getName();
-
                     Json.put(json, name, ival);
                 }
             }
@@ -101,12 +100,14 @@ public abstract class IOTObject
         {
             try
             {
-                String name = field.getName();
                 int modifiers = field.getModifiers();
 
                 if ((modifiers & Modifier.FINAL) == Modifier.FINAL) continue;
                 if ((modifiers & Modifier.STATIC) == Modifier.STATIC) continue;
                 if ((modifiers & Modifier.PUBLIC) != Modifier.PUBLIC) continue;
+
+                String name = field.getName();
+                String type = field.getType().getName();
 
                 if (Json.has(json, name))
                 {

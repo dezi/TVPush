@@ -32,24 +32,24 @@ public class IOTStatusses extends IOTList
         return (IOTStatus) instance.list.get(uuid);
     }
 
-    public static void addEntry(IOTStatus newDevice, boolean external)
+    public static void addEntry(IOTStatus newStatus, boolean external)
     {
-        IOTStatus oldDevice = getEntry(newDevice.uuid);
+        IOTStatus oldStatus = getEntry(newStatus.uuid);
 
-        if (oldDevice == null)
+        if (oldStatus == null)
         {
-            Log.d(LOGTAG, "addEntry: new uuid=" + newDevice.uuid);
+            Log.d(LOGTAG, "addEntry: new uuid=" + newStatus.uuid);
 
-            if (newDevice.saveToStorage())
+            if (newStatus.saveToStorage())
             {
-                instance.list.put(newDevice.uuid, newDevice);
+                instance.list.put(newStatus.uuid, newStatus);
             }
         }
         else
         {
-            Log.d(LOGTAG, "addEntry: old uuid=" + oldDevice.uuid);
+            Log.d(LOGTAG, "addEntry: old uuid=" + oldStatus.uuid);
 
-            oldDevice.checkAndMergeContent(newDevice, external);
+            oldStatus.checkAndMergeContent(newStatus, external);
         }
     }
 }

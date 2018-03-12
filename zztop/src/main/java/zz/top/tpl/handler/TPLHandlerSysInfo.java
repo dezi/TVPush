@@ -25,7 +25,7 @@ public class TPLHandlerSysInfo extends TPLHandler
     @Override
     public void onMessageReived(JSONObject message)
     {
-        Log.d(LOGTAG, Json.toPretty(message));
+        //Log.d(LOGTAG, Json.toPretty(message));
 
         buildDeviceDescription(message);
     }
@@ -125,15 +125,54 @@ public class TPLHandlerSysInfo extends TPLHandler
 
         TPL.instance.onDeviceFound(tplinkdev);
 
-        JSONObject alive = new JSONObject();
+        JSONObject status = new JSONObject();
 
-        JSONObject devsmall = new JSONObject();
-        Json.put(devsmall, "uuid", uuid);
+        Json.put(status, "uuid", uuid);
+        Json.put(status, "wifi", ssid);
+        Json.put(status, "ipaddr", ipaddr);
+        Json.put(status, "ipport", ipport);
 
-        Json.put(alive, "device", devsmall);
-        Json.put(alive, "network", network);
+        if (Json.has(sysinfo, "led_off"))
+        {
+            Json.put(status, "ledstate", (Json.getInt(sysinfo, "led_off") == 1) ? 0 : 1);
+        }
 
-        TPL.instance.onDeviceStatus(alive);
+        if (Json.has(sysinfo, "relay_state"))
+        {
+            Json.put(status, "plugstate", Json.getInt(sysinfo, "relay_state"));
+        }
+
+        JSONObject light_state = Json.getObject(sysinfo, "light_state");
+
+        if (light_state != null)
+        {
+            if (Json.has(light_state, "on_off"))
+            {
+                Json.put(status, "bulbstate", Json.getInt(light_state, "on_off"));
+            }
+
+            if (Json.has(light_state, "hue"))
+            {
+                Json.put(status, "hue", Json.getInt(light_state, "hue"));
+            }
+
+            if (Json.has(light_state, "saturation"))
+            {
+                Json.put(status, "saturation", Json.getInt(light_state, "saturation"));
+            }
+
+            if (Json.has(light_state, "brightness"))
+            {
+                Json.put(status, "brightness", Json.getInt(light_state, "brightness"));
+            }
+
+            if (Json.has(light_state, "color_temp"))
+            {
+                Json.put(status, "color_temp", Json.getInt(light_state, "color_temp"));
+            }
+        }
+
+        TPL.instance.onDeviceStatus(status);
     }
 
     private static String getDeviceType(String type)

@@ -1,5 +1,7 @@
 package zz.top.tpl.handler;
 
+import android.util.Log;
+
 import org.json.JSONObject;
 
 import zz.top.tpl.base.TPL;
@@ -84,7 +86,7 @@ public class TPLHandlerSmartBulb extends TPLHandler
     @Override
     public void onMessageReived(JSONObject message)
     {
-        //Log.d(LOGTAG, message.toString());
+        Log.d(LOGTAG, message.toString());
 
         JSONObject origin = Json.getObject(message, "origin");
         Json.put(origin, "ssid", Simple.getConnectedWifiName());

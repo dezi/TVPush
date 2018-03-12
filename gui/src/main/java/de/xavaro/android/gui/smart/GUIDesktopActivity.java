@@ -51,7 +51,7 @@ public class GUIDesktopActivity extends GUIActivity
 
             hue = (hue + 1) % 360;
 
-            Simple.getHandler().postDelayed(pups, 250);
+            //Simple.getHandler().postDelayed(pups, 250);
         }
     };
 

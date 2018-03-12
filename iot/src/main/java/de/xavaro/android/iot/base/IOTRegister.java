@@ -49,13 +49,10 @@ public class IOTRegister
         IOTDevices.addEntry(newDevice, false);
     }
 
-    public void registerDeviceStatus(JSONObject register)
+    public void registerDeviceStatus(JSONObject status)
     {
-        JSONObject device = Json.getObject(register, "device");
-        JSONObject network = Json.getObject(register, "network");
-
-        String uuid = Json.getString(device, "uuid");
-        String ipaddr = Json.getString(network, "ipaddr");
+        String uuid = Json.getString(status, "uuid");
+        String ipaddr = Json.getString(status, "ipaddr");
 
         if (uuid == null) uuid = ipcache.get(ipaddr);
 
@@ -63,13 +60,11 @@ public class IOTRegister
         {
             ipcache.put(ipaddr, uuid);
 
-            Log.e(LOGTAG, "registerDeviceStatus: uuid=" + uuid + " ipaddr=" + ipaddr);
+            Log.d(LOGTAG, "registerDeviceStatus: uuid=" + uuid + " ipaddr=" + ipaddr);
 
-            Json.put(network, "uuid", uuid);
+            IOTStatus newStatus = new IOTStatus(status);
 
-            IOTStatus newDevice = new IOTStatus(network);
-
-            IOTStatusses.addEntry(newDevice, false);
+            IOTStatusses.addEntry(newStatus, false);
         }
         else
         {
