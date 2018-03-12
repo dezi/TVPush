@@ -3,10 +3,12 @@ package de.xavaro.android.iam.base;
 import android.app.Application;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
-import de.xavaro.android.iam.eval.IAMEvalQuickAndDirty;
+import de.xavaro.android.iam.eval.IAMEval;
 import de.xavaro.android.iam.simple.Json;
+
 import pub.android.interfaces.iam.ArtificialIntelligenceHandler;
 
 public class IAM implements ArtificialIntelligenceHandler
@@ -28,7 +30,7 @@ public class IAM implements ArtificialIntelligenceHandler
     }
 
     @Override
-    public void onActionsFound(JSONObject actions)
+    public void onActionsFound(JSONArray actions)
     {
         Log.d(LOGTAG, "onActionsFound: actions=" + Json.toPretty(actions));
     }
@@ -38,14 +40,7 @@ public class IAM implements ArtificialIntelligenceHandler
     {
         Log.d(LOGTAG, "evaluateSpeech: speech=" + speech.toString());
 
-        JSONObject actions = IAMEvalQuickAndDirty.evaluateSpeech(speech);
+        JSONArray actions = IAMEval.evaluateSpeech(speech);
         if (actions != null) onActionsFound(actions);
-    }
-
-    @Override
-    public void evaluateMessage(JSONObject message)
-    {
-        Log.d(LOGTAG, "evaluateMessage: message=" + message.toString());
-
     }
 }

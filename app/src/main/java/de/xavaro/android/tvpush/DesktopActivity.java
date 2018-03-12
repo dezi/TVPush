@@ -24,7 +24,7 @@ public class DesktopActivity extends GUIDesktopActivity
         super.onCreate(savedInstanceState);
 
                 /*
-s
+
         setWindowHeightDip(600);
 
         videoSurface1 = new GUIVideoSurface(this);

@@ -9,7 +9,7 @@ public class IOTDevices extends IOTList
 {
     private final static String LOGTAG = IOTDevices.class.getSimpleName();
 
-    private static IOTDevices instance = new IOTDevices();
+    public static IOTDevices instance = new IOTDevices();
 
     private IOTDevices()
     {
