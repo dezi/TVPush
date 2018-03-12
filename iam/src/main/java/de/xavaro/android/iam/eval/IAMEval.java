@@ -137,7 +137,8 @@ public class IAMEval
             return;
         }
 
-        if (ifContainsRemove("öffnen")
+        if (ifContainsRemove("auf den schirm")
+                || ifContainsRemove("öffnen")
                 || ifContainsRemove("anzeigen")
                 || ifContainsRemove("einblenden"))
         {
