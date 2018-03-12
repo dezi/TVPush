@@ -133,7 +133,7 @@ public class TPLHandlerSysInfo extends TPLHandler
         Json.put(alive, "device", devsmall);
         Json.put(alive, "network", network);
 
-        TPL.instance.onDeviceAlive(alive);
+        TPL.instance.onDeviceStatus(alive);
     }
 
     private static String getDeviceType(String type)

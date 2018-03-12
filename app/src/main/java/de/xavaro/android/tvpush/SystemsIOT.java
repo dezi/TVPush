@@ -23,8 +23,8 @@ public class SystemsIOT extends IOT
     }
 
     @Override
-    public void onDeviceAlive(JSONObject device)
+    public void onDeviceStatus(JSONObject device)
     {
-        Log.d(LOGTAG, "onDeviceAlive:");
+        Log.d(LOGTAG, "onDeviceStatus:");
     }
 }

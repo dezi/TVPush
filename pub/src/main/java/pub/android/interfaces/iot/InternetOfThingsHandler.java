@@ -5,7 +5,7 @@ import org.json.JSONObject;
 public interface InternetOfThingsHandler
 {
     void onDeviceFound(JSONObject device);
-    void onDeviceAlive(JSONObject device);
+    void onDeviceStatus(JSONObject device);
 
     boolean doSomething(JSONObject action, JSONObject device, JSONObject network);
 }

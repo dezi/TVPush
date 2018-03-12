@@ -70,6 +70,6 @@ public class TPLHandlerSmartPlug extends TPLHandler
 
         Json.put(alive, "network", origin);
 
-        TPL.instance.onDeviceAlive(alive);
+        TPL.instance.onDeviceStatus(alive);
     }
 }

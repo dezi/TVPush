@@ -5,7 +5,6 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
-import de.xavaro.android.iot.base.IOTRegister;
 import zz.top.tpl.base.TPL;
 
 public class SystemsTPL extends TPL
@@ -26,10 +25,10 @@ public class SystemsTPL extends TPL
     }
 
     @Override
-    public void onDeviceAlive(JSONObject device)
+    public void onDeviceStatus(JSONObject device)
     {
-        Log.d(LOGTAG, "onDeviceAlive:");
+        Log.d(LOGTAG, "onDeviceStatus:");
 
-        Systems.iot.register.registerDeviceAlive(device);
+        Systems.iot.register.registerDeviceStatus(device);
     }
 }

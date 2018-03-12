@@ -1,6 +1,5 @@
 package zz.top.p2p.camera;
 
-import android.app.Application;
 import android.support.annotation.Nullable;
 
 import android.util.Base64;
@@ -250,7 +249,7 @@ public class P2PCloud
         Json.put(alive, "device", devsmall);
         Json.put(alive, "network", network);
 
-        p2p.onDeviceAlive(alive);
+        p2p.onDeviceStatus(alive);
     }
 
     private static String getModelName(String modelNo)

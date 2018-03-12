@@ -5,8 +5,6 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
-import de.xavaro.android.iot.base.IOTRegister;
-
 import zz.top.p2p.base.P2P;
 
 public class SystemsP2P extends P2P
@@ -27,10 +25,10 @@ public class SystemsP2P extends P2P
     }
 
     @Override
-    public void onDeviceAlive(JSONObject device)
+    public void onDeviceStatus(JSONObject device)
     {
-        Log.d(LOGTAG, "onDeviceAlive:");
+        Log.d(LOGTAG, "onDeviceStatus:");
 
-        Systems.iot.register.registerDeviceAlive(device);
+        Systems.iot.register.registerDeviceStatus(device);
     }
 }

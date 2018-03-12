@@ -49,7 +49,7 @@ public class IOTRegister
         IOTDevices.addEntry(newDevice, false);
     }
 
-    public void registerDeviceAlive(JSONObject register)
+    public void registerDeviceStatus(JSONObject register)
     {
         JSONObject device = Json.getObject(register, "device");
         JSONObject network = Json.getObject(register, "network");
@@ -63,7 +63,7 @@ public class IOTRegister
         {
             ipcache.put(ipaddr, uuid);
 
-            Log.e(LOGTAG, "registerDeviceAlive: uuid=" + uuid + " ipaddr=" + ipaddr);
+            Log.e(LOGTAG, "registerDeviceStatus: uuid=" + uuid + " ipaddr=" + ipaddr);
 
             Json.put(network, "uuid", uuid);
 
@@ -73,7 +73,7 @@ public class IOTRegister
         }
         else
         {
-            Log.d(LOGTAG, "registerDeviceAlive: no device.");
+            Log.d(LOGTAG, "registerDeviceStatus: no device.");
         }
     }
 }

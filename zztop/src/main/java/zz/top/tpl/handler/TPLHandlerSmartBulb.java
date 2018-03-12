@@ -1,7 +1,5 @@
 package zz.top.tpl.handler;
 
-import android.util.Log;
-
 import org.json.JSONObject;
 
 import zz.top.tpl.base.TPL;
@@ -95,6 +93,6 @@ public class TPLHandlerSmartBulb extends TPLHandler
 
         Json.put(alive, "network", origin);
 
-        TPL.instance.onDeviceAlive(alive);
+        TPL.instance.onDeviceStatus(alive);
     }
 }
