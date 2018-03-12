@@ -9,6 +9,7 @@ import de.xavaro.android.gui.base.GUIActivity;
 import de.xavaro.android.gui.plugin.GUISpeechRecogniton;
 import de.xavaro.android.gui.plugin.GUIVideoSurface;
 import de.xavaro.android.gui.simple.Simple;
+
 import pub.android.interfaces.cam.Camera;
 
 public class GUIDesktopActivity extends GUIActivity

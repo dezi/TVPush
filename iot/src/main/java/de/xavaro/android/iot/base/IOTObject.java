@@ -122,9 +122,9 @@ public abstract class IOTObject
                         //
                         // Someone changed the data type in between.
                         //
-                    }
 
-                    //Json.remove(json, name);
+                        ignore.printStackTrace();
+                    }
                 }
             }
             catch (Exception ignore)
@@ -132,14 +132,6 @@ public abstract class IOTObject
                 return false;
             }
         }
-
-        /*
-        String uncomsumed = json.toString();
-        if (! uncomsumed.equals("{}"))
-        {
-            Log.d(LOGTAG, "fromJson: uncomsumed=" + uncomsumed);
-        }
-        */
 
         return ok;
     }

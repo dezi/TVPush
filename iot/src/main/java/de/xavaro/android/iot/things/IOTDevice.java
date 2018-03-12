@@ -1,5 +1,7 @@
 package de.xavaro.android.iot.things;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -11,6 +13,8 @@ import de.xavaro.android.iot.simple.Simple;
 @SuppressWarnings("WeakerAccess")
 public class IOTDevice extends IOTObject
 {
+    private final static String LOGTAG = IOTDevice.class.getSimpleName();
+
     public final String TYPE_PC = "pc";
     public final String TYPE_TV = "tv";
     public final String TYPE_PHONE = "phone";
@@ -29,7 +33,7 @@ public class IOTDevice extends IOTObject
     public String location;
     public String fixedwifi;
 
-    public JSONArray capabilities = new JSONArray();
+    public JSONArray capabilities;
 
     public IOTDevice()
     {

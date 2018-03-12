@@ -34,7 +34,7 @@ public class IOTRegister
                     + " p2p_pw=" + Json.getString(credentials, "p2p_pw"));
         }
 
-        JSONArray capabilities = Json.jsonArrayFromSeparatedString(Simple.getDeviceCapabilities(), "\\|");
+        JSONArray capabilities = Json.jsonArrayFromSeparatedString(caps, "\\|");
 
         Json.put(device, "capabilities", capabilities);
 
