@@ -25,7 +25,7 @@ public class TPLHandlerSysInfo extends TPLHandler
     @Override
     public void onMessageReived(JSONObject message)
     {
-        //Log.d(LOGTAG, Json.toPretty(message));
+        Log.d(LOGTAG, Json.toPretty(message));
 
         buildDeviceDescription(message);
     }
@@ -57,14 +57,34 @@ public class TPLHandlerSysInfo extends TPLHandler
                 + " - " + Json.getString(sysinfo, "sw_ver");
 
         String mac = Json.getString(sysinfo, "mac");
+
+        if (mac == null)
+        {
+            String micmac = Json.getString(sysinfo, "mic_mac");
+
+            if ((micmac != null) && (micmac.length() == 12))
+            {
+                mac = micmac.substring(0, 2)
+                        + ":" + micmac.substring(2, 4)
+                        + ":" + micmac.substring(4, 6)
+                        + ":" + micmac.substring(6, 8)
+                        + ":" + micmac.substring(8, 10)
+                        + ":" + micmac.substring(10, 12)
+                        ;
+            }
+        }
+
+        String tpltype = Json.getString(sysinfo, "type");
+        if (tpltype == null) tpltype = Json.getString(sysinfo, "mic_type");
+
         String ssid = Simple.getConnectedWifiName();
         String ipaddr = Json.getString(origin, "ipaddr");
         int ipport = Json.getInt(origin, "ipport");
 
-        String type = "smartplug";
         String driver = "tpl";
 
-        String capabilities = getCapabilities(Json.getString(sysinfo, "type"));
+        String type = getDeviceType(tpltype);
+        String capabilities = getCapabilities(tpltype, model);
 
         String uuid = Simple.hmacSha1UUID(id, mac);
 
@@ -116,16 +136,38 @@ public class TPLHandlerSysInfo extends TPLHandler
         TPL.instance.onDeviceAlive(alive);
     }
 
-    private static String getCapabilities(String type)
+    private static String getDeviceType(String type)
+    {
+        if ( "IOT.SMARTBULB".equals(type)) return "smartbuld";
+
+        if ( "IOT.SMARTPLUGSWITCH".equals(type)) return "smartplug";
+
+        return "unknown";
+    }
+
+    private static String getCapabilities(String type, String model)
     {
         // @formatter:off
 
-        String caps = "smartplug|fixed|tcp|wifi|stupid";
+        if ( "IOT.SMARTBULB".equals(type))
+        {
+            String caps = "smartbulb|fixed|tcp|wifi|stupid|bulbonoff";
 
-        if ( "IOT.SMARTPLUGSWITCH".equals(type)) return caps + "|energy|timer|plugonoff|ledonoff";
+            if (model.equals("LB130(EU)"))
+            {
+                caps += "|dimm|color|varcolor";
+            }
+
+            return caps;
+        }
+
+        if ( "IOT.SMARTPLUGSWITCH".equals(type))
+        {
+            return "smartplug|fixed|tcp|wifi|stupid|energy|timer|plugonoff|ledonoff";
+        }
 
         // @formatter:on
 
-        return caps;
+        return "unknown";
     }
 }
