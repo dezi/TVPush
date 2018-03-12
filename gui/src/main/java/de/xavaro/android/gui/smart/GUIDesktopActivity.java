@@ -22,11 +22,7 @@ public class GUIDesktopActivity extends GUIActivity
         GUI.instance.desktopActivity = this;
 
         speechRecognition = new GUISpeechRecogniton(this);
-
-        if (Simple.isPhone())
-        {
-            displaySpeechRecognition(true);
-        }
+        topframe.addView(speechRecognition);
     }
 
     @Override

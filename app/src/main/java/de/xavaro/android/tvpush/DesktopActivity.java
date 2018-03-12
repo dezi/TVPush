@@ -3,13 +3,10 @@ package de.xavaro.android.tvpush;
 import android.os.Bundle;
 import android.util.Log;
 
-import de.xavaro.android.gui.plugin.GUISpeechRecogniton;
 import de.xavaro.android.gui.plugin.GUIVideoSurface;
-import de.xavaro.android.gui.simple.Simple;
 
 import de.xavaro.android.gui.smart.GUIDesktopActivity;
 import pub.android.interfaces.cam.Camera;
-import zz.top.cam.Cameras;
 
 public class DesktopActivity extends GUIDesktopActivity
 {
@@ -26,9 +23,10 @@ public class DesktopActivity extends GUIDesktopActivity
     {
         super.onCreate(savedInstanceState);
 
+                /*
+s
         setWindowHeightDip(600);
 
-        /*
         videoSurface1 = new GUIVideoSurface(this);
         videoSurface2 = new GUIVideoSurface(this);
 
