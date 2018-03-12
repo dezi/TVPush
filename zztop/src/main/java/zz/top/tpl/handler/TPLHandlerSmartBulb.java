@@ -65,7 +65,7 @@ public class TPLHandlerSmartBulb extends TPLHandler
         Json.put(message, "smartlife.iot.smartbulb.lightingservice", service);
         Json.put(service, "transition_light_state", transition);
         Json.put(transition, "ignore_default", 1);
-        Json.put(transition, "transition_period", 100);
+        Json.put(transition, "transition_period", 1000);
         Json.put(transition, "mode", STATE_LIGHT_MODE_NORMAL);
         Json.put(transition, "hue", hue);
         Json.put(transition, "saturation", saturation);

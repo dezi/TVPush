@@ -54,7 +54,12 @@ public class IOTRegister
         String uuid = Json.getString(status, "uuid");
         String ipaddr = Json.getString(status, "ipaddr");
 
-        if (uuid == null) uuid = ipcache.get(ipaddr);
+        if (uuid == null)
+        {
+            uuid = ipcache.get(ipaddr);
+
+            if (uuid != null) Json.put(status, "uuid", uuid);
+        }
 
         if ((uuid != null) && (ipaddr != null))
         {
