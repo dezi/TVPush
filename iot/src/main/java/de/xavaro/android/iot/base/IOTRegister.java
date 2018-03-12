@@ -26,7 +26,6 @@ public class IOTRegister
     {
         JSONObject device = Json.getObject(register, "device");
         JSONObject credentials = Json.getObject(register, "credentials");
-        JSONObject network = Json.getObject(register, "network");
 
         String caps = Json.getString(device, "capabilities");
 

@@ -226,7 +226,8 @@ public class IAMEval
                 suchwas = true;
             }
 
-            if (ifContainsRemove("Spracherkennung")
+            if (ifContainsRemove("Spracheingabe")
+                    || ifContainsRemove("Spracherkennung")
                     || ifContainsRemove("Erkennung"))
             {
                 JSONObject object = new JSONObject();
@@ -239,7 +240,8 @@ public class IAMEval
                 suchwas = true;
             }
 
-            if (ifContainsRemove("Spracherkennungen")
+            if (ifContainsRemove("Spracheingaben")
+                    || ifContainsRemove("Spracherkennungen")
                     || ifContainsRemove("Erkennungen"))
             {
                 JSONObject object = new JSONObject();
