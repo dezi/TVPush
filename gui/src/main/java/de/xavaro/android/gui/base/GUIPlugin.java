@@ -11,9 +11,9 @@ public class GUIPlugin extends GUIFrameLayout
 {
     private final static String LOGTAG = GUIPlugin.class.getSimpleName();
 
-    public GUIFrameLayout pluginFrame;
+    public final GUIFrameLayout pluginFrame;
 
-    public FrameLayout.LayoutParams pluginFrameParams;
+    public final FrameLayout.LayoutParams pluginFrameParams;
 
     public GUIPlugin(Context context)
     {

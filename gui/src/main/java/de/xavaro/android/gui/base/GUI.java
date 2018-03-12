@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import de.xavaro.android.gui.smart.GUIDesktopActivity;
 import de.xavaro.android.gui.smart.GUISpeechListener;
+
 import pub.android.interfaces.cam.Camera;
 import pub.android.interfaces.gui.GraficalUserInterfaceHandler;
 
@@ -48,7 +49,7 @@ public class GUI implements GraficalUserInterfaceHandler
     @Override
     public Camera onRequestCameraByUUID(String uuid)
     {
-        Log.d(LOGTAG, "onRequestCameraByUUID: uuid=" + uuid);
+        Log.d(LOGTAG, "onRequestCameraByUUID: STUB! uuid=" + uuid);
 
         return null;
     }
@@ -56,7 +57,15 @@ public class GUI implements GraficalUserInterfaceHandler
     @Override
     public void onSpeechResults(JSONObject speech)
     {
-        Log.d(LOGTAG, "onSpeechResults: speech=" + speech.toString());
+        Log.d(LOGTAG, "onSpeechResults: STUB! speech=" + speech.toString());
+    }
+
+    @Override
+    public void displayCamera(boolean show, String uuid)
+    {
+        Log.d(LOGTAG, "displayCamera: uuid=" + uuid);
+
+        GUI.instance.desktopActivity.displayCamera(show, uuid);
     }
 
     @Override
@@ -65,11 +74,5 @@ public class GUI implements GraficalUserInterfaceHandler
         Log.d(LOGTAG, "displaySpeechRecognition: show=" + show);
 
         GUI.instance.desktopActivity.displaySpeechRecognition(show);
-    }
-
-    @Override
-    public void displayCamera(String uuid)
-    {
-        Log.d(LOGTAG, "displayCamera: uuid=" + uuid);
     }
 }

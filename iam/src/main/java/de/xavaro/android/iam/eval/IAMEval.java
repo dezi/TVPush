@@ -107,6 +107,14 @@ public class IAMEval
             return;
         }
 
+        if (ifContainsRemove("Kameras")
+                || ifContainsRemove("Cameras"))
+        {
+            Json.put(result, "plural", true);
+            Json.put(result, "object", "camera");
+            return;
+        }
+
         if (ifContainsRemove("Spracherkennung")
                 || ifContainsRemove("Erkennung"))
         {

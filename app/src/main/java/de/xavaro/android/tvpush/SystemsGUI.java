@@ -9,6 +9,7 @@ import de.xavaro.android.gui.base.GUI;
 
 import de.xavaro.android.iam.base.IAM;
 import pub.android.interfaces.cam.Camera;
+import zz.top.cam.Cameras;
 
 public class SystemsGUI extends GUI
 {
@@ -32,6 +33,6 @@ public class SystemsGUI extends GUI
     {
         Log.d(LOGTAG, "onRequestCameraByUUID: uuid=" + uuid);
 
-        return null;
+        return Cameras.createCameraByUUID(uuid);
     }
 }

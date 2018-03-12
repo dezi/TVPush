@@ -6,12 +6,15 @@ import android.util.Log;
 
 import de.xavaro.android.gui.base.GUIPlugin;
 
+import pub.android.interfaces.cam.Camera;
+
 import zz.top.gls.GLSVideoView;
 
 public class GUIVideoSurface extends GUIPlugin
 {
     private final static String LOGTAG = GUISpeechRecogniton.class.getSimpleName();
 
+    private Camera camera;
     private GLSVideoView glsVideoView;
 
     public GUIVideoSurface(Context context)
@@ -25,9 +28,6 @@ public class GUIVideoSurface extends GUIPlugin
         Log.d(LOGTAG, "onCreate:");
 
         super.onCreate();
-
-        pluginFrameParams.leftMargin = 50;
-        pluginFrameParams.topMargin = 50;
 
         pluginFrameParams.width = 320;
         pluginFrameParams.height = 180;
@@ -49,8 +49,28 @@ public class GUIVideoSurface extends GUIPlugin
         pluginFrame.setLayoutParams(pluginFrameParams);
     }
 
+    public int getPluginWidth()
+    {
+        return pluginFrameParams.width;
+    }
+
+    public int getPluginHeight()
+    {
+        return pluginFrameParams.height;
+    }
+
     public GLSVideoView getGLSVideoView()
     {
         return glsVideoView;
+    }
+
+    public void setCamera(Camera camera)
+    {
+        this.camera = camera;
+    }
+
+    public Camera getCamera()
+    {
+        return camera;
     }
 }

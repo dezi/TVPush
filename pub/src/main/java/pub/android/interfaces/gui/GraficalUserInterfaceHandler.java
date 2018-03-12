@@ -10,6 +10,6 @@ public interface GraficalUserInterfaceHandler
 
     void onSpeechResults(JSONObject speech);
 
+    void displayCamera(boolean show, String uuid);
     void displaySpeechRecognition(boolean show);
-    void displayCamera(String uuid);
 }

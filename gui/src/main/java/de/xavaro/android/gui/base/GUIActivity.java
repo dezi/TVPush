@@ -27,6 +27,12 @@ public class GUIActivity extends AppCompatActivity
     public int width = Simple.getDeviceWidth();
     public int height = Simple.getDeviceHeight();
 
+    public int maxWidth = width;
+    public int maxHeight = height;
+
+    public int minWidth = width;
+    public int minHeight = height;
+
     public FrameLayout topframe;
 
     @Override
@@ -61,7 +67,7 @@ public class GUIActivity extends AppCompatActivity
         }
         else
         {
-            height = Simple.dipToPx(80);
+            minHeight = height = Simple.dipToPx(80);
 
             windowParams.width = width;
             windowParams.height = height;
@@ -99,10 +105,28 @@ public class GUIActivity extends AppCompatActivity
         }
         else
         {
-            windowParams.height = Simple.dipToPx(heightDip);
+            int height;
+
+            if (heightDip == Simple.MP)
+            {
+                height = maxHeight;
+            }
+            else
+            {
+                if (heightDip == Simple.WC)
+                {
+                    height = minHeight;
+                }
+                else
+                {
+                    height = Simple.dipToPx(heightDip);
+                }
+            }
+
+            windowParams.height = height;
             getWindow().setAttributes(windowParams);
 
-            topFrameParams.height = Simple.dipToPx(heightDip);
+            topFrameParams.height = height;
             topframe.setLayoutParams(topFrameParams);
         }
     }

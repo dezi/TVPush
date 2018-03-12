@@ -42,12 +42,12 @@ public class TPL implements InternetOfThingsHandler
     @Override
     public void onDeviceFound(JSONObject device)
     {
-        Log.d(LOGTAG, "onDeviceFound:");
+        Log.d(LOGTAG, "onDeviceFound: STUB!");
     }
 
     @Override
     public void onDeviceAlive(JSONObject device)
     {
-        Log.d(LOGTAG, "onDeviceAlive:");
+        Log.d(LOGTAG, "onDeviceAlive: STUB!");
     }
 }
