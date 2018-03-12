@@ -191,7 +191,7 @@ public class P2PCloud
         String mac = Json.getString(rawipcParam, "mac");
 
         String type = "camera";
-        String driver = "yi-p2p";
+        String driver = "p2p";
         String capabilities = getCapabilities(Json.getString(rawDevice, "model"));
 
         String uuid = Simple.hmacSha1UUID(id, mac);

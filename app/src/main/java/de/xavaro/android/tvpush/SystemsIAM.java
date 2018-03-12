@@ -6,11 +6,10 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.iam.base.IAM;
-import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
+
 import zz.top.utl.Json;
 
 public class SystemsIAM extends IAM
@@ -50,13 +49,13 @@ public class SystemsIAM extends IAM
                 {
                     if (action.equals("open"))
                     {
-                        GUI.instance.displaySpeechRecognition(true);
+                        Systems.gui.instance.displaySpeechRecognition(true);
                         continue;
                     }
 
                     if (action.equals("close"))
                     {
-                        GUI.instance.displaySpeechRecognition(false);
+                        Systems.gui.instance.displaySpeechRecognition(false);
                         continue;
                     }
                 }
@@ -78,14 +77,40 @@ public class SystemsIAM extends IAM
                     {
                         if (action.equals("open"))
                         {
-                            GUI.instance.displayCamera(true, uuid);
+                            Systems.gui.instance.displayCamera(true, uuid);
                             continue;
                         }
 
                         if (action.equals("close"))
                         {
-                            GUI.instance.displayCamera(false, uuid);
+                            Systems.gui.instance.displayCamera(false, uuid);
                             continue;
+                        }
+                    }
+
+                    if (action.equals("switchonled"))
+                    {
+                        if (device.driver.equals("p2p"))
+                        {
+                            Systems.p2p.switchLED(uuid, true);
+                        }
+
+                        if (device.driver.equals("tpl"))
+                        {
+                            Systems.tpl.switchLED(uuid, true);
+                        }
+                    }
+
+                    if (action.equals("switchoffled"))
+                    {
+                        if (device.driver.equals("p2p"))
+                        {
+                            Systems.p2p.switchLED(uuid, false);
+                        }
+
+                        if (device.driver.equals("tpl"))
+                        {
+                            Systems.tpl.switchLED(uuid, false);
                         }
                     }
                 }

@@ -58,4 +58,12 @@ public class IOT implements InternetOfThingsHandler
     {
         Log.d(LOGTAG, "onDeviceAlive: STUB!");
     }
+
+    @Override
+    public boolean switchLED(String uuid, boolean onoff)
+    {
+        Log.d(LOGTAG, "switchLED: uuid=" + uuid + " onoff=" + onoff);
+
+        return false;
+    }
 }

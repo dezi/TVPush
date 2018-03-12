@@ -144,7 +144,7 @@ public class Cameras
 
         if (deviceDriver != null)
         {
-            if (deviceDriver.equals("yi-p2p"))
+            if (deviceDriver.equals("p2p"))
             {
                 Log.d(LOGTAG, "createCameraByUUID: found=" + deviceDriver);
 

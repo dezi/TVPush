@@ -7,11 +7,11 @@ public class Systems
 {
     private static final String LOGTAG = Systems.class.getSimpleName();
 
-    private static SystemsGUI gui;
-    private static SystemsIOT iot;
-    private static SystemsTPL tpl;
-    private static SystemsIAM iam;
-    private static SystemsP2P p2p;
+    public static SystemsGUI gui;
+    public static SystemsIOT iot;
+    public static SystemsTPL tpl;
+    public static SystemsIAM iam;
+    public static SystemsP2P p2p;
 
     public static void initialize(Application application)
     {
