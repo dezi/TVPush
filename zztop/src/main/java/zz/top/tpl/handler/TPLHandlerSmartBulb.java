@@ -83,6 +83,39 @@ public class TPLHandlerSmartBulb extends TPLHandler
         TPL.instance.message.sendMessage(message);
     }
 
+    public static void sendAllBulbsBrightness(int brightness)
+    {
+        sendBulbBrightness(null, brightness);
+    }
+
+    public static void sendBulbBrightness(String ipaddr, int brightness)
+    {
+        if (brightness < 0) brightness = 0;
+        if (brightness > 100) brightness = 100;
+
+        JSONObject message = new JSONObject();
+        JSONObject service = new JSONObject();
+        JSONObject transition = new JSONObject();
+        
+        Json.put(message, "smartlife.iot.smartbulb.lightingservice", service);
+        Json.put(service, "transition_light_state", transition);
+        Json.put(transition, "ignore_default", 1);
+        Json.put(transition, "transition_period", 1000);
+        Json.put(transition, "mode", STATE_LIGHT_MODE_NORMAL);
+        Json.put(transition, "brightness", brightness);
+        Json.put(transition, "color_temp", 0);
+
+        if ((ipaddr != null) && ! ipaddr.isEmpty())
+        {
+            JSONObject destination = new JSONObject();
+            Json.put(destination, "ipaddr", ipaddr);
+
+            Json.put(message, "destination", destination);
+        }
+
+        TPL.instance.message.sendMessage(message);
+    }
+
     @Override
     public void onMessageReived(JSONObject message)
     {

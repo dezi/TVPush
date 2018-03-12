@@ -304,6 +304,11 @@ public class IAMEval
             capability = "bulbonoff";
         }
 
+        if (objname.equals("bulb") && ((action.equals("adjustpos") || action.equals("adjustneg"))))
+        {
+            capability = "dimmable";
+        }
+
         if ((capability == null) || capability.isEmpty()) return;
 
         Json.put(object, "action", newaction);
@@ -510,6 +515,17 @@ public class IAMEval
 
     private String evaluateAction()
     {
+        if (ifContainsRemove("dunkler machen")
+                || ifContainsRemove("dimmen"))
+        {
+            return "adjustneg";
+        }
+
+        if (ifContainsRemove("heller machen"))
+        {
+            return "adjustpos";
+        }
+
         if (ifContainsRemove("anschalten")
                 || ifContainsRemove("einschalten"))
         {

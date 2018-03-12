@@ -100,6 +100,24 @@ public class TPL implements InternetOfThingsHandler
                 TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, false);
                 return true;
             }
+
+            if (actioncmd.equals("adjustpos"))
+            {
+                int brightness = Json.getInt(status, "brightness");
+                brightness += 25;
+
+                TPLHandlerSmartBulb.sendBulbBrightness(ipaddr, brightness);
+                return true;
+            }
+
+            if (actioncmd.equals("adjustneg"))
+            {
+                int brightness = Json.getInt(status, "brightness");
+                brightness -= 25;
+
+                TPLHandlerSmartBulb.sendBulbBrightness(ipaddr, brightness);
+                return true;
+            }
         }
 
         return false;
