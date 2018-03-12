@@ -40,30 +40,24 @@ public class SystemsIAM extends IAM
             if (jaction == null) continue;
 
             String action = Json.getString(jaction, "action");
-            if (action == null) continue;
+            if ((action == null) || action.isEmpty()) continue;
 
-            JSONArray objects = Json.getArray(jaction, "objects");
+            String object = Json.getString(jaction, "object");
 
-            if (objects != null)
+            if ((object != null) && ! object.isEmpty())
             {
-                for (int oinx = 0; oinx < objects.length(); oinx++)
+                if (object.equals("speechlistener"))
                 {
-                    String object = Json.getString(objects, oinx);
-                    if ((object == null) || object.isEmpty()) continue;
-
-                    if (object.equals("speechlistener"))
+                    if (action.equals("open"))
                     {
-                        if (action.equals("open"))
-                        {
-                            GUI.instance.displaySpeechRecognition(true);
-                            continue;
-                        }
+                        GUI.instance.displaySpeechRecognition(true);
+                        continue;
+                    }
 
-                        if (action.equals("close"))
-                        {
-                            GUI.instance.displaySpeechRecognition(false);
-                            continue;
-                        }
+                    if (action.equals("close"))
+                    {
+                        GUI.instance.displaySpeechRecognition(false);
+                        continue;
                     }
                 }
             }
