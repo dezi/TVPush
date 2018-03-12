@@ -1,7 +1,7 @@
 package de.xavaro.android.iam.eval;
 
-import android.graphics.Color;
 import android.support.annotation.Nullable;
+import android.graphics.Color;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -72,6 +72,34 @@ public class IAMEval
                 }
 
                 return (results.length() > 0) ? results : null;
+            }
+            else
+            {
+                //
+                // Dezi's color hack.
+                //
+
+                String colorname = message.replace(" ", "");
+                Log.d(LOGTAG, "###################### cccc=" + colorname);
+
+                int colorrgb = IAMEvalColors.getColor(colorname);
+
+                if (colorrgb != 0)
+                {
+                    JSONObject object = new JSONObject();
+
+                    Json.put(object, "action", "color." + Integer.toHexString(colorrgb));
+                    Json.put(object, "plural", true);
+                    Json.put(object, "object", "bulb");
+                    Json.put(object, "target", message);
+
+                    getMatchingDevices(object);
+
+                    JSONArray results = new JSONArray();
+                    Json.put(results, object);
+
+                    return results;
+                }
             }
         }
 

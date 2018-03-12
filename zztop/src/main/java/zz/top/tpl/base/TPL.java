@@ -127,9 +127,15 @@ public class TPL implements InternetOfThingsHandler
                 float[] hsv = new float[3];
                 Color.colorToHSV(rgbcolor, hsv);
 
-                int hue = Math.round(hsv[ 0 ] * 360);
+                int hue = Math.round(hsv[ 0 ]);
                 int saturation = Math.round(hsv[ 1 ] * 100);
                 int brightness = Math.round(hsv[ 2 ] * 100);
+
+                Log.d(LOGTAG, "######### rgb=" + Integer.toHexString(rgbcolor)
+                                + " hue=" + hue
+                                + " saturation=" + saturation
+                                + " brightness=" + brightness
+                        );
 
                 TPLHandlerSmartBulb.sendBulbHSB(ipaddr, hue, saturation, brightness);
 
