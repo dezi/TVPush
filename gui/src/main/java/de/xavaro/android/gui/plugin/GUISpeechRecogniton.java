@@ -157,8 +157,6 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
         colorFrame.start();
 
         hadResult = true;
-
-        IOTHandleStot.sendSTOT(speech);
     }
 
     private final Runnable pleaseSpeekNow = new Runnable()
