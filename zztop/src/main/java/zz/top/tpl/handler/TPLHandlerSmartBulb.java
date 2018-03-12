@@ -1,5 +1,6 @@
 package zz.top.tpl.handler;
 
+import android.graphics.Color;
 import android.util.Log;
 
 import org.json.JSONObject;
@@ -96,7 +97,7 @@ public class TPLHandlerSmartBulb extends TPLHandler
         JSONObject message = new JSONObject();
         JSONObject service = new JSONObject();
         JSONObject transition = new JSONObject();
-        
+
         Json.put(message, "smartlife.iot.smartbulb.lightingservice", service);
         Json.put(service, "transition_light_state", transition);
         Json.put(transition, "ignore_default", 1);

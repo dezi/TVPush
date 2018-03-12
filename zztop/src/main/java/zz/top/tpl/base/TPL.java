@@ -1,6 +1,7 @@
 package zz.top.tpl.base;
 
 import android.app.Application;
+import android.graphics.Color;
 import android.util.Log;
 
 import org.json.JSONObject;
@@ -116,6 +117,22 @@ public class TPL implements InternetOfThingsHandler
                 brightness -= 25;
 
                 TPLHandlerSmartBulb.sendBulbBrightness(ipaddr, brightness);
+                return true;
+            }
+
+            if (actioncmd.startsWith("color."))
+            {
+                int rgbcolor = Integer.parseInt(actioncmd.substring(6), 16);
+
+                float[] hsv = new float[3];
+                Color.colorToHSV(rgbcolor, hsv);
+
+                int hue = Math.round(hsv[ 0 ] * 360);
+                int saturation = Math.round(hsv[ 1 ] * 100);
+                int brightness = Math.round(hsv[ 2 ] * 100);
+
+                TPLHandlerSmartBulb.sendBulbHSB(ipaddr, hue, saturation, brightness);
+
                 return true;
             }
         }
