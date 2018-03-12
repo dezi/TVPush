@@ -1,5 +1,6 @@
 package de.xavaro.android.gui.smart;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -147,13 +148,19 @@ public class GUIDesktopActivity extends GUIActivity
 
     private void checkWindowSize()
     {
-        if (topframe.getChildCount() > 1)
+        if ((topframe.getChildCount() == 0)
+                || (speechRecognition.getParent() != null) && (topframe.getChildCount() == 1))
         {
-            setWindowHeightDip(Simple.MP);
+            setWindowHeightDip(Simple.WC);
         }
         else
         {
-            setWindowHeightDip(Simple.WC);
+            setWindowHeightDip(Simple.MP);
+        }
+
+        if (! isActive())
+        {
+            startActivity(new Intent(this, getClass()));
         }
     }
 }

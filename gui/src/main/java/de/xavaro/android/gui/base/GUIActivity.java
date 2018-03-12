@@ -24,16 +24,18 @@ public class GUIActivity extends AppCompatActivity
     public WindowManager.LayoutParams windowParams;
     public FrameLayout.LayoutParams topFrameParams;
 
-    public int width = Simple.getDeviceWidth();
-    public int height = Simple.getDeviceHeight();
-
-    public int maxWidth = width;
-    public int maxHeight = height;
-
-    public int minWidth = width;
-    public int minHeight = height;
-
     public FrameLayout topframe;
+
+    private int width = Simple.getDeviceWidth();
+    private int height = Simple.getDeviceHeight();
+
+    private int maxWidth = width;
+    private int maxHeight = height;
+
+    private int minWidth = width;
+    private int minHeight = height;
+
+    private boolean isactive;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -132,6 +134,11 @@ public class GUIActivity extends AppCompatActivity
         }
     }
 
+    public boolean isActive()
+    {
+        return isactive;
+    }
+
     @Override
     public void onStart()
     {
@@ -164,6 +171,8 @@ public class GUIActivity extends AppCompatActivity
                 ((GUIPlugin) topframe.getChildAt(inx)).onResume();
             }
         }
+
+        isactive = true;
     }
 
     @Override
@@ -180,6 +189,8 @@ public class GUIActivity extends AppCompatActivity
                 ((GUIPlugin) topframe.getChildAt(inx)).onPause();
             }
         }
+
+        isactive = false;
     }
 
     @Override

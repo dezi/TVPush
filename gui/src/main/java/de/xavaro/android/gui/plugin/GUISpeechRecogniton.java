@@ -104,21 +104,19 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
             centerCont.setPaddingDip(GUIDefs.PADDING_SMALL);
             speechText.setPaddingDip(GUIDefs.PADDING_ZERO);
         }
+
+        GUI.instance.speechListener.setCallback(this);
     }
 
     @Override
     public void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-
-        GUI.instance.speechListener.setCallback(this);
     }
 
     @Override
     public void onDetachedFromWindow()
     {
-        GUI.instance.speechListener.setCallback(null);
-
         super.onDetachedFromWindow();
     }
 
