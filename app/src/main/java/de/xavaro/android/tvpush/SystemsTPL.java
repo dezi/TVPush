@@ -22,7 +22,7 @@ public class SystemsTPL extends TPL
     {
         Log.d(LOGTAG, "onDeviceFound:");
 
-        IOTRegister.registerDevice(device);
+        Systems.iot.register.registerDevice(device);
     }
 
     @Override
@@ -30,6 +30,6 @@ public class SystemsTPL extends TPL
     {
         Log.d(LOGTAG, "onDeviceAlive:");
 
-        IOTRegister.registerDeviceAlive(device);
+        Systems.iot.register.registerDeviceAlive(device);
     }
 }

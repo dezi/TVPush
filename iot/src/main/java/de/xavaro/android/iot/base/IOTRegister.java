@@ -1,9 +1,13 @@
 package de.xavaro.android.iot.base;
 
 import android.util.Log;
+import android.view.ViewGroup;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Simple;
@@ -16,7 +20,9 @@ public class IOTRegister
 {
     private final static String LOGTAG = IOTRegister.class.getSimpleName();
 
-    public static void registerDevice(JSONObject register)
+    private final Map<String, String> ipcache = new HashMap<>();
+
+    public void registerDevice(JSONObject register)
     {
         JSONObject device = Json.getObject(register, "device");
         JSONObject credentials = Json.getObject(register, "credentials");
@@ -44,26 +50,31 @@ public class IOTRegister
         IOTDevices.addEntry(newDevice, false);
     }
 
-    public static void registerDeviceAlive(JSONObject register)
+    public void registerDeviceAlive(JSONObject register)
     {
         JSONObject device = Json.getObject(register, "device");
         JSONObject network = Json.getObject(register, "network");
 
         String uuid = Json.getString(device, "uuid");
-
-        if ((uuid == null) || (network == null))
-        {
-            Log.e(LOGTAG, "registerDeviceAlive: no device.");
-        }
-
         String ipaddr = Json.getString(network, "ipaddr");
 
-        Log.e(LOGTAG, "registerDeviceAlive: uuid=" + uuid + " ipaddr=" + ipaddr);
+        if (uuid == null) uuid = ipcache.get(ipaddr);
 
-        Json.put(network, "uuid", uuid);
+        if ((uuid != null) && (ipaddr != null))
+        {
+            ipcache.put(ipaddr, uuid);
 
-        IOTStatus newDevice = new IOTStatus(network);
+            Log.e(LOGTAG, "registerDeviceAlive: uuid=" + uuid + " ipaddr=" + ipaddr);
 
-        IOTStatusses.addEntry(newDevice, false);
+            Json.put(network, "uuid", uuid);
+
+            IOTStatus newDevice = new IOTStatus(network);
+
+            IOTStatusses.addEntry(newDevice, false);
+        }
+        else
+        {
+            Log.d(LOGTAG, "registerDeviceAlive: no device.");
+        }
     }
 }

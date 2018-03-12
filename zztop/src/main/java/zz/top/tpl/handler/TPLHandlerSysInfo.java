@@ -56,8 +56,8 @@ public class TPLHandlerSysInfo extends TPLHandler
         String version = Json.getString(sysinfo, "hw_ver")
                 + " - " + Json.getString(sysinfo, "sw_ver");
 
-        String ssid = Simple.getConnectedWifiName();
         String mac = Json.getString(sysinfo, "mac");
+        String ssid = Simple.getConnectedWifiName();
         String ipaddr = Json.getString(origin, "ipaddr");
         int ipport = Json.getInt(origin, "ipport");
 

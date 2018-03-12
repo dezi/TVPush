@@ -23,7 +23,7 @@ public class SystemsP2P extends P2P
     {
         Log.d(LOGTAG, "onDeviceFound:");
 
-        IOTRegister.registerDevice(device);
+        Systems.iot.register.registerDevice(device);
     }
 
     @Override
@@ -31,6 +31,6 @@ public class SystemsP2P extends P2P
     {
         Log.d(LOGTAG, "onDeviceAlive:");
 
-        IOTRegister.registerDeviceAlive(device);
+        Systems.iot.register.registerDeviceAlive(device);
     }
 }

@@ -144,6 +144,36 @@ public class IAMEval
                 suchwas = true;
             }
 
+            if (ifContainsRemove("Steckdose"))
+            {
+                JSONObject object = new JSONObject();
+                Json.put(objects, object);
+
+                Json.put(object, "action", action);
+                Json.put(object, "plural", plural);
+                Json.put(object, "object", "plug");
+                Json.put(object, "target", lastwrd);
+
+                getMatchingDevices(object);
+
+                suchwas = true;
+            }
+
+            if (ifContainsRemove("Steckdosen"))
+            {
+                JSONObject object = new JSONObject();
+                Json.put(objects, object);
+
+                Json.put(object, "action", action);
+                Json.put(object, "plural", true);
+                Json.put(object, "object", "plug");
+                Json.put(object, "target", lastwrd);
+
+                getMatchingDevices(object);
+
+                suchwas = true;
+            }
+
             if (ifContainsRemove("Licht")
                     || ifContainsRemove("Lampe"))
             {
@@ -251,6 +281,12 @@ public class IAMEval
         {
             newaction = action.equals("switchon") ? "switchonled" : "switchoffled";
             capability = "ledonoff";
+        }
+
+        if (objname.equals("plug") && ((action.equals("switchon") || action.equals("switchoff"))))
+        {
+            newaction = action.equals("switchon") ? "switchonplug" : "switchoffplug";
+            capability = "plugonoff";
         }
 
         if ((capability == null) || capability.isEmpty()) return;

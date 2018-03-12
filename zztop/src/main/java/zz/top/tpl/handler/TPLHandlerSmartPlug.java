@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import zz.top.tpl.base.TPL;
 import zz.top.utl.Json;
+import zz.top.utl.Simple;
 
 public class TPLHandlerSmartPlug extends TPLHandler
 {
@@ -61,5 +62,14 @@ public class TPLHandlerSmartPlug extends TPLHandler
     public void onMessageReived(JSONObject message)
     {
         Log.d(LOGTAG, Json.toPretty(message));
+
+        JSONObject origin = Json.getObject(message, "origin");
+        Json.put(origin, "ssid", Simple.getConnectedWifiName());
+
+        JSONObject alive = new JSONObject();
+
+        Json.put(alive, "network", origin);
+
+        TPL.instance.onDeviceAlive(alive);
     }
 }

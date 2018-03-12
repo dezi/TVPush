@@ -26,11 +26,15 @@ public class IOT implements InternetOfThingsHandler
 
     public static IOTMessageHandler message;
 
+    public IOTRegister register;
+
     public IOT(Application appcontext)
     {
         if (instance == null)
         {
             IOT.instance = this;
+
+            register = new IOTRegister();
 
             Simple.initialize(appcontext);
 
