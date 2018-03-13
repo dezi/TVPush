@@ -28,13 +28,19 @@ public class IAMEvalColors
 
     static
     {
-        color("BASIC 1", "Weiß", 0xffffff);
-        color("BASIC 2", "Rot", 0xff0000);
-        color("BASIC 3", "Grün", 0x00ff00);
-        color("BASIC 4", "Blau", 0x0000ff);
-        color("BASIC 5", "Cyan", 0x00ffff);
-        color("BASIC 6", "Magenta", 0xff00ff);
-        color("BASIC 7", "Gelb", 0xffff00);
+        color("DIMM 1", "Hell", 0xffffff);
+        color("DIMM 2", "Halbhell", 0x888888);
+        color("DIMM 3", "Intim", 0x333333);
+        color("DIMM 4", "Dunkel", 0x111111);
+
+        color("BASIC 1", "Normal", 0xfefefe);
+        color("BASIC 2", "Weiß", 0xfefefe);
+        color("BASIC 3", "Rot", 0xff0000);
+        color("BASIC 4", "Grün", 0x00ff00);
+        color("BASIC 5", "Blau", 0x0000ff);
+        color("BASIC 6", "Cyan", 0x00ffff);
+        color("BASIC 7", "Magenta", 0xff00ff);
+        color("BASIC 8", "Gelb", 0xffff00);
 
         color("COMMON 1", "Lila", 0x7e63a1);
         color("COMMON 2", "Orange", 0xff2300);

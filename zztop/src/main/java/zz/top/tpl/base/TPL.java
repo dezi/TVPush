@@ -129,8 +129,28 @@ public class TPL implements InternetOfThingsHandler
 
                 int hue = Math.round(hsv[ 0 ]);
                 int saturation = Math.round(hsv[ 1 ] * 100);
+                int brightness = Math.round(hsv[ 2 ] * 100);
 
-                TPLHandlerSmartBulb.sendBulbHSOnly(ipaddr, hue, saturation);
+                if ((rgbcolor == 0xffffff)
+                        || (rgbcolor == 0x888888)
+                        || (rgbcolor == 0x333333)
+                        || (rgbcolor == 0x222222)
+                        || (rgbcolor == 0x111111))
+                {
+                    //
+                    // Dimm intention.
+                    //
+
+                    TPLHandlerSmartBulb.sendBulbBrightness(ipaddr, brightness);
+                }
+                else
+                {
+                    //
+                    // Color intention. Leave brightness untouched
+                    //
+
+                    TPLHandlerSmartBulb.sendBulbHSOnly(ipaddr, hue, saturation);
+                }
 
                 return true;
             }
