@@ -11,6 +11,8 @@ import java.util.Map;
 
 import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Simple;
+import de.xavaro.android.iot.status.IOTCredential;
+import de.xavaro.android.iot.status.IOTCredentials;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
@@ -27,11 +29,14 @@ public class IOTRegister
         JSONObject device = Json.getObject(register, "device");
         JSONObject credentials = Json.getObject(register, "credentials");
 
+        String uuid = Json.getString(device, "uuid");
+        String name = Json.getString(device, "name");
+        String model = Json.getString(device, "model");
         String caps = Json.getString(device, "capabilities");
 
-        Log.d(LOGTAG, "registerDevice: uuid=" + Json.getString(device, "uuid"));
-        Log.d(LOGTAG, "registerDevice: name=" + Json.getString(device, "name"));
-        Log.d(LOGTAG, "registerDevice: model=" + Json.getString(device, "model"));
+        Log.d(LOGTAG, "registerDevice: uuid=" + uuid);
+        Log.d(LOGTAG, "registerDevice: name=" + name);
+        Log.d(LOGTAG, "registerDevice: model=" + model);
         Log.d(LOGTAG, "registerDevice: capabilities=" + caps);
 
         if (Json.has(credentials, "p2p_id"))
@@ -47,6 +52,18 @@ public class IOTRegister
         IOTDevice newDevice = new IOTDevice(device);
 
         IOTDevices.addEntry(newDevice, false);
+
+        if (credentials != null)
+        {
+            JSONObject crendital = new JSONObject();
+
+            Json.put(crendital, "uuid", uuid);
+            Json.put(crendital, "credentials", credentials);
+
+            IOTCredential newCredential = new IOTCredential(crendital);
+
+            IOTCredentials.addEntry(newCredential, false);
+        }
     }
 
     public void registerDeviceStatus(JSONObject status)
