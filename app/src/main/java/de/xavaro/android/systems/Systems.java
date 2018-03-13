@@ -1,12 +1,12 @@
-package de.xavaro.android.tvpush;
+package de.xavaro.android.systems;
 
 import android.app.Application;
-import android.util.Log;
 
 public class Systems
 {
     public static SystemsGUI gui;
     public static SystemsIOT iot;
+    public static SystemsSNY sny;
     public static SystemsTPL tpl;
     public static SystemsIAM iam;
     public static SystemsP2P p2p;
@@ -20,5 +20,7 @@ public class Systems
         p2p = new SystemsP2P(application);
 
         p2p.login("dezi@kappa-mm.de", "blabla1234!");
+
+        sny = new SystemsSNY(application);
     }
 }

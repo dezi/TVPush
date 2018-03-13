@@ -1,4 +1,4 @@
-package de.xavaro.android.tvpush;
+package de.xavaro.android.systems;
 
 import android.app.Application;
 import android.util.Log;
@@ -25,10 +25,10 @@ public class SystemsTPL extends TPL
     }
 
     @Override
-    public void onDeviceStatus(JSONObject device)
+    public void onDeviceStatus(JSONObject status)
     {
         Log.d(LOGTAG, "onDeviceStatus:");
 
-        Systems.iot.register.registerDeviceStatus(device);
+        Systems.iot.register.registerDeviceStatus(status);
     }
 }

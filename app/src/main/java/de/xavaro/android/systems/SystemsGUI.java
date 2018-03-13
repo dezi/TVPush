@@ -1,4 +1,4 @@
-package de.xavaro.android.tvpush;
+package de.xavaro.android.systems;
 
 import android.app.Application;
 import android.util.Log;
