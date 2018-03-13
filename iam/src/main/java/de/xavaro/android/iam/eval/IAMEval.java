@@ -231,8 +231,7 @@ public class IAMEval
                 suchwas = true;
             }
 
-            if (ifContainsRemove("Licht")
-                    || ifContainsRemove("Lampe"))
+            if (ifContainsRemove("Lampe"))
             {
                 JSONObject object = new JSONObject();
                 Json.put(objects, object);
@@ -247,7 +246,8 @@ public class IAMEval
                 suchwas = true;
             }
 
-            if (ifContainsRemove("Lichter")
+            if (ifContainsRemove("Licht")
+                    || ifContainsRemove("Lichter")
                     || ifContainsRemove("Lampen"))
             {
                 JSONObject object = new JSONObject();
@@ -502,13 +502,15 @@ public class IAMEval
             return "deactivate";
         }
 
-        if (ifContainsRemove("anschalten")
+        if (ifContainsRemove("an")
+                || ifContainsRemove("anschalten")
                 || ifContainsRemove("einschalten"))
         {
             return "switchon";
         }
 
-        if (ifContainsRemove("abschalten")
+        if (ifContainsRemove("aus")
+                || ifContainsRemove("abschalten")
                 || ifContainsRemove("ausschalten"))
         {
             return "switchoff";
