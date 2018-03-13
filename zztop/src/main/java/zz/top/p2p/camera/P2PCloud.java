@@ -285,10 +285,10 @@ public class P2PCloud
 
         String caps = "camera|hd|speaker|mic|fixed|tcp|wifi|stupid|ledonoff";
 
-        if ( "2".equals(modelNo)) return caps + "|1080p|";
-        if ( "3".equals(modelNo)) return caps + "|720p|pan|tilt";
+        if ( "2".equals(modelNo)) return caps + "|1080p";
+        if ( "3".equals(modelNo)) return caps + "|720p|pan|tilt|closeopen";
         if ( "4".equals(modelNo)) return caps + "|720p";
-        if ( "5".equals(modelNo)) return caps + "|1080p|pan|tilt";
+        if ( "5".equals(modelNo)) return caps + "|1080p|pan|tilt|closeopen";
         if ( "6".equals(modelNo)) return caps + "|1080p";
         if ( "7".equals(modelNo)) return caps + "|1080p";
         if ( "9".equals(modelNo)) return caps + "|720p";

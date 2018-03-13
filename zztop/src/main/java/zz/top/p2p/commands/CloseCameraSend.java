@@ -10,9 +10,11 @@ public class CloseCameraSend
 
     private P2PSession session;
 
-    public CloseCameraSend(P2PSession session, int closed)
+    public CloseCameraSend(P2PSession session, boolean closed)
     {
         this.session = session;
+
+        this.closed = closed ? 1 : 0;
     }
 
     public boolean send()

@@ -273,6 +273,9 @@ public class IAMEval
                 Json.put(object, "plural", plural);
                 Json.put(object, "object", "camera");
                 Json.put(object, "target", lastwrd);
+
+                getMatchingDevices(object);
+
                 suchwas = true;
             }
 
@@ -286,6 +289,9 @@ public class IAMEval
                 Json.put(object, "plural", true);
                 Json.put(object, "object", "camera");
                 Json.put(object, "target", lastwrd);
+
+                getMatchingDevices(object);
+
                 suchwas = true;
             }
 
@@ -341,6 +347,11 @@ public class IAMEval
 
         String newaction = action;
         String capability = null;
+
+        if (objname.equals("camera") && ((action.equals("activate") || action.equals("deactivate"))))
+        {
+            capability = "closeopen";
+        }
 
         if (objname.equals("led") && ((action.equals("switchon") || action.equals("switchoff"))))
         {
@@ -481,6 +492,16 @@ public class IAMEval
             return "adjustpos";
         }
 
+        if (ifContainsRemove("aktivieren"))
+        {
+            return "activate";
+        }
+
+        if (ifContainsRemove("deaktivieren"))
+        {
+            return "deactivate";
+        }
+
         if (ifContainsRemove("anschalten")
                 || ifContainsRemove("einschalten"))
         {
@@ -488,7 +509,7 @@ public class IAMEval
         }
 
         if (ifContainsRemove("abschalten")
-                || ifContainsRemove("ausschalten") )
+                || ifContainsRemove("ausschalten"))
         {
             return "switchoff";
         }

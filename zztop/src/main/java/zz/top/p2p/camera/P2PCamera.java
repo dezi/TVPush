@@ -182,7 +182,7 @@ public class P2PCamera implements Camera
     @Override
     public boolean setCameraClosed(boolean closed)
     {
-        return (new CloseCameraSend(session, closed ? 1 : 0)).send();
+        return (new CloseCameraSend(session, closed)).send();
     }
 
     @Override
