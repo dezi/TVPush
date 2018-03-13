@@ -58,8 +58,8 @@ public class TPL implements InternetOfThingsHandler
     @Override
     public boolean doSomething(JSONObject action, JSONObject device, JSONObject status)
     {
-        Log.d(LOGTAG, "doSomething: action=" + Json.toPretty(action));
-        Log.d(LOGTAG, "doSomething: status=" + Json.toPretty(status));
+        //Log.d(LOGTAG, "doSomething: action=" + Json.toPretty(action));
+        //Log.d(LOGTAG, "doSomething: status=" + Json.toPretty(status));
 
         String actioncmd = Json.getString(action, "action");
         String ipaddr = Json.getString(status, "ipaddr");
@@ -105,7 +105,7 @@ public class TPL implements InternetOfThingsHandler
             if (actioncmd.equals("adjustpos"))
             {
                 int brightness = Json.getInt(status, "brightness");
-                brightness += 25;
+                brightness += 50;
 
                 TPLHandlerSmartBulb.sendBulbBrightness(ipaddr, brightness);
                 return true;
@@ -114,7 +114,7 @@ public class TPL implements InternetOfThingsHandler
             if (actioncmd.equals("adjustneg"))
             {
                 int brightness = Json.getInt(status, "brightness");
-                brightness -= 25;
+                brightness -= 50;
 
                 TPLHandlerSmartBulb.sendBulbBrightness(ipaddr, brightness);
                 return true;
@@ -129,15 +129,8 @@ public class TPL implements InternetOfThingsHandler
 
                 int hue = Math.round(hsv[ 0 ]);
                 int saturation = Math.round(hsv[ 1 ] * 100);
-                int brightness = Math.round(hsv[ 2 ] * 100);
 
-                Log.d(LOGTAG, "######### rgb=" + Integer.toHexString(rgbcolor)
-                                + " hue=" + hue
-                                + " saturation=" + saturation
-                                + " brightness=" + brightness
-                        );
-
-                TPLHandlerSmartBulb.sendBulbHSB(ipaddr, hue, saturation, brightness);
+                TPLHandlerSmartBulb.sendBulbHSOnly(ipaddr, hue, saturation);
 
                 return true;
             }

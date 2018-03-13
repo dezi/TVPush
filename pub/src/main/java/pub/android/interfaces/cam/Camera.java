@@ -28,6 +28,8 @@ public interface Camera
 
      boolean setResolution(int resolution);
 
+     boolean setLEDOnOff(boolean onoff);
+
      boolean startRealtimeVideo();
      boolean stopRealtimeVideo();
 

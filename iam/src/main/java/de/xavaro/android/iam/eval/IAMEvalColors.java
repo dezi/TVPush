@@ -5,20 +5,15 @@ import java.util.Map;
 
 public class IAMEvalColors
 {
-    public static Map<String, Integer> ralcolors = new HashMap<>();
-    public static Map<String, Integer> ralcolorslower = new HashMap<>();
-
-    private static void color(String ral, String name, int val)
-    {
-        ralcolors.put(name, val);
-        ralcolorslower.put(name.toLowerCase(), val);
-    }
+    public static Map<String, Integer> colorsLower = new HashMap<>();
 
     public static int getColor(String name)
     {
+        name = name.replace(" ", "");
+
         try
         {
-            return ralcolorslower.get(name.toLowerCase());
+            return colorsLower.get(name.toLowerCase());
         }
         catch (Exception ignore)
         {
@@ -26,10 +21,30 @@ public class IAMEvalColors
         }
     }
 
+    private static void color(String ral, String name, int val)
+    {
+        colorsLower.put(name.toLowerCase(), val);
+    }
+
     static
     {
-        color("RAL 1000", "Bordellrot", 0xff0000);
-        color("RAL 1000", "Bordellroth", 0xff0000);
+        color("BASIC 1", "Weiß", 0xffffff);
+        color("BASIC 2", "Rot", 0xff0000);
+        color("BASIC 3", "Grün", 0x00ff00);
+        color("BASIC 4", "Blau", 0x0000ff);
+        color("BASIC 5", "Cyan", 0x00ffff);
+        color("BASIC 6", "Magenta", 0xff00ff);
+        color("BASIC 7", "Gelb", 0xffff00);
+
+        color("COMMON 1", "Lila", 0x7e63a1);
+        color("COMMON 2", "Orange", 0xff2300);
+        color("COMMON 3", "Braun", 0x45302b);
+        color("COMMON 4", "Violett", 0x60007f);
+
+        color("SPECIAL 1", "Bordellrot", 0xff0000);
+        color("SPECIAL 2", "Bordellroth", 0xff0000);
+        color("SPECIAL 3", "Kackbraun", 0x815333);
+        color("SPECIAL 4", "Pissgelb", 0xeaf044);
 
         color("RAL 1000", "Grünbeige", 0xccc58f);
         color("RAL 1001", "Beige", 0xd1bc8a);

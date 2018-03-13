@@ -70,7 +70,7 @@ public class IOTStatus extends IOTObject
 
         lastseen = System.currentTimeMillis();
 
-        Log.d(LOGTAG, "checkAndMergeContent: json=" + this.toJsonString());
+        //Log.d(LOGTAG, "checkAndMergeContent: json=" + this.toJsonString());
 
         saveToStorage();
     }

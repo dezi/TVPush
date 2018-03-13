@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import pub.android.interfaces.cam.Camera;
 import zz.top.p2p.commands.DayNightSend;
 import zz.top.p2p.commands.DeviceInfoQuery;
+import zz.top.p2p.commands.LEDOnOffSend;
 import zz.top.p2p.commands.PTZControlStopSend;
 import zz.top.p2p.commands.PTZDirectionSend;
 import zz.top.p2p.commands.PTZHomeSend;
@@ -175,6 +176,12 @@ public class P2PCamera implements Camera
         this.resolution = resolution;
 
         return (new ResolutionSend(session, resolution)).send();
+    }
+
+    @Override
+    public boolean setLEDOnOff(boolean onoff)
+    {
+        return (new LEDOnOffSend(session, onoff ? 1 : 0)).send();
     }
 
     @Override

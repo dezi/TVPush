@@ -39,7 +39,8 @@ public class P2PReaderThreadContl extends P2PReaderThread
         else
         {
             if ((frame.commandType == CommandCodes.IPCAM_DEVINFO_RESP)
-             || (frame.commandType == CommandCodes.IPCAM_SET_DAYNIGHT_MODE_RESP))
+                    || (frame.commandType == CommandCodes.IPCAM_CLOSE_LIGHT_RESP)
+                    || (frame.commandType == CommandCodes.IPCAM_SET_DAYNIGHT_MODE_RESP))
             {
                 DeviceInfoData deviceInfo = new DeviceInfoData(session, dataBuff);
                 session.onDeviceInfoReceived(deviceInfo);
@@ -50,7 +51,7 @@ public class P2PReaderThreadContl extends P2PReaderThread
             }
 
             if ((frame.commandType == CommandCodes.IPCAM_SET_RESOLUTION_RESP)
-                || (frame.commandType == CommandCodes.IPCAM_GET_RESOLUTION_RESP))
+                    || (frame.commandType == CommandCodes.IPCAM_GET_RESOLUTION_RESP))
             {
                 ResolutionData resolution = new ResolutionData(session, dataBuff);
                 session.onResolutionReceived(resolution);

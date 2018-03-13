@@ -19,6 +19,8 @@ public class IAMEval
 
     public JSONObject speech;
 
+    public JSONArray lastResult;
+
     public String message;
     public String lastwrd;
 
@@ -46,6 +48,15 @@ public class IAMEval
     {
         if ((message != null) && ! message.isEmpty())
         {
+            //
+            // Small but very nice.
+            //
+
+            if (message.equals("noch mal"))
+            {
+                return lastResult;
+            }
+
             String action = evaluateAction();
 
             if ((action != null) && ! action.isEmpty())
@@ -71,7 +82,9 @@ public class IAMEval
                     }
                 }
 
-                return (results.length() > 0) ? results : null;
+                lastResult = (results.length() > 0) ? results : null;
+
+                return lastResult;
             }
             else
             {
@@ -79,10 +92,7 @@ public class IAMEval
                 // Dezi's color hack.
                 //
 
-                String colorname = message.replace(" ", "");
-                Log.d(LOGTAG, "###################### cccc=" + colorname);
-
-                int colorrgb = IAMEvalColors.getColor(colorname);
+                int colorrgb = IAMEvalColors.getColor(message);
 
                 if (colorrgb != 0)
                 {

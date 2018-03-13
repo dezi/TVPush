@@ -272,7 +272,7 @@ public class P2PCloud
     {
         // @formatter:off
 
-        String caps = "camera|hd|speaker|mic|fixed|tcp|wifi|stupid";
+        String caps = "camera|hd|speaker|mic|fixed|tcp|wifi|stupid|ledonoff";
 
         if ( "2".equals(modelNo)) return caps + "|1080p|";
         if ( "3".equals(modelNo)) return caps + "|720p|pan|tilt";
