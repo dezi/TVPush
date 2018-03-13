@@ -157,24 +157,22 @@ public class SNYDiscover
 
         String ssid = Simple.getConnectedWifiName();
 
-        String caps = "tv|fixed|hd";
-
-        if (modelName.contains("BRAVIA 4K"))
-        {
-            caps += "|1080p|uhd|4k|mic";
-        }
+        String caps = "tvremote|stupid";
 
         JSONObject sonydev = new JSONObject();
 
         JSONObject device = new JSONObject();
         Json.put(sonydev, "device", device);
 
+        JSONObject credentials = new JSONObject();
+        Json.put(sonydev, "credentials", credentials);
+
         JSONObject network = new JSONObject();
         Json.put(sonydev, "network", network);
 
         Json.put(device, "uuid", UDN);
 
-        Json.put(device, "type", "tv");
+        Json.put(device, "type", "tvremote");
         Json.put(device, "name", friendlyName);
         Json.put(device, "nick", friendlyName);
         Json.put(device, "model", modelName);
@@ -187,6 +185,16 @@ public class SNYDiscover
 
         Json.put(network, "ipaddr", ipAddr);
         Json.put(network, "ssid", ssid);
+
+        //
+        // UUID = 5b12df94-9e63-77bf-7c8c-d66a430994fb
+        // COOKIE = 18DF5D5C3B06220A1D6186896BC1462CB2F74616
+        //
+
+        if (UDN.equals("5b12df94-9e63-77bf-7c8c-d66a430994fb"))
+        {
+            Json.put(credentials, "cookie", "18DF5D5C3B06220A1D6186896BC1462CB2F74616");
+        }
 
         SNY.instance.onDeviceFound(sonydev);
 

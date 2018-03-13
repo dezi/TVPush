@@ -21,9 +21,9 @@ public class SNY implements InternetOfThingsHandler
 
         Simple.initialize(application);
 
-        //SNYDiscover.discover(10);
+        SNYDiscover.discover(10);
 
-        SNYAuthorize.authorize("192.168.0.9", "035FC338-B56D-4418-9163-42657A17AFFE", "Dezi-Phone", "dezi");
+        //SNYAuthorize.authorize("192.168.0.9", "035FC338-B56D-4418-9163-42657A17AFFE", "Dezi-Phone", "dezi");
     }
 
     @Override
