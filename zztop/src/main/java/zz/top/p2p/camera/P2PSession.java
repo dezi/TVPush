@@ -1,28 +1,23 @@
 package zz.top.p2p.camera;
 
-import android.util.Base64;
 import android.util.Log;
 import android.widget.FrameLayout;
 
 import org.json.JSONObject;
 
-import java.security.Key;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-
-import zz.top.gls.GLSFrame;
 import zz.top.p2p.base.P2P;
-import zz.top.p2p.commands.DeviceInfoData;
-import zz.top.p2p.commands.ResolutionData;
-
 import zz.top.p2p.api.P2PApiKeys;
 import zz.top.p2p.api.P2PApiNative;
 import zz.top.p2p.api.P2PApiSession;
+import zz.top.p2p.commands.DeviceInfoData;
+import zz.top.p2p.commands.ResolutionData;
+
 import zz.top.gls.GLSVideoView;
+import zz.top.gls.GLSFrame;
+
 import zz.top.utl.Json;
 
-@SuppressWarnings({ "WeakerAccess"})
+@SuppressWarnings({"WeakerAccess", "FieldCanBeLocal", "unused"})
 public class P2PSession
 {
     private static final String LOGTAG = P2PSession.class.getSimpleName();
@@ -93,7 +88,7 @@ public class P2PSession
         return (resCheckOnline == 1);
     }
 
-    public boolean attachCamera(String uuid, String targetId, String targetPw)
+    public void attachCamera(String uuid, String targetId, String targetPw)
     {
         this.uuid = uuid;
 
@@ -101,8 +96,6 @@ public class P2PSession
         this.targetPw = targetPw;
 
         p2pAVFrameDecrypt = new P2PAVFrameDecrypt(targetPw + "0");
-
-        return true;
     }
 
     public boolean connect(boolean comandOnly)

@@ -7,6 +7,7 @@ import android.widget.FrameLayout;
 import org.json.JSONObject;
 
 import pub.android.interfaces.cam.Camera;
+
 import zz.top.p2p.commands.CloseCameraSend;
 import zz.top.p2p.commands.DayNightSend;
 import zz.top.p2p.commands.DeviceInfoQuery;
@@ -25,9 +26,9 @@ import zz.top.p2p.commands.StopVideoSend;
 import zz.top.gls.GLSVideoView;
 
 import zz.top.cam.Cameras;
-
 import zz.top.utl.Json;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class P2PCamera implements Camera
 {
     private static final String LOGTAG = P2PCamera.class.getSimpleName();
@@ -46,7 +47,7 @@ public class P2PCamera implements Camera
     public final static byte PTZ_DIRECTION_LEFT = 3;
     public final static byte PTZ_DIRECTION_RIGHT = 4;
 
-    private P2PSession session;
+    private final P2PSession session;
 
     private int resolution = RESOLUTION_AUTO;
 
@@ -60,9 +61,7 @@ public class P2PCamera implements Camera
     @Override
     public FrameLayout createSurface(Context context)
     {
-        FrameLayout videoView = new GLSVideoView(context);
-
-        return videoView;
+        return new GLSVideoView(context);
     }
 
     @Override
@@ -103,7 +102,9 @@ public class P2PCamera implements Camera
 
         if ((p2p_id != null) && (p2p_pw != null))
         {
-            return session.attachCamera(deviceUUID, p2p_id, p2p_pw);
+            session.attachCamera(deviceUUID, p2p_id, p2p_pw);
+
+            return true;
         }
 
         return false;
