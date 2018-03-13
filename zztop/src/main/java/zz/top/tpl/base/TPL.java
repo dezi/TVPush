@@ -56,7 +56,7 @@ public class TPL implements InternetOfThingsHandler
     }
 
     @Override
-    public boolean doSomething(JSONObject action, JSONObject device, JSONObject status)
+    public boolean doSomething(JSONObject action, JSONObject device, JSONObject status, JSONObject credentials)
     {
         //Log.d(LOGTAG, "doSomething: action=" + Json.toPretty(action));
         //Log.d(LOGTAG, "doSomething: status=" + Json.toPretty(status));

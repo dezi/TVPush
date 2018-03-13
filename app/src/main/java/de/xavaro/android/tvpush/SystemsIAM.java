@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import de.xavaro.android.iam.base.IAM;
+import de.xavaro.android.iot.status.IOTCredential;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
@@ -95,15 +96,17 @@ public class SystemsIAM extends IAM
 
                     if (device.driver.equals("p2p"))
                     {
-                        JSONObject network = (new IOTStatus(uuid)).toJson();
-                        Systems.p2p.doSomething(doaction, device.toJson(), network);
+                        JSONObject status = (new IOTStatus(uuid)).toJson();
+                        JSONObject credentials = (new IOTCredential(uuid)).toJson();
+                        Systems.p2p.doSomething(doaction, device.toJson(), status, credentials);
                         continue;
                     }
 
                     if (device.driver.equals("tpl"))
                     {
-                        JSONObject network = (new IOTStatus(uuid)).toJson();
-                        Systems.tpl.doSomething(doaction, device.toJson(), network);
+                        JSONObject status = (new IOTStatus(uuid)).toJson();
+                        JSONObject credentials = (new IOTCredential(uuid)).toJson();
+                        Systems.tpl.doSomething(doaction, device.toJson(), status, credentials);
                         continue;
                     }
                 }

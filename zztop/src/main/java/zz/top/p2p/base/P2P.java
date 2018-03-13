@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import pub.android.interfaces.iot.InternetOfThingsHandler;
 
 import zz.top.p2p.camera.P2PCloud;
+import zz.top.p2p.camera.P2PSession;
 import zz.top.utl.Json;
 import zz.top.utl.Simple;
 
@@ -46,7 +47,7 @@ public class P2P implements InternetOfThingsHandler
     }
 
     @Override
-    public boolean doSomething(JSONObject action, JSONObject device, JSONObject status)
+    public boolean doSomething(JSONObject action, JSONObject device, JSONObject status, JSONObject credentials)
     {
         String uuid = Json.getString(status, "uuid");
         if (uuid != null) cloud.statusCache.put(uuid, status);
