@@ -28,7 +28,7 @@ public class SNYActions
         actions = new HashMap<>();
 
         actions.put("PowerOn", "AAAAAQAAAAEAAAAuAw==");
-        actions.put("Num1", "AAAAAQAAAAEAAAAAAw==");
+        actions.put("Num1",    "AAAAAQAAAAEAAAAAAw==");
         actions.put("Num2", "AAAAAQAAAAEAAAABAw==");
         actions.put("Num3", "AAAAAQAAAAEAAAACAw==");
         actions.put("Num4", "AAAAAQAAAAEAAAADAw==");

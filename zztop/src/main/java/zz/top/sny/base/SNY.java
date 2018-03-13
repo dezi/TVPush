@@ -1,6 +1,7 @@
 package zz.top.sny.base;
 
 import android.app.Application;
+import android.os.StrictMode;
 import android.util.Log;
 
 import org.json.JSONObject;
@@ -17,13 +18,19 @@ public class SNY implements InternetOfThingsHandler
 
     public SNY(Application application)
     {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         instance = this;
 
         Simple.initialize(application);
 
-        SNYDiscover.discover(10);
+        //SNYDiscover.discover(10);
 
         //SNYAuthorize.authorize("192.168.0.9", "035FC338-B56D-4418-9163-42657A17AFFE", "Dezi-Phone", "dezi");
+
+        SNYRemote.sendRemoteCommand("192.168.0.9", "18DF5D5C3B06220A1D6186896BC1462CB2F74616", "Num7");
+
     }
 
     @Override
