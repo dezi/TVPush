@@ -18,6 +18,16 @@ public class IOTStatus extends IOTObject
     public String ipaddr;
     public Integer ipport;
 
+    //
+    // These are real classes not primitives because
+    // they can be missing in JSON if null.
+    // Do not fuck with this.
+    //
+
+    public Long lastseen;
+
+    public Integer camblind;
+
     public Integer ledstate;
     public Integer plugstate;
     public Integer bulbstate;
@@ -26,8 +36,6 @@ public class IOTStatus extends IOTObject
     public Integer saturation;
     public Integer brightness;
     public Integer color_temp;
-
-    public Long lastseen;
 
     public IOTStatus()
     {
@@ -56,6 +64,8 @@ public class IOTStatus extends IOTObject
         if (check.wifi       != null) wifi       = check.wifi;
         if (check.ipaddr     != null) ipaddr     = check.ipaddr;
         if (check.ipport     != null) ipport     = check.ipport;
+
+        if (check.camblind   != null) camblind   = check.camblind;
 
         if (check.ledstate   != null) ledstate   = check.ledstate;
         if (check.plugstate  != null) plugstate  = check.plugstate;

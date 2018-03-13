@@ -7,6 +7,7 @@ import android.widget.FrameLayout;
 import org.json.JSONObject;
 
 import pub.android.interfaces.cam.Camera;
+import zz.top.p2p.commands.CloseCameraSend;
 import zz.top.p2p.commands.DayNightSend;
 import zz.top.p2p.commands.DeviceInfoQuery;
 import zz.top.p2p.commands.LEDOnOffSend;
@@ -176,6 +177,12 @@ public class P2PCamera implements Camera
         this.resolution = resolution;
 
         return (new ResolutionSend(session, resolution)).send();
+    }
+
+    @Override
+    public boolean setCameraClosed(boolean closed)
+    {
+        return (new CloseCameraSend(session, closed ? 1 : 0)).send();
     }
 
     @Override
