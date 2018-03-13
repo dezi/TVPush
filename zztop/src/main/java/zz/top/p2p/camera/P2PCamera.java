@@ -112,7 +112,7 @@ public class P2PCamera implements Camera
     @Override
     public boolean connectCamera()
     {
-        boolean isConnected = session.connect();
+        boolean isConnected = session.connect(false);
 
         Log.d(LOGTAG, "initialize: connect=" + isConnected);
 
@@ -188,7 +188,7 @@ public class P2PCamera implements Camera
     @Override
     public boolean setLEDOnOff(boolean onoff)
     {
-        return (new LEDOnOffSend(session, onoff ? 1 : 0)).send();
+        return (new LEDOnOffSend(session, onoff)).send();
     }
 
     @Override

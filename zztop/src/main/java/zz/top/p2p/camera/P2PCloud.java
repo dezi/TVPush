@@ -33,6 +33,7 @@ public class P2PCloud
     private final static String urlLogin = urlBase + "/users/login";
     private final static String urlList = urlBase + "/devices/list";
 
+    public final Map<String, JSONObject> cameraCache = new HashMap<>();
     public final Map<String, JSONObject> statusCache = new HashMap<>();
 
     private P2P p2p;
@@ -172,7 +173,7 @@ public class P2PCloud
 
     private void buildCameraDescription(JSONObject rawDevice)
     {
-        //Log.d(LOGTAG, "buildCameraDescription: json=" + Json.toPretty(rawDevice));
+        Log.d(LOGTAG, "buildCameraDescription: json=" + Json.toPretty(rawDevice));
 
         JSONObject rawipcParam = Json.getObject(rawDevice, "ipcParam");
 
@@ -244,6 +245,8 @@ public class P2PCloud
         Json.put(network, "ipaddr", ipaddr);
 
         Cameras.addCamera(camera);
+
+        cameraCache.put(uuid, camera);
 
         p2p.onDeviceFound(camera);
 

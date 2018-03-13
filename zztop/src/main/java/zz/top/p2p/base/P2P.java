@@ -9,6 +9,8 @@ import pub.android.interfaces.iot.InternetOfThingsHandler;
 
 import zz.top.p2p.camera.P2PCloud;
 import zz.top.p2p.camera.P2PSession;
+import zz.top.p2p.commands.LEDOnOffSend;
+import zz.top.tpl.handler.TPLHandlerSmartPlug;
 import zz.top.utl.Json;
 import zz.top.utl.Simple;
 
@@ -53,7 +55,34 @@ public class P2P implements InternetOfThingsHandler
         if (uuid != null) cloud.statusCache.put(uuid, status);
 
         Log.d(LOGTAG, "doSomething: action=" + Json.toPretty(action));
-        Log.d(LOGTAG, "doSomething: status=" + Json.toPretty(status));
+        Log.d(LOGTAG, "doSomething: credentials=" + Json.toPretty(credentials));
+
+        JSONObject mycredentials = Json.getObject(credentials, "credentials");
+
+        String p2p_id = Json.getString(mycredentials, "p2p_id");
+        String p2p_pw = Json.getString(mycredentials, "p2p_pw");
+
+        String actioncmd = Json.getString(action, "action");
+
+        if ((actioncmd != null) && (p2p_id != null) && (p2p_pw != null))
+        {
+            if (actioncmd.equals("switchonled") || actioncmd.equals("switchoffled"))
+            {
+                boolean onoff = actioncmd.equals("switchonled");
+
+                P2PSession session = new P2PSession();
+                session.attachCamera(uuid, p2p_id, p2p_pw);
+
+                if (session.connect(true))
+                {
+                    (new LEDOnOffSend(session, onoff)).send();
+
+                    //session.disconnect();
+                }
+
+                return true;
+            }
+        }
 
         return false;
     }

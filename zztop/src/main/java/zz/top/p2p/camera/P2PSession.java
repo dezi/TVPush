@@ -4,12 +4,15 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.FrameLayout;
 
+import org.json.JSONObject;
+
 import java.security.Key;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import zz.top.gls.GLSFrame;
+import zz.top.p2p.base.P2P;
 import zz.top.p2p.commands.DeviceInfoData;
 import zz.top.p2p.commands.ResolutionData;
 
@@ -17,6 +20,7 @@ import zz.top.p2p.api.P2PApiKeys;
 import zz.top.p2p.api.P2PApiNative;
 import zz.top.p2p.api.P2PApiSession;
 import zz.top.gls.GLSVideoView;
+import zz.top.utl.Json;
 
 @SuppressWarnings({ "WeakerAccess"})
 public class P2PSession
@@ -34,6 +38,7 @@ public class P2PSession
     public boolean isFreetouse;
     public boolean isCorrupted;
     public boolean isEncrypted;
+    public boolean isCommdOnly;
 
     private short cmdSequence;
     private long lastLoginTime;
@@ -100,21 +105,54 @@ public class P2PSession
         return true;
     }
 
-    public boolean connect()
+    public boolean connect(boolean comandOnly)
     {
         if (! isConnected)
         {
             //
+            // Figure out which key by model name.
+            //
+
+            String licensekey = P2PApiKeys.licenseKey1;
+            String serverstring = P2PApiKeys.serverString;
+            String model = "UNKNOWN";
+
+            try
+            {
+                JSONObject cameraInfo = P2P.instance.cloud.cameraCache.get(uuid);
+                JSONObject deviceInfo = Json.getObject(cameraInfo, "device");
+
+                model = Json.getString(deviceInfo, "model");
+
+                if ((model != null) && model.equals("YI Outdoor Cam 1080p (H30)"))
+                {
+                    //
+                    // Fuck dat.
+                    //
+
+                    licensekey = P2PApiKeys.licenseKey2;
+                }
+            }
+            catch (Exception ignore)
+            {
+            }
+
+            //
             // Should be 75.
             //
 
-            byte type = (byte) 5;
+            byte type = 5;
             byte magic = (byte) (((type << 1) | 1) | 64);
 
-            Log.d(LOGTAG, "connect: magic=75==" + magic);
+            //Log.d(LOGTAG, "connect: magic=75==" + magic);
 
-            session = P2PApiNative.ConnectByServer(targetId, magic, 0, P2PApiKeys.serverString, P2PApiKeys.licenseKey);
-            Log.d(LOGTAG, "connect: P2PAPI.ConnectByServer=" + session);
+            Log.d(LOGTAG, "connect: P2PAPI.ConnectByServer"
+                    + " targetId=" + targetId
+                    + " licensekey=" + licensekey
+                    + " model=" + model);
+
+            session = P2PApiNative.ConnectByServer(targetId, magic, 0, serverstring, licensekey);
+            Log.d(LOGTAG, "connect: P2PAPI.ConnectByServer" + " result=" + session);
 
             if (session <= 0)
             {
@@ -135,39 +173,29 @@ public class P2PSession
             isConnected = true;
             isCorrupted = false;
 
-            //
-            // Retrieve basic session info.
-            //
-
+            isCommdOnly = comandOnly;
 
             sessionInfo = new P2PApiSession();
 
-            /*
-            int resCheck = P2PApiNative.Check(session, sessionInfo);
-            Log.d(LOGTAG, "initialize: P2PAPI.Check=" + resCheck);
-
-            if (resCheck == 0)
-            {
-                Log.d(LOGTAG, "connect: getRemoteIP=" + sessionInfo.getRemoteIP());
-                Log.d(LOGTAG, "connect: getRemotePort=" + sessionInfo.getRemotePort());
-            }
-            */
-
             t0 = new P2PReaderThreadContl(this);
-            t1 = new P2PReaderThreadAudio(this, (byte) 1);
-            t2 = new P2PReaderThreadVideo(this, (byte) 2);
-            t3 = new P2PReaderThreadVideo(this, (byte) 3);
-            t4 = new P2PReaderThreadVideo(this, (byte) 4);
-            t5 = new P2PReaderThreadVideo(this, (byte) 5);
-
             t0.start();
-            t1.start();
-            t2.start();
-            t3.start();
-            t4.start();
-            t5.start();
 
-            onConnectStateChanged(isConnected);
+            if (! isCommdOnly)
+            {
+                t1 = new P2PReaderThreadAudio(this, (byte) 1);
+                t2 = new P2PReaderThreadVideo(this, (byte) 2);
+                t3 = new P2PReaderThreadVideo(this, (byte) 3);
+                t4 = new P2PReaderThreadVideo(this, (byte) 4);
+                t5 = new P2PReaderThreadVideo(this, (byte) 5);
+
+                t1.start();
+                t2.start();
+                t3.start();
+                t4.start();
+                t5.start();
+            }
+
+            if (! isCommdOnly) onConnectStateChanged(isConnected);
         }
 
         return isConnected;
@@ -180,11 +208,15 @@ public class P2PSession
             if (isConnected)
             {
                 t0.interrupt();
-                t1.interrupt();
-                t2.interrupt();
-                t3.interrupt();
-                t4.interrupt();
-                t5.interrupt();
+
+                if (! isCommdOnly)
+                {
+                    t1.interrupt();
+                    t2.interrupt();
+                    t3.interrupt();
+                    t4.interrupt();
+                    t5.interrupt();
+                }
 
                 int resClose = P2PApiNative.Close(session);
                 Log.d(LOGTAG, "disconnect: P2PAPI.Close=" + resClose);
@@ -193,7 +225,7 @@ public class P2PSession
                 {
                     isConnected = false;
 
-                    onConnectStateChanged(false);
+                    if (! isCommdOnly) onConnectStateChanged(false);
                 }
             }
         }
@@ -208,11 +240,15 @@ public class P2PSession
             if (isConnected)
             {
                 t0.interrupt();
-                t1.interrupt();
-                t2.interrupt();
-                t3.interrupt();
-                t4.interrupt();
-                t5.interrupt();
+
+                if (! isCommdOnly)
+                {
+                    t1.interrupt();
+                    t2.interrupt();
+                    t3.interrupt();
+                    t4.interrupt();
+                    t5.interrupt();
+                }
 
                 int resClose = P2PApiNative.ForceClose(session);
                 Log.d(LOGTAG, "forceDisconnect: P2PAPI.ForceClose=" + resClose);
@@ -220,7 +256,8 @@ public class P2PSession
                 if (resClose == 0)
                 {
                     isConnected = false;
-                    onConnectStateChanged(false);
+
+                    if (! isCommdOnly) onConnectStateChanged(false);
                 }
             }
         }

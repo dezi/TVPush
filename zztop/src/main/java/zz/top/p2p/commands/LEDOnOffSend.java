@@ -10,9 +10,11 @@ public class LEDOnOffSend
 
     private P2PSession session;
 
-    public LEDOnOffSend(P2PSession session, int onoff)
+    public LEDOnOffSend(P2PSession session, boolean onoff)
     {
         this.session = session;
+
+        this.onoff = onoff ? 0 : 1;
     }
 
     public boolean send()
