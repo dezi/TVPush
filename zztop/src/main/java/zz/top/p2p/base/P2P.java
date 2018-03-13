@@ -15,10 +15,14 @@ public class P2P implements InternetOfThingsHandler
 {
     private static final String LOGTAG = P2P.class.getSimpleName();
 
+    public static P2P instance;
+
     public P2PCloud cloud;
 
     public P2P(Application application)
     {
+        instance = this;
+
         Simple.initialize(application);
 
         cloud = new P2PCloud(this);
@@ -44,6 +48,9 @@ public class P2P implements InternetOfThingsHandler
     @Override
     public boolean doSomething(JSONObject action, JSONObject device, JSONObject status)
     {
+        String uuid = Json.getString(status, "uuid");
+        if (uuid != null) cloud.statusCache.put(uuid, status);
+
         Log.d(LOGTAG, "doSomething: action=" + Json.toPretty(action));
         Log.d(LOGTAG, "doSomething: status=" + Json.toPretty(status));
 

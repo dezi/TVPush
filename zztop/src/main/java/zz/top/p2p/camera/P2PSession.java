@@ -25,6 +25,7 @@ public class P2PSession
 
     public int session;
 
+    public String uuid;
     public String targetId;
     public String targetPw;
 
@@ -87,8 +88,10 @@ public class P2PSession
         return (resCheckOnline == 1);
     }
 
-    public boolean attachCamera(String targetId, String targetPw)
+    public boolean attachCamera(String uuid, String targetId, String targetPw)
     {
+        this.uuid = uuid;
+
         this.targetId = targetId;
         this.targetPw = targetPw;
 

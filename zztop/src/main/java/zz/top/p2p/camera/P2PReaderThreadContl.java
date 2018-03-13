@@ -2,9 +2,14 @@ package zz.top.p2p.camera;
 
 import android.util.Log;
 
+import org.json.JSONObject;
+
+import zz.top.p2p.base.P2P;
 import zz.top.p2p.commands.DeviceInfoData;
 import zz.top.p2p.commands.CommandCodes;
 import zz.top.p2p.commands.ResolutionData;
+
+import zz.top.utl.Json;
 
 public class P2PReaderThreadContl extends P2PReaderThread
 {
@@ -46,6 +51,26 @@ public class P2PReaderThreadContl extends P2PReaderThread
                 session.onDeviceInfoReceived(deviceInfo);
 
                 Log.d(LOGTAG, "DeviceInfoData: dayNight=" + deviceInfo.day_night_mode);
+                Log.d(LOGTAG, "DeviceInfoData: close_light=" + deviceInfo.close_light);
+                Log.d(LOGTAG, "DeviceInfoData: close_camera=" + deviceInfo.close_camera);
+
+                JSONObject status = null;
+
+                try
+                {
+                    status = P2P.instance.cloud.statusCache.get(session.uuid);
+                }
+                catch (Exception ignore)
+                {
+                }
+
+                if (status != null)
+                {
+                    Json.put(status, "uuid", session.uuid);
+                    Json.put(status, "ledstate", (deviceInfo.close_light == 1) ? 0 : 1);
+
+                    P2P.instance.onDeviceStatus(status);
+                }
 
                 return true;
             }

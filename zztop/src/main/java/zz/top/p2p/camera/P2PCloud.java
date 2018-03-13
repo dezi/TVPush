@@ -10,6 +10,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.security.Key;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.crypto.Cipher;
@@ -24,12 +26,14 @@ import zz.top.utl.Json;
 
 public class P2PCloud
 {
-    private static final String LOGTAG = P2PCloud.class.getSimpleName();
+    private final static String LOGTAG = P2PCloud.class.getSimpleName();
 
-    private static final String urlBase = "https://api.eu.xiaoyi.com/v4";
+    private final static String urlBase = "https://api.eu.xiaoyi.com/v4";
 
-    private static final String urlLogin = urlBase + "/users/login";
-    private static final String urlList = urlBase + "/devices/list";
+    private final static String urlLogin = urlBase + "/users/login";
+    private final static String urlList = urlBase + "/devices/list";
+
+    public final Map<String, JSONObject> statusCache = new HashMap<>();
 
     private P2P p2p;
 
@@ -168,6 +172,8 @@ public class P2PCloud
 
     private void buildCameraDescription(JSONObject rawDevice)
     {
+        //Log.d(LOGTAG, "buildCameraDescription: json=" + Json.toPretty(rawDevice));
+
         JSONObject rawipcParam = Json.getObject(rawDevice, "ipcParam");
 
         String id = Json.getString(rawDevice, "uid");
@@ -246,6 +252,8 @@ public class P2PCloud
         Json.put(status, "uuid", uuid);
         Json.put(status, "wifi", ssid);
         Json.put(status, "ipaddr", ipaddr);
+
+        statusCache.put(uuid, status);
 
         p2p.onDeviceStatus(status);
     }

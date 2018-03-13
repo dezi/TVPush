@@ -102,7 +102,7 @@ public class P2PCamera implements Camera
 
         if ((p2p_id != null) && (p2p_pw != null))
         {
-            return session.attachCamera(p2p_id, p2p_pw);
+            return session.attachCamera(deviceUUID, p2p_id, p2p_pw);
         }
 
         return false;
