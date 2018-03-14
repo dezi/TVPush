@@ -115,6 +115,8 @@ public class SNYDiscover
                         if (data == null) continue;
 
                         buildDeviceDescription(new String(data));
+
+                        break;
                     }
                 }
                 catch (Exception ignore)
