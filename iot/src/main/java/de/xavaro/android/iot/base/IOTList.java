@@ -1,5 +1,7 @@
 package de.xavaro.android.iot.base;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 
 import java.util.HashMap;
@@ -7,6 +9,7 @@ import java.util.Map;
 
 import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Prefs;
+import de.xavaro.android.iot.status.IOTCredential;
 
 public abstract class IOTList
 {

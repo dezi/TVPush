@@ -28,7 +28,6 @@ public class SNYPrograms
         File sdbJSON = new File(extPath, "sdb.json");
 
         CharSequence sdbxml = readTextFile(sdbXML);
-
         if (sdbxml == null) return;
 
         JSONObject sdbjson = decodeSDB(sdbxml);
@@ -39,7 +38,7 @@ public class SNYPrograms
 
         Log.d(LOGTAG, "importSDB: getan...");
 
-        //registerChannels(sdbjson);
+        registerChannels(sdbjson);
     }
 
     public static void registerChannels(JSONObject sdbjson)
@@ -52,46 +51,47 @@ public class SNYPrograms
         JSONArray nos = Json.getArray(Service, "No");
         JSONArray names = Json.getArray(Service, "Name");
         JSONArray types = Json.getArray(Service, "ServiceFilter");
-
-        //
-        // How stupid can a single inder be?
-        //
-
         JSONArray actives = Json.getArray(Service, "b_deleted_by_user");
 
-        if (names == null)
+        if ((names == null) || (nos == null))
         {
             Log.d(LOGTAG, "registerChannels: nix...");
 
             return;
         }
 
-        for (int inx = 0; inx < nos.length(); inx++)
+        JSONObject metadata = new JSONObject();
+        JSONArray channels = new JSONArray();
+
+        Json.put(metadata, "PUBChannels", channels);
+
+        for (int inx = 0; inx < names.length(); inx++)
         {
             String name = Json.getString(names, inx);
             int active = Json.getInt(actives, inx);
-            int no = Json.getInt(nos, inx) >> 18;
+            int dial = Json.getInt(nos, inx) >> 18;
             int type = Json.getInt(types, inx);
 
             if (active != 1) continue;
 
             String typestr = (type == 1) ? "tv" : (type == 2) ? "radio" : "data";
-            String nostr = Integer.toString(no);
+            String dialstr = Integer.toString(dial);
 
-            while (nostr.length() < 3) nostr = "0" + nostr;
+            while (dialstr.length() < 3) dialstr = "0" + dialstr;
 
             Log.d(LOGTAG, "registerChannels:"
-                    + " no=" + nostr
+                    + " dial=" + dialstr
                     + " type=" + typestr
                     + " name=" + name
             );
 
-            JSONObject programm = new JSONObject();
+            JSONObject channel = new JSONObject();
 
-            Json.put(programm, "name", name);
-            Json.put(programm, "no", nostr);
-            Json.put(programm, "type", typestr);
+            Json.put(channel, "name", name);
+            Json.put(channel, "dial", dialstr);
+            Json.put(channel, "type", typestr);
 
+            Json.put(channels, channel);
         }
     }
 

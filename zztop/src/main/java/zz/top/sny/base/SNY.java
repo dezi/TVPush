@@ -24,7 +24,7 @@ public class SNY implements InternetOfThingsHandler
 
         SNYDiscover.discover(10);
 
-        //SNYPrograms.importSDB();
+        SNYPrograms.importSDB();
     }
 
     @Override
@@ -48,10 +48,12 @@ public class SNY implements InternetOfThingsHandler
     @Override
     public boolean doSomething(JSONObject action, JSONObject device, JSONObject status, JSONObject credentials)
     {
+        /*
         Log.d(LOGTAG, "doSomething: action=" + Json.toPretty(action));
         Log.d(LOGTAG, "doSomething: device=" + Json.toPretty(device));
         Log.d(LOGTAG, "doSomething: status=" + Json.toPretty(status));
         Log.d(LOGTAG, "doSomething: credentials=" + Json.toPretty(credentials));
+        */
 
         String actioncmd = Json.getString(action, "action");
 

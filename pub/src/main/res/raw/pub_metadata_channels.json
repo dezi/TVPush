@@ -1,0 +1,9 @@
+{
+  "PUBChannels": [
+    {
+      "dial": "000",
+      "type": "tv|radio|data",
+      "name": "Channel name"
+    }
+  ]
+}
