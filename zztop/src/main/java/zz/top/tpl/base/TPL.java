@@ -113,6 +113,7 @@ public class TPL implements InternetOfThingsHandler
                 int brightness = Json.getInt(status, "brightness");
                 brightness += 50;
 
+                TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, true);
                 TPLHandlerSmartBulb.sendBulbBrightness(ipaddr, brightness);
                 return true;
             }
@@ -122,43 +123,58 @@ public class TPL implements InternetOfThingsHandler
                 int brightness = Json.getInt(status, "brightness");
                 brightness -= 50;
 
+                TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, true);
                 TPLHandlerSmartBulb.sendBulbBrightness(ipaddr, brightness);
                 return true;
             }
 
-            if (actioncmd.startsWith("color."))
+            if (actioncmd.equals("color"))
             {
-                int rgbcolor = Integer.parseInt(actioncmd.substring(6), 16);
+                String color = Json.getString(action, "actionData");
 
-                float[] hsv = new float[3];
-                Color.colorToHSV(rgbcolor, hsv);
-
-                int hue = Math.round(hsv[ 0 ]);
-                int saturation = Math.round(hsv[ 1 ] * 100);
-                int brightness = Math.round(hsv[ 2 ] * 100);
-
-                if ((rgbcolor == 0xffffff)
-                        || (rgbcolor == 0x888888)
-                        || (rgbcolor == 0x333333)
-                        || (rgbcolor == 0x222222)
-                        || (rgbcolor == 0x111111))
+                if (color != null)
                 {
-                    //
-                    // Dimm intention.
-                    //
+                    try
+                    {
+                        int rgbcolor = Integer.parseInt(color, 16);
 
-                    TPLHandlerSmartBulb.sendBulbBrightness(ipaddr, brightness);
+                        float[] hsv = new float[3];
+                        Color.colorToHSV(rgbcolor, hsv);
+
+                        int hue = Math.round(hsv[0]);
+                        int saturation = Math.round(hsv[1] * 100);
+                        int brightness = Math.round(hsv[2] * 100);
+
+                        if ((rgbcolor == 0xffffff)
+                                || (rgbcolor == 0x888888)
+                                || (rgbcolor == 0x333333)
+                                || (rgbcolor == 0x222222)
+                                || (rgbcolor == 0x111111))
+                        {
+                            //
+                            // Dimm intention.
+                            //
+
+                            TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, true);
+                            TPLHandlerSmartBulb.sendBulbBrightness(ipaddr, brightness);
+                        }
+                        else
+                        {
+                            //
+                            // Color intention. Leave brightness untouched
+                            //
+
+                            TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, true);
+                            TPLHandlerSmartBulb.sendBulbHSOnly(ipaddr, hue, saturation);
+                        }
+
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        ex.printStackTrace();
+                    }
                 }
-                else
-                {
-                    //
-                    // Color intention. Leave brightness untouched
-                    //
-
-                    TPLHandlerSmartBulb.sendBulbHSOnly(ipaddr, hue, saturation);
-                }
-
-                return true;
             }
         }
 

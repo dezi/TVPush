@@ -53,32 +53,39 @@ public class SNY implements InternetOfThingsHandler
         Log.d(LOGTAG, "doSomething: status=" + Json.toPretty(status));
         Log.d(LOGTAG, "doSomething: credentials=" + Json.toPretty(credentials));
 
-        String ipaddr = Json.getString(status, "ipaddr");
-        String channel = Json.getString(action, "target");
-        String authtoken = Json.getString(credentials, "authtoken");
+        String actioncmd = Json.getString(action, "action");
 
-        if (channel.equals("RTL"))
+        if ((actioncmd != null) && actioncmd.equals("select"))
         {
-            SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num3");
-        }
+            String ipaddr = Json.getString(status, "ipaddr");
+            String channel = Json.getString(action, "actionData");
+            String authtoken = Json.getString(credentials, "authtoken");
 
-        if (channel.equals("ARD"))
-        {
-            SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num1");
-        }
+            if (channel != null)
+            {
+                if (channel.equals("RTL"))
+                {
+                    SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num3");
+                }
 
-        if (channel.equals("ZDF"))
-        {
-            SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num2");
-        }
+                if (channel.equals("ARD"))
+                {
+                    SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num1");
+                }
 
-        if (channel.equals("RTL2"))
-        {
-            SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num0");
-            SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num0");
-            SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num6");
-        }
+                if (channel.equals("ZDF"))
+                {
+                    SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num2");
+                }
 
+                if (channel.equals("RTL2"))
+                {
+                    SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num0");
+                    SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num0");
+                    SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num6");
+                }
+            }
+        }
 
         return false;
     }

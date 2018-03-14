@@ -98,8 +98,9 @@ public class IAMEval
                     JSONObject object = new JSONObject();
 
                     Json.put(object, "action", "select");
+                    Json.put(object, "actionData", message);
+                    Json.put(object, "actionWords", message);
                     Json.put(object, "plural", true);
-                    Json.put(object, "target", message);
                     Json.put(object, "object", "tvremote");
                     Json.put(object, "objectWords", message);
 
@@ -123,7 +124,9 @@ public class IAMEval
                     {
                         JSONObject object = new JSONObject();
 
-                        Json.put(object, "action", "color." + Integer.toHexString(colorrgb));
+                        Json.put(object, "action", "color");
+                        Json.put(object, "actionData", Integer.toHexString(colorrgb));
+                        Json.put(object, "actionWords", message);
                         Json.put(object, "plural", true);
                         Json.put(object, "object", "bulb");
                         Json.put(object, "objectWords", message);
@@ -155,15 +158,33 @@ public class IAMEval
         {
             suchwas = false;
 
-            if (ifContainsRemove("normale Beleuchtung")
-                    || ifContainsRemove("Puff Beleuchtung")
+            if (ifContainsRemove("normale Beleuchtung"))
+            {
+                JSONObject object = new JSONObject();
+                Json.put(objects, object);
+
+                Json.put(object, "action", action);
+                Json.put(object, "actionData", "fefefe");
+                Json.put(object, "actionWords", actionWords);
+
+                Json.put(object, "plural", true);
+                Json.put(object, "object", "bulb");
+                Json.put(object, "objectWords", lastwrd);
+
+                getMatchingDevices(object);
+
+                suchwas = true;
+            }
+            if (ifContainsRemove("Puff Beleuchtung")
                     || ifContainsRemove("Bordell Beleuchtung"))
             {
                 JSONObject object = new JSONObject();
                 Json.put(objects, object);
 
                 Json.put(object, "action", action);
+                Json.put(object, "actionData", "ff0000");
                 Json.put(object, "actionWords", actionWords);
+
                 Json.put(object, "plural", true);
                 Json.put(object, "object", "bulb");
                 Json.put(object, "objectWords", lastwrd);
@@ -416,7 +437,7 @@ public class IAMEval
             capability = "dimmable";
         }
 
-        if (objname.equals("bulb") && (action.startsWith("color.")))
+        if (objname.equals("bulb") && (action.equals("color")))
         {
             capability = "colorhsb";
         }
@@ -519,14 +540,10 @@ public class IAMEval
     private String evaluateAction()
     {
         if (ifContains("Puff Beleuchtung")
-                || ifContains("Bordell Beleuchtung"))
+                || ifContains("Bordell Beleuchtung")
+                || ifContains("normale Beleuchtung"))
         {
-            return "color." + Integer.toHexString(Color.RED).substring(2);
-        }
-
-        if (ifContains("normale Beleuchtung"))
-        {
-            return "color." + Integer.toHexString(Color.WHITE).substring(2);
+            return "color";
         }
 
         if (ifContainsRemove("dunkler machen")
