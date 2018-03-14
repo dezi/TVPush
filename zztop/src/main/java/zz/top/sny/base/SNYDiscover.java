@@ -11,8 +11,6 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.net.HttpURLConnection;
 import java.net.MulticastSocket;
 import java.net.DatagramPacket;
@@ -159,7 +157,7 @@ public class SNYDiscover
 
         String ssid = Simple.getConnectedWifiName();
 
-        String caps = "tvremote|stupid";
+        String caps = "tvremote|stupid|select|poweronoff";
 
         JSONObject sonydev = new JSONObject();
 

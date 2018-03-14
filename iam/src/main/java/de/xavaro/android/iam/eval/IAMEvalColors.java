@@ -7,6 +7,22 @@ public class IAMEvalColors
 {
     public static Map<String, Integer> colorsLower = new HashMap<>();
 
+    public static boolean isColor(String name)
+    {
+        name = name.replace(" ", "");
+
+        try
+        {
+            int colorrgb = colorsLower.get(name.toLowerCase());
+
+            return (colorrgb != 0);
+        }
+        catch (Exception ignore)
+        {
+            return false;
+        }
+    }
+
     public static int getColor(String name)
     {
         name = name.replace(" ", "");

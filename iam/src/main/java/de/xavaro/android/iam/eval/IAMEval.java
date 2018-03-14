@@ -58,11 +58,12 @@ public class IAMEval
             }
 
             String action = evaluateAction();
+            String actionWords = lastwrd;
 
             if ((action != null) && ! action.isEmpty())
             {
-                JSONArray devices = evaluateDevices(action);
-                JSONArray objects = evaluateObjects(action);
+                JSONArray devices = evaluateDevices(action, actionWords);
+                JSONArray objects = evaluateObjects(action, actionWords);
 
                 JSONArray results = new JSONArray();
 
@@ -89,19 +90,18 @@ public class IAMEval
             else
             {
                 //
-                // Dezi's color hack.
+                // Dezi's channel hack.
                 //
 
-                int colorrgb = IAMEvalColors.getColor(message);
-
-                if (colorrgb != 0)
+                if (IAMEvalChannels.isChannel(message))
                 {
                     JSONObject object = new JSONObject();
 
-                    Json.put(object, "action", "color." + Integer.toHexString(colorrgb));
+                    Json.put(object, "action", "select");
                     Json.put(object, "plural", true);
-                    Json.put(object, "object", "bulb");
                     Json.put(object, "target", message);
+                    Json.put(object, "object", "tvremote");
+                    Json.put(object, "objectWords", message);
 
                     getMatchingDevices(object);
 
@@ -110,13 +110,40 @@ public class IAMEval
 
                     return results;
                 }
+
+                //
+                // Dezi's color hack.
+                //
+
+                if (IAMEvalColors.isColor(message))
+                {
+                    int colorrgb = IAMEvalColors.getColor(message);
+
+                    if (colorrgb != 0)
+                    {
+                        JSONObject object = new JSONObject();
+
+                        Json.put(object, "action", "color." + Integer.toHexString(colorrgb));
+                        Json.put(object, "plural", true);
+                        Json.put(object, "object", "bulb");
+                        Json.put(object, "objectWords", message);
+
+                        getMatchingDevices(object);
+
+                        JSONArray results = new JSONArray();
+                        Json.put(results, object);
+
+                        return results;
+                    }
+                }
+
             }
         }
 
         return null;
     }
 
-    private JSONArray evaluateObjects(String action)
+    private JSONArray evaluateObjects(String action, String actionWords)
     {
         JSONArray objects = new JSONArray();
 
@@ -136,9 +163,10 @@ public class IAMEval
                 Json.put(objects, object);
 
                 Json.put(object, "action", action);
+                Json.put(object, "actionWords", actionWords);
                 Json.put(object, "plural", true);
                 Json.put(object, "object", "bulb");
-                Json.put(object, "target", lastwrd);
+                Json.put(object, "objectWords", lastwrd);
 
                 getMatchingDevices(object);
 
@@ -152,9 +180,10 @@ public class IAMEval
                 Json.put(objects, object);
 
                 Json.put(object, "action", action);
+                Json.put(object, "actionWords", actionWords);
                 Json.put(object, "plural", plural);
                 Json.put(object, "object", "application");
-                Json.put(object, "target", lastwrd);
+                Json.put(object, "objectWords", lastwrd);
                 suchwas = true;
             }
 
@@ -165,9 +194,10 @@ public class IAMEval
                 Json.put(objects, object);
 
                 Json.put(object, "action", action);
+                Json.put(object, "actionWords", actionWords);
                 Json.put(object, "plural", true);
                 Json.put(object, "object", "application");
-                Json.put(object, "target", lastwrd);
+                Json.put(object, "objectWords", lastwrd);
                 suchwas = true;
             }
 
@@ -177,9 +207,10 @@ public class IAMEval
                 Json.put(objects, object);
 
                 Json.put(object, "action", action);
+                Json.put(object, "actionWords", actionWords);
                 Json.put(object, "plural", plural);
                 Json.put(object, "object", "led");
-                Json.put(object, "target", lastwrd);
+                Json.put(object, "objectWords", lastwrd);
 
                 getMatchingDevices(object);
 
@@ -192,9 +223,10 @@ public class IAMEval
                 Json.put(objects, object);
 
                 Json.put(object, "action", action);
+                Json.put(object, "actionWords", actionWords);
                 Json.put(object, "plural", true);
                 Json.put(object, "object", "led");
-                Json.put(object, "target", lastwrd);
+                Json.put(object, "objectWords", lastwrd);
 
                 getMatchingDevices(object);
 
@@ -207,9 +239,10 @@ public class IAMEval
                 Json.put(objects, object);
 
                 Json.put(object, "action", action);
+                Json.put(object, "actionWords", actionWords);
                 Json.put(object, "plural", plural);
                 Json.put(object, "object", "plug");
-                Json.put(object, "target", lastwrd);
+                Json.put(object, "objectWords", lastwrd);
 
                 getMatchingDevices(object);
 
@@ -222,9 +255,10 @@ public class IAMEval
                 Json.put(objects, object);
 
                 Json.put(object, "action", action);
+                Json.put(object, "actionWords", actionWords);
                 Json.put(object, "plural", true);
                 Json.put(object, "object", "plug");
-                Json.put(object, "target", lastwrd);
+                Json.put(object, "objectWords", lastwrd);
 
                 getMatchingDevices(object);
 
@@ -237,9 +271,10 @@ public class IAMEval
                 Json.put(objects, object);
 
                 Json.put(object, "action", action);
+                Json.put(object, "actionWords", actionWords);
                 Json.put(object, "plural", plural);
                 Json.put(object, "object", "bulb");
-                Json.put(object, "target", lastwrd);
+                Json.put(object, "objectWords", lastwrd);
 
                 getMatchingDevices(object);
 
@@ -254,9 +289,10 @@ public class IAMEval
                 Json.put(objects, object);
 
                 Json.put(object, "action", action);
+                Json.put(object, "actionWords", actionWords);
                 Json.put(object, "plural", true);
                 Json.put(object, "object", "bulb");
-                Json.put(object, "target", lastwrd);
+                Json.put(object, "objectWords", lastwrd);
 
                 getMatchingDevices(object);
 
@@ -270,9 +306,10 @@ public class IAMEval
                 Json.put(objects, object);
 
                 Json.put(object, "action", action);
+                Json.put(object, "actionWords", actionWords);
                 Json.put(object, "plural", plural);
                 Json.put(object, "object", "camera");
-                Json.put(object, "target", lastwrd);
+                Json.put(object, "objectWords", lastwrd);
 
                 getMatchingDevices(object);
 
@@ -286,9 +323,10 @@ public class IAMEval
                 Json.put(objects, object);
 
                 Json.put(object, "action", action);
+                Json.put(object, "actionWords", actionWords);
                 Json.put(object, "plural", true);
                 Json.put(object, "object", "camera");
-                Json.put(object, "target", lastwrd);
+                Json.put(object, "objectWords", lastwrd);
 
                 getMatchingDevices(object);
 
@@ -303,9 +341,10 @@ public class IAMEval
                 Json.put(objects, object);
 
                 Json.put(object, "action", action);
+                Json.put(object, "actionWords", actionWords);
                 Json.put(object, "plural", plural);
                 Json.put(object, "object", "speechlistener");
-                Json.put(object, "target", lastwrd);
+                Json.put(object, "objectWords", lastwrd);
                 suchwas = true;
             }
 
@@ -317,9 +356,10 @@ public class IAMEval
                 Json.put(objects, object);
 
                 Json.put(object, "action", action);
+                Json.put(object, "actionWords", actionWords);
                 Json.put(object, "plural", true);
                 Json.put(object, "object", "speechlistener");
-                Json.put(object, "target", lastwrd);
+                Json.put(object, "objectWords", lastwrd);
                 suchwas = true;
             }
         }
@@ -381,6 +421,11 @@ public class IAMEval
             capability = "colorhsb";
         }
 
+        if (objname.equals("tvremote") && (action.equals("select")))
+        {
+            capability = "tvremote";
+        }
+
         if ((capability == null) || capability.isEmpty()) return;
 
         Json.put(object, "action", newaction);
@@ -398,6 +443,8 @@ public class IAMEval
             String uuid = Json.getString(list, dinx);
             IOTDevice device = IOTDevices.getEntry(uuid);
             if ((device == null) || (device.capabilities == null)) continue;
+
+            Log.d(LOGTAG, "getMatchingDevices: name=" + device.name);
 
             for (int cinx = 0; cinx < device.capabilities.length(); cinx++)
             {
@@ -417,7 +464,7 @@ public class IAMEval
         }
     }
 
-    private JSONArray evaluateDevices(String action)
+    private JSONArray evaluateDevices(String action, String actionWords)
     {
         JSONObject names = new JSONObject();
 
@@ -459,7 +506,8 @@ public class IAMEval
             Json.put(devices, device);
 
             Json.put(device, "action", action);
-            Json.put(device, "target", name);
+            Json.put(device, "actionWords", actionWords);
+            Json.put(device, "objectWords", name);
             Json.put(device, "devices", dlist);
 
             ifContainsRemove(name);

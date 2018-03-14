@@ -1,5 +1,6 @@
 package zz.top.sny.base;
 
+import android.os.StrictMode;
 import android.util.Log;
 
 public class SNYRemote
@@ -22,6 +23,9 @@ public class SNYRemote
 
     public static boolean sendRemoteCommand(String ipaddr, String authcookie, String action)
     {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         String ircc = SNYActions.getAction(action);
         if (ircc == null) return false;
 

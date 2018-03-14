@@ -39,7 +39,7 @@ public class SNYPrograms
 
         Log.d(LOGTAG, "importSDB: getan...");
 
-        registerChannels(sdbjson);
+        //registerChannels(sdbjson);
     }
 
     public static void registerChannels(JSONObject sdbjson)

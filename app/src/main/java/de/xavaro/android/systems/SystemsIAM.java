@@ -109,6 +109,14 @@ public class SystemsIAM extends IAM
                         Systems.tpl.doSomething(doaction, device.toJson(), status, credentials);
                         continue;
                     }
+
+                    if (device.driver.equals("sny"))
+                    {
+                        JSONObject status = (new IOTStatus(uuid)).toJson();
+                        JSONObject credentials = (new IOTCredential(uuid)).toJson();
+                        Systems.sny.doSomething(doaction, device.toJson(), status, credentials);
+                        continue;
+                    }
                 }
             }
         }
