@@ -1,10 +1,11 @@
 package zz.top.utl;
 
+import android.support.annotation.Nullable;
+
 import android.app.Application;
 import android.content.Context;
 import android.net.wifi.WifiManager;
-import android.support.annotation.Nullable;
-import android.util.Base64;
+import android.text.format.Formatter;
 
 import java.nio.ByteBuffer;
 import java.security.Key;
@@ -56,5 +57,14 @@ public class Simple
 
         String wifi = wifiManager.getConnectionInfo().getSSID();
         return wifi.replace("\"", "");
+    }
+
+    @Nullable
+    public static String getConnectedWifiIPAddress()
+    {
+        if (wifiManager == null) return null;
+
+        int ipint = wifiManager.getConnectionInfo().getIpAddress();
+        return Formatter.formatIpAddress(ipint);
     }
 }

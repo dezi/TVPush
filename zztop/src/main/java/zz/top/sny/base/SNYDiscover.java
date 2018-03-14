@@ -2,8 +2,6 @@ package zz.top.sny.base;
 
 import android.support.annotation.Nullable;
 
-import android.os.Build;
-import android.text.Html;
 import android.util.Log;
 
 import org.json.JSONObject;
@@ -56,7 +54,7 @@ public class SNYDiscover
 
             if (socket == null)
             {
-                socket = new MulticastSocket(bcastport);
+                socket = new MulticastSocket();
                 socket.setReuseAddress(true);
                 socket.setSoTimeout(15000);
                 socket.joinGroup(bcastip);
@@ -67,9 +65,9 @@ public class SNYDiscover
                 search.start();
 
                 byte[] txbuf = DISCOVER_MESSAGE_ROOTDEVICE.getBytes();
+
                 socket.send(new DatagramPacket(txbuf, txbuf.length, bcastip, bcastport));
             }
-
         }
         catch (Exception ex)
         {
@@ -84,6 +82,8 @@ public class SNYDiscover
         {
             Log.d(LOGTAG, "searchThread: start.");
 
+            Log.d(LOGTAG, "searchThread: self=" + Simple.getConnectedWifiIPAddress());
+
             dups = new ArrayList<>();
 
             while (System.currentTimeMillis() < exittime)
@@ -94,12 +94,15 @@ public class SNYDiscover
                     DatagramPacket packet = new DatagramPacket(rxbuf, rxbuf.length);
                     socket.receive(packet);
 
+                    String dupkey = packet.getAddress() + ":" + packet.getPort();
+                    if (dups.contains(dupkey)) continue;
+                    dups.add(dupkey);
+
                     String xml = new String(packet.getData(), packet.getOffset(), packet.getLength());
 
-                    Log.d(LOGTAG, "searchThread:"
-                            + " ip=" + packet.getAddress().toString()
+                    Log.d(LOGTAG, "searchThread: recv"
+                            + " ip=" + packet.getAddress().toString().substring(1)
                             + " port=" + packet.getPort()
-                            //+ " xml=" + xml
                             );
 
                     String[] lines = xml.split("\r\n");
@@ -109,6 +112,8 @@ public class SNYDiscover
                         if (! line.startsWith("LOCATION: ")) continue;
 
                         String urlstr = line.substring(10);
+                        Log.d(LOGTAG, "searchThread: LOCATION=" + urlstr);
+
                         byte[] data = readHTTPData(urlstr);
                         if (data == null) continue;
 
@@ -143,17 +148,14 @@ public class SNYDiscover
         if (modelName == null) return;
         if (UDN == null) return;
 
+        if (! manufacturer.equals("Sony")) return;
+        if (! modelName.startsWith("BRAVIA")) return;
+
         Log.d(LOGTAG, " ipAddr=" + ipAddr);
         Log.d(LOGTAG, " friendlyName=" + friendlyName);
         Log.d(LOGTAG, " manufacturer=" + manufacturer);
         Log.d(LOGTAG, " modelName=" + modelName);
         Log.d(LOGTAG, " UDN=" + UDN);
-
-        if (! manufacturer.equals("Sony")) return;
-        if (! modelName.startsWith("BRAVIA")) return;
-
-        if (dups.contains(UDN)) return;
-        dups.add(UDN);
 
         String ssid = Simple.getConnectedWifiName();
 
@@ -205,6 +207,11 @@ public class SNYDiscover
         Json.put(status, "ipaddr", ipAddr);
 
         SNY.instance.onDeviceStatus(status);
+
+        if (ipAddr.equals(Simple.getConnectedWifiIPAddress()))
+        {
+            SNYPrograms.importSDB();
+        }
     }
 
     @Nullable

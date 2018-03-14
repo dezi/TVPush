@@ -23,8 +23,6 @@ public class SNY implements InternetOfThingsHandler
         Simple.initialize(application);
 
         SNYDiscover.discover(10);
-
-        SNYPrograms.importSDB();
     }
 
     @Override
@@ -37,6 +35,12 @@ public class SNY implements InternetOfThingsHandler
     public void onDeviceStatus(JSONObject device)
     {
         Log.d(LOGTAG, "onDeviceStatus: STUB!");
+    }
+
+    @Override
+    public void onDeviceMetadata(JSONObject metadata)
+    {
+        Log.d(LOGTAG, "onDeviceMetadata: STUB!");
     }
 
     @Override

@@ -65,6 +65,12 @@ public class IOT implements InternetOfThingsHandler
     }
 
     @Override
+    public void onDeviceMetadata(JSONObject metadata)
+    {
+        Log.d(LOGTAG, "onDeviceMetadata: STUB!");
+    }
+
+    @Override
     public void onDeviceCredentials(JSONObject device)
     {
         Log.d(LOGTAG, "onDeviceCredentials: STUB!");

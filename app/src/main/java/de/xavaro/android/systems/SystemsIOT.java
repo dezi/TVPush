@@ -29,6 +29,12 @@ public class SystemsIOT extends IOT
     }
 
     @Override
+    public void onDeviceMetadata(JSONObject metadata)
+    {
+        Log.d(LOGTAG, "onDeviceMetadata: SYSTEM STUB!");
+    }
+
+    @Override
     public void onDeviceCredentials(JSONObject credentials)
     {
         Log.d(LOGTAG, "onDeviceCredentials: SYSTEM STUB!");

@@ -34,10 +34,18 @@ public class SystemsSNY extends SNY
     }
 
     @Override
+    public void onDeviceMetadata(JSONObject metatdata)
+    {
+        Log.d(LOGTAG, "onDeviceMetadata:");
+
+        Systems.iot.register.registerDeviceMetadata(metatdata);
+    }
+
+    @Override
     public void onDeviceCredentials(JSONObject credentials)
     {
         Log.d(LOGTAG, "onDeviceCredentials:");
 
-        Systems.iot.register.registerDeviceStatus(credentials);
+        Systems.iot.register.registerDeviceCredentials(credentials);
     }
 }

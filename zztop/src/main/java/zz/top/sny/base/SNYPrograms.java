@@ -2,7 +2,6 @@ package zz.top.sny.base;
 
 import android.support.annotation.Nullable;
 
-import android.os.Environment;
 import android.util.SparseArray;
 import android.util.Log;
 
@@ -15,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.File;
 
 import zz.top.utl.Json;
+import zz.top.utl.Simple;
 
 public class SNYPrograms
 {
@@ -22,23 +22,39 @@ public class SNYPrograms
 
     public static void importSDB()
     {
-        String extPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        File storage = new File("/storage");
+        File[] dir = storage.listFiles();
 
-        File sdbXML = new File(extPath, "sdb.xml");
-        File sdbJSON = new File(extPath, "sdb.json");
+        for (File sub : dir)
+        {
+            Log.d(LOGTAG, "importSDB: sub=" + sub.getAbsolutePath());
 
-        CharSequence sdbxml = readTextFile(sdbXML);
-        if (sdbxml == null) return;
+            File sdbXML = new File(sub, "sdb.xml");
+            File sdbJSON = new File(sub, "sdb.json");
 
-        JSONObject sdbjson = decodeSDB(sdbxml);
+            if (sdbXML.exists())
+            {
+                Log.d(LOGTAG, "importSDB:"
+                        + " sdbXML=" + sdbXML.getAbsolutePath()
+                        + " exists=" + sdbXML.exists()
+                );
 
-        if (sdbjson == null) return;
+                CharSequence sdbxml = readTextFile(sdbXML);
+                if (sdbxml == null) return;
 
-        writeTextFile(sdbJSON, Json.toPretty(sdbjson));
+                JSONObject sdbjson = decodeSDB(sdbxml);
 
-        Log.d(LOGTAG, "importSDB: getan...");
+                if (sdbjson == null) return;
 
-        registerChannels(sdbjson);
+                writeTextFile(sdbJSON, Json.toPretty(sdbjson));
+
+                Log.d(LOGTAG, "importSDB: done.");
+
+                registerChannels(sdbjson);
+
+                break;
+            }
+        }
     }
 
     public static void registerChannels(JSONObject sdbjson)
@@ -63,6 +79,7 @@ public class SNYPrograms
         JSONObject metadata = new JSONObject();
         JSONArray channels = new JSONArray();
 
+        Json.put(metadata, "ipaddr", Simple.getConnectedWifiIPAddress());
         Json.put(metadata, "PUBChannels", channels);
 
         for (int inx = 0; inx < names.length(); inx++)
@@ -93,6 +110,8 @@ public class SNYPrograms
 
             Json.put(channels, channel);
         }
+
+        SNY.instance.onDeviceMetadata(metadata);
     }
 
     @Nullable
