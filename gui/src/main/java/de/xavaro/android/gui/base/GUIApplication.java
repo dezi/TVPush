@@ -1,6 +1,7 @@
 package de.xavaro.android.gui.base;
 
 import android.annotation.SuppressLint;
+import android.os.StrictMode;
 import android.support.annotation.Nullable;
 
 import android.app.Application;
@@ -37,6 +38,9 @@ public class GUIApplication extends Application implements Application.ActivityL
                 + " height=" + Simple.getDeviceHeight()
                 + " density=" + Simple.getDeviceDensity()
         );
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
     }
 
     @Override

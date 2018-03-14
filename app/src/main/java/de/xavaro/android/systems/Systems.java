@@ -14,9 +14,9 @@ public class Systems
     public static void initialize(Application application)
     {
         iot = new SystemsIOT(application);
-        tpl = new SystemsTPL(application);
         gui = new SystemsGUI(application);
         iam = new SystemsIAM(application);
+        tpl = new SystemsTPL(application);
         p2p = new SystemsP2P(application);
 
         p2p.login("dezi@kappa-mm.de", "blabla1234!");
