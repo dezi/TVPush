@@ -56,6 +56,12 @@ public class TPL implements InternetOfThingsHandler
     }
 
     @Override
+    public void onDeviceCredentials(JSONObject device)
+    {
+        Log.d(LOGTAG, "onDeviceCredentials: STUB!");
+    }
+
+    @Override
     public boolean doSomething(JSONObject action, JSONObject device, JSONObject status, JSONObject credentials)
     {
         //Log.d(LOGTAG, "doSomething: action=" + Json.toPretty(action));

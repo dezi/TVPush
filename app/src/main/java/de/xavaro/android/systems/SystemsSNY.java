@@ -32,4 +32,12 @@ public class SystemsSNY extends SNY
 
         Systems.iot.register.registerDeviceStatus(status);
     }
+
+    @Override
+    public void onDeviceCredentials(JSONObject credentials)
+    {
+        Log.d(LOGTAG, "onDeviceCredentials:");
+
+        Systems.iot.register.registerDeviceStatus(credentials);
+    }
 }

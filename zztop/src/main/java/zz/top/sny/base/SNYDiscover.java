@@ -193,7 +193,7 @@ public class SNYDiscover
 
         if (UDN.equals("5b12df94-9e63-77bf-7c8c-d66a430994fb"))
         {
-            Json.put(credentials, "cookie", "18DF5D5C3B06220A1D6186896BC1462CB2F74616");
+            Json.put(credentials, "authtoken", "18DF5D5C3B06220A1D6186896BC1462CB2F74616");
         }
 
         SNY.instance.onDeviceFound(sonydev);

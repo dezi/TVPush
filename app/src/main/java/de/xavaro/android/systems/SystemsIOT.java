@@ -19,12 +19,18 @@ public class SystemsIOT extends IOT
     @Override
     public void onDeviceFound(JSONObject device)
     {
-        Log.d(LOGTAG, "onDeviceFound:");
+        Log.d(LOGTAG, "onDeviceFound: SYSTEM STUB!");
     }
 
     @Override
     public void onDeviceStatus(JSONObject status)
     {
-        Log.d(LOGTAG, "onDeviceStatus:");
+        Log.d(LOGTAG, "onDeviceStatus: SYSTEM STUB!");
+    }
+
+    @Override
+    public void onDeviceCredentials(JSONObject credentials)
+    {
+        Log.d(LOGTAG, "onDeviceCredentials: SYSTEM STUB!");
     }
 }

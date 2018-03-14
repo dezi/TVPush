@@ -24,8 +24,6 @@ public class SNY implements InternetOfThingsHandler
 
         SNYDiscover.discover(10);
 
-        //SNYRemote.sendRemoteCommand("192.168.0.9", "18DF5D5C3B06220A1D6186896BC1462CB2F74616", "Num7");
-
         //SNYPrograms.importSDB();
     }
 
@@ -42,6 +40,12 @@ public class SNY implements InternetOfThingsHandler
     }
 
     @Override
+    public void onDeviceCredentials(JSONObject device)
+    {
+        Log.d(LOGTAG, "onDeviceCredentials: STUB!");
+    }
+
+    @Override
     public boolean doSomething(JSONObject action, JSONObject device, JSONObject status, JSONObject credentials)
     {
         Log.d(LOGTAG, "doSomething: action=" + Json.toPretty(action));
@@ -49,9 +53,9 @@ public class SNY implements InternetOfThingsHandler
         Log.d(LOGTAG, "doSomething: status=" + Json.toPretty(status));
         Log.d(LOGTAG, "doSomething: credentials=" + Json.toPretty(credentials));
 
-        String channel = Json.getString(action, "target");
         String ipaddr = Json.getString(status, "ipaddr");
-        String authtoken = "18DF5D5C3B06220A1D6186896BC1462CB2F74616";
+        String channel = Json.getString(action, "target");
+        String authtoken = Json.getString(credentials, "authtoken");
 
         if (channel.equals("RTL"))
         {

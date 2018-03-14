@@ -93,4 +93,26 @@ public class IOTRegister
             Log.d(LOGTAG, "registerDeviceStatus: no device.");
         }
     }
+
+    public void registerDeviceCredentials(JSONObject credentials)
+    {
+        String uuid = Json.getString(credentials, "uuid");
+
+        if (uuid != null)
+        {
+            JSONObject crendital = new JSONObject();
+
+            Json.put(crendital, "uuid", uuid);
+            Json.put(crendital, "credentials", credentials);
+
+            IOTCredential newCredential = new IOTCredential(crendital);
+
+            IOTCredentials.addEntry(newCredential, false);
+        }
+        else
+        {
+            Log.d(LOGTAG, "registerDeviceCredentials: no device.");
+        }
+    }
+
 }

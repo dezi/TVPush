@@ -31,4 +31,12 @@ public class SystemsP2P extends P2P
 
         Systems.iot.register.registerDeviceStatus(status);
     }
+
+    @Override
+    public void onDeviceCredentials(JSONObject credentials)
+    {
+        Log.d(LOGTAG, "onDeviceCredentials:");
+
+        Systems.iot.register.registerDeviceStatus(credentials);
+    }
 }

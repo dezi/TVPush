@@ -56,10 +56,15 @@ public class SNYAuthorize
 
     public static void requestAuth(String ipaddr, String snytvuuid, String devname, String username)
     {
-        registerPincode(ipaddr, snytvuuid, devname, username, null);
+        authHandler(ipaddr, snytvuuid, devname, username, null);
     }
 
     public static void registerPincode(String ipaddr, String snytvuuid, String devname, String username, String pincode)
+    {
+        authHandler(ipaddr, snytvuuid, devname, null, pincode);
+    }
+
+    public static void authHandler(String ipaddr, String snytvuuid, String devname, String username, String password)
     {
         JSONObject register = new JSONObject();
 
@@ -92,14 +97,14 @@ public class SNYAuthorize
 
         JSONObject result;
 
-        if ((pincode == null) || pincode.isEmpty())
+        if ((password == null) || password.isEmpty())
         {
             result = SNYUtil.getPost(urlstring, register);
 
         }
         else
         {
-            result = SNYUtil.getPostAuth(urlstring, register, "", pincode);
+            result = SNYUtil.getPostAuth(urlstring, register, "", password);
         }
 
         Log.d(LOGTAG, "authorize result=" + Json.toPretty(result));
