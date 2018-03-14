@@ -1,7 +1,9 @@
 package zz.top.sny.base;
 
+import android.os.Build;
 import android.support.annotation.Nullable;
 
+import android.text.Html;
 import android.util.Base64;
 import android.util.Log;
 
@@ -11,6 +13,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import zz.top.utl.Json;
 
@@ -149,4 +153,115 @@ public class SNYUtil
         return null;
     }
 
+    @Nullable
+    public static String HTMLdefuck(String htmlString)
+    {
+        //
+        // Preface:
+        //
+        // I hate XML and all that bogus
+        // fuck stuff coming with it.
+        //
+        // Long lives JSON!
+        //
+
+        if (htmlString == null)
+        {
+            //
+            // Yah, fuck it.
+            //
+
+            return null;
+        }
+
+        //
+        // Fuck dat one.
+        //
+        // Html.fromHtml fucks LF and CR.
+        // So we fuck Html.fromHtml...
+        //
+
+        String split = null;
+
+        if (htmlString.contains("\r\n"))
+        {
+            split = "\r\n";
+        }
+        else
+        {
+            if (htmlString.contains("\r"))
+            {
+                split = "\r";
+            }
+            else
+            {
+                if (htmlString.contains("\n"))
+                {
+                    split = "\n";
+                }
+            }
+        }
+
+        if (split == null)
+        {
+            if (Build.VERSION.SDK_INT >= 24)
+            {
+                return Html.fromHtml(htmlString, Html.FROM_HTML_MODE_LEGACY).toString();
+            }
+            else
+            {
+                return Html.fromHtml(htmlString).toString();
+            }
+        }
+
+        String[] parts = htmlString.split(split);
+
+        if (Build.VERSION.SDK_INT >= 24)
+        {
+            for (int inx = 0; inx < parts.length; inx++)
+            {
+                parts[inx] = Html.fromHtml(parts[inx], Html.FROM_HTML_MODE_LEGACY).toString();
+            }
+        }
+        else
+        {
+            for (int inx = 0; inx < parts.length; inx++)
+            {
+                parts[inx] = Html.fromHtml(parts[inx]).toString();
+            }
+        }
+
+        //
+        // Fuck dat two.
+        //
+        // A simple basic String.join requires API >= 26.
+        // How unbelievable fuckable that is!!
+        //
+
+        if (Build.VERSION.SDK_INT >= 26)
+        {
+            return String.join(split, parts);
+        }
+
+        StringBuilder build = new StringBuilder();
+
+        for (int inx = 0; inx < parts.length; inx++)
+        {
+            if (inx > 0) build.append(split);
+
+            build.append(parts[ inx ]);
+        }
+
+        return build.toString();
+    }
+
+    @Nullable
+    public static String matchStuff(String text, String regex)
+    {
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(text);
+        if (matcher.find()) return matcher.group(1);
+
+        return null;
+    }
 }

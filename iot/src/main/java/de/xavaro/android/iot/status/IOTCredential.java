@@ -36,7 +36,7 @@ public class IOTCredential extends IOTObject
     {
         credentials = check.credentials;
 
-        Log.d(LOGTAG, "checkAndMergeContent: json=" + this.toJsonString());
+        //Log.d(LOGTAG, "checkAndMergeContent: json=" + this.toJsonString());
 
         saveToStorage();
     }

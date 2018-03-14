@@ -173,7 +173,7 @@ public class P2PCloud
 
     private void buildCameraDescription(JSONObject rawDevice)
     {
-        Log.d(LOGTAG, "buildCameraDescription: json=" + Json.toPretty(rawDevice));
+        //Log.d(LOGTAG, "buildCameraDescription: json=" + Json.toPretty(rawDevice));
 
         JSONObject rawipcParam = Json.getObject(rawDevice, "ipcParam");
 

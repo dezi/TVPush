@@ -33,7 +33,7 @@ public class GUI implements GraficalUserInterfaceHandler
                 this.application = (GUIApplication) application;
 
                 this.speechListener = new GUISpeechListener(application);
-                this.speechListener.startListening();
+                //this.speechListener.startListening();
             }
             else
             {

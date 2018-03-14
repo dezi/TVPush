@@ -133,11 +133,11 @@ public class SNYDiscover
 
     public static void buildDeviceDescription(String xmlfuck)
     {
-        String ipAddr = HTMLdefuck(matchStuff(xmlfuck, ipAddrRegex));
-        String friendlyName = HTMLdefuck(matchStuff(xmlfuck, friendlyNameRegex));
-        String manufacturer = HTMLdefuck(matchStuff(xmlfuck, manufacturerRegex));
-        String modelName = HTMLdefuck(matchStuff(xmlfuck, modelNameRegex));
-        String UDN = HTMLdefuck(matchStuff(xmlfuck, UDNRegex));
+        String ipAddr = SNYUtil.HTMLdefuck(SNYUtil.matchStuff(xmlfuck, ipAddrRegex));
+        String friendlyName = SNYUtil.HTMLdefuck(SNYUtil.matchStuff(xmlfuck, friendlyNameRegex));
+        String manufacturer = SNYUtil.HTMLdefuck(SNYUtil.matchStuff(xmlfuck, manufacturerRegex));
+        String modelName = SNYUtil.HTMLdefuck(SNYUtil.matchStuff(xmlfuck, modelNameRegex));
+        String UDN = SNYUtil.HTMLdefuck(SNYUtil.matchStuff(xmlfuck, UDNRegex));
 
         if (ipAddr == null) return;
         if (friendlyName == null) return;
@@ -207,31 +207,6 @@ public class SNYDiscover
         Json.put(status, "ipaddr", ipAddr);
 
         SNY.instance.onDeviceStatus(status);
-    }
-
-    @Nullable
-    public static String HTMLdefuck(String htmlString)
-    {
-        if (htmlString == null) return null;
-
-        if (Build.VERSION.SDK_INT >= 24)
-        {
-            return Html.fromHtml(htmlString , Html.FROM_HTML_MODE_LEGACY).toString();
-        }
-        else
-        {
-            return Html.fromHtml(htmlString).toString();
-        }
-    }
-
-    @Nullable
-    public static String matchStuff(String text, String regex)
-    {
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(text);
-        if (matcher.find()) return matcher.group(1);
-
-        return null;
     }
 
     @Nullable

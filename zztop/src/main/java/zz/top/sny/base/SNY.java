@@ -24,8 +24,9 @@ public class SNY implements InternetOfThingsHandler
 
         //SNYDiscover.discover(10);
 
-        SNYRemote.sendRemoteCommand("192.168.0.9", "18DF5D5C3B06220A1D6186896BC1462CB2F74616", "Num7");
+        //SNYRemote.sendRemoteCommand("192.168.0.9", "18DF5D5C3B06220A1D6186896BC1462CB2F74616", "Num7");
 
+        SNYPrograms.importSDB();
     }
 
     @Override

@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/TVPush.iml" filepath="$PROJECT_DIR$/TVPush.iml" />
-      <module fileurl="file://$PROJECT_DIR$/iam/ai.iml" filepath="$PROJECT_DIR$/iam/ai.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/gui/common.iml" filepath="$PROJECT_DIR$/gui/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/gui/gui.iml" filepath="$PROJECT_DIR$/gui/gui.iml" />
       <module fileurl="file://$PROJECT_DIR$/iam/iam.iml" filepath="$PROJECT_DIR$/iam/iam.iml" />
       <module fileurl="file://$PROJECT_DIR$/iot/iot.iml" filepath="$PROJECT_DIR$/iot/iot.iml" />
