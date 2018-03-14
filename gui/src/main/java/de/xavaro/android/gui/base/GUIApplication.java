@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.WindowManager;
 
 import de.xavaro.android.gui.simple.Simple;
-import de.xavaro.android.gui.smart.GUISpeechListener;
 
 @SuppressLint("Registered")
 public class GUIApplication extends Application implements Application.ActivityLifecycleCallbacks

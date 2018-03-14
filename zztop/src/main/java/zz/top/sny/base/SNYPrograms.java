@@ -80,7 +80,7 @@ public class SNYPrograms
 
             while (nostr.length() < 3) nostr = "0" + nostr;
 
-            Log.d(LOGTAG, "printChannels:"
+            Log.d(LOGTAG, "registerChannels:"
                     + " no=" + nostr
                     + " type=" + typestr
                     + " name=" + name
