@@ -27,15 +27,72 @@ public class SNYPrograms
         File sdbXML = new File(extPath, "sdb.xml");
         File sdbJSON = new File(extPath, "sdb.json");
 
-        CharSequence xml = readTextFile(sdbXML);
+        CharSequence sdbxml = readTextFile(sdbXML);
 
-        if (xml == null) return;
+        if (sdbxml == null) return;
 
-        JSONObject json = decodeSDB(xml);
+        JSONObject sdbjson = decodeSDB(sdbxml);
 
-        if (json == null) return;
+        if (sdbjson == null) return;
 
-        writeTextFile(sdbJSON, Json.toPretty(json));
+        writeTextFile(sdbJSON, Json.toPretty(sdbjson));
+
+        Log.d(LOGTAG, "importSDB: getan...");
+
+        registerChannels(sdbjson);
+    }
+
+    public static void registerChannels(JSONObject sdbjson)
+    {
+        JSONObject SdbRoot = Json.getObject(sdbjson, "SdbRoot");
+        JSONObject SdbXml = Json.getObject(SdbRoot, "SdbXml");
+        JSONObject sdbC = Json.getObject(SdbXml, "sdbC");
+        JSONObject Service = Json.getObject(sdbC, "Service");
+
+        JSONArray nos = Json.getArray(Service, "No");
+        JSONArray names = Json.getArray(Service, "Name");
+        JSONArray types = Json.getArray(Service, "ServiceFilter");
+
+        //
+        // How stupid can a single inder be?
+        //
+
+        JSONArray actives = Json.getArray(Service, "b_deleted_by_user");
+
+        if (names == null)
+        {
+            Log.d(LOGTAG, "registerChannels: nix...");
+
+            return;
+        }
+
+        for (int inx = 0; inx < nos.length(); inx++)
+        {
+            String name = Json.getString(names, inx);
+            int active = Json.getInt(actives, inx);
+            int no = Json.getInt(nos, inx) >> 18;
+            int type = Json.getInt(types, inx);
+
+            if (active != 1) continue;
+
+            String typestr = (type == 1) ? "tv" : (type == 2) ? "radio" : "data";
+            String nostr = Integer.toString(no);
+
+            while (nostr.length() < 3) nostr = "0" + nostr;
+
+            Log.d(LOGTAG, "printChannels:"
+                    + " no=" + nostr
+                    + " type=" + typestr
+                    + " name=" + name
+            );
+
+            JSONObject programm = new JSONObject();
+
+            Json.put(programm, "name", name);
+            Json.put(programm, "no", nostr);
+            Json.put(programm, "type", typestr);
+
+        }
     }
 
     @Nullable
