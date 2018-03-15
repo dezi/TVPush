@@ -32,6 +32,7 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
     private GUIRainbowLayout colorFrame;
     private GUITextView speechText;
 
+    private String toastMessage;
     private boolean hadResult;
 
     public GUISpeechRecogniton(Context context)
@@ -157,17 +158,53 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
         hadResult = true;
     }
 
-    private final Runnable pleaseSpeekNow = new Runnable()
+    public void displayPinCodeMessage(int timeout)
+    {
+        displayToastMessage("Bitte lesen Sie den PIN-Code vor", timeout, true);
+    }
+
+    public void displayToastMessage(String message, int seconds, boolean emphasis)
+    {
+        if (seconds <= 0) seconds = 2;
+        if (seconds > 60) seconds = 60;
+
+        toastMessage = message;
+
+        speechText.setText(toastMessage);
+
+        if (emphasis) colorFrame.start(3);
+
+        Simple.getHandler().postDelayed(toastDone, seconds * 1000);
+    }
+
+    private final Runnable toastDone = new Runnable()
     {
         @Override
         public void run()
         {
-            speechText.setTextColor(Color.GRAY);
-            speechText.setText("Bitte sprechen Sie jetzt");
+            if (speechText.equals(toastMessage))
+            {
+                toastMessage = null;
+                pleaseSpeekNow.run();
+            }
 
             colorFrame.stop();
         }
     };
 
+    private final Runnable pleaseSpeekNow = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            if (toastMessage == null)
+            {
+                speechText.setTextColor(Color.GRAY);
+                speechText.setText("Bitte sprechen Sie jetzt");
+            }
+
+            colorFrame.stop();
+        }
+    };
 }
 

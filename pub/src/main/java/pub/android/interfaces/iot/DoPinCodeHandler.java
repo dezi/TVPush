@@ -1,6 +1,6 @@
 package pub.android.interfaces.iot;
 
-public interface PinCodeHandler
+public interface DoPinCodeHandler
 {
     boolean doPinCode(String pincode);
 }

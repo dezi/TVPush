@@ -47,11 +47,9 @@ public class SNYAuthorize
     // COOKIE = 18DF5D5C3B06220A1D6186896BC1462CB2F74616
     //
 
-    public static void authorize(String ipaddr, String snytvuuid, String devname, String username)
+    public static void enterPincode(String pincode)
     {
-        requestAuth(ipaddr, snytvuuid, devname, username);
-
-        registerPincode(ipaddr, snytvuuid, devname, username, "1234");
+        //registerPincode(ipaddr, snytvuuid, devname, username, "1234");
     }
 
     public static void requestAuth(String ipaddr, String snytvuuid, String devname, String username)
@@ -68,9 +66,10 @@ public class SNYAuthorize
     {
         JSONObject register = new JSONObject();
 
-        Json.put(register, "method", "actRegister");
         Json.put(register, "id", 8);
         Json.put(register, "version", "1.0");
+
+        Json.put(register, "method", "actRegister");
 
         JSONArray params = new JSONArray();
         Json.put(register, "params", params);
@@ -93,18 +92,19 @@ public class SNYAuthorize
 
         String urlstring = authurl.replace("####", ipaddr);
 
+        Log.d(LOGTAG, "authorize urlstring=" + urlstring);
         Log.d(LOGTAG, "authorize result=" + Json.toPretty(register));
 
         JSONObject result;
+        JSONObject headers = new JSONObject();
 
         if ((password == null) || password.isEmpty())
         {
-            result = SNYUtil.getPost(urlstring, register);
-
+            result = SNYUtil.getPost(urlstring, register, headers);
         }
         else
         {
-            result = SNYUtil.getPostAuth(urlstring, register, "", password);
+            result = SNYUtil.getPostAuth(urlstring, register, headers, "", password);
         }
 
         Log.d(LOGTAG, "authorize result=" + Json.toPretty(result));

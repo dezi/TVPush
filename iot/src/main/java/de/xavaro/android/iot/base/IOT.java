@@ -12,8 +12,6 @@ import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTHuman;
 import de.xavaro.android.iot.simple.Simple;
 
-import pub.android.interfaces.iot.InternetOfThingsHandler;
-
 public class IOT
 {
     private static final String LOGTAG = IOT.class.getSimpleName();

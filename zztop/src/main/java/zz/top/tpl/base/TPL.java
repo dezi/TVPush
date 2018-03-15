@@ -11,13 +11,14 @@ import zz.top.tpl.comm.TPLMessageService;
 import zz.top.tpl.handler.TPLHandlerSmartBulb;
 import zz.top.tpl.handler.TPLHandlerSmartPlug;
 import zz.top.tpl.handler.TPLHandlerSysInfo;
-import zz.top.utl.Json;
-import zz.top.utl.Simple;
 
-import pub.android.interfaces.iot.InternetOfThingsHandler;
+import zz.top.utl.Simple;
+import zz.top.utl.Json;
+
+import pub.android.interfaces.iot.OnDeviceHandler;
 import pub.android.interfaces.iot.DoSomethingHandler;
 
-public class TPL implements InternetOfThingsHandler, DoSomethingHandler
+public class TPL implements OnDeviceHandler, DoSomethingHandler
 {
     private static final String LOGTAG = TPL.class.getSimpleName();
 

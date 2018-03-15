@@ -1,18 +1,26 @@
 package zz.top.sny.base;
 
 import android.app.Application;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.json.JSONObject;
 
-import pub.android.interfaces.iot.InternetOfThingsHandler;
+import pub.android.interfaces.iot.GetDeviceCredentials;
+import pub.android.interfaces.iot.OnDeviceHandler;
 import pub.android.interfaces.iot.DoSomethingHandler;
-import pub.android.interfaces.iot.PinCodeHandler;
+import pub.android.interfaces.iot.DoPinCodeHandler;
 
+import pub.android.interfaces.iot.OnPincodeRequest;
 import zz.top.utl.Json;
 import zz.top.utl.Simple;
 
-public class SNY implements InternetOfThingsHandler, DoSomethingHandler, PinCodeHandler
+public class SNY implements
+        OnDeviceHandler,
+        GetDeviceCredentials,
+        DoSomethingHandler,
+        DoPinCodeHandler,
+        OnPincodeRequest
 {
     private static final String LOGTAG = SNY.class.getSimpleName();
 
@@ -25,6 +33,14 @@ public class SNY implements InternetOfThingsHandler, DoSomethingHandler, PinCode
         Simple.initialize(application);
 
         SNYDiscover.discover(10);
+    }
+
+    @Override
+    public JSONObject getDeviceCredentials(String uuid)
+    {
+        Log.d(LOGTAG, "getDeviceCredentials: STUB!");
+
+        return null;
     }
 
     @Override
@@ -49,6 +65,12 @@ public class SNY implements InternetOfThingsHandler, DoSomethingHandler, PinCode
     public void onDeviceCredentials(JSONObject device)
     {
         Log.d(LOGTAG, "onDeviceCredentials: STUB!");
+    }
+
+    @Override
+    public void onPincodeRequest(String uuid)
+    {
+        Log.d(LOGTAG, "onPincodeRequest: STUB!");
     }
 
     @Override

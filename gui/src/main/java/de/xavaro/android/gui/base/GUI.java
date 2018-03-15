@@ -9,9 +9,9 @@ import de.xavaro.android.gui.smart.GUIDesktopActivity;
 import de.xavaro.android.gui.smart.GUISpeechListener;
 
 import pub.android.interfaces.cam.Camera;
-import pub.android.interfaces.gui.GraficalUserInterfaceHandler;
+import pub.android.interfaces.gui.DesktopHandler;
 
-public class GUI implements GraficalUserInterfaceHandler
+public class GUI implements DesktopHandler
 {
     private static final String LOGTAG = GUI.class.getSimpleName();
 
@@ -77,10 +77,16 @@ public class GUI implements GraficalUserInterfaceHandler
     }
 
     @Override
-    public void displayToastMessage(String message, int intervall)
+    public void displayPinCodeMessage(int timeout)
+    {
+        GUI.instance.desktopActivity.displayPinCodeMessage(timeout);
+    }
+
+    @Override
+    public void displayToastMessage(String message, int seconds, boolean emphasis)
     {
         Log.d(LOGTAG, "displayToastMessage: message=" + message);
 
-        GUI.instance.desktopActivity.displayToastMessage(message, intervall);
+        GUI.instance.desktopActivity.displayToastMessage(message, seconds, emphasis);
     }
 }

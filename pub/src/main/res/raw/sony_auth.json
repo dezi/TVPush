@@ -1,0 +1,18 @@
+{
+  "method": "actRegister",
+  "params": [
+    {
+      "clientid": "5b12df94-9e63-77bf-7c8c-d66a430994f1",
+      "nickname": "Dezi Blaubs (Dezi Bla)",
+      "level": "private"
+    },
+    [
+      {
+        "value": "yes",
+        "function": "WOL"
+      }
+    ]
+  ],
+  "id": 8,
+  "version": "1.0"
+}

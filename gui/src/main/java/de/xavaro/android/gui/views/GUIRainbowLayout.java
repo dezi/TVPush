@@ -58,6 +58,16 @@ public class GUIRainbowLayout extends GUIRelativeLayout
 
     public void start()
     {
+        start(0);
+    }
+
+    public void start(int seconds)
+    {
+        if (seconds > 0)
+        {
+            Simple.getHandler().postDelayed(stopRunnable, seconds * 1000);
+        }
+
         if (! isActive)
         {
             isActive = true;
@@ -88,6 +98,8 @@ public class GUIRainbowLayout extends GUIRelativeLayout
 
     public void stop()
     {
+        Simple.getHandler().removeCallbacks(stopRunnable);
+
         if (isActive)
         {
             isActive = false;
@@ -106,4 +118,13 @@ public class GUIRainbowLayout extends GUIRelativeLayout
             GUIApplication.setKeepScreenOnOff(getContext(), false);
         }
     }
+
+    private final Runnable stopRunnable = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            stop();
+        }
+    };
 }

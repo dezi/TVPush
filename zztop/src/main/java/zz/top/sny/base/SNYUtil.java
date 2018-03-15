@@ -1,6 +1,7 @@
 package zz.top.sny.base;
 
 import android.os.Build;
+import android.preference.PreferenceActivity;
 import android.support.annotation.Nullable;
 
 import android.text.Html;
@@ -13,6 +14,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,31 +28,43 @@ public class SNYUtil
     @Nullable
     public static String getPostXML(String urlstr, String post, String authcookie)
     {
-        return getPostInternal(urlstr, post, null, null, authcookie);
+        return getPostInternal(urlstr, post, null, null, null, authcookie);
     }
 
     @Nullable
     public static JSONObject getPost(String urlstr, JSONObject post)
     {
-        return getPostInternal(urlstr, post, null, null, null);
+        return getPostInternal(urlstr, post, null, null, null, null);
+    }
+
+    @Nullable
+    public static JSONObject getPost(String urlstr, JSONObject post, JSONObject headers)
+    {
+        return getPostInternal(urlstr, post, headers,null, null, null);
     }
 
     @Nullable
     public static JSONObject getPostAuth(String urlstr, JSONObject post, String user, String pass)
     {
-        return getPostInternal(urlstr, post, user, pass, null);
+        return getPostInternal(urlstr, post, null, user, pass, null);
     }
 
     @Nullable
-    private static JSONObject getPostInternal(String urlstr, JSONObject post, String user, String pass, String authcookie)
+    public static JSONObject getPostAuth(String urlstr, JSONObject post, JSONObject headers, String user, String pass)
     {
-        String result = getPostInternal(urlstr, post.toString(), user, pass, authcookie);
+        return getPostInternal(urlstr, post, headers, user, pass, null);
+    }
+
+    @Nullable
+    private static JSONObject getPostInternal(String urlstr, JSONObject post, JSONObject headers, String user, String pass, String authcookie)
+    {
+        String result = getPostInternal(urlstr, post.toString(), headers, user, pass, authcookie);
 
         return Json.fromStringObject(result);
     }
 
     @Nullable
-    private static String getPostInternal(String urlstr, String post, String user, String pass, String authcookie)
+    private static String getPostInternal(String urlstr, String post, JSONObject headers, String user, String pass, String authcookie)
     {
         try
         {
@@ -99,6 +114,25 @@ public class SNYUtil
                 Log.d(LOGTAG, "getPost: ERR=" + connection.getResponseCode());
 
                 return null;
+            }
+
+            //
+            // Dump repsonse headers.
+            //
+
+            if (headers != null)
+            {
+                for (Map.Entry<String, List<String>> entries : connection.getHeaderFields().entrySet())
+                {
+                    String key = entries.getKey();
+
+                    for (String val : entries.getValue())
+                    {
+                        Log.d(LOGTAG, "getPostInternal: key=" + key + " val=" + val);
+
+                        Json.put(headers, key, val);
+                    }
+                }
             }
 
             //

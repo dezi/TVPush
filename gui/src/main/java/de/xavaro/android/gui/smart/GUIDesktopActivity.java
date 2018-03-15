@@ -98,8 +98,6 @@ public class GUIDesktopActivity extends GUIActivity
 
     public void displaySpeechRecognition(boolean show)
     {
-        //Log.d(LOGTAG, "displaySpeechRecognition: show=" + show);
-
         if (show)
         {
             bringToFront();
@@ -120,9 +118,14 @@ public class GUIDesktopActivity extends GUIActivity
         checkWindowSize();
     }
 
-    public void displayToastMessage(String message, int intervall)
+    public void displayPinCodeMessage(int timeout)
     {
+        speechRecognition.displayPinCodeMessage(timeout);
+    }
 
+    public void displayToastMessage(String message, int seconds, boolean emphasis)
+    {
+        speechRecognition.displayToastMessage(message, seconds, emphasis);
     }
 
     private void checkWindowSize()

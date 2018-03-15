@@ -25,7 +25,6 @@ public class SNYDiscover
     private final static String BCAST_ADDR = "239.255.255.250";
     private final static int BCAST_PORT = 1900;
 
-    public static ArrayList<String> dups;
     public static MulticastSocket socket;
     public static InetAddress bcastip;
     public static int bcastport;
@@ -84,7 +83,7 @@ public class SNYDiscover
 
             Log.d(LOGTAG, "searchThread: self=" + Simple.getConnectedWifiIPAddress());
 
-            dups = new ArrayList<>();
+            ArrayList<String> dupstuff = new ArrayList<>();
 
             while (System.currentTimeMillis() < exittime)
             {
@@ -95,8 +94,8 @@ public class SNYDiscover
                     socket.receive(packet);
 
                     String dupkey = packet.getAddress() + ":" + packet.getPort();
-                    if (dups.contains(dupkey)) continue;
-                    dups.add(dupkey);
+                    if (dupstuff.contains(dupkey)) continue;
+                    dupstuff.add(dupkey);
 
                     String xml = new String(packet.getData(), packet.getOffset(), packet.getLength());
 
@@ -113,6 +112,9 @@ public class SNYDiscover
 
                         String urlstr = line.substring(10);
                         Log.d(LOGTAG, "searchThread: LOCATION=" + urlstr);
+
+                        if (dupstuff.contains(urlstr)) continue;
+                        dupstuff.add(urlstr);
 
                         byte[] data = readHTTPData(urlstr);
                         if (data == null) continue;
@@ -142,14 +144,9 @@ public class SNYDiscover
         String modelName = SNYUtil.HTMLdefuck(SNYUtil.matchStuff(xmlfuck, modelNameRegex));
         String UDN = SNYUtil.HTMLdefuck(SNYUtil.matchStuff(xmlfuck, UDNRegex));
 
-        if (ipAddr == null) return;
-        if (friendlyName == null) return;
-        if (manufacturer == null) return;
-        if (modelName == null) return;
-        if (UDN == null) return;
-
-        if (! manufacturer.equals("Sony")) return;
-        if (! modelName.startsWith("BRAVIA")) return;
+        if ((ipAddr == null) || (friendlyName == null) || (UDN == null)) return;
+        if ((manufacturer == null) || ! manufacturer.equals("Sony")) return;
+        if ((modelName == null) || ! modelName.startsWith("BRAVIA")) return;
 
         Log.d(LOGTAG, " ipAddr=" + ipAddr);
         Log.d(LOGTAG, " friendlyName=" + friendlyName);
@@ -159,15 +156,12 @@ public class SNYDiscover
 
         String ssid = Simple.getConnectedWifiName();
 
-        String caps = "tvremote|stupid|select|poweronoff";
+        String caps = "tvremote|stupid|hosted|select|poweronoff";
 
         JSONObject sonydev = new JSONObject();
 
         JSONObject device = new JSONObject();
         Json.put(sonydev, "device", device);
-
-        JSONObject credentials = new JSONObject();
-        Json.put(sonydev, "credentials", credentials);
 
         JSONObject network = new JSONObject();
         Json.put(sonydev, "network", network);
@@ -175,28 +169,18 @@ public class SNYDiscover
         Json.put(device, "uuid", UDN);
 
         Json.put(device, "type", "tvremote");
+        Json.put(device, "driver", "sny");
         Json.put(device, "name", friendlyName);
         Json.put(device, "nick", friendlyName);
         Json.put(device, "model", modelName);
         Json.put(device, "brand", manufacturer);
 
         Json.put(device, "capabilities", caps);
-        Json.put(device, "driver", "sny");
         Json.put(device, "location", ssid);
         Json.put(device, "fixedwifi", ssid);
 
         Json.put(network, "ipaddr", ipAddr);
         Json.put(network, "ssid", ssid);
-
-        //
-        // UUID = 5b12df94-9e63-77bf-7c8c-d66a430994fb
-        // COOKIE = 18DF5D5C3B06220A1D6186896BC1462CB2F74616
-        //
-
-        if (UDN.equals("5b12df94-9e63-77bf-7c8c-d66a430994fb"))
-        {
-            Json.put(credentials, "authtoken", "18DF5D5C3B06220A1D6186896BC1462CB2F74616");
-        }
 
         SNY.instance.onDeviceFound(sonydev);
 
@@ -212,10 +196,23 @@ public class SNYDiscover
         {
             SNYPrograms.importSDB();
         }
+
+        //
+        // UUID = 5b12df94-9e63-77bf-7c8c-d66a430994fb
+        // COOKIE = 18DF5D5C3B06220A1D6186896BC1462CB2F74616
+        //
+
+        JSONObject credentials = SNY.instance.getDeviceCredentials(UDN);
+        String authtoken = Json.getString(credentials, "authtoken");
+
+        if (authtoken == null)
+        {
+            SNYAuthorize.requestAuth(ipAddr, UDN, friendlyName, "System");
+        }
     }
 
     @Nullable
-    public static byte[] readHTTPData(String urlstr)
+    private static byte[] readHTTPData(String urlstr)
     {
         try
         {

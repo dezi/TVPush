@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.File;
+import java.util.zip.CRC32;
 
 import zz.top.utl.Json;
 import zz.top.utl.Simple;
@@ -19,6 +20,8 @@ import zz.top.utl.Simple;
 public class SNYPrograms
 {
     private final static String LOGTAG = SNYPrograms.class.getSimpleName();
+
+    private final static String ChecksumRegex = "<CheckSum>([^<]*)<\\/CheckSum>";
 
     public static void importSDB()
     {
@@ -39,8 +42,23 @@ public class SNYPrograms
                         + " exists=" + sdbXML.exists()
                 );
 
-                CharSequence sdbxml = readTextFile(sdbXML);
+                String sdbxml = readTextFile(sdbXML);
                 if (sdbxml == null) return;
+
+                String startTag = "<SdbXml>";
+                String endTag = "</SdbXml>\n";
+
+                int startPos = sdbxml.indexOf(startTag);
+                int endPos = sdbxml.indexOf(endTag) + endTag.length();
+
+                String checkString = sdbxml.substring(startPos, endPos);
+                byte[] checkBytes = checkString.getBytes();
+
+                String checksumSelf = Integer.toHexString(SNYCRC32.crc32(checkBytes));
+                String checksumSony = SNYUtil.matchStuff(sdbxml, ChecksumRegex);
+
+                Log.d(LOGTAG, "importSDB: checksumSony=" + checksumSony);
+                Log.d(LOGTAG, "importSDB: checksumSelf=" + checksumSelf);
 
                 JSONObject sdbjson = decodeSDB(sdbxml);
 

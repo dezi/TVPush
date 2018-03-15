@@ -5,7 +5,7 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
-import pub.android.interfaces.iot.InternetOfThingsHandler;
+import pub.android.interfaces.iot.OnDeviceHandler;
 import pub.android.interfaces.iot.DoSomethingHandler;
 
 import zz.top.p2p.camera.P2PCloud;
@@ -15,7 +15,7 @@ import zz.top.p2p.commands.LEDOnOffSend;
 import zz.top.utl.Json;
 import zz.top.utl.Simple;
 
-public class P2P implements InternetOfThingsHandler, DoSomethingHandler
+public class P2P implements OnDeviceHandler, DoSomethingHandler
 {
     private static final String LOGTAG = P2P.class.getSimpleName();
 

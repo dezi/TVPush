@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 import pub.android.interfaces.cam.Camera;
 
-public interface GraficalUserInterfaceHandler
+public interface DesktopHandler
 {
     Camera onRequestCameraByUUID(String uuid);
 
@@ -12,6 +12,6 @@ public interface GraficalUserInterfaceHandler
 
     void displayCamera(boolean show, String uuid);
     void displaySpeechRecognition(boolean show);
-    void displayToastMessage(String message, int intervall);
-
+    void displayPinCodeMessage(int timeout);
+    void displayToastMessage(String message, int seconds, boolean emphasis);
 }
