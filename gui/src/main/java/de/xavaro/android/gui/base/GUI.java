@@ -71,8 +71,16 @@ public class GUI implements GraficalUserInterfaceHandler
     @Override
     public void displaySpeechRecognition(boolean show)
     {
-        //Log.d(LOGTAG, "displaySpeechRecognition: show=" + show);
+        Log.d(LOGTAG, "displaySpeechRecognition: show=" + show);
 
         GUI.instance.desktopActivity.displaySpeechRecognition(show);
+    }
+
+    @Override
+    public void displayToastMessage(String message, int intervall)
+    {
+        Log.d(LOGTAG, "displayToastMessage: message=" + message);
+
+        GUI.instance.desktopActivity.displayToastMessage(message, intervall);
     }
 }

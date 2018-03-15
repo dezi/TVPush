@@ -12,4 +12,6 @@ public interface GraficalUserInterfaceHandler
 
     void displayCamera(boolean show, String uuid);
     void displaySpeechRecognition(boolean show);
+    void displayToastMessage(String message, int intervall);
+
 }

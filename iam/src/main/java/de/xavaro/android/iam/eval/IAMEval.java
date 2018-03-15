@@ -158,6 +158,17 @@ public class IAMEval
         {
             suchwas = false;
 
+            if (ifContainsRemove("PIN Code")
+                    || ifContainsRemove("PIN-Code"))
+            {
+                JSONObject object = new JSONObject();
+                Json.put(objects, object);
+
+                Json.put(object, "action", action);
+                Json.put(object, "actionData", message);
+                Json.put(object, "actionWords", actionWords);
+            }
+
             if (ifContainsRemove("normale Beleuchtung"))
             {
                 JSONObject object = new JSONObject();
@@ -175,6 +186,7 @@ public class IAMEval
 
                 suchwas = true;
             }
+
             if (ifContainsRemove("Puff Beleuchtung")
                     || ifContainsRemove("Bordell Beleuchtung"))
             {
@@ -546,6 +558,12 @@ public class IAMEval
             return "color";
         }
 
+        if (ifContains("PIN Code")
+                || ifContains("PIN-Code"))
+        {
+            return "pincode";
+        }
+
         if (ifContainsRemove("dunkler machen")
                 || ifContainsRemove("dimmen"))
         {
@@ -665,7 +683,7 @@ public class IAMEval
 
             if (pos >= 0)
             {
-                message = trim(locmess.substring(0, pos) + " " + locmess.substring(pos + len));
+                message = trim(locmess.substring(0, pos) + " " + locmess.substring(pos + len + 1));
                 lastwrd = target;
 
                 return true;
@@ -675,7 +693,7 @@ public class IAMEval
 
             if (pos >= 0)
             {
-                message = trim(locmess.substring(0, pos) + locmess.substring(pos + len));
+                message = trim(locmess.substring(0, pos) + locmess.substring(pos + len + 1));
                 lastwrd = target;
 
                 return true;

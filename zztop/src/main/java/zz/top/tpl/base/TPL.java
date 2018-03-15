@@ -15,8 +15,9 @@ import zz.top.utl.Json;
 import zz.top.utl.Simple;
 
 import pub.android.interfaces.iot.InternetOfThingsHandler;
+import pub.android.interfaces.iot.DoSomethingHandler;
 
-public class TPL implements InternetOfThingsHandler
+public class TPL implements InternetOfThingsHandler, DoSomethingHandler
 {
     private static final String LOGTAG = TPL.class.getSimpleName();
 

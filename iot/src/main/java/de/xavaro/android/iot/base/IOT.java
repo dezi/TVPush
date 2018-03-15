@@ -14,7 +14,7 @@ import de.xavaro.android.iot.simple.Simple;
 
 import pub.android.interfaces.iot.InternetOfThingsHandler;
 
-public class IOT implements InternetOfThingsHandler
+public class IOT
 {
     private static final String LOGTAG = IOT.class.getSimpleName();
 
@@ -52,31 +52,6 @@ public class IOT implements InternetOfThingsHandler
         }
     }
 
-    @Override
-    public void onDeviceFound(JSONObject device)
-    {
-        Log.d(LOGTAG, "onDeviceFound: STUB!");
-    }
-
-    @Override
-    public void onDeviceStatus(JSONObject device)
-    {
-        Log.d(LOGTAG, "onDeviceStatus: STUB!");
-    }
-
-    @Override
-    public void onDeviceMetadata(JSONObject metadata)
-    {
-        Log.d(LOGTAG, "onDeviceMetadata: STUB!");
-    }
-
-    @Override
-    public void onDeviceCredentials(JSONObject device)
-    {
-        Log.d(LOGTAG, "onDeviceCredentials: STUB!");
-    }
-
-    @Override
     public boolean doSomething(JSONObject action, JSONObject device, JSONObject status, JSONObject credentials)
     {
         Log.d(LOGTAG, "doSomething: action=" + Json.toPretty(action));

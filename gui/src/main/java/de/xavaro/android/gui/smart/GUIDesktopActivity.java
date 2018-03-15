@@ -37,39 +37,6 @@ public class GUIDesktopActivity extends GUIActivity
     }
 
     @Override
-    public void onStart()
-    {
-        Log.d(LOGTAG, "onStart:");
-
-        super.onStart();
-    }
-
-    @Override
-    public void onResume()
-    {
-        Log.d(LOGTAG, "onResume:");
-
-        super.onResume();
-    }
-
-    @Override
-    public void onPause()
-    {
-        Log.d(LOGTAG, "onPause:");
-
-        super.onPause();
-    }
-
-    @Override
-    public void onStop()
-    {
-        Log.d(LOGTAG, "onStop:");
-
-        super.onStop();
-
-    }
-
-    @Override
     public void onBackPressed()
     {
         Log.d(LOGTAG, "onBackPressed:");
@@ -84,6 +51,8 @@ public class GUIDesktopActivity extends GUIActivity
 
         if (show)
         {
+            bringToFront();
+
             GUIVideoSurface videoSurface = null;
 
             int index = -1;
@@ -133,6 +102,8 @@ public class GUIDesktopActivity extends GUIActivity
 
         if (show)
         {
+            bringToFront();
+
             if (speechRecognition.getParent() == null)
             {
                 topframe.addView(speechRecognition);
@@ -147,6 +118,11 @@ public class GUIDesktopActivity extends GUIActivity
         }
 
         checkWindowSize();
+    }
+
+    public void displayToastMessage(String message, int intervall)
+    {
+
     }
 
     private void checkWindowSize()

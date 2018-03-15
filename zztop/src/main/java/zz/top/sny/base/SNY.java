@@ -1,16 +1,18 @@
 package zz.top.sny.base;
 
 import android.app.Application;
-import android.os.StrictMode;
 import android.util.Log;
 
 import org.json.JSONObject;
 
 import pub.android.interfaces.iot.InternetOfThingsHandler;
+import pub.android.interfaces.iot.DoSomethingHandler;
+import pub.android.interfaces.iot.PinCodeHandler;
+
 import zz.top.utl.Json;
 import zz.top.utl.Simple;
 
-public class SNY implements InternetOfThingsHandler
+public class SNY implements InternetOfThingsHandler, DoSomethingHandler, PinCodeHandler
 {
     private static final String LOGTAG = SNY.class.getSimpleName();
 
@@ -47,6 +49,12 @@ public class SNY implements InternetOfThingsHandler
     public void onDeviceCredentials(JSONObject device)
     {
         Log.d(LOGTAG, "onDeviceCredentials: STUB!");
+    }
+
+    @Override
+    public boolean doPinCode(String pincode)
+    {
+        return true;
     }
 
     @Override

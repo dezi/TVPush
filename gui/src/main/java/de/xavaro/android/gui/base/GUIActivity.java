@@ -2,6 +2,7 @@ package de.xavaro.android.gui.base;
 
 import android.annotation.SuppressLint;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.PixelFormat;
@@ -137,6 +138,15 @@ public class GUIActivity extends AppCompatActivity
     public boolean isActive()
     {
         return isactive;
+    }
+
+    public void bringToFront()
+    {
+        if (! isactive)
+        {
+            Intent intent = new Intent(this, this.getClass());
+            startActivity(intent);
+        }
     }
 
     @Override
