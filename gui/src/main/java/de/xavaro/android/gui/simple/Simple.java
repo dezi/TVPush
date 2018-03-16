@@ -28,6 +28,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -36,6 +37,8 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class Simple
 {
@@ -437,6 +440,16 @@ public class Simple
     {
         int permission = ContextCompat.checkSelfPermission(context, manifestperm);
         return (permission == PackageManager.PERMISSION_GRANTED);
+    }
+
+    public static void hideSoftKeyBoard(View view)
+    {
+        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(INPUT_METHOD_SERVICE);
+
+        if (imm != null)
+        {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     //endregion Smart helpers.

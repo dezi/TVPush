@@ -9,6 +9,8 @@ import android.widget.FrameLayout;
 
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.skills.GUICanDip;
+import de.xavaro.android.gui.skills.GUICanFocus;
+import de.xavaro.android.gui.skills.GUICanFocusDelegate;
 import de.xavaro.android.gui.skills.GUICanRestoreBackground;
 import de.xavaro.android.gui.skills.GUICanRestoreBackgroundDelegate;
 import de.xavaro.android.gui.skills.GUICanRoundedCorners;
@@ -16,6 +18,7 @@ import de.xavaro.android.gui.skills.GUICanRoundedCornersDelegate;
 
 public class GUIFrameLayout extends FrameLayout implements
         GUICanDip,
+        GUICanFocus,
         GUICanRoundedCorners,
         GUICanRestoreBackground
 {
@@ -24,6 +27,8 @@ public class GUIFrameLayout extends FrameLayout implements
     public GUIFrameLayout(Context context)
     {
         super(context);
+
+        setFocusable(false);
 
         params = new FrameLayout.LayoutParams(Simple.MP, Simple.MP, Gravity.TOP);
         setLayoutParams(params);
@@ -153,4 +158,24 @@ public class GUIFrameLayout extends FrameLayout implements
     }
 
     //endregion Skills implementation.
+
+    private boolean focusable;
+
+    @Override
+    public void setFocusable(boolean focusable)
+    {
+        this.focusable = focusable;
+
+        super.setFocusable(focusable);
+
+        GUICanFocusDelegate.setupFocusChange(this, focusable);
+    }
+
+    @Override
+    public void setOnClickListener(View.OnClickListener onClickListener)
+    {
+        super.setOnClickListener(onClickListener);
+
+        setFocusable(onClickListener != null);
+    }
 }

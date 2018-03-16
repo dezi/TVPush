@@ -2,10 +2,13 @@ package de.xavaro.android.gui.views;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.view.View;
 import android.widget.ScrollView;
 
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.skills.GUICanDip;
+import de.xavaro.android.gui.skills.GUICanFocus;
+import de.xavaro.android.gui.skills.GUICanFocusDelegate;
 import de.xavaro.android.gui.skills.GUICanRestoreBackground;
 import de.xavaro.android.gui.skills.GUICanRestoreBackgroundDelegate;
 import de.xavaro.android.gui.skills.GUICanRoundedCorners;
@@ -13,12 +16,15 @@ import de.xavaro.android.gui.skills.GUICanRoundedCornersDelegate;
 
 public class GUIScrollView extends ScrollView implements
         GUICanDip,
+        GUICanFocus,
         GUICanRoundedCorners,
         GUICanRestoreBackground
 {
     public GUIScrollView(Context context)
     {
         super(context);
+
+        setFocusable(false);
 
         initSkills();
     }
@@ -148,4 +154,24 @@ public class GUIScrollView extends ScrollView implements
     }
 
     //endregion Skills implementation.
+
+    private boolean focusable;
+
+    @Override
+    public void setFocusable(boolean focusable)
+    {
+        this.focusable = focusable;
+
+        super.setFocusable(focusable);
+
+        GUICanFocusDelegate.setupFocusChange(this, focusable);
+    }
+
+    @Override
+    public void setOnClickListener(View.OnClickListener onClickListener)
+    {
+        super.setOnClickListener(onClickListener);
+
+        setFocusable(onClickListener != null);
+    }
 }

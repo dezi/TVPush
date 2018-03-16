@@ -1,11 +1,14 @@
 package de.xavaro.android.gui.views;
 
 import android.graphics.drawable.Drawable;
+import android.view.View;
 import android.widget.RelativeLayout;
 import android.content.Context;
 import android.view.ViewGroup;
 
 import de.xavaro.android.gui.skills.GUICanDip;
+import de.xavaro.android.gui.skills.GUICanFocus;
+import de.xavaro.android.gui.skills.GUICanFocusDelegate;
 import de.xavaro.android.gui.skills.GUICanRestoreBackground;
 import de.xavaro.android.gui.skills.GUICanRestoreBackgroundDelegate;
 import de.xavaro.android.gui.skills.GUICanRoundedCorners;
@@ -15,12 +18,15 @@ import de.xavaro.android.gui.simple.Simple;
 
 public class GUIRelativeLayout extends RelativeLayout implements
         GUICanDip,
+        GUICanFocus,
         GUICanRoundedCorners,
         GUICanRestoreBackground
 {
     public GUIRelativeLayout(Context context)
     {
         super(context);
+
+        setFocusable(false);
 
         initSkills();
     }
@@ -150,4 +156,24 @@ public class GUIRelativeLayout extends RelativeLayout implements
     }
 
     //endregion Skills implementation.
+
+    private boolean focusable;
+
+    @Override
+    public void setFocusable(boolean focusable)
+    {
+        this.focusable = focusable;
+
+        super.setFocusable(focusable);
+
+        GUICanFocusDelegate.setupFocusChange(this, focusable);
+    }
+
+    @Override
+    public void setOnClickListener(View.OnClickListener onClickListener)
+    {
+        super.setOnClickListener(onClickListener);
+
+        setFocusable(onClickListener != null);
+    }
 }

@@ -26,6 +26,8 @@ public class GUITextView extends AppCompatTextView implements
     {
         super(context);
 
+        setFocusable(false);
+
         initSkills();
     }
 
@@ -160,11 +162,6 @@ public class GUITextView extends AppCompatTextView implements
         canRC.restoreBackground();
     }
 
-
-
-
-
-
     private boolean focusable;
 
     @Override
@@ -179,7 +176,7 @@ public class GUITextView extends AppCompatTextView implements
             @Override
             public void onFocusChange(View view, boolean hasfocus)
             {
-                //if (Simple.isTV())
+                if (Simple.isTV())
                 {
                     if (hasfocus)
                     {
@@ -194,6 +191,14 @@ public class GUITextView extends AppCompatTextView implements
                 }
             }
         });
+    }
+
+    @Override
+    public void setOnClickListener(View.OnClickListener onClickListener)
+    {
+        super.setOnClickListener(onClickListener);
+
+        setFocusable(onClickListener != null);
     }
 
     //endregion Skills implementation.
