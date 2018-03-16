@@ -2,17 +2,16 @@ package de.xavaro.android.gui.plugin;
 
 import android.content.Context;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import de.xavaro.android.gui.base.GUIPlugin;
 import de.xavaro.android.gui.simple.Simple;
-import de.xavaro.android.gui.views.GUILinearLayout;
+import de.xavaro.android.gui.views.GUIFrameLayout;
+import de.xavaro.android.gui.views.GUIScrollView;
 import de.xavaro.android.gui.views.GUITextView;
 import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.status.IOTMetadata;
@@ -64,10 +63,14 @@ public class GUIChannelWizzard extends GUIPlugin
 
         if (channels == null) return;
 
-        GUILinearLayout layout = new GUILinearLayout(context);
-        layout.setGravity(Gravity.CENTER);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        pluginFrame.addView(layout);
+        GUIScrollView scroll = new GUIScrollView(context);
+        scroll.setFocusable(false);
+        pluginFrame.addView(scroll);
+
+        GUIFrameLayout layout = new GUIFrameLayout(context);
+        //layout.setBackgroundColor(0xffff0000);
+        layout.setFocusable(false);
+        scroll.addView(layout);
 
         for (int inx = 0; inx < channels.length(); inx++)
         {
@@ -75,29 +78,25 @@ public class GUIChannelWizzard extends GUIPlugin
 
             final String channelName = Json.getString(channel, "name");
 
+            FrameLayout.LayoutParams prams = new FrameLayout.LayoutParams(
+                    Simple.dipToPx(300),
+                    Simple.dipToPx(60));
+
+            prams.topMargin = Simple.dipToPx(65) * inx;
+            prams.leftMargin = Simple.dipToPx(100);
+
             final GUITextView channelView = new GUITextView(context);
             channelView.setFocusable(true);
             channelView.setTextSizeDip(20);
-            channelView.setText(channelName);
+            channelView.setText(Json.getString(channel, "dial") + ": " + channelName);
             channelView.setBackgroundColor(0x88000088);
-            channelView.setPaddingDip(0, 10, 0, 0);
-            channelView.setLayoutParams(new FrameLayout.LayoutParams(Simple.WC, Simple.WC, Gravity.CENTER));
+            channelView.setLayoutParams(prams);
             channelView.setOnClickListener(new OnClickListener()
             {
                 @Override
                 public void onClick(View view)
                 {
                     Log.d(LOGTAG, "onClick: channelName=" + channelName);
-                }
-            });
-            
-            channelView.setOnFocusChangeListener(new OnFocusChangeListener()
-            {
-                @Override
-                public void onFocusChange(View view, boolean b)
-                {
-                    Log.d(LOGTAG, "onFocusChange: channelName=" + channelName + " b=" + b);
-                    channelView.setBackgroundColor(0x88008800);
                 }
             });
 
