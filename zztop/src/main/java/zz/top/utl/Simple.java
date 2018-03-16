@@ -1,5 +1,7 @@
 package zz.top.utl;
 
+import android.content.ContentResolver;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 
 import android.app.Application;
@@ -17,10 +19,12 @@ import javax.crypto.spec.SecretKeySpec;
 public class Simple
 {
     private static WifiManager wifiManager;
+    private static ContentResolver contentResolver;
 
-    public static void initialize(Application context)
+    public static void initialize(Application app)
     {
-        wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        wifiManager = (WifiManager) app.getSystemService(Context.WIFI_SERVICE);
+        contentResolver = app.getContentResolver();
     }
 
     @Nullable
@@ -66,5 +70,10 @@ public class Simple
 
         int ipint = wifiManager.getConnectionInfo().getIpAddress();
         return Formatter.formatIpAddress(ipint);
+    }
+
+    public static String getDeviceUserName()
+    {
+        return Settings.Secure.getString(contentResolver, "bluetooth_name");
     }
 }

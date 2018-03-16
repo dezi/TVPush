@@ -62,7 +62,7 @@ public class SNY implements
     }
 
     @Override
-    public void onDeviceCredentials(JSONObject device)
+    public void onDeviceCredentials(JSONObject credentials)
     {
         Log.d(LOGTAG, "onDeviceCredentials: STUB!");
     }

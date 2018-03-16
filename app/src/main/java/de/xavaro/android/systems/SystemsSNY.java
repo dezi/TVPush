@@ -44,7 +44,7 @@ public class SystemsSNY extends SNY
     @Override
     public void onDeviceCredentials(JSONObject credentials)
     {
-        Log.d(LOGTAG, "onDeviceCredentials:");
+        Log.d(LOGTAG, "onDeviceCredentials:" + Json.toPretty(credentials));
 
         Systems.iot.register.registerDeviceCredentials(credentials);
     }

@@ -56,7 +56,7 @@ public class P2P implements OnDeviceHandler, DoSomethingHandler
     }
 
     @Override
-    public void onDeviceCredentials(JSONObject device)
+    public void onDeviceCredentials(JSONObject credentials)
     {
         Log.d(LOGTAG, "onDeviceCredentials: STUB!");
     }

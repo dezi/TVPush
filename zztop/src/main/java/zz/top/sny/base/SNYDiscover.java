@@ -204,10 +204,16 @@ public class SNYDiscover
 
         JSONObject credentials = SNY.instance.getDeviceCredentials(UDN);
         String authtoken = Json.getString(credentials, "authtoken");
+        Long expires = Json.getLong(credentials, "expires");
+        Long deadline = System.currentTimeMillis();
 
-        if (authtoken == null)
+        deadline += 4 * 86400 * 1000;
+
+        if ((authtoken == null) || (deadline > expires))
         {
-            SNYAuthorize.requestAuth(ipAddr, UDN, friendlyName, "System");
+            String username = Simple.getDeviceUserName();
+
+            SNYAuthorize.requestAuth(ipAddr, UDN, friendlyName, username);
         }
     }
 

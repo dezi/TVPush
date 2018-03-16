@@ -6,6 +6,8 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.Iterator;
+
 import zz.top.utl.Json;
 
 public class SNYAuthorize
@@ -39,10 +41,6 @@ public class SNYAuthorize
     //
     // Set-Cookie: auth=B6AF8A02D04CE91A00CDE4D8C4448DD1E238D814; Path=/sony/; Max-Age=1209600; Expires=Di., 27 März 2018 18:38:51 GMT+00:00
     //
-    // 46A461229C74DFB1B168C5AC6A9DA77EE8D481E4
-    //
-
-    //
     // UUID = 5b12df94-9e63-77bf-7c8c-d66a430994fb
     // COOKIE = 18DF5D5C3B06220A1D6186896BC1462CB2F74616
     //
@@ -54,15 +52,17 @@ public class SNYAuthorize
 
     public static void requestAuth(String ipaddr, String snytvuuid, String devname, String username)
     {
-        authHandler(ipaddr, snytvuuid, devname, username, null);
+        JSONObject credentials = authHandler(ipaddr, snytvuuid, devname, username, null);
+        if (credentials != null) SNY.instance.onDeviceCredentials(credentials);
     }
 
     public static void registerPincode(String ipaddr, String snytvuuid, String devname, String username, String pincode)
     {
-        authHandler(ipaddr, snytvuuid, devname, null, pincode);
+        JSONObject credentials = authHandler(ipaddr, snytvuuid, devname, null, pincode);
+        if (credentials != null) SNY.instance.onDeviceCredentials(credentials);
     }
 
-    public static void authHandler(String ipaddr, String snytvuuid, String devname, String username, String password)
+    private static JSONObject authHandler(String ipaddr, String snytvuuid, String devname, String username, String password)
     {
         JSONObject register = new JSONObject();
 
@@ -93,7 +93,8 @@ public class SNYAuthorize
         String urlstring = authurl.replace("####", ipaddr);
 
         Log.d(LOGTAG, "authorize urlstring=" + urlstring);
-        Log.d(LOGTAG, "authorize result=" + Json.toPretty(register));
+
+        //Log.d(LOGTAG, "authorize register=" + Json.toPretty(register));
 
         JSONObject result;
         JSONObject headers = new JSONObject();
@@ -107,6 +108,36 @@ public class SNYAuthorize
             result = SNYUtil.getPostAuth(urlstring, register, headers, "", password);
         }
 
+        JSONObject credentials = new JSONObject();
+
+        String cookie = Json.getString(headers, "Set-Cookie");
+
+        if (cookie != null)
+        {
+            int pos1 = cookie.indexOf("auth=");
+
+            if (pos1 >= 0)
+            {
+                pos1 += 5;
+
+                int pos2 = cookie.substring(pos1).indexOf(";");
+
+                if (pos2 > 0)
+                {
+                    String authtoken = cookie.substring(pos1).substring(0, pos2);
+
+                    Log.d(LOGTAG, "authHandler: authtoken=" + authtoken);
+
+                    Json.put(credentials, "uuid", snytvuuid);
+                    Json.put(credentials, "clientid", snytvuuid);
+                    Json.put(credentials, "authtoken", authtoken);
+                    Json.put(credentials, "expires", System.currentTimeMillis() + 10 * 86400 * 1000);
+                }
+            }
+        }
+
         Log.d(LOGTAG, "authorize result=" + Json.toPretty(result));
+
+        return credentials;
     }
 }
