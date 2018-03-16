@@ -41,24 +41,6 @@ public class GUIVideoSurface extends GUIPlugin
         pluginFrame.addView(glsVideoView);
     }
 
-    public void setPosition(int left, int top)
-    {
-        pluginFrameParams.leftMargin = left;
-        pluginFrameParams.topMargin = top;
-
-        pluginFrame.setLayoutParams(pluginFrameParams);
-    }
-
-    public int getPluginWidth()
-    {
-        return pluginFrameParams.width;
-    }
-
-    public int getPluginHeight()
-    {
-        return pluginFrameParams.height;
-    }
-
     public GLSVideoView getGLSVideoView()
     {
         return glsVideoView;
