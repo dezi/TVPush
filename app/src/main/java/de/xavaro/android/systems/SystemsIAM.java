@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import de.xavaro.android.iam.base.IAM;
+import de.xavaro.android.iam.eval.IAMEvalChannels;
 import de.xavaro.android.iot.status.IOTCredential;
 import de.xavaro.android.iot.status.IOTMetadata;
 import de.xavaro.android.iot.status.IOTStatus;
@@ -22,6 +23,26 @@ public class SystemsIAM extends IAM
     public SystemsIAM(Application application)
     {
         super(application);
+
+        JSONObject channelsForDevices = new JSONObject();
+
+        JSONArray tvremotes = SystemsIOT.instance.getDeviceWithCapability("tvremote");
+
+        for (int inx = 0; inx < tvremotes.length(); inx++)
+        {
+            String uuid = Json.getString(tvremotes, inx);
+            if (uuid == null) continue;
+
+            IOTMetadata metadata = new IOTMetadata(uuid);
+            if (metadata.metadata == null) continue;
+
+            JSONArray PUBChannels = Json.getArray(metadata.metadata, "PUBChannels");
+            if (PUBChannels == null) continue;
+
+            Json.put(channelsForDevices, uuid, PUBChannels);
+        }
+
+        IAMEvalChannels.setChannelsForDevices(channelsForDevices);
     }
 
     @Override

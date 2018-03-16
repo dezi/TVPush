@@ -93,12 +93,16 @@ public class IAMEval
                 // Dezi's channel hack.
                 //
 
-                if (IAMEvalChannels.isChannel(message))
+                JSONObject result = IAMEvalChannels.isChannel(message);
+
+                if (result != null)
                 {
+                    String dial = Json.getString(result, "dial");
+
                     JSONObject object = new JSONObject();
 
                     Json.put(object, "action", "select");
-                    Json.put(object, "actionData", message);
+                    Json.put(object, "actionData", dial);
                     Json.put(object, "actionWords", message);
                     Json.put(object, "plural", true);
                     Json.put(object, "object", "tvremote");

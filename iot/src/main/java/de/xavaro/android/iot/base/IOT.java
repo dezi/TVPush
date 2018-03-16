@@ -3,16 +3,20 @@ package de.xavaro.android.iot.base;
 import android.app.Application;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import de.xavaro.android.iot.comm.IOTMessageHandler;
 import de.xavaro.android.iot.handler.IOTHandleHelo;
 import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.things.IOTDevice;
+import de.xavaro.android.iot.things.IOTDevices;
 import de.xavaro.android.iot.things.IOTHuman;
 import de.xavaro.android.iot.simple.Simple;
 
-public class IOT
+import pub.android.interfaces.iot.GetDevices;
+
+public class IOT implements GetDevices
 {
     private static final String LOGTAG = IOT.class.getSimpleName();
 
@@ -55,5 +59,29 @@ public class IOT
         Log.d(LOGTAG, "doSomething: action=" + Json.toPretty(action));
 
         return false;
+    }
+
+    @Override
+    public JSONArray getDeviceWithCapability(String capability)
+    {
+        JSONArray result = new JSONArray();
+
+        JSONArray list = IOTDevices.instance.getListUUIDs();
+
+        for (int inx = 0; inx < list.length(); inx++)
+        {
+            String uuid = Json.getString(list, inx);
+            if (uuid == null) continue;
+
+            IOTDevice device = IOTDevices.getEntry(uuid);
+            if (device == null) continue;
+
+            if (device.hasCapability(capability))
+            {
+                Json.put(result, uuid);
+            }
+        }
+
+        return result;
     }
 }

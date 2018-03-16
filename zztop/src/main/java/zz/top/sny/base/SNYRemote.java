@@ -21,7 +21,7 @@ public class SNYRemote
             + "</s:Envelope>"
             ;
 
-    public static boolean sendRemoteCommand(String ipaddr, String authcookie, String action)
+    public static boolean sendRemoteCommand(String ipaddr, String authtoken, String action)
     {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -32,11 +32,12 @@ public class SNYRemote
         String urlstr = braviaIRCCEndPoint.replace("####", ipaddr);
         String xmlBody = xmlTemplate.replace("####", ircc);
 
-        Log.d(LOGTAG, "sendRemoteCommand xmlBody=" + xmlBody);
+        //Log.d(LOGTAG, "sendRemoteCommand authcookie=" + authtoken);
+        //Log.d(LOGTAG, "sendRemoteCommand xmlBody=" + xmlBody);
 
-        String result = SNYUtil.getPostXML(urlstr, xmlBody, authcookie);
+        String result = SNYUtil.getPostXML(urlstr, xmlBody, authtoken);
 
-        Log.d(LOGTAG, "sendRemoteCommand result=" + result);
+        //Log.d(LOGTAG, "sendRemoteCommand result=" + result);
 
         return true;
     }

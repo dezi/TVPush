@@ -26,9 +26,9 @@ public class SNYUtil
     private final static String LOGTAG = SNYUtil.class.getSimpleName();
 
     @Nullable
-    public static String getPostXML(String urlstr, String post, String authcookie)
+    public static String getPostXML(String urlstr, String post, String authtoken)
     {
-        return getPostInternal(urlstr, post, null, null, null, authcookie);
+        return getPostInternal(urlstr, post, null, null, null, authtoken);
     }
 
     @Nullable
@@ -56,15 +56,15 @@ public class SNYUtil
     }
 
     @Nullable
-    private static JSONObject getPostInternal(String urlstr, JSONObject post, JSONObject headers, String user, String pass, String authcookie)
+    private static JSONObject getPostInternal(String urlstr, JSONObject post, JSONObject headers, String user, String pass, String authtoken)
     {
-        String result = getPostInternal(urlstr, post.toString(), headers, user, pass, authcookie);
+        String result = getPostInternal(urlstr, post.toString(), headers, user, pass, authtoken);
 
         return Json.fromStringObject(result);
     }
 
     @Nullable
-    private static String getPostInternal(String urlstr, String post, JSONObject headers, String user, String pass, String authcookie)
+    private static String getPostInternal(String urlstr, String post, JSONObject headers, String user, String pass, String authtoken)
     {
         try
         {
@@ -80,7 +80,7 @@ public class SNYUtil
                 connection.setRequestProperty("Authorization", "basic " + auth);
             }
 
-            if ((authcookie != null) && ! authcookie.isEmpty())
+            if ((authtoken != null) && ! authtoken.isEmpty())
             {
                 //
                 // Content-Type: text/xml,
@@ -90,7 +90,9 @@ public class SNYUtil
 
                 connection.setRequestProperty("Content-Type", "text/xml");
                 connection.setRequestProperty("SoapAction", "\"urn:schemas-sony-com:service:IRCC:1#X_SendIRCC\"");
-                connection.setRequestProperty("Cookie", "auth=" + authcookie);
+                connection.setRequestProperty("Cookie", "auth=" + authtoken);
+
+                Log.d(LOGTAG, "getPostInternal: authtoken=" + authtoken);
             }
 
             connection.setRequestMethod("POST");
@@ -101,7 +103,7 @@ public class SNYUtil
             connection.connect();
 
             OutputStream os = connection.getOutputStream();
-            os.write(post.getBytes("UTF-8"));
+            os.write(post.getBytes());
             os.flush();
             os.close();
 
@@ -111,7 +113,7 @@ public class SNYUtil
                 // File cannot be loaded.
                 //
 
-                Log.e(LOGTAG, "getPost: ERR=" + connection.getResponseCode());
+                Log.e(LOGTAG, "getPostInternal: ERR=" + connection.getResponseCode());
 
                 return null;
             }

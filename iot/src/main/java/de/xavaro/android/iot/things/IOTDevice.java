@@ -55,6 +55,22 @@ public class IOTDevice extends IOTObject
         super(jsonstr, dummy);
     }
 
+    public boolean hasCapability(String capability)
+    {
+        if (capabilities != null)
+        {
+            for (int inx = 0; inx < capabilities.length(); inx++)
+            {
+                String devcap = Json.getString(capabilities, inx);
+                if (devcap == null) continue;
+
+                if (devcap.equals(capability)) return true;
+            }
+        }
+
+        return false;
+    }
+
     public static IOTDevice buildLocalDevice()
     {
         IOTDevice local = new IOTDevice();
