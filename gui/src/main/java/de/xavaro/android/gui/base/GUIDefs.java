@@ -25,6 +25,7 @@ public class GUIDefs
 
     public final static int COLOR_LIGHT_TRANSPARENT  = 0x22000000;
     public final static int COLOR_MEDIUM_TRANSPARENT = 0x44000000;
+    public static final int COLOR_TV_FOCUS           = 0xffffcc00;
 
     // @formatter:on
 }

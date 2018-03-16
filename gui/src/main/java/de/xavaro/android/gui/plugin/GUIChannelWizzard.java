@@ -76,6 +76,7 @@ public class GUIChannelWizzard extends GUIPlugin
             final String channelName = Json.getString(channel, "name");
 
             final GUITextView channelView = new GUITextView(context);
+            channelView.setFocusable(true);
             channelView.setTextSizeDip(20);
             channelView.setText(channelName);
             channelView.setBackgroundColor(0x88000088);

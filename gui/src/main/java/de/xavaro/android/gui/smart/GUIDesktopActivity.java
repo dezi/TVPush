@@ -69,6 +69,10 @@ public class GUIDesktopActivity extends GUIActivity
         }
     }
 
+    public void checkPermissions()
+    {
+    }
+
     @Override
     public void onBackPressed()
     {

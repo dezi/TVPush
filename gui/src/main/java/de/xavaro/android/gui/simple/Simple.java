@@ -1,5 +1,6 @@
 package de.xavaro.android.gui.simple;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 
 import android.app.Application;
@@ -21,6 +22,7 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -429,6 +431,12 @@ public class Simple
 
             Log.d(LOGTAG, "dumpIntent: key=" + key + " value=" + value);
         }
+    }
+
+    public static boolean havePermission(Context context, String manifestperm)
+    {
+        int permission = ContextCompat.checkSelfPermission(context, manifestperm);
+        return (permission == PackageManager.PERMISSION_GRANTED);
     }
 
     //endregion Smart helpers.

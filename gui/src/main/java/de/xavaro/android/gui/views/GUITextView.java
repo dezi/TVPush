@@ -4,10 +4,13 @@ import android.support.v7.widget.AppCompatTextView;
 import android.graphics.drawable.Drawable;
 import android.content.Context;
 import android.util.TypedValue;
+import android.view.View;
 import android.view.ViewGroup;
 
+import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.skills.GUICanDip;
+import de.xavaro.android.gui.skills.GUICanFocus;
 import de.xavaro.android.gui.skills.GUICanRestoreBackground;
 import de.xavaro.android.gui.skills.GUICanRestoreBackgroundDelegate;
 import de.xavaro.android.gui.skills.GUICanRoundedCorners;
@@ -15,6 +18,7 @@ import de.xavaro.android.gui.skills.GUICanRoundedCornersDelegate;
 
 public class GUITextView extends AppCompatTextView implements
         GUICanDip,
+        GUICanFocus,
         GUICanRoundedCorners,
         GUICanRestoreBackground
 {
@@ -154,6 +158,42 @@ public class GUITextView extends AppCompatTextView implements
     {
         canRB.restoreBackground();
         canRC.restoreBackground();
+    }
+
+
+
+
+
+
+    private boolean focusable;
+
+    @Override
+    public void setFocusable(boolean focusable)
+    {
+        this.focusable = focusable;
+
+        super.setFocusable(focusable);
+
+        setOnFocusChangeListener(new OnFocusChangeListener()
+        {
+            @Override
+            public void onFocusChange(View view, boolean hasfocus)
+            {
+                //if (Simple.isTV())
+                {
+                    if (hasfocus)
+                    {
+                        canRB.saveBackground();
+
+                        setRoundedCorners(0, canRB.getBackgroundColor(), GUIDefs.COLOR_TV_FOCUS);
+                    }
+                    else
+                    {
+                        canRB.restoreBackground();
+                    }
+                }
+            }
+        });
     }
 
     //endregion Skills implementation.
