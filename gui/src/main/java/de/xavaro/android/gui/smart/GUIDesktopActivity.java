@@ -1,7 +1,11 @@
 package de.xavaro.android.gui.smart;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.FrameLayout;
@@ -46,6 +50,23 @@ public class GUIDesktopActivity extends GUIActivity
         topframe.addView(channelWizzard);
 
         checkWindowSize();
+
+
+        int permission = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        boolean isGranted = (permission == PackageManager.PERMISSION_GRANTED);
+
+        Log.d(LOGTAG, "############ isGranted=" + isGranted);
+
+        if (! isGranted)
+        {
+            Log.d(LOGTAG, "############ isGranted=" + isGranted);
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    4711);
+        }
     }
 
     @Override
