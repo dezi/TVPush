@@ -49,9 +49,9 @@ public class GUICanFocusDelegate
 
     public static void setupFocusChange(View view, boolean focusable)
     {
-        if (view instanceof GUICanFocus)
+        if (Simple.isTV() && (view instanceof GUICanFocus))
         {
-            if (focusable && Simple.isTV())
+            if (focusable)
             {
                 int padneed = Simple.dipToPx(2);
 
