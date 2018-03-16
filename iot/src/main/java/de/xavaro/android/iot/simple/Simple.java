@@ -4,6 +4,10 @@ import android.annotation.SuppressLint;
 
 import android.app.Application;
 import android.app.UiModeManager;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothProfile;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,6 +25,8 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.speech.SpeechRecognizer;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -34,6 +40,8 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import com.google.firebase.iid.FirebaseInstanceId;
+
+import static android.content.Context.BLUETOOTH_SERVICE;
 
 public class Simple
 {
@@ -61,18 +69,19 @@ public class Simple
     private static float deviceDensity;
 
     private static Handler handler;
+    private static SharedPreferences prefs;
+    private static ContentResolver contentResolver;
+
     private static WifiManager wifiManager;
     private static WindowManager windowManager;
     private static PackageManager packageManager;
     private static ConnectivityManager connectivityManager;
-
-    private static ContentResolver contentResolver;
-    private static SharedPreferences prefs;
+    private static BluetoothManager bluetoothManager;
+    private static BluetoothAdapter bluetoothAdapter;
 
     public static void initialize(Application app)
     {
         handler = new Handler();
-
         prefs = PreferenceManager.getDefaultSharedPreferences(app);
 
         packageManager = app.getPackageManager();
@@ -81,6 +90,16 @@ public class Simple
         wifiManager = (WifiManager) app.getSystemService(Context.WIFI_SERVICE);
         windowManager = ((WindowManager) app.getSystemService(Context.WINDOW_SERVICE));
         connectivityManager = (ConnectivityManager) app.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+        {
+            bluetoothManager = (BluetoothManager) app.getSystemService(BLUETOOTH_SERVICE);
+
+            if (bluetoothManager != null)
+            {
+                bluetoothAdapter = bluetoothManager.getAdapter();
+            }
+        }
 
         if (windowManager != null)
         {
@@ -105,7 +124,7 @@ public class Simple
 
         iswidescreen = (deviceWidth / (float) deviceHeight) > (4 / 3f);
 
-        isspeechin = android.speech.SpeechRecognizer.isRecognitionAvailable(app);
+        isspeechin = SpeechRecognizer.isRecognitionAvailable(app);
 
         isretina = (deviceDensity >= 2.0);
     }
@@ -341,6 +360,41 @@ public class Simple
     public static String getFCMToken()
     {
         return FirebaseInstanceId.getInstance().getToken();
+    }
+
+    public static String getBTStateDescription(int state)
+    {
+        switch (state)
+        {
+            case BluetoothProfile.STATE_CONNECTED: return "Connected";
+            case BluetoothProfile.STATE_CONNECTING: return "Connecting";
+            case BluetoothProfile.STATE_DISCONNECTED: return "Disconnected";
+            case BluetoothProfile.STATE_DISCONNECTING: return "Disconnecting";
+        }
+
+        return "Unknown State state=" + state;
+    }
+
+    public static String getBTStatusDescription(int status)
+    {
+        switch (status)
+        {
+            case BluetoothGatt.GATT_SUCCESS: return "SUCCESS";
+        }
+
+        return "Unknown Status status=" + status;
+    }
+
+    @Nullable
+    public static BluetoothManager getBTManager()
+    {
+        return bluetoothManager;
+    }
+
+    @Nullable
+    public static BluetoothAdapter getBTAdapter()
+    {
+        return bluetoothAdapter;
     }
 
     //endregion Simple getters.
