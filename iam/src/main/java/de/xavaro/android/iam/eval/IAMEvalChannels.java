@@ -11,6 +11,7 @@ import de.xavaro.android.iam.simple.Json;
 
 public class IAMEvalChannels
 {
+
     @Nullable
     public static JSONObject isChannel(String word)
     {
@@ -24,6 +25,33 @@ public class IAMEvalChannels
 
             JSONArray list = Json.getArray(channels, uuid);
             if (list == null) continue;
+
+            if (word.equalsIgnoreCase("I")) word = "das Erste";
+            if (word.equalsIgnoreCase("ARD")) word = "das Erste";
+
+            if (word.equalsIgnoreCase("das zweite")) word = "ZDF";
+
+            if (word.equalsIgnoreCase("NTV")) word = "n-tv";
+
+            if (word.equalsIgnoreCase("RTL2")) word = "RTL II";
+
+            if (word.equalsIgnoreCase("Sat 1")) word = "Sat.1";
+            if (word.equalsIgnoreCase("SAT 1 Gold")) word = "SAT.1 Gold";
+
+            if (word.equalsIgnoreCase("NDR")) word = "NDR FS SH";
+            if (word.equalsIgnoreCase("SWR")) word = "SWR RP";
+
+            if (word.equalsIgnoreCase("MDR")) word = "MDR Sachsen";
+            if (word.equalsIgnoreCase("Ostzone")) word = "MDR Sachsen";
+
+            if (word.equalsIgnoreCase("rbb")) word = "rbb Berlin";
+            if (word.equalsIgnoreCase("Berlin")) word = "rbb Berlin";
+
+            if (word.equalsIgnoreCase("hr")) word = "hr-fernsehen";
+            if (word.equalsIgnoreCase("Hessen")) word = "hr-fernsehen";
+
+            if (word.equalsIgnoreCase("BR")) word = "BR Fernsehen Süd";
+            if (word.equalsIgnoreCase("Bayern")) word = "BR Fernsehen Süd";
 
             for (int inx = 0; inx < list.length(); inx++)
             {
