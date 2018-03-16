@@ -119,6 +119,8 @@ public class SNY implements
                         case '9': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num9"); break;
                     }
                 }
+
+                SNYRemote.sendRemoteCommand(ipaddr, authtoken, "DpadCenter");
             }
         }
 

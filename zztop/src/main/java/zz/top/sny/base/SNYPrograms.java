@@ -114,13 +114,11 @@ public class SNYPrograms
 
             while (dialstr.length() < 3) dialstr = "0" + dialstr;
 
-            /*
             Log.d(LOGTAG, "registerChannels:"
                     + " dial=" + dialstr
                     + " type=" + typestr
                     + " name=" + name
             );
-            */
 
             JSONObject channel = new JSONObject();
 
