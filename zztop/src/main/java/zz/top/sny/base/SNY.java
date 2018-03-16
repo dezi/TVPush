@@ -80,8 +80,16 @@ public class SNY implements
         Log.d(LOGTAG, "doSomething: credentials=" + Json.toPretty(credentials));
 
         String actioncmd = Json.getString(action, "action");
+        if (actioncmd == null) return false;
 
-        if ((actioncmd != null) && actioncmd.equals("select"))
+        if (actioncmd.equals("pincode"))
+        {
+            String pincode = Json.getString(action, "actionData");
+
+            return SNYAuthorize.enterPincode(pincode);
+        }
+
+        if (actioncmd.equals("select"))
         {
             String ipaddr = Json.getString(status, "ipaddr");
             String channel = Json.getString(action, "actionData");

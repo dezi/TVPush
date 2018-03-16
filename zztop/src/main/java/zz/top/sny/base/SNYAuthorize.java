@@ -110,7 +110,7 @@ public class SNYAuthorize
         Json.put(register, "params", params);
 
         JSONObject client = new JSONObject();
-        Json.put(client, "clientid", snytvuuid);
+        Json.put(client, "clientid", snytvuuid + "x");
         Json.put(client, "nickname", username + " (" + devname + ")");
         Json.put(client, "level", "private");
 
