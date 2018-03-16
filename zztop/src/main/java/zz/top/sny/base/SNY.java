@@ -76,7 +76,7 @@ public class SNY implements
     @Override
     public boolean doPinCode(String pincode)
     {
-        return true;
+        return SNYAuthorize.enterPincode(pincode);
     }
 
     @Override

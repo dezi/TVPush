@@ -45,21 +45,56 @@ public class SNYAuthorize
     // COOKIE = 18DF5D5C3B06220A1D6186896BC1462CB2F74616
     //
 
-    public static void enterPincode(String pincode)
+    private static String currentIPAddr;
+    private static String currentSNYtvuuid;
+    private static String currentDevname;
+    private static String currentUsername;
+
+    public static boolean enterPincode(String pincode)
     {
-        //registerPincode(ipaddr, snytvuuid, devname, username, "1234");
+        boolean ok = false;
+
+        if (currentIPAddr != null)
+        {
+            ok = registerPincode(currentIPAddr, currentSNYtvuuid, currentDevname, currentUsername, pincode);
+        }
+
+        if (ok)
+        {
+            currentIPAddr = null;
+            currentSNYtvuuid = null;
+            currentDevname = null;
+            currentUsername = null;
+        }
+
+        return ok;
     }
 
     public static void requestAuth(String ipaddr, String snytvuuid, String devname, String username)
     {
         JSONObject credentials = authHandler(ipaddr, snytvuuid, devname, username, null);
-        if (credentials != null) SNY.instance.onDeviceCredentials(credentials);
+
+        if (credentials != null)
+        {
+            SNY.instance.onDeviceCredentials(credentials);
+        }
+        else
+        {
+            currentIPAddr = ipaddr;
+            currentSNYtvuuid = snytvuuid;
+            currentDevname = devname;
+            currentUsername = username;
+
+            SNY.instance.onPincodeRequest(snytvuuid);
+        }
     }
 
-    public static void registerPincode(String ipaddr, String snytvuuid, String devname, String username, String pincode)
+    private static boolean registerPincode(String ipaddr, String snytvuuid, String devname, String username, String pincode)
     {
         JSONObject credentials = authHandler(ipaddr, snytvuuid, devname, null, pincode);
         if (credentials != null) SNY.instance.onDeviceCredentials(credentials);
+
+        return (credentials != null);
     }
 
     private static JSONObject authHandler(String ipaddr, String snytvuuid, String devname, String username, String password)

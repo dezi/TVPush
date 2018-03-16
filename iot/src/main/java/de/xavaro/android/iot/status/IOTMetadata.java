@@ -12,7 +12,7 @@ public class IOTMetadata extends IOTObject
 
     public JSONObject metadata;
 
-    public Long lastseen;
+    public Long timestamp;
 
     public IOTMetadata()
     {
@@ -38,7 +38,7 @@ public class IOTMetadata extends IOTObject
     {
         metadata = check.metadata;
 
-        lastseen = System.currentTimeMillis();
+        timestamp = System.currentTimeMillis();
 
         //Log.d(LOGTAG, "checkAndMergeContent: json=" + this.toJsonString());
 
