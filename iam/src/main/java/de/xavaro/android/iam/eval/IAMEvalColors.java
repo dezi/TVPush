@@ -13,9 +13,9 @@ public class IAMEvalColors
 
         try
         {
-            int colorrgb = colorsLower.get(name.toLowerCase());
+            colorsLower.get(name.toLowerCase());
 
-            return (colorrgb != 0);
+            return true;
         }
         catch (Exception ignore)
         {
