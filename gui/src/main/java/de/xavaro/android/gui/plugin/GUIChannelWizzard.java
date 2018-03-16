@@ -1,9 +1,9 @@
 package de.xavaro.android.gui.plugin;
 
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
@@ -12,7 +12,6 @@ import org.json.JSONObject;
 
 import de.xavaro.android.gui.base.GUIPlugin;
 import de.xavaro.android.gui.simple.Simple;
-import de.xavaro.android.gui.views.GUIButton;
 import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUITextView;
 import de.xavaro.android.iot.base.IOT;
@@ -74,12 +73,33 @@ public class GUIChannelWizzard extends GUIPlugin
         {
             JSONObject channel = Json.getObject(channels, inx);
 
-            GUIButton channelView = new GUIButton(context);
+            final String channelName = Json.getString(channel, "name");
+
+            final GUITextView channelView = new GUITextView(context);
             channelView.setTextSizeDip(20);
-            channelView.setText(Json.getString(channel, "name"));
+            channelView.setText(channelName);
             channelView.setBackgroundColor(0x88000088);
             channelView.setPaddingDip(0, 10, 0, 0);
             channelView.setLayoutParams(new FrameLayout.LayoutParams(Simple.WC, Simple.WC, Gravity.CENTER));
+            channelView.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    Log.d(LOGTAG, "onClick: channelName=" + channelName);
+                }
+            });
+            
+            channelView.setOnFocusChangeListener(new OnFocusChangeListener()
+            {
+                @Override
+                public void onFocusChange(View view, boolean b)
+                {
+                    Log.d(LOGTAG, "onFocusChange: channelName=" + channelName + " b=" + b);
+                    channelView.setBackgroundColor(0x88008800);
+                }
+            });
+
             layout.addView(channelView);
         }
     }
