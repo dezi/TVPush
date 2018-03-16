@@ -124,26 +124,22 @@ public class IAMEval
                 {
                     int colorrgb = IAMEvalColors.getColor(message);
 
-                    if (colorrgb != 0)
-                    {
-                        JSONObject object = new JSONObject();
+                    JSONObject object = new JSONObject();
 
-                        Json.put(object, "action", "color");
-                        Json.put(object, "actionData", Integer.toHexString(colorrgb));
-                        Json.put(object, "actionWords", message);
-                        Json.put(object, "plural", true);
-                        Json.put(object, "object", "bulb");
-                        Json.put(object, "objectWords", message);
+                    Json.put(object, "action", "color");
+                    Json.put(object, "actionData", Integer.toHexString(colorrgb));
+                    Json.put(object, "actionWords", message);
+                    Json.put(object, "plural", true);
+                    Json.put(object, "object", "bulb");
+                    Json.put(object, "objectWords", message);
 
-                        getMatchingDevices(object);
+                    getMatchingDevices(object);
 
-                        JSONArray results = new JSONArray();
-                        Json.put(results, object);
+                    JSONArray results = new JSONArray();
+                    Json.put(results, object);
 
-                        return results;
-                    }
+                    return results;
                 }
-
             }
         }
 
