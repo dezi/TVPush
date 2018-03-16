@@ -192,28 +192,26 @@ public class SNYDiscover
 
         SNY.instance.onDeviceStatus(status);
 
-        if (ipAddr.equals(Simple.getConnectedWifiIPAddress()))
+        //if (ipAddr.equals(Simple.getConnectedWifiIPAddress()))
         {
             SNYPrograms.importSDB();
         }
 
-        //
-        // UUID = 5b12df94-9e63-77bf-7c8c-d66a430994fb
-        // COOKIE = 18DF5D5C3B06220A1D6186896BC1462CB2F74616
-        //
-
-        JSONObject credentials = SNY.instance.getDeviceCredentials(UDN);
-        String authtoken = Json.getString(credentials, "authtoken");
-        Long expires = Json.getLong(credentials, "expires");
-        Long deadline = System.currentTimeMillis();
-
-        deadline += 4 * 86400 * 1000;
-
-        if ((authtoken == null) || (deadline > expires))
+        if (ipAddr.equals(Simple.getConnectedWifiIPAddress()))
         {
-            String username = Simple.getDeviceUserName();
+            JSONObject credentials = SNY.instance.getDeviceCredentials(UDN);
+            String authtoken = Json.getString(credentials, "authtoken");
+            Long expires = Json.getLong(credentials, "expires");
+            Long deadline = System.currentTimeMillis();
 
-            SNYAuthorize.requestAuth(ipAddr, UDN, friendlyName, username);
+            deadline += 4 * 86400 * 1000;
+
+            if ((authtoken == null) || (deadline > expires))
+            {
+                String username = Simple.getDeviceUserName();
+
+                SNYAuthorize.requestAuth(ipAddr, UDN, friendlyName, username);
+            }
         }
     }
 

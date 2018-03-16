@@ -1,5 +1,6 @@
 package zz.top.sny.base;
 
+import android.os.Environment;
 import android.support.annotation.Nullable;
 
 import android.util.SparseArray;
@@ -25,54 +26,71 @@ public class SNYPrograms
 
     public static void importSDB()
     {
-        File storage = new File("/storage");
-        File[] dir = storage.listFiles();
+        File external = Environment.getExternalStorageDirectory();
 
-        for (File sub : dir)
+        File sdbXML = new File(external, "sdb.xml");
+        File sdbJSON = new File(external, "sdb.json");
+
+        if (sdbXML.exists())
         {
-            Log.d(LOGTAG, "importSDB: sub=" + sub.getAbsolutePath());
+            importSDB(sdbXML, sdbJSON);
+        }
+        else
+        {
+            File storage = new File("/storage");
+            File[] dir = storage.listFiles();
 
-            File sdbXML = new File(sub, "sdb.xml");
-            File sdbJSON = new File(sub, "sdb.json");
-
-            if (sdbXML.exists())
+            for (File sub : dir)
             {
-                Log.d(LOGTAG, "importSDB:"
-                        + " sdbXML=" + sdbXML.getAbsolutePath()
-                        + " exists=" + sdbXML.exists()
-                );
+                Log.d(LOGTAG, "importSDB: sub=" + sub.getAbsolutePath());
 
-                String sdbxml = readTextFile(sdbXML);
-                if (sdbxml == null) return;
+                sdbXML = new File(sub, "sdb.xml");
+                sdbJSON = new File(sub, "sdb.json");
 
-                String startTag = "<SdbXml>";
-                String endTag = "</SdbXml>\n";
+                if (sdbXML.exists())
+                {
+                    importSDB(sdbXML, sdbJSON);
 
-                int startPos = sdbxml.indexOf(startTag);
-                int endPos = sdbxml.indexOf(endTag) + endTag.length();
-
-                String checkString = sdbxml.substring(startPos, endPos);
-                byte[] checkBytes = checkString.getBytes();
-
-                String checksumSelf = Integer.toHexString(SNYCRC32.crc32(checkBytes));
-                String checksumSony = SNYUtil.matchStuff(sdbxml, ChecksumRegex);
-
-                Log.d(LOGTAG, "importSDB: checksumSony=" + checksumSony);
-                Log.d(LOGTAG, "importSDB: checksumSelf=" + checksumSelf);
-
-                JSONObject sdbjson = decodeSDB(sdbxml);
-
-                if (sdbjson == null) return;
-
-                writeTextFile(sdbJSON, Json.toPretty(sdbjson));
-
-                Log.d(LOGTAG, "importSDB: done.");
-
-                registerChannels(sdbjson);
-
-                break;
+                    break;
+                }
             }
         }
+    }
+
+    public static void importSDB(File sdbXML, File sdbJSON)
+    {
+        Log.d(LOGTAG, "importSDB:"
+                + " sdbXML=" + sdbXML.getAbsolutePath()
+                + " exists=" + sdbXML.exists()
+        );
+
+        String sdbxml = readTextFile(sdbXML);
+        if (sdbxml == null) return;
+
+        String startTag = "<SdbXml>";
+        String endTag = "</SdbXml>\n";
+
+        int startPos = sdbxml.indexOf(startTag);
+        int endPos = sdbxml.indexOf(endTag) + endTag.length();
+
+        String checkString = sdbxml.substring(startPos, endPos);
+        byte[] checkBytes = checkString.getBytes();
+
+        String checksumSelf = Integer.toHexString(SNYCRC32.crc32(checkBytes));
+        String checksumSony = SNYUtil.matchStuff(sdbxml, ChecksumRegex);
+
+        Log.d(LOGTAG, "importSDB: checksumSony=" + checksumSony);
+        Log.d(LOGTAG, "importSDB: checksumSelf=" + checksumSelf);
+
+        JSONObject sdbjson = decodeSDB(sdbxml);
+
+        if (sdbjson == null) return;
+
+        writeTextFile(sdbJSON, Json.toPretty(sdbjson));
+
+        Log.d(LOGTAG, "importSDB: done.");
+
+        registerChannels(sdbjson);
     }
 
     public static void registerChannels(JSONObject sdbjson)
