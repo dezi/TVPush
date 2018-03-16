@@ -158,15 +158,21 @@ public class IAMEval
         {
             suchwas = false;
 
-            if (ifContainsRemove("PIN Code")
+            if (ifIsPincodeRemove()
+                    || ifContainsRemove("PIN Code")
                     || ifContainsRemove("PIN-Code"))
             {
                 JSONObject object = new JSONObject();
                 Json.put(objects, object);
 
+                Json.put(object, "plural", true);
                 Json.put(object, "action", action);
-                Json.put(object, "actionData", message);
+                Json.put(object, "actionData", actionWords);
                 Json.put(object, "actionWords", actionWords);
+
+                getMatchingDevices(object);
+
+                suchwas = true;
             }
 
             if (ifContainsRemove("normale Beleuchtung"))
@@ -406,9 +412,16 @@ public class IAMEval
         String objname = Json.getString(object, "object");
         boolean plural = Json.getBoolean(object, "plural");
 
-        if ((action == null) || action.isEmpty()
-                || (objname == null) || objname.isEmpty()
-                || ! plural)
+        if ((action == null) || action.isEmpty())
+        {
+            //
+            // No action, no game.
+            //
+
+            return;
+        }
+
+        if ((objname != null) && (! objname.isEmpty()) && ! plural)
         {
             //
             // For device capability search we
@@ -421,42 +434,50 @@ public class IAMEval
         String newaction = action;
         String capability = null;
 
-        if (objname.equals("camera") && ((action.equals("activate") || action.equals("deactivate"))))
+        if ((objname != null) && ! objname.isEmpty())
         {
-            capability = "closeopen";
+            if (objname.equals("camera") && ((action.equals("activate") || action.equals("deactivate"))))
+            {
+                capability = "closeopen";
+            }
+
+            if (objname.equals("led") && ((action.equals("switchon") || action.equals("switchoff"))))
+            {
+                newaction = action.equals("switchon") ? "switchonled" : "switchoffled";
+                capability = "ledonoff";
+            }
+
+            if (objname.equals("plug") && ((action.equals("switchon") || action.equals("switchoff"))))
+            {
+                newaction = action.equals("switchon") ? "switchonplug" : "switchoffplug";
+                capability = "plugonoff";
+            }
+
+            if (objname.equals("bulb") && ((action.equals("switchon") || action.equals("switchoff"))))
+            {
+                newaction = action.equals("switchon") ? "switchonbulb" : "switchoffbulb";
+                capability = "bulbonoff";
+            }
+
+            if (objname.equals("bulb") && ((action.equals("adjustpos") || action.equals("adjustneg"))))
+            {
+                capability = "dimmable";
+            }
+
+            if (objname.equals("bulb") && (action.equals("color")))
+            {
+                capability = "colorhsb";
+            }
+
+            if (objname.equals("tvremote") && (action.equals("select")))
+            {
+                capability = "tvremote";
+            }
         }
 
-        if (objname.equals("led") && ((action.equals("switchon") || action.equals("switchoff"))))
+        if (action.equals("pincode"))
         {
-            newaction = action.equals("switchon") ? "switchonled" : "switchoffled";
-            capability = "ledonoff";
-        }
-
-        if (objname.equals("plug") && ((action.equals("switchon") || action.equals("switchoff"))))
-        {
-            newaction = action.equals("switchon") ? "switchonplug" : "switchoffplug";
-            capability = "plugonoff";
-        }
-
-        if (objname.equals("bulb") && ((action.equals("switchon") || action.equals("switchoff"))))
-        {
-            newaction = action.equals("switchon") ? "switchonbulb" : "switchoffbulb";
-            capability = "bulbonoff";
-        }
-
-        if (objname.equals("bulb") && ((action.equals("adjustpos") || action.equals("adjustneg"))))
-        {
-            capability = "dimmable";
-        }
-
-        if (objname.equals("bulb") && (action.equals("color")))
-        {
-            capability = "colorhsb";
-        }
-
-        if (objname.equals("tvremote") && (action.equals("select")))
-        {
-            capability = "tvremote";
+            capability = "pincode";
         }
 
         if ((capability == null) || capability.isEmpty()) return;
@@ -476,8 +497,6 @@ public class IAMEval
             String uuid = Json.getString(list, dinx);
             IOTDevice device = IOTDevices.getEntry(uuid);
             if ((device == null) || (device.capabilities == null)) continue;
-
-            Log.d(LOGTAG, "getMatchingDevices: name=" + device.name);
 
             for (int cinx = 0; cinx < device.capabilities.length(); cinx++)
             {
@@ -558,7 +577,8 @@ public class IAMEval
             return "color";
         }
 
-        if (ifContains("PIN Code")
+        if (ifIsPincode()
+                || ifContains("PIN Code")
                 || ifContains("PIN-Code"))
         {
             return "pincode";
@@ -635,6 +655,36 @@ public class IAMEval
         }
 
         return null;
+    }
+
+    private boolean ifIsPincode()
+    {
+        boolean pincode = false;
+
+        if (message.length() == 4)
+        {
+            pincode = ('0' <= message.charAt(0)) && (message.charAt(0) <= '9')
+                    && ('0' <= message.charAt(1)) && (message.charAt(1) <= '9')
+                    && ('0' <= message.charAt(2)) && (message.charAt(2) <= '9')
+                    && ('0' <= message.charAt(3)) && (message.charAt(3) <= '9');
+        }
+
+        if (pincode) lastwrd = message;
+
+        return pincode;
+    }
+
+    private boolean ifIsPincodeRemove()
+    {
+        boolean pincode = ifIsPincode();
+
+        if (pincode)
+        {
+            lastwrd = message;
+            message = "";
+        }
+
+        return pincode;
     }
 
     private boolean ifContains(String target)

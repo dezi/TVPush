@@ -156,7 +156,7 @@ public class SNYDiscover
 
         String ssid = Simple.getConnectedWifiName();
 
-        String caps = "tvremote|stupid|hosted|select|poweronoff";
+        String caps = "tvremote|stupid|hosted|pincode|select|poweronoff";
 
         JSONObject sonydev = new JSONObject();
 

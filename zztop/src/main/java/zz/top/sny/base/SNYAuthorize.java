@@ -85,8 +85,8 @@ public class SNYAuthorize
             currentDevname = devname;
             currentUsername = username;
 
-            SNY.instance.onPincodeRequest(snytvuuid);
         }
+        SNY.instance.onPincodeRequest(snytvuuid);
     }
 
     private static boolean registerPincode(String ipaddr, String snytvuuid, String devname, String username, String pincode)

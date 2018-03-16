@@ -12,8 +12,6 @@ public class IOTCredential extends IOTObject
 
     public JSONObject credentials;
 
-    public Long timestamp;
-
     public IOTCredential()
     {
         super();
@@ -38,7 +36,7 @@ public class IOTCredential extends IOTObject
     {
         credentials = check.credentials;
 
-        timestamp = System.currentTimeMillis();
+        time = System.currentTimeMillis();
 
         //Log.d(LOGTAG, "checkAndMergeContent: json=" + this.toJsonString());
 

@@ -19,6 +19,7 @@ public abstract class IOTObject
     private final static String LOGTAG = IOTObject.class.getSimpleName();
 
     public String uuid;
+    public Long time;
 
     public IOTObject()
     {
@@ -159,7 +160,6 @@ public abstract class IOTObject
             ok = Prefs.setString(key, json);
 
             Log.d(LOGTAG, "saveToStorage: key=" + key + " ok=" + ok + " json=" + ((json == null) ? "null" : "ok"));
-            //if (json != null) Log.d(LOGTAG, json);
         }
 
         return ok;

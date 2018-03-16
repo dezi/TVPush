@@ -20,8 +20,6 @@ public class IOTStatus extends IOTObject
     // Do not fuck with this.
     //
 
-    public Long timestamp;
-
     public Integer camblind;
 
     public Integer ledstate;
@@ -74,7 +72,7 @@ public class IOTStatus extends IOTObject
 
         // @formatter:on
 
-        timestamp = System.currentTimeMillis();
+        time = System.currentTimeMillis();
 
         //Log.d(LOGTAG, "checkAndMergeContent: json=" + this.toJsonString());
 

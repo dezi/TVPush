@@ -94,8 +94,10 @@ public class IOTHuman extends IOTObject
             // @formatter:on
         }
 
-        if (changed)
+        if (changed || (time == 0))
         {
+            time = System.currentTimeMillis();
+
             saveToStorage();
         }
     }

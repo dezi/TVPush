@@ -124,8 +124,11 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
     @Override
     public void onActivateRemote()
     {
-        speechText.setTextColor(Color.GRAY);
-        speechText.setText("Bitte drücken Sie die Mikrofon-Taste auf der Fernbedienung");
+        if (toastMessage == null)
+        {
+            speechText.setTextColor(Color.GRAY);
+            speechText.setText("Bitte drücken Sie die Mikrofon-Taste auf der Fernbedienung");
+        }
     }
 
     @Override
@@ -153,6 +156,7 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
         speechText.setTextColor(Color.WHITE);
         speechText.setText(text);
 
+        toastMessage = null;
         colorFrame.start();
 
         hadResult = true;
@@ -160,6 +164,8 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
 
     public void displayPinCodeMessage(int timeout)
     {
+        Log.d(LOGTAG, "displayPinCodeMessage: timeout=" + timeout);
+
         displayToastMessage("Bitte lesen Sie den PIN-Code vor", timeout, true);
     }
 
@@ -182,11 +188,8 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
         @Override
         public void run()
         {
-            if (speechText.equals(toastMessage))
-            {
-                toastMessage = null;
-                pleaseSpeekNow.run();
-            }
+            toastMessage = null;
+            pleaseSpeekNow.run();
 
             colorFrame.stop();
         }

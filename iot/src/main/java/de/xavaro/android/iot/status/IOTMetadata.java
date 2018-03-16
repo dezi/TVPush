@@ -12,8 +12,6 @@ public class IOTMetadata extends IOTObject
 
     public JSONObject metadata;
 
-    public Long timestamp;
-
     public IOTMetadata()
     {
         super();
@@ -38,7 +36,7 @@ public class IOTMetadata extends IOTObject
     {
         metadata = check.metadata;
 
-        timestamp = System.currentTimeMillis();
+        time = System.currentTimeMillis();
 
         //Log.d(LOGTAG, "checkAndMergeContent: json=" + this.toJsonString());
 

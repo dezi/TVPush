@@ -50,6 +50,8 @@ public class IOTDomain extends IOTObject
             this.name = check.name;
         }
 
+        time = System.currentTimeMillis();
+
         saveToStorage();
     }
 }

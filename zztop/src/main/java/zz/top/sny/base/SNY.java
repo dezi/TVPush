@@ -1,7 +1,7 @@
 package zz.top.sny.base;
 
-import android.app.Application;
 import android.support.annotation.Nullable;
+import android.app.Application;
 import android.util.Log;
 
 import org.json.JSONObject;
@@ -9,7 +9,6 @@ import org.json.JSONObject;
 import pub.android.interfaces.iot.GetDeviceCredentials;
 import pub.android.interfaces.iot.OnDeviceHandler;
 import pub.android.interfaces.iot.DoSomethingHandler;
-import pub.android.interfaces.iot.DoPinCodeHandler;
 
 import pub.android.interfaces.iot.OnPincodeRequest;
 import zz.top.utl.Json;
@@ -19,7 +18,6 @@ public class SNY implements
         OnDeviceHandler,
         GetDeviceCredentials,
         DoSomethingHandler,
-        DoPinCodeHandler,
         OnPincodeRequest
 {
     private static final String LOGTAG = SNY.class.getSimpleName();
@@ -74,20 +72,12 @@ public class SNY implements
     }
 
     @Override
-    public boolean doPinCode(String pincode)
-    {
-        return SNYAuthorize.enterPincode(pincode);
-    }
-
-    @Override
     public boolean doSomething(JSONObject action, JSONObject device, JSONObject status, JSONObject credentials)
     {
-        /*
         Log.d(LOGTAG, "doSomething: action=" + Json.toPretty(action));
         Log.d(LOGTAG, "doSomething: device=" + Json.toPretty(device));
         Log.d(LOGTAG, "doSomething: status=" + Json.toPretty(status));
         Log.d(LOGTAG, "doSomething: credentials=" + Json.toPretty(credentials));
-        */
 
         String actioncmd = Json.getString(action, "action");
 

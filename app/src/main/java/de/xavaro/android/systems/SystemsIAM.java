@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import de.xavaro.android.iam.base.IAM;
 import de.xavaro.android.iot.status.IOTCredential;
+import de.xavaro.android.iot.status.IOTMetadata;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
@@ -94,26 +95,32 @@ public class SystemsIAM extends IAM
                         }
                     }
 
+                    JSONObject status = (new IOTStatus(uuid)).toJson();
+                    JSONObject metadata = (new IOTMetadata(uuid)).toJson();
+                    JSONObject credentials = (new IOTCredential(uuid)).toJson();
+
+                    JSONObject todo = new JSONObject();
+
+                    Json.put(todo, "action", doaction);
+                    Json.put(todo, "device", device.toJson());
+                    Json.put(todo, "status", status);
+                    Json.put(todo, "metadata", metadata);
+                    Json.put(todo, "credentials", credentials);
+
                     if (device.driver.equals("p2p"))
                     {
-                        JSONObject status = (new IOTStatus(uuid)).toJson();
-                        JSONObject credentials = (new IOTCredential(uuid)).toJson();
                         Systems.p2p.doSomething(doaction, device.toJson(), status, credentials);
                         continue;
                     }
 
                     if (device.driver.equals("tpl"))
                     {
-                        JSONObject status = (new IOTStatus(uuid)).toJson();
-                        JSONObject credentials = (new IOTCredential(uuid)).toJson();
                         Systems.tpl.doSomething(doaction, device.toJson(), status, credentials);
                         continue;
                     }
 
                     if (device.driver.equals("sny"))
                     {
-                        JSONObject status = (new IOTStatus(uuid)).toJson();
-                        JSONObject credentials = (new IOTCredential(uuid)).toJson();
                         Systems.sny.doSomething(doaction, device.toJson(), status, credentials);
                         continue;
                     }
