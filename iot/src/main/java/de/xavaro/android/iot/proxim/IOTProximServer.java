@@ -81,8 +81,6 @@ public class IOTProximServer
 
     public IOTProximServer(Context context)
     {
-        connectedDevices = new ArrayList<>();
-
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
         {
             return;
@@ -98,6 +96,8 @@ public class IOTProximServer
 
         btGattServer = btManager.openGattServer(context, btGattServerCallback);
         btLEAdvertiser = btAdapter.getBluetoothLeAdvertiser();
+
+        connectedDevices = new ArrayList<>();
 
         initializeServer();
         startAdvertising();
@@ -145,14 +145,15 @@ public class IOTProximServer
         {
             AdvertiseSettings settings = new AdvertiseSettings.Builder()
                     .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
+                    .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_LOW)
                     .setConnectable(true)
                     .setTimeout(0)
-                    .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM)
                     .build();
 
             AdvertiseData data = new AdvertiseData.Builder()
                     .setIncludeDeviceName(false)
                     .setIncludeTxPowerLevel(true)
+                    .addServiceData(new ParcelUuid(IOT_PROXIM_SERVICE_UUID), "IOTProxim".getBytes())
                     .addServiceUuid(new ParcelUuid(IOT_PROXIM_SERVICE_UUID))
                     .build();
 

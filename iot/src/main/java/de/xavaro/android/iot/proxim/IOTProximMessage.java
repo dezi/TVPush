@@ -1,36 +1,37 @@
 package de.xavaro.android.iot.proxim;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.UUID;
 
 public class IOTProximMessage
 {
     public static UUID CHARACTERISTIC_UUID = UUID.fromString("decafbad-f5d0-4cc0-aeb8-d00db16b00b5");
 
-    static public final int SIZE = 8 + 4 + 4 + 1; //Long.BYTES + Float.BYTES*2 + Byte.BYTES;
+    static public final int SIZE = 2 + 8 + 8; // Short.BYTES + Double.BYTES + Double.BYTES;
 
-    public int version = 1;
-    public long timestamp = 0;
-    public float distance = 0.0f;
-    public float filtered = 0.0f;
-    public boolean jump = false;
+    public byte major = 1;
+    public byte minor = 0;
+    public double lat = 53.568187;
+    public double lon = 10.140207;
 
-    public IOTProximMessage(float distance, float filtered, boolean jump)
+    public IOTProximMessage()
     {
-        this.timestamp = System.currentTimeMillis();
-        this.distance = distance;
-        this.filtered = filtered;
-        this.jump = jump;
+    }
+
+    public IOTProximMessage(double lat, double lon)
+    {
+        this.lat = lat;
+        this.lon = lon;
     }
 
     public byte[] getBytes()
     {
-        byte[] b = ByteBuffer.allocate(IOTProximMessage.SIZE).
-                order(ByteOrder.LITTLE_ENDIAN).putLong(timestamp).
-                putFloat(distance).putFloat(filtered).
-                put((byte) (jump ? 1 : 0)).array();
-        return b;
+        return ByteBuffer
+                .allocate(IOTProximMessage.SIZE)
+                .put(major)
+                .put(minor)
+                .putDouble(lat)
+                .putDouble(lon)
+                .array();
     }
-
 }
