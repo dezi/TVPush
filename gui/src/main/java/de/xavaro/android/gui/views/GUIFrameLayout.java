@@ -2,22 +2,31 @@ package de.xavaro.android.gui.views;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import de.xavaro.android.gui.simple.Simple;
+import de.xavaro.android.gui.skills.GUICanDip;
 import de.xavaro.android.gui.skills.GUICanRestoreBackground;
 import de.xavaro.android.gui.skills.GUICanRestoreBackgroundDelegate;
 import de.xavaro.android.gui.skills.GUICanRoundedCorners;
 import de.xavaro.android.gui.skills.GUICanRoundedCornersDelegate;
 
-public class GUIFrameLayout extends FrameLayout
-        implements GUICanRoundedCorners, GUICanRestoreBackground
+public class GUIFrameLayout extends FrameLayout implements
+        GUICanDip,
+        GUICanRoundedCorners,
+        GUICanRestoreBackground
 {
+    public final FrameLayout.LayoutParams params;
+
     public GUIFrameLayout(Context context)
     {
         super(context);
+
+        params = new FrameLayout.LayoutParams(Simple.MP, Simple.MP, Gravity.TOP);
+        setLayoutParams(params);
 
         initSkills();
     }
@@ -26,13 +35,10 @@ public class GUIFrameLayout extends FrameLayout
 
     public void setSizeDip(int width, int height)
     {
-        if (getLayoutParams() == null)
-        {
-            setLayoutParams(new ViewGroup.MarginLayoutParams(Simple.WC, Simple.WC));
-        }
-
         getLayoutParams().width = width > 0 ? Simple.dipToPx(width) : width;
         getLayoutParams().height = height > 0 ? Simple.dipToPx(height) : height;
+
+        setLayoutParams(params);
     }
 
     public void setPaddingDip(int pad)

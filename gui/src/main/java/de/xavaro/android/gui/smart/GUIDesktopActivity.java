@@ -3,9 +3,12 @@ package de.xavaro.android.gui.smart;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.widget.FrameLayout;
 
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIActivity;
+import de.xavaro.android.gui.plugin.GUIChannelWizzard;
 import de.xavaro.android.gui.plugin.GUISpeechRecogniton;
 import de.xavaro.android.gui.plugin.GUIVideoSurface;
 import de.xavaro.android.gui.simple.Simple;
@@ -17,6 +20,7 @@ public class GUIDesktopActivity extends GUIActivity
     private final static String LOGTAG = GUIDesktopActivity.class.getSimpleName();
 
     public GUISpeechRecogniton speechRecognition;
+    public GUIChannelWizzard channelWizzard;
 
     private GUIVideoSurface videoSurface1;
     private GUIVideoSurface videoSurface2;
@@ -31,7 +35,17 @@ public class GUIDesktopActivity extends GUIActivity
         GUI.instance.desktopActivity = this;
 
         speechRecognition = new GUISpeechRecogniton(this);
-        topframe.addView(speechRecognition);
+
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(Simple.MP, Simple.WC, Gravity.BOTTOM);
+        topframe.addView(speechRecognition, lp);
+
+        channelWizzard = new GUIChannelWizzard(this);
+        channelWizzard.setPosition(100,100);
+        channelWizzard.setSizeDip(600,800);
+
+        topframe.addView(channelWizzard);
+
+        checkWindowSize();
     }
 
     @Override
@@ -89,6 +103,28 @@ public class GUIDesktopActivity extends GUIActivity
             camera.registerSurface(videoSurface.getGLSVideoView());
             camera.setResolution(Camera.RESOLUTION_720P);
             camera.startRealtimeVideo();
+        }
+
+        checkWindowSize();
+    }
+
+    public void displayChannelWizzard(boolean show)
+    {
+        if (show)
+        {
+            bringToFront();
+
+            if (channelWizzard.getParent() == null)
+            {
+                topframe.addView(channelWizzard);
+            }
+        }
+        else
+        {
+            if (channelWizzard.getParent() != null)
+            {
+                topframe.removeView(channelWizzard);
+            }
         }
 
         checkWindowSize();

@@ -1,24 +1,23 @@
 package de.xavaro.android.gui.views;
 
+import android.support.v7.widget.AppCompatImageView;
 import android.graphics.drawable.Drawable;
-import android.widget.RelativeLayout;
 import android.content.Context;
 import android.view.ViewGroup;
 
+import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.skills.GUICanDip;
 import de.xavaro.android.gui.skills.GUICanRestoreBackground;
 import de.xavaro.android.gui.skills.GUICanRestoreBackgroundDelegate;
 import de.xavaro.android.gui.skills.GUICanRoundedCorners;
 import de.xavaro.android.gui.skills.GUICanRoundedCornersDelegate;
 
-import de.xavaro.android.gui.simple.Simple;
-
-public class GUIRelativeLayout extends RelativeLayout implements
+public class GUIImageView extends AppCompatImageView implements
         GUICanDip,
         GUICanRoundedCorners,
         GUICanRestoreBackground
 {
-    public GUIRelativeLayout(Context context)
+    public GUIImageView(Context context)
     {
         super(context);
 

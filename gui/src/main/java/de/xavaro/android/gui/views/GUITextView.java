@@ -7,13 +7,16 @@ import android.util.TypedValue;
 import android.view.ViewGroup;
 
 import de.xavaro.android.gui.simple.Simple;
+import de.xavaro.android.gui.skills.GUICanDip;
 import de.xavaro.android.gui.skills.GUICanRestoreBackground;
 import de.xavaro.android.gui.skills.GUICanRestoreBackgroundDelegate;
 import de.xavaro.android.gui.skills.GUICanRoundedCorners;
 import de.xavaro.android.gui.skills.GUICanRoundedCornersDelegate;
 
-public class GUITextView extends AppCompatTextView
-        implements GUICanRoundedCorners, GUICanRestoreBackground
+public class GUITextView extends AppCompatTextView implements
+        GUICanDip,
+        GUICanRoundedCorners,
+        GUICanRestoreBackground
 {
     public GUITextView(Context context)
     {

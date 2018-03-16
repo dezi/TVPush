@@ -1,24 +1,23 @@
 package de.xavaro.android.gui.views;
 
-import android.graphics.drawable.Drawable;
-import android.widget.RelativeLayout;
 import android.content.Context;
-import android.view.ViewGroup;
+import android.graphics.drawable.Drawable;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
+import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.skills.GUICanDip;
 import de.xavaro.android.gui.skills.GUICanRestoreBackground;
 import de.xavaro.android.gui.skills.GUICanRestoreBackgroundDelegate;
 import de.xavaro.android.gui.skills.GUICanRoundedCorners;
 import de.xavaro.android.gui.skills.GUICanRoundedCornersDelegate;
 
-import de.xavaro.android.gui.simple.Simple;
-
-public class GUIRelativeLayout extends RelativeLayout implements
+public class GUILinearLayout extends LinearLayout implements
         GUICanDip,
         GUICanRoundedCorners,
         GUICanRestoreBackground
 {
-    public GUIRelativeLayout(Context context)
+    public GUILinearLayout(Context context)
     {
         super(context);
 
@@ -31,7 +30,7 @@ public class GUIRelativeLayout extends RelativeLayout implements
     {
         if (getLayoutParams() == null)
         {
-            setLayoutParams(new ViewGroup.MarginLayoutParams(Simple.WC, Simple.WC));
+            setLayoutParams(new MarginLayoutParams(Simple.WC, Simple.WC));
         }
 
         getLayoutParams().width = width > 0 ? Simple.dipToPx(width) : width;

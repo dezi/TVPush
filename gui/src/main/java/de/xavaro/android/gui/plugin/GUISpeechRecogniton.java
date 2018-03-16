@@ -45,9 +45,6 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
 
         super.onCreate();
 
-        pluginFrameParams.gravity = Gravity.BOTTOM;
-        pluginFrame.setLayoutParams(pluginFrameParams);
-
         colorFrame = new GUIRainbowLayout(getContext());
 
         pluginFrame.addView(colorFrame);

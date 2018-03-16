@@ -24,8 +24,7 @@ public class GUIPlugin extends GUIFrameLayout
         //
 
         pluginFrame = this;
-
-        pluginFrameParams = new FrameLayout.LayoutParams(Simple.MP, Simple.WC, Gravity.TOP);
+        pluginFrameParams = params;
 
         onCreate();
     }
