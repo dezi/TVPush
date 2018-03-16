@@ -11,8 +11,6 @@ import de.xavaro.android.gui.plugin.GUIVideoSurface;
 import de.xavaro.android.gui.simple.Simple;
 
 import pub.android.interfaces.cam.Camera;
-import zz.top.tpl.base.TPL;
-import zz.top.tpl.handler.TPLHandlerSmartBulb;
 
 public class GUIDesktopActivity extends GUIActivity
 {

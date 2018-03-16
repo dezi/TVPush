@@ -2,6 +2,7 @@ package de.xavaro.android.gui.base;
 
 import android.annotation.SuppressLint;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
@@ -146,10 +147,23 @@ public class GUIActivity extends AppCompatActivity
 
     public void bringToFront()
     {
+        Log.d(LOGTAG, "bringToFront: isactive=" + isactive + " class=" + this.getClass().getSimpleName());
+
         if (! isactive)
         {
             Intent intent = new Intent(this, this.getClass());
-            startActivity(intent);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+            try
+            {
+                pendingIntent.send();
+            }
+            catch (PendingIntent.CanceledException ex)
+            {
+                ex.printStackTrace();
+            }
         }
     }
 

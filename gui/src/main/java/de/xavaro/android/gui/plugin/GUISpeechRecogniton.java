@@ -21,8 +21,6 @@ import de.xavaro.android.gui.views.GUITextView;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
 
-import de.xavaro.android.iot.handler.IOTHandleStot;
-
 public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
 {
     private final static String LOGTAG = GUISpeechRecogniton.class.getSimpleName();
@@ -160,6 +158,8 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
         colorFrame.start();
 
         hadResult = true;
+
+        GUI.instance.desktopActivity.bringToFront();
     }
 
     public void displayPinCodeMessage(int timeout)
@@ -173,6 +173,8 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
     {
         if (seconds <= 0) seconds = 2;
         if (seconds > 60) seconds = 60;
+
+        GUI.instance.desktopActivity.bringToFront();
 
         toastMessage = message;
 
