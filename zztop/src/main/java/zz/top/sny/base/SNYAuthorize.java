@@ -56,6 +56,12 @@ public class SNYAuthorize
 
         if (currentIPAddr != null)
         {
+            Log.d(LOGTAG, "enterPincode:"
+                    + " currentIPAddr=" + currentIPAddr
+                    + " currentSNYtvuuid=" + currentSNYtvuuid
+                    + " currentDevname=" + currentDevname
+                    + " currentUsername=" + currentUsername);
+
             ok = registerPincode(currentIPAddr, currentSNYtvuuid, currentDevname, currentUsername, pincode);
         }
 
@@ -86,12 +92,13 @@ public class SNYAuthorize
             currentUsername = username;
 
         }
+
         SNY.instance.onPincodeRequest(snytvuuid);
     }
 
     private static boolean registerPincode(String ipaddr, String snytvuuid, String devname, String username, String pincode)
     {
-        JSONObject credentials = authHandler(ipaddr, snytvuuid, devname, null, pincode);
+        JSONObject credentials = authHandler(ipaddr, snytvuuid, devname, username, pincode);
         if (credentials != null) SNY.instance.onDeviceCredentials(credentials);
 
         return (credentials != null);
@@ -110,7 +117,7 @@ public class SNYAuthorize
         Json.put(register, "params", params);
 
         JSONObject client = new JSONObject();
-        Json.put(client, "clientid", snytvuuid + "x");
+        Json.put(client, "clientid", snytvuuid);
         Json.put(client, "nickname", username + " (" + devname + ")");
         Json.put(client, "level", "private");
 
@@ -127,9 +134,8 @@ public class SNYAuthorize
 
         String urlstring = authurl.replace("####", ipaddr);
 
-        Log.d(LOGTAG, "authorize urlstring=" + urlstring);
-
-        //Log.d(LOGTAG, "authorize register=" + Json.toPretty(register));
+        Log.d(LOGTAG, "authHandler: urlstring=" + urlstring);
+        //Log.d(LOGTAG, "authHandler: register=" + Json.toPretty(register));
 
         JSONObject result;
         JSONObject headers = new JSONObject();
@@ -143,7 +149,7 @@ public class SNYAuthorize
             result = SNYUtil.getPostAuth(urlstring, register, headers, "", password);
         }
 
-        JSONObject credentials = new JSONObject();
+        JSONObject credentials = null;
 
         String cookie = Json.getString(headers, "Set-Cookie");
 
@@ -163,6 +169,8 @@ public class SNYAuthorize
 
                     Log.d(LOGTAG, "authHandler: authtoken=" + authtoken);
 
+                    credentials = new JSONObject();
+
                     Json.put(credentials, "uuid", snytvuuid);
                     Json.put(credentials, "clientid", snytvuuid);
                     Json.put(credentials, "authtoken", authtoken);
@@ -171,7 +179,7 @@ public class SNYAuthorize
             }
         }
 
-        Log.d(LOGTAG, "authorize result=" + Json.toPretty(result));
+        //Log.d(LOGTAG, "authHandler: result=" + Json.toPretty(result));
 
         return credentials;
     }

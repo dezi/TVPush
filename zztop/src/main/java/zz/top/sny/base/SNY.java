@@ -86,6 +86,8 @@ public class SNY implements
         {
             String pincode = Json.getString(action, "actionData");
 
+            Log.d(LOGTAG, "doSomething: pincode=" + pincode);
+
             return SNYAuthorize.enterPincode(pincode);
         }
 

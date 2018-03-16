@@ -3,6 +3,7 @@ package de.xavaro.android.gui.base;
 import android.annotation.SuppressLint;
 
 import android.content.Intent;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.PixelFormat;
@@ -42,6 +43,9 @@ public class GUIActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
         //
         // Remove stupid menu bar.

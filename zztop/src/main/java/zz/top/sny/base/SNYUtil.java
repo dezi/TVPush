@@ -111,7 +111,7 @@ public class SNYUtil
                 // File cannot be loaded.
                 //
 
-                Log.d(LOGTAG, "getPost: ERR=" + connection.getResponseCode());
+                Log.e(LOGTAG, "getPost: ERR=" + connection.getResponseCode());
 
                 return null;
             }
@@ -125,10 +125,11 @@ public class SNYUtil
                 for (Map.Entry<String, List<String>> entries : connection.getHeaderFields().entrySet())
                 {
                     String key = entries.getKey();
+                    if (key == null) key = "Status-Line";
 
                     for (String val : entries.getValue())
                     {
-                        Log.d(LOGTAG, "getPostInternal: key=" + key + " val=" + val);
+                        Log.d(LOGTAG, "getPostInternal: response key=" + key + " val=" + val);
 
                         Json.put(headers, key, val);
                     }
@@ -175,7 +176,7 @@ public class SNYUtil
 
             String result = new String(buffer);
 
-            Log.d(LOGTAG, "getPost result=" + result);
+            Log.d(LOGTAG, "getPostInternal: result=" + result);
 
             return result;
         }
