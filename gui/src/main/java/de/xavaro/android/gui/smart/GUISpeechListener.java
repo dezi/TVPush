@@ -68,7 +68,7 @@ public class GUISpeechListener implements RecognitionListener
 
         isEnabled = true;
 
-        if (!lockStart)
+        if (! lockStart && (recognizer != null))
         {
             lockStart = true;
 
