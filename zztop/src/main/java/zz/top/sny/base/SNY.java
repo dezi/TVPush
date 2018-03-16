@@ -7,6 +7,7 @@ import android.util.Log;
 import org.json.JSONObject;
 
 import pub.android.interfaces.iot.GetDeviceCredentials;
+import pub.android.interfaces.iot.OnBackgroundRequest;
 import pub.android.interfaces.iot.OnDeviceHandler;
 import pub.android.interfaces.iot.DoSomethingHandler;
 
@@ -18,7 +19,8 @@ public class SNY implements
         OnDeviceHandler,
         GetDeviceCredentials,
         DoSomethingHandler,
-        OnPincodeRequest
+        OnPincodeRequest,
+        OnBackgroundRequest
 {
     private static final String LOGTAG = SNY.class.getSimpleName();
 
@@ -72,6 +74,12 @@ public class SNY implements
     }
 
     @Override
+    public void onBackgroundRequest()
+    {
+        Log.d(LOGTAG, "onBackgroundRequest: STUB!");
+    }
+
+    @Override
     public boolean doSomething(JSONObject action, JSONObject device, JSONObject status, JSONObject credentials)
     {
         Log.d(LOGTAG, "doSomething: action=" + Json.toPretty(action));
@@ -95,32 +103,42 @@ public class SNY implements
         {
             JSONObject mycredentials = Json.getObject(credentials, "credentials");
 
-            String dial = Json.getString(action, "actionData");
-            String ipaddr = Json.getString(status, "ipaddr");
-            String authtoken = Json.getString(mycredentials, "authtoken");
+            final String dial = Json.getString(action, "actionData");
+            final String ipaddr = Json.getString(status, "ipaddr");
+            final String authtoken = Json.getString(mycredentials, "authtoken");
 
             if (dial != null)
             {
-                for (int inx = 0; inx < dial.length(); inx++)
+                onBackgroundRequest();
+
+                Simple.getHandler().postDelayed(new Runnable()
                 {
-                    char digit = dial.charAt(inx);
-
-                    switch (digit)
+                    @Override
+                    public void run()
                     {
-                        case '0': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num0"); break;
-                        case '1': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num1"); break;
-                        case '2': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num2"); break;
-                        case '3': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num3"); break;
-                        case '4': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num4"); break;
-                        case '5': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num5"); break;
-                        case '6': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num6"); break;
-                        case '7': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num7"); break;
-                        case '8': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num8"); break;
-                        case '9': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num9"); break;
-                    }
-                }
+                        for (int inx = 0; inx < dial.length(); inx++)
+                        {
+                            char digit = dial.charAt(inx);
 
-                SNYRemote.sendRemoteCommand(ipaddr, authtoken, "DpadCenter");
+                            switch (digit)
+                            {
+                                case '0': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num0"); break;
+                                case '1': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num1"); break;
+                                case '2': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num2"); break;
+                                case '3': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num3"); break;
+                                case '4': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num4"); break;
+                                case '5': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num5"); break;
+                                case '6': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num6"); break;
+                                case '7': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num7"); break;
+                                case '8': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num8"); break;
+                                case '9': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num9"); break;
+                            }
+                        }
+
+                        SNYRemote.sendRemoteCommand(ipaddr, authtoken, "DpadCenter");
+
+                    }
+                }, 1000);
             }
         }
 

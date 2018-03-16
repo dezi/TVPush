@@ -5,6 +5,7 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.simple.Simple;
 import zz.top.sny.base.SNY;
 import zz.top.utl.Json;
@@ -63,5 +64,11 @@ public class SystemsSNY extends SNY
                 Systems.gui.displayPinCodeMessage(60);
             }
         }, 1000);
+    }
+
+    @Override
+    public void onBackgroundRequest()
+    {
+        GUI.instance.desktopActivity.sendToBack();
     }
 }

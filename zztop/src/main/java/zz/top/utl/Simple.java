@@ -1,6 +1,7 @@
 package zz.top.utl;
 
 import android.content.ContentResolver;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 
@@ -18,11 +19,14 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class Simple
 {
+    private static Handler handler;
     private static WifiManager wifiManager;
     private static ContentResolver contentResolver;
 
     public static void initialize(Application app)
     {
+        handler = new Handler();
+
         wifiManager = (WifiManager) app.getSystemService(Context.WIFI_SERVICE);
         contentResolver = app.getContentResolver();
     }
@@ -52,6 +56,11 @@ public class Simple
         }
 
         return null;
+    }
+
+    public static Handler getHandler()
+    {
+        return handler;
     }
 
     @Nullable

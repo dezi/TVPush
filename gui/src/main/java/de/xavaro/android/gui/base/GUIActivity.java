@@ -145,6 +145,23 @@ public class GUIActivity extends AppCompatActivity
         return isactive;
     }
 
+    public void pressHomeKey()
+    {
+        Log.d(LOGTAG, "sendToBack: isactive=" + isactive);
+
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        this.startActivity(intent);
+    }
+
+    public void sendToBack()
+    {
+        Log.d(LOGTAG, "sendToBack: isactive=" + isactive);
+
+        onBackPressed();
+    }
+
     public void bringToFront()
     {
         Log.d(LOGTAG, "bringToFront: isactive=" + isactive + " class=" + this.getClass().getSimpleName());

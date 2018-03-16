@@ -158,8 +158,6 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
         colorFrame.start();
 
         hadResult = true;
-
-        GUI.instance.desktopActivity.bringToFront();
     }
 
     public void displayPinCodeMessage(int timeout)
@@ -174,13 +172,11 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
         if (seconds <= 0) seconds = 2;
         if (seconds > 60) seconds = 60;
 
-        GUI.instance.desktopActivity.bringToFront();
 
         toastMessage = message;
-
         speechText.setText(toastMessage);
-
         if (emphasis) colorFrame.start(3);
+        GUI.instance.desktopActivity.bringToFront();
 
         Simple.getHandler().postDelayed(toastDone, seconds * 1000);
     }
