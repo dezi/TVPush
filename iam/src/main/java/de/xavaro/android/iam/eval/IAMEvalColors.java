@@ -45,9 +45,8 @@ public class IAMEvalColors
     static
     {
         color("DIMM 1", "Hell", 0xffffff);
-        color("DIMM 2", "Halbhell", 0x888888);
-        color("DIMM 3", "Intim", 0x333333);
-        color("DIMM 4", "Dunkel", 0x111111);
+        color("DIMM 3", "Intim", 0x222222);
+        color("DIMM 4", "Dunkel", 0x000000);
 
         color("BASIC 1", "Normal", 0xfefefe);
         color("BASIC 2", "Weiß", 0xfefefe);

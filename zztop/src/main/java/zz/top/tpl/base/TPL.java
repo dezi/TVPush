@@ -155,9 +155,14 @@ public class TPL implements OnDeviceHandler, DoSomethingHandler
 
                         if ((rgbcolor == 0xffffff)
                                 || (rgbcolor == 0x888888)
+                                || (rgbcolor == 0x777777)
+                                || (rgbcolor == 0x666666)
+                                || (rgbcolor == 0x555555)
+                                || (rgbcolor == 0x444444)
                                 || (rgbcolor == 0x333333)
                                 || (rgbcolor == 0x222222)
-                                || (rgbcolor == 0x111111))
+                                || (rgbcolor == 0x111111)
+                                || (rgbcolor == 0x000000))
                         {
                             //
                             // Dimm intention.
