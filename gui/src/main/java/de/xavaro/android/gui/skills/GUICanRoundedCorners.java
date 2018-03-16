@@ -1,6 +1,6 @@
 package de.xavaro.android.gui.skills;
 
-public interface GUICanRoundedCorners extends GUICanRestoreBackground
+public interface GUICanRoundedCorners
 {
     void setRoundedCorners(int radius, int color);
     void setRoundedCorners(int radius, int innerColor, int strokeColor);
