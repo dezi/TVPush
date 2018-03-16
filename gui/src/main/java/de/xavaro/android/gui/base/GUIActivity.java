@@ -28,6 +28,10 @@ public class GUIActivity extends AppCompatActivity
 {
     private final static String LOGTAG = GUIActivity.class.getSimpleName();
 
+    private final static int MY_PERMISSIONS_REQUEST_BLUETOOTH = 0x0817;
+    private final static int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 0x0816;
+    private final static int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0x0815;
+
     public WindowManager.LayoutParams windowParams;
     public FrameLayout.LayoutParams topFrameParams;
 
@@ -106,7 +110,14 @@ public class GUIActivity extends AppCompatActivity
         setContentView(topframe);
 
         setUiFlags();
+    }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
+    {
+        boolean granted = (grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED);
+
+        Log.d(LOGTAG, "onRequestPermissionsResult: rc=" + requestCode + " granted=" + granted);
     }
 
     public void setWindowHeightDip(int heightDip)

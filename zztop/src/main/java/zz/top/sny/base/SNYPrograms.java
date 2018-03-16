@@ -107,7 +107,7 @@ public class SNYPrograms
 
         if ((names == null) || (nos == null))
         {
-            Log.d(LOGTAG, "registerChannels: nix...");
+            Log.e(LOGTAG, "registerChannels: nix...");
 
             return;
         }

@@ -12,6 +12,6 @@ public class DesktopActivity extends GUIDesktopActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-    }
 
+    }
 }
