@@ -194,7 +194,7 @@ public class SNYDiscover
 
         //if (ipAddr.equals(Simple.getConnectedWifiIPAddress()))
         {
-            SNYPrograms.importSDB();
+            SNYPrograms.importSDB(UDN);
         }
 
         if (ipAddr.equals(Simple.getConnectedWifiIPAddress()))

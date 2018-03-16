@@ -24,7 +24,7 @@ public class SNYPrograms
 
     private final static String ChecksumRegex = "<CheckSum>([^<]*)<\\/CheckSum>";
 
-    public static void importSDB()
+    public static void importSDB(String uuid)
     {
         File external = Environment.getExternalStorageDirectory();
 
@@ -33,7 +33,7 @@ public class SNYPrograms
 
         if (sdbXML.exists())
         {
-            importSDB(sdbXML, sdbJSON);
+            importSDB(uuid, sdbXML, sdbJSON);
         }
         else
         {
@@ -49,7 +49,7 @@ public class SNYPrograms
 
                 if (sdbXML.exists())
                 {
-                    importSDB(sdbXML, sdbJSON);
+                    importSDB(uuid, sdbXML, sdbJSON);
 
                     break;
                 }
@@ -57,7 +57,7 @@ public class SNYPrograms
         }
     }
 
-    public static void importSDB(File sdbXML, File sdbJSON)
+    public static void importSDB(String uuid, File sdbXML, File sdbJSON)
     {
         Log.d(LOGTAG, "importSDB:"
                 + " sdbXML=" + sdbXML.getAbsolutePath()
@@ -90,10 +90,10 @@ public class SNYPrograms
 
         Log.d(LOGTAG, "importSDB: done.");
 
-        registerChannels(sdbjson);
+        registerChannels(uuid, sdbjson);
     }
 
-    public static void registerChannels(JSONObject sdbjson)
+    public static void registerChannels(String uuid, JSONObject sdbjson)
     {
         JSONObject SdbRoot = Json.getObject(sdbjson, "SdbRoot");
         JSONObject SdbXml = Json.getObject(SdbRoot, "SdbXml");
@@ -115,7 +115,7 @@ public class SNYPrograms
         JSONObject metadata = new JSONObject();
         JSONArray channels = new JSONArray();
 
-        Json.put(metadata, "ipaddr", Simple.getConnectedWifiIPAddress());
+        Json.put(metadata, "uuid", uuid);
         Json.put(metadata, "PUBChannels", channels);
 
         for (int inx = 0; inx < names.length(); inx++)

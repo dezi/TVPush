@@ -1,7 +1,5 @@
 package de.xavaro.android.tvpush;
 
-import android.app.Activity;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import de.xavaro.android.gui.smart.GUIDesktopActivity;
