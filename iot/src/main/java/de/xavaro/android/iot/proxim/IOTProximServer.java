@@ -186,26 +186,9 @@ public class IOTProximServer
         @Override
         public void onStartFailure(int errorCode)
         {
-            String desc = "unknown";
-
-            if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_FEATURE_UNSUPPORTED)
-                desc = "ADVERTISE_FAILED_FEATURE_UNSUPPORTED";
-
-            if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_TOO_MANY_ADVERTISERS)
-                desc = "ADVERTISE_FAILED_TOO_MANY_ADVERTISERS";
-
-            if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_ALREADY_STARTED)
-                desc = "ADVERTISE_FAILED_ALREADY_STARTED";
-
-            if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_DATA_TOO_LARGE)
-                desc = "ADVERTISE_FAILED_DATA_TOO_LARGE";
-
-            if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_INTERNAL_ERROR)
-                desc = "ADVERTISE_FAILED_INTERNAL_ERROR";
-
             Log.e(LOGTAG, "AdvertiseCallback: onStartFailure"
                     + " err=" + errorCode
-                    + " desc=" + desc);
+                    + " desc=" + Simple.getBTAdvertiserFailDescription(errorCode));
         }
     };
 
