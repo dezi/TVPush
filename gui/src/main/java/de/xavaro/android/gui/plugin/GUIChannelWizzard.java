@@ -2,6 +2,7 @@ package de.xavaro.android.gui.plugin;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -22,6 +23,7 @@ public class GUIChannelWizzard extends GUIPlugin
     private final static String LOGTAG = GUIChannelWizzard.class.getSimpleName();
 
     private final static int WIDTH = 600;
+    private final static int CHANNELS_LINE = 4;
 
     private Context context;
     private GUIFrameLayout topFrame;
@@ -76,37 +78,51 @@ public class GUIChannelWizzard extends GUIPlugin
 
         if (channels == null) return;
 
-
         int topInx = 0;
+
         for (int inx = 0; inx < channels.length(); inx++)
         {
             JSONObject channel = Json.getObject(channels, inx);
 
             final String channelName = Json.getString(channel, "name");
 
-            int width  = Simple.dipToPx(WIDTH / 3);
-            int heigth = Simple.dipToPx(60);
+            int width  = Simple.dipToPx(WIDTH / CHANNELS_LINE);
+            int heigth = Simple.dipToPx(40);
 
             FrameLayout.LayoutParams prams = new FrameLayout.LayoutParams(width, heigth);
-            prams.topMargin  = heigth * (((inx % 3) < 2) ? topInx : topInx++);
-            prams.leftMargin = width  * (inx % 3);
+            prams.topMargin  = heigth * (((inx % CHANNELS_LINE) < (CHANNELS_LINE-1)) ? topInx : topInx++);
+            prams.leftMargin = width  * (inx % CHANNELS_LINE);
+
+            GUIFrameLayout container = new GUIFrameLayout(context);
+            container.setFocusable(false);
+            container.setPaddingDip(3);
+            //container.setBackgroundColor(0x88000088);
+            container.setLayoutParams(prams);
+            topFrame.addView(container);
 
             final GUITextView channelView = new GUITextView(context);
+            channelView.setGravity(Gravity.VERTICAL_GRAVITY_MASK);
+            channelView.setMaxLines(1);
+            channelView.setPaddingDip(3);
             channelView.setFocusable(true);
-            channelView.setTextSizeDip(20);
+            channelView.setTextSizeDip(12);
+//            channelView.setPaddingDip(10);
             channelView.setText(Json.getString(channel, "dial") + ": " + channelName);
-            channelView.setBackgroundColor(0x88000088);
-            channelView.setLayoutParams(prams);
+            // channelView.setBackgroundColor(0x88000088);
+            channelView.setLayoutParams(new FrameLayout.LayoutParams(Simple.MP, Simple.MP, Gravity.CENTER));
+//            channelView.setRoundedCornersDip(0, 0xFFF8F8F8, 0xFF24292E);
+//            channelView.setRoundedCornersDip(0, 0xFFFFFFFF, 0xFFF8F8F8);
             channelView.setOnClickListener(new OnClickListener()
             {
                 @Override
                 public void onClick(View view)
                 {
                     Log.d(LOGTAG, "onClick: channelName=" + channelName);
+                    channelView.setRoundedCornersDip(0, 0xFFFFFFFF, 0xFF00A2FF);
                 }
             });
 
-            topFrame.addView(channelView);
+            container.addView(channelView);
         }
     }
 
