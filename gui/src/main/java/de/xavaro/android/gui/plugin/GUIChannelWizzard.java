@@ -1,6 +1,7 @@
 package de.xavaro.android.gui.plugin;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -26,7 +27,6 @@ public class GUIChannelWizzard extends GUIPlugin
     private final static int WIDTH = 600;
     private final static int CHANNELS_LINE = 4;
 
-    private Context context;
     private GUIFrameLayout scrollContent;
 
     public GUIChannelWizzard(Context context)
@@ -57,127 +57,116 @@ public class GUIChannelWizzard extends GUIPlugin
         return null;
     }
 
-    private void init()
-    {
-        context = getContext();
+    public GUIFrameLayout selectedContainer;
 
-        GUIFrameLayout mainFrame = new GUIFrameLayout(context)
+    public void moveDat(int keyCode)
+    {
+        Log.d(LOGTAG, "moveDat: keyCode=" + keyCode);
+    }
+
+    private GUITextView createChannelTextView(JSONObject channel)
+    {
+        GUITextView channelView = new GUITextView(getContext());
+        channelView.setGravity(Gravity.VERTICAL_GRAVITY_MASK);
+        channelView.setTextColor(Color.BLACK);
+        channelView.setMaxLines(1);
+        channelView.setPaddingDip(3);
+        channelView.setFocusable(false);
+        channelView.setTextSizeDip(12);
+        channelView.setText(Json.getString(channel, "dial") + ": " + Json.getString(channel, "name"));
+        channelView.setLayoutParams(new FrameLayout.LayoutParams(Simple.MP, Simple.MP, Gravity.CENTER));
+
+        return channelView;
+    }
+
+    private GUIFrameLayout createContainer(int inx, int iny)
+    {
+        int width  = Simple.dipToPx(WIDTH / CHANNELS_LINE);
+        int heigth = Simple.dipToPx(40);
+
+        FrameLayout.LayoutParams prams = new FrameLayout.LayoutParams(width, heigth);
+        prams.leftMargin = width  * inx;
+        prams.topMargin  = heigth * iny;
+
+        GUIFrameLayout container = new GUIFrameLayout(getContext())
         {
             @Override
             public boolean onKeyDown(int keyCode, KeyEvent event)
             {
-                Log.d(LOGTAG, "onKeyDown: aaaa event=" + event);
+                Log.d(LOGTAG, "onKeyDown: conatiner event=" + event);
+
+                if (keyCode != KeyEvent.KEYCODE_DPAD_CENTER)
+                {
+                    if (selectedContainer == this)
+                    {
+                        moveDat(keyCode);
+                        return true;
+                    }
+                }
 
                 return super.onKeyDown(keyCode, event);
             }
         };
 
-        mainFrame.setFocusable(true);
-        mainFrame.setRoundedCorners(20, 0xffffffff);
-        pluginFrame.addView(mainFrame);
+        final GUIFrameLayout bgLayout = new GUIFrameLayout(getContext());
+        container.addView(bgLayout);
 
-        GUIScrollView scroll = new GUIScrollView(context);
-        mainFrame.addView(scroll);
+        container.setFocusable(true);
+        container.setLayoutParams(prams);
+        container.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Log.d(LOGTAG, "onClick:");
 
-        scrollContent = new GUIFrameLayout(context);
-        scroll.addView(scrollContent);
+                GUIFrameLayout container = (GUIFrameLayout) view;
 
-        createChennelView();
+                if (container != selectedContainer)
+                {
+                    bgLayout.saveBackground();
+                    bgLayout.setBackgroundColor(0xffd4d4d4);
+                    selectedContainer = container;
+                }
+                else
+                {
+                    bgLayout.restoreBackground();
+                    selectedContainer = null;
+                }
+            }
+        });
 
-        Log.d(LOGTAG, "init: width=" + WIDTH);
+        scrollContent.addView(container);
+
+        return bgLayout;
     }
 
-    public GUIFrameLayout selectedContainer;
-
-    public void moveDat(int keyCode)
-    {
-
-    }
-
-    private void createChennelView()
+    private void createChannelView()
     {
         JSONArray channels = getChannels();
 
         if (channels == null) return;
 
-        int topInx = 0;
+        int iny = 0;
 
         for (int inx = 0; inx < channels.length(); inx++)
         {
             JSONObject channel = Json.getObject(channels, inx);
 
-            final String channelName = Json.getString(channel, "name");
+            int left = inx % CHANNELS_LINE;
+            int top = iny;
 
-            int width  = Simple.dipToPx(WIDTH / CHANNELS_LINE);
-            int heigth = Simple.dipToPx(40);
 
-            FrameLayout.LayoutParams prams = new FrameLayout.LayoutParams(width, heigth);
-            prams.topMargin  = heigth * (((inx % CHANNELS_LINE) < (CHANNELS_LINE-1)) ? topInx : topInx++);
-            prams.leftMargin = width  * (inx % CHANNELS_LINE);
+            GUITextView text = createChannelTextView(channel);
 
-            GUIFrameLayout container = new GUIFrameLayout(context)
+            GUIFrameLayout container = createContainer(left, top);
+            container.addView(text);
+
+            if (left == (CHANNELS_LINE-1))
             {
-                @Override
-                public boolean onKeyDown(int keyCode, KeyEvent event)
-                {
-                    Log.d(LOGTAG, "onKeyDown: conatiner event=" + event);
-
-                    if (selectedContainer == this)
-                    {
-                        moveDat(keyCode);
-                        return false;
-                    }
-
-                    return super.onKeyDown(keyCode, event);
-                }
-            };
-
-            container.setFocusable(true);
-            container.setPaddingDip(3);
-            //container.setBackgroundColor(0x88000088);
-            container.setLayoutParams(prams);
-            scrollContent.addView(container);
-
-            final GUITextView channelView = new GUITextView(context);
-            channelView.setGravity(Gravity.VERTICAL_GRAVITY_MASK);
-            channelView.setMaxLines(1);
-            channelView.setPaddingDip(3);
-            channelView.setFocusable(false);
-            channelView.setTextSizeDip(12);
-            channelView.setText(Json.getString(channel, "dial") + ": " + channelName);
-            channelView.setLayoutParams(new FrameLayout.LayoutParams(Simple.MP, Simple.MP, Gravity.CENTER));
-            channelView.setOnClickListener(new OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    Log.d(LOGTAG, "onClick: channelName=" + channelName);
-                    channelView.setRoundedCornersDip(0, 0xFFFFFFFF, 0xFF00A2FF);
-                }
-            });
-            
-            container.addView(channelView);
+                iny++;
+            }
         }
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)
-    {
-        Log.d(LOGTAG, "onKeyDown: bbbb event=" + event);
-
-        return super.onKeyDown(keyCode, event);
-
-        // KEYCODE_DPAD_CENTER
-//        if (keyCode == KeyEvent.)
-//        {
-//            GUI.instance.displaySpeechRecognition(true);
-//
-//            return true;
-//        }
-//
-//        Log.d(LOGTAG, "onKeyDown: event=" + event);
-//
-//        return super.onKeyDown(keyCode, event);
     }
 
     @Override
@@ -187,6 +176,16 @@ public class GUIChannelWizzard extends GUIPlugin
 
         super.onCreate();
 
-        init();
+        GUIFrameLayout mainFrame = new GUIFrameLayout(getContext());
+        mainFrame.setRoundedCorners(20, 0xffffffff);
+        pluginFrame.addView(mainFrame);
+
+        GUIScrollView scroll = new GUIScrollView(getContext());
+        mainFrame.addView(scroll);
+
+        scrollContent = new GUIFrameLayout(getContext());
+        scroll.addView(scrollContent);
+
+        createChannelView();
     }
 }
