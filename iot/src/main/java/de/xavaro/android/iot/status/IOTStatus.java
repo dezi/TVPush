@@ -10,15 +10,15 @@ public class IOTStatus extends IOTObject
 {
     private final static String LOGTAG = IOTStatus.class.getSimpleName();
 
-    public String wifi;
-    public String ipaddr;
-    public Integer ipport;
-
     //
     // These are real classes not primitives because
     // they can be missing in JSON if null.
     // Do not fuck with this.
     //
+
+    public String wifi;
+    public String ipaddr;
+    public Integer ipport;
 
     public Integer camblind;
 
@@ -30,6 +30,9 @@ public class IOTStatus extends IOTObject
     public Integer saturation;
     public Integer brightness;
     public Integer color_temp;
+
+    public Double gpsLat;
+    public Double gpsLon;
 
     public IOTStatus()
     {
@@ -53,29 +56,35 @@ public class IOTStatus extends IOTObject
 
     public void checkAndMergeContent(IOTStatus check, boolean external)
     {
+        changed = false;
+
         // @formatter:off
 
-        if (check.wifi       != null) wifi       = check.wifi;
-        if (check.ipaddr     != null) ipaddr     = check.ipaddr;
-        if (check.ipport     != null) ipport     = check.ipport;
+        if (nequals(wifi,       check.wifi      )) wifi       = check.wifi;
+        if (nequals(ipaddr,     check.ipaddr    )) ipaddr     = check.ipaddr;
+        if (nequals(ipport,     check.ipport    )) ipport     = check.ipport;
 
-        if (check.camblind   != null) camblind   = check.camblind;
+        if (nequals(camblind,   check.camblind  )) camblind   = check.camblind;
 
-        if (check.ledstate   != null) ledstate   = check.ledstate;
-        if (check.plugstate  != null) plugstate  = check.plugstate;
-        if (check.bulbstate  != null) bulbstate  = check.bulbstate;
+        if (nequals(ledstate,   check.ledstate  )) ledstate   = check.ledstate;
+        if (nequals(plugstate,  check.plugstate )) plugstate  = check.plugstate;
+        if (nequals(bulbstate,  check.bulbstate )) bulbstate  = check.bulbstate;
 
-        if (check.hue        != null) hue        = check.hue;
-        if (check.saturation != null) saturation = check.saturation;
-        if (check.brightness != null) brightness = check.brightness;
-        if (check.color_temp != null) color_temp = check.color_temp;
+        if (nequals(hue,        check.hue       )) hue        = check.hue;
+        if (nequals(saturation, check.saturation)) saturation = check.saturation;
+        if (nequals(brightness, check.brightness)) brightness = check.brightness;
+        if (nequals(color_temp, check.color_temp)) color_temp = check.color_temp;
+
+        if (nequals(gpsLat,     check.gpsLat    )) gpsLat     = check.gpsLat;
+        if (nequals(gpsLon,     check.gpsLon    )) gpsLon     = check.gpsLon;
 
         // @formatter:on
 
-        time = System.currentTimeMillis();
+        if (changed || (time == null) || (time == 0))
+        {
+            time = System.currentTimeMillis();
 
-        //Log.d(LOGTAG, "checkAndMergeContent: json=" + this.toJsonString());
-
-        saveToStorage();
+            saveToStorage();
+        }
     }
 }

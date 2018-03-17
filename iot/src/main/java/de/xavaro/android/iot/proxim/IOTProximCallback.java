@@ -25,6 +25,6 @@ public class IOTProximCallback extends AdvertiseCallback
     {
         Log.e(LOGTAG, "AdvertiseCallback: onStartFailure"
                 + " err=" + errorCode
-                + " desc=" + Simple.getBTAdvertiserFailDescription(errorCode));
+                + " desc=" + IOTProxim.getBTAdvertiserFailDescription(errorCode));
     }
 }

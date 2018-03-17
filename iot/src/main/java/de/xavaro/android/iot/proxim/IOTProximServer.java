@@ -130,7 +130,7 @@ public class IOTProximServer
 
         byte[] bytes = ByteBuffer
                 .allocate(1 + 1 + 8 + 8)
-                .put(IOTProxim.ADVERTISE_GPSLQ)
+                .put(IOTProxim.ADVERTISE_GPS_COARSE)
                 .put(powerLevel)
                 .putDouble(lat)
                 .putDouble(lon)
@@ -147,7 +147,7 @@ public class IOTProximServer
 
         byte[] bytes = ByteBuffer
                 .allocate(1 + 1 + 8 + 8)
-                .put(IOTProxim.ADVERTISE_GPSHQ)
+                .put(IOTProxim.ADVERTISE_GPS_FINE)
                 .put(powerLevel)
                 .putDouble(lat)
                 .putDouble(lon)
@@ -194,7 +194,7 @@ public class IOTProximServer
         AdvertiseData data = new AdvertiseData.Builder()
                 .setIncludeDeviceName(false)
                 .setIncludeTxPowerLevel(false)
-                .addManufacturerData(IOTProxim.MANUFACTURER_ID, bytes)
+                .addManufacturerData(IOTProxim.IOT_MANUFACTURER_ID, bytes)
                 .build();
 
         Log.d(LOGTAG, "advertiseDat: data=" + data.toString());

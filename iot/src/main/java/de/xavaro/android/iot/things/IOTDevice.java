@@ -21,6 +21,9 @@ public class IOTDevice extends IOTObject
     public final String TYPE_TABLET = "tablet";
     public final String TYPE_LAPTOP = "laptop";
     public final String TYPE_CAMERA= "camera";
+    public final String TYPE_TVREMOTE= "tvremote";
+    public final String TYPE_SMARTBULB= "bulb";
+    public final String TYPE_SMARTPLUG= "plug";
 
     public String did;
     public String nick;
@@ -31,7 +34,10 @@ public class IOTDevice extends IOTObject
     public String driver;
     public String version;
     public String location;
+
     public String fixedwifi;
+    public Double fixedLat;
+    public Double fixedLon;
 
     public JSONArray capabilities;
 
@@ -114,7 +120,7 @@ public class IOTDevice extends IOTObject
 
     public void checkAndMergeContent(IOTDevice check, boolean external)
     {
-        boolean changed = false;
+        changed = false;
 
         //
         // Update possibly from software update.
@@ -122,14 +128,14 @@ public class IOTDevice extends IOTObject
 
         // @formatter:off
 
-        if (changed |= IOTSimple.nequals(did,          check.did         )) did          = check.did;
-        if (changed |= IOTSimple.nequals(type,         check.type        )) type         = check.type;
-        if (changed |= IOTSimple.nequals(brand,        check.brand       )) brand        = check.brand;
-        if (changed |= IOTSimple.nequals(model,        check.model       )) model        = check.model;
-        if (changed |= IOTSimple.nequals(driver,       check.driver      )) driver       = check.driver;
-        if (changed |= IOTSimple.nequals(version,      check.version     )) version      = check.version;
-        if (changed |= IOTSimple.nequals(fixedwifi,    check.fixedwifi   )) fixedwifi    = check.fixedwifi;
-        if (changed |= IOTSimple.nequals(capabilities, check.capabilities)) capabilities = check.capabilities;
+        if (nequals(did,          check.did         )) did          = check.did;
+        if (nequals(type,         check.type        )) type         = check.type;
+        if (nequals(brand,        check.brand       )) brand        = check.brand;
+        if (nequals(model,        check.model       )) model        = check.model;
+        if (nequals(driver,       check.driver      )) driver       = check.driver;
+        if (nequals(version,      check.version     )) version      = check.version;
+        if (nequals(fixedwifi,    check.fixedwifi   )) fixedwifi    = check.fixedwifi;
+        if (nequals(capabilities, check.capabilities)) capabilities = check.capabilities;
 
         // @formatter:on
 
@@ -141,9 +147,11 @@ public class IOTDevice extends IOTObject
 
             // @formatter:off
 
-            if (changed |= IOTSimple.nequals(nick,     check.nick    )) nick     = check.nick;
-            if (changed |= IOTSimple.nequals(name,     check.name    )) name     = check.name;
-            if (changed |= IOTSimple.nequals(location, check.location)) location = check.location;
+            if (nequals(nick,     check.nick    )) nick     = check.nick;
+            if (nequals(name,     check.name    )) name     = check.name;
+            if (nequals(location, check.location)) location = check.location;
+            if (nequals(fixedLat, check.fixedLat)) fixedLat = check.fixedLat;
+            if (nequals(fixedLon, check.fixedLon)) fixedLon = check.fixedLon;
 
             // @formatter:on
         }

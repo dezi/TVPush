@@ -1,10 +1,7 @@
 package de.xavaro.android.iot.base;
 
 import org.json.JSONArray;
-
-import java.util.UUID;
-
-import de.xavaro.android.iot.simple.Json;
+import org.json.JSONObject;
 
 public class IOTSimple
 {
@@ -14,27 +11,39 @@ public class IOTSimple
                 || ((str1 != null) && (str2 != null) && str1.equals(str2));
     }
 
-    public static boolean nequals(String str1, String str2)
+    public static boolean equals(Long val1, Long val2)
     {
-        return ! equals(str1, str2);
+        return ((val1 == null) && (val2 == null))
+                || ((val1 != null) && (val2 != null) && val1.equals(val2));
+    }
+
+    public static boolean equals(Double val1, Double val2)
+    {
+        return ((val1 == null) && (val2 == null))
+                || ((val1 != null) && (val2 != null) && val1.equals(val2));
+    }
+
+    public static boolean equals(Integer val1, Integer val2)
+    {
+        return ((val1 == null) && (val2 == null))
+                || ((val1 != null) && (val2 != null) && val1.equals(val2));
     }
 
     public static boolean equals(JSONArray json1, JSONArray json2)
     {
-        String str1 = Json.toPretty(json1);
-        String str2 = Json.toPretty(json2);
+        String str1 = json1.toString();
+        String str2 = json2.toString();
 
         return ((str1 == null) && (str2 == null))
                 || ((str1 != null) && (str2 != null) && str1.equals(str2));
     }
 
-    public static boolean nequals(JSONArray json1, JSONArray json2)
+    public static boolean equals(JSONObject json1, JSONObject json2)
     {
-        return ! equals(json1, json2);
-    }
+        String str1 = json1.toString();
+        String str2 = json2.toString();
 
-    public static String s()
-    {
-        return UUID.randomUUID().toString();
+        return ((str1 == null) && (str2 == null))
+                || ((str1 != null) && (str2 != null) && str1.equals(str2));
     }
 }
