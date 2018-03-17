@@ -21,28 +21,19 @@ public class GUIChannelWizzard extends GUIPlugin
 {
     private final static String LOGTAG = GUIChannelWizzard.class.getSimpleName();
 
+    private final static int WIDTH = 600;
+
     private Context context;
+    private GUIFrameLayout topFrame;
 
     public GUIChannelWizzard(Context context)
     {
         super(context);
     }
 
-    @Override
-    public void onCreate()
+    private JSONArray getChannels()
     {
-        Log.d(LOGTAG, "onCreate:");
-
-        context = getContext();
-
-        super.onCreate();
-
-        //pluginFrame.setBackgroundColor(0x88880000);
-        setRoundedCorners(20, 0xffffffff);
-
         JSONArray tvremotes = IOT.instance.getDeviceWithCapability("tvremote");
-
-        JSONArray channels = null;
 
         for (int inx = 0; inx < tvremotes.length(); inx++)
         {
@@ -53,37 +44,52 @@ public class GUIChannelWizzard extends GUIPlugin
             if (metadata.metadata == null) continue;
 
             JSONArray PUBChannels = Json.getArray(metadata.metadata, "PUBChannels");
-            if (PUBChannels == null) continue;
 
-            channels = PUBChannels;
-            break;
+            if (PUBChannels != null)
+            {
+                return PUBChannels;
+            }
         }
 
-        Log.d(LOGTAG, "onCreate: channels=" + Json.toPretty(channels));
+        return null;
+    }
 
-        if (channels == null) return;
+    private void init()
+    {
+        context = getContext();
+        setRoundedCorners(20, 0xffffffff);
 
         GUIScrollView scroll = new GUIScrollView(context);
         scroll.setFocusable(false);
         pluginFrame.addView(scroll);
 
-        GUIFrameLayout layout = new GUIFrameLayout(context);
-        //layout.setBackgroundColor(0xffff0000);
-        layout.setFocusable(false);
-        scroll.addView(layout);
+        topFrame = new GUIFrameLayout(context);
+        topFrame.setFocusable(false);
+        scroll.addView(topFrame);
 
+        Log.d(LOGTAG, "init: width=" + WIDTH);
+    }
+
+    private void createChennelView()
+    {
+        JSONArray channels = getChannels();
+
+        if (channels == null) return;
+
+
+        int topInx = 0;
         for (int inx = 0; inx < channels.length(); inx++)
         {
             JSONObject channel = Json.getObject(channels, inx);
 
             final String channelName = Json.getString(channel, "name");
 
-            FrameLayout.LayoutParams prams = new FrameLayout.LayoutParams(
-                    Simple.dipToPx(300),
-                    Simple.dipToPx(60));
+            int width  = Simple.dipToPx(WIDTH / 3);
+            int heigth = Simple.dipToPx(60);
 
-            prams.topMargin = Simple.dipToPx(65) * inx;
-            prams.leftMargin = Simple.dipToPx(100);
+            FrameLayout.LayoutParams prams = new FrameLayout.LayoutParams(width, heigth);
+            prams.topMargin  = heigth * (((inx % 3) < 2) ? topInx : topInx++);
+            prams.leftMargin = width  * (inx % 3);
 
             final GUITextView channelView = new GUITextView(context);
             channelView.setFocusable(true);
@@ -100,7 +106,18 @@ public class GUIChannelWizzard extends GUIPlugin
                 }
             });
 
-            layout.addView(channelView);
+            topFrame.addView(channelView);
         }
+    }
+
+    @Override
+    public void onCreate()
+    {
+        Log.d(LOGTAG, "onCreate:");
+
+        super.onCreate();
+
+        init();
+        createChennelView();
     }
 }
