@@ -5,14 +5,14 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import de.xavaro.android.gui.base.GUIPlugin;
 import de.xavaro.android.gui.simple.Simple;
-import de.xavaro.android.gui.views.GUILinearLayout;
+import de.xavaro.android.gui.views.GUIFrameLayout;
+import de.xavaro.android.gui.views.GUIScrollView;
 import de.xavaro.android.gui.views.GUITextView;
 import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.status.IOTMetadata;
@@ -22,28 +22,20 @@ public class GUIChannelWizzard extends GUIPlugin
 {
     private final static String LOGTAG = GUIChannelWizzard.class.getSimpleName();
 
+    private final static int WIDTH = 600;
+    private final static int CHANNELS_LINE = 4;
+
     private Context context;
+    private GUIFrameLayout topFrame;
 
     public GUIChannelWizzard(Context context)
     {
         super(context);
     }
 
-    @Override
-    public void onCreate()
+    private JSONArray getChannels()
     {
-        Log.d(LOGTAG, "onCreate:");
-
-        context = getContext();
-
-        super.onCreate();
-
-        //pluginFrame.setBackgroundColor(0x88880000);
-        setRoundedCorners(20, 0xffffffff);
-
         JSONArray tvremotes = IOT.instance.getDeviceWithCapability("tvremote");
-
-        JSONArray channels = null;
 
         for (int inx = 0; inx < tvremotes.length(); inx++)
         {
@@ -54,20 +46,39 @@ public class GUIChannelWizzard extends GUIPlugin
             if (metadata.metadata == null) continue;
 
             JSONArray PUBChannels = Json.getArray(metadata.metadata, "PUBChannels");
-            if (PUBChannels == null) continue;
 
-            channels = PUBChannels;
-            break;
+            if (PUBChannels != null)
+            {
+                return PUBChannels;
+            }
         }
 
-        Log.d(LOGTAG, "onCreate: channels=" + Json.toPretty(channels));
+        return null;
+    }
+
+    private void init()
+    {
+        context = getContext();
+        setRoundedCorners(20, 0xffffffff);
+
+        GUIScrollView scroll = new GUIScrollView(context);
+        scroll.setFocusable(false);
+        pluginFrame.addView(scroll);
+
+        topFrame = new GUIFrameLayout(context);
+        topFrame.setFocusable(false);
+        scroll.addView(topFrame);
+
+        Log.d(LOGTAG, "init: width=" + WIDTH);
+    }
+
+    private void createChennelView()
+    {
+        JSONArray channels = getChannels();
 
         if (channels == null) return;
 
-        GUILinearLayout layout = new GUILinearLayout(context);
-        layout.setGravity(Gravity.CENTER);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        pluginFrame.addView(layout);
+        int topInx = 0;
 
         for (int inx = 0; inx < channels.length(); inx++)
         {
@@ -75,33 +86,54 @@ public class GUIChannelWizzard extends GUIPlugin
 
             final String channelName = Json.getString(channel, "name");
 
+            int width  = Simple.dipToPx(WIDTH / CHANNELS_LINE);
+            int heigth = Simple.dipToPx(40);
+
+            FrameLayout.LayoutParams prams = new FrameLayout.LayoutParams(width, heigth);
+            prams.topMargin  = heigth * (((inx % CHANNELS_LINE) < (CHANNELS_LINE-1)) ? topInx : topInx++);
+            prams.leftMargin = width  * (inx % CHANNELS_LINE);
+
+            GUIFrameLayout container = new GUIFrameLayout(context);
+            container.setFocusable(false);
+            container.setPaddingDip(3);
+            //container.setBackgroundColor(0x88000088);
+            container.setLayoutParams(prams);
+            topFrame.addView(container);
+
             final GUITextView channelView = new GUITextView(context);
+            channelView.setGravity(Gravity.VERTICAL_GRAVITY_MASK);
+            channelView.setMaxLines(1);
+            channelView.setPaddingDip(3);
             channelView.setFocusable(true);
-            channelView.setTextSizeDip(20);
-            channelView.setText(channelName);
-            channelView.setBackgroundColor(0x88000088);
-            channelView.setPaddingDip(0, 10, 0, 0);
-            channelView.setLayoutParams(new FrameLayout.LayoutParams(Simple.WC, Simple.WC, Gravity.CENTER));
+            channelView.setTextSizeDip(12);
+//            channelView.setPaddingDip(10);
+            channelView.setText(Json.getString(channel, "dial") + ": " + channelName);
+            // channelView.setBackgroundColor(0x88000088);
+            channelView.setLayoutParams(new FrameLayout.LayoutParams(Simple.MP, Simple.MP, Gravity.CENTER));
+//            channelView.setRoundedCornersDip(0, 0xFFF8F8F8, 0xFF24292E);
+//            channelView.setRoundedCornersDip(0, 0xFFFFFFFF, 0xFFF8F8F8);
             channelView.setOnClickListener(new OnClickListener()
             {
                 @Override
                 public void onClick(View view)
                 {
                     Log.d(LOGTAG, "onClick: channelName=" + channelName);
-                }
-            });
-            
-            channelView.setOnFocusChangeListener(new OnFocusChangeListener()
-            {
-                @Override
-                public void onFocusChange(View view, boolean b)
-                {
-                    Log.d(LOGTAG, "onFocusChange: channelName=" + channelName + " b=" + b);
-                    channelView.setBackgroundColor(0x88008800);
+                    channelView.setRoundedCornersDip(0, 0xFFFFFFFF, 0xFF00A2FF);
                 }
             });
 
-            layout.addView(channelView);
+            container.addView(channelView);
         }
+    }
+
+    @Override
+    public void onCreate()
+    {
+        Log.d(LOGTAG, "onCreate:");
+
+        super.onCreate();
+
+        init();
+        createChennelView();
     }
 }
