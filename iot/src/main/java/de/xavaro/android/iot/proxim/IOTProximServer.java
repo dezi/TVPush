@@ -1,24 +1,19 @@
 package de.xavaro.android.iot.proxim;
 
+import android.support.annotation.RequiresApi;
+
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattServer;
-import android.bluetooth.BluetoothGattServerCallback;
-import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
-import android.bluetooth.BluetoothProfile;
-import android.bluetooth.le.AdvertiseCallback;
+
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
+
 import android.content.Context;
 import android.os.Build;
-import android.os.ParcelUuid;
 import android.util.Log;
 
-import java.util.ArrayList;
+import java.nio.ByteBuffer;
 import java.util.UUID;
 
 import de.xavaro.android.iot.base.IOT;
@@ -30,14 +25,21 @@ public class IOTProximServer
 
     private final static int MANUFACTURER_ID = 4711;
 
-    private byte reserved;
-    private byte powerLevel;
-    private UUID serverUUID;
-    private ArrayList<BluetoothDevice> connectedDevices;
-    private BluetoothGattCharacteristic proximCharacteristic;
+    private final static byte ADVERTISE_GPSLQ = 1;
+    private final static byte ADVERTISE_GPSHQ = 2;
+    private final static byte ADVERTISE_IOT_HUMAN = 3;
+    private final static byte ADVERTISE_IOT_DOMAIN = 4;
+    private final static byte ADVERTISE_IOT_DEVICE = 5;
+    private final static byte ADVERTISE_IOT_LOCATION = 6;
 
-    private BluetoothGattServer btGattServer;
+    private byte powerLevel;
+    private AdvertiseSettings settings;
     private BluetoothLeAdvertiser btLEAdvertiser;
+
+    private IOTProximAdvertiseCallback callbackGPSLowQuality;
+    private IOTProximAdvertiseCallback callbackGPSHighQuality;
+    private IOTProximAdvertiseCallback callbackIOTHuman;
+    private IOTProximAdvertiseCallback callbackIOTDevice;
 
     static public void startService(Context context)
     {
@@ -64,48 +66,17 @@ public class IOTProximServer
             return;
         }
 
-        if ((IOT.device == null) || (IOT.device.uuid == null))
-        {
-            return;
-        }
-
-        serverUUID = UUID.fromString(IOT.device.uuid);
         powerLevel = AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM;
-
-        btGattServer = btManager.openGattServer(context, btGattServerCallback);
         btLEAdvertiser = btAdapter.getBluetoothLeAdvertiser();
 
-        connectedDevices = new ArrayList<>();
-
-        initializeServer();
         startAdvertising();
     }
 
     public void close()
     {
-        stopAdvertising();
-        shutdownServer();
-    }
-
-    private void initializeServer()
-    {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
-            BluetoothGattService service = new BluetoothGattService(
-                    serverUUID, BluetoothGattService.SERVICE_TYPE_PRIMARY);
-
-            int properties = BluetoothGattCharacteristic.PROPERTY_READ
-                    | BluetoothGattCharacteristic.PROPERTY_INDICATE;
-
-            proximCharacteristic = new BluetoothGattCharacteristic(
-                    IOTProximMessage.CHARACTERISTIC_UUID, properties,
-                    BluetoothGattCharacteristic.PERMISSION_READ);
-
-            service.addCharacteristic(proximCharacteristic);
-
-            btGattServer.addService(service);
-
-            Log.d(LOGTAG, "initializeServer: service added.");
+            stopAdvertising();
         }
     }
 
@@ -115,163 +86,132 @@ public class IOTProximServer
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
-            AdvertiseSettings settings = new AdvertiseSettings.Builder()
+            settings = new AdvertiseSettings.Builder()
                     .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
-                    .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM)
-                    .setConnectable(true)
+                    .setTxPowerLevel(powerLevel)
+                    .setConnectable(false)
                     .setTimeout(0)
                     .build();
 
-            byte[] mdata = new byte[]{ 'I', 'O', 'T', 'D', powerLevel, reserved };
+            advertiseGPSLowQuality();
+            advertiseGPSHighQuality();
 
-            AdvertiseData data = new AdvertiseData.Builder()
-                    .setIncludeDeviceName(false)
-                    .setIncludeTxPowerLevel(false)
-                    .addManufacturerData(MANUFACTURER_ID, mdata)
-                    .addServiceUuid(new ParcelUuid(serverUUID))
-                    .build();
-
-            Log.d(LOGTAG, "startAdvertising: data=" + data.toString());
-
-            btLEAdvertiser.startAdvertising(settings, data, btAdvertiseCallback);
+            advertiseIOTHuman();
+            advertiseIOTDevice();
         }
     }
 
-    private final Object mLock = new Object();
-    private IOTProximMessage mMessage;
-
-    public void addMessage(IOTProximMessage message)
-    {
-        synchronized (mLock)
-        {
-            mMessage = message;
-        }
-
-        notifyConnectedDevices();
-    }
-
-    public byte[] getMessage()
-    {
-        synchronized (mLock)
-        {
-            if (mMessage != null)
-            {
-                return mMessage.getBytes();
-            }
-            else
-            {
-                return new byte[0];
-            }
-        }
-    }
-
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void stopAdvertising()
     {
         if (btLEAdvertiser == null) return;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        if (callbackGPSLowQuality != null)
         {
-            btLEAdvertiser.stopAdvertising(btAdvertiseCallback);
+            btLEAdvertiser.stopAdvertising(callbackGPSLowQuality);
+            callbackGPSLowQuality = null;
+        }
+
+        if (callbackGPSHighQuality != null)
+        {
+            btLEAdvertiser.stopAdvertising(callbackGPSHighQuality);
+            callbackGPSHighQuality = null;
+        }
+
+        if (callbackIOTHuman != null)
+        {
+            btLEAdvertiser.stopAdvertising(callbackIOTHuman);
+            callbackIOTHuman = null;
+        }
+
+        if (callbackIOTDevice != null)
+        {
+            btLEAdvertiser.stopAdvertising(callbackIOTDevice);
+            callbackIOTDevice = null;
         }
     }
 
-    private final AdvertiseCallback btAdvertiseCallback = new AdvertiseCallback()
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void advertiseGPSLowQuality()
     {
-        @Override
-        public void onStartSuccess(AdvertiseSettings settingsInEffect)
-        {
-            Log.d(LOGTAG, "AdvertiseCallback: onStartSuccess.");
-        }
+        double lat = 53.568235;
+        double lon = 10.140103;
 
-        @Override
-        public void onStartFailure(int errorCode)
-        {
-            Log.e(LOGTAG, "AdvertiseCallback: onStartFailure"
-                    + " err=" + errorCode
-                    + " desc=" + Simple.getBTAdvertiserFailDescription(errorCode));
-        }
-    };
+        byte[] bytes = ByteBuffer
+                .allocate(1 + 1 + 8 + 8)
+                .put(ADVERTISE_GPSLQ)
+                .put(powerLevel)
+                .putDouble(lat)
+                .putDouble(lon)
+                .array();
 
-    private void shutdownServer()
-    {
-        if (btGattServer == null) return;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        {
-            btGattServer.close();
-        }
+        callbackGPSLowQuality = advertiseDat(bytes);
     }
 
-    private final BluetoothGattServerCallback btGattServerCallback = new BluetoothGattServerCallback()
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void advertiseGPSHighQuality()
     {
-        @Override
-        public void onConnectionStateChange(BluetoothDevice device, int status, int newState)
-        {
-            super.onConnectionStateChange(device, status, newState);
+        double lat = 53.568235;
+        double lon = 10.140103;
 
-            Log.d(LOGTAG, "onConnectionStateChange "
-                    + Simple.getBTStatusDescription(status) + " "
-                    + Simple.getBTStateDescription(newState));
+        byte[] bytes = ByteBuffer
+                .allocate(1 + 1 + 8 + 8)
+                .put(ADVERTISE_GPSHQ)
+                .put(powerLevel)
+                .putDouble(lat)
+                .putDouble(lon)
+                .array();
 
-            if (newState == BluetoothProfile.STATE_CONNECTED)
-            {
-                Log.d(LOGTAG, "Device Connected: " + device.getName());
+        callbackGPSHighQuality = advertiseDat(bytes);
+    }
 
-                connectedDevices.add(device);
-            }
-
-            if (newState == BluetoothProfile.STATE_DISCONNECTED)
-            {
-                Log.d(LOGTAG, "Device Disconnected: " + device.getName());
-
-                connectedDevices.remove(device);
-            }
-        }
-
-        @Override
-        public void onCharacteristicReadRequest(
-                BluetoothDevice device, int requestId, int offset,
-                BluetoothGattCharacteristic characteristic)
-        {
-            super.onCharacteristicReadRequest(device, requestId, offset, characteristic);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            {
-                if (characteristic == proximCharacteristic)
-                {
-                    btGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, getMessage());
-                }
-                else
-                {
-                    btGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_FAILURE, 0, null);
-                }
-            }
-        }
-
-        @Override
-        public void onCharacteristicWriteRequest(
-                BluetoothDevice device, int requestId,
-                BluetoothGattCharacteristic characteristic,
-                boolean preparedWrite, boolean responseNeeded,
-                int offset, byte[] value)
-        {
-            super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value);
-        }
-    };
-
-    private void notifyConnectedDevices()
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void advertiseIOTHuman()
     {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        {
-            for (BluetoothDevice device : connectedDevices)
-            {
-                if (proximCharacteristic != null)
-                {
-                    proximCharacteristic.setValue(getMessage());
+        if ((IOT.human == null) || (IOT.human.uuid == null)) return;
 
-                    btGattServer.notifyCharacteristicChanged(device, proximCharacteristic, false);
-                }
-            }
-        }
+        byte[] bytes = ByteBuffer
+                .allocate(1 + 1 + 8 + 8)
+                .put(ADVERTISE_IOT_HUMAN)
+                .put(powerLevel)
+                .putLong(UUID.fromString(IOT.human.uuid).getMostSignificantBits())
+                .putLong(UUID.fromString(IOT.human.uuid).getLeastSignificantBits())
+                .array();
+
+        callbackIOTHuman = advertiseDat(bytes);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void advertiseIOTDevice()
+    {
+        if ((IOT.device == null) || (IOT.device.uuid == null)) return;
+
+        byte[] bytes = ByteBuffer
+                .allocate(1 + 1 + 8 + 8)
+                .put(ADVERTISE_IOT_DEVICE)
+                .put(powerLevel)
+                .putLong(UUID.fromString(IOT.device.uuid).getMostSignificantBits())
+                .putLong(UUID.fromString(IOT.device.uuid).getLeastSignificantBits())
+                .array();
+
+        callbackIOTDevice = advertiseDat(bytes);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private IOTProximAdvertiseCallback advertiseDat(byte[] bytes)
+    {
+        AdvertiseData data = new AdvertiseData.Builder()
+                .setIncludeDeviceName(false)
+                .setIncludeTxPowerLevel(false)
+                .addManufacturerData(MANUFACTURER_ID, bytes)
+                .build();
+
+        Log.d(LOGTAG, "advertiseDat: data=" + data.toString());
+
+        IOTProximAdvertiseCallback callback = new IOTProximAdvertiseCallback();
+
+        btLEAdvertiser.startAdvertising(settings, data, callback);
+
+        return callback;
     }
 }
