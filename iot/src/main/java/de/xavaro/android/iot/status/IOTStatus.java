@@ -1,11 +1,10 @@
 package de.xavaro.android.iot.status;
 
-import android.util.Log;
-
 import org.json.JSONObject;
 
 import de.xavaro.android.iot.base.IOTObject;
 
+@SuppressWarnings("WeakerAccess")
 public class IOTStatus extends IOTObject
 {
     private final static String LOGTAG = IOTStatus.class.getSimpleName();
@@ -31,8 +30,10 @@ public class IOTStatus extends IOTObject
     public Integer brightness;
     public Integer color_temp;
 
-    public Double gpsLat;
-    public Double gpsLon;
+    public Double positionLatCoarse;
+    public Double positionLonCoarse;
+    public Double positionLatFine;
+    public Double positionLonFine;
 
     public IOTStatus()
     {
@@ -75,8 +76,10 @@ public class IOTStatus extends IOTObject
         if (nequals(brightness, check.brightness)) brightness = check.brightness;
         if (nequals(color_temp, check.color_temp)) color_temp = check.color_temp;
 
-        if (nequals(gpsLat,     check.gpsLat    )) gpsLat     = check.gpsLat;
-        if (nequals(gpsLon,     check.gpsLon    )) gpsLon     = check.gpsLon;
+        if (nequals(positionLatCoarse, check.positionLatCoarse)) positionLatCoarse = check.positionLatCoarse;
+        if (nequals(positionLonCoarse, check.positionLonCoarse)) positionLonCoarse = check.positionLonCoarse;
+        if (nequals(positionLatFine,   check.positionLatFine  )) positionLatFine   = check.positionLatFine;
+        if (nequals(positionLonFine,   check.positionLonFine  )) positionLonFine   = check.positionLonFine;
 
         // @formatter:on
 

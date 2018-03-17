@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import de.xavaro.android.iot.comm.IOTMessageHandler;
 import de.xavaro.android.iot.handler.IOTHandleHelo;
+import de.xavaro.android.iot.proxim.IOTProximLocation;
 import de.xavaro.android.iot.proxim.IOTProximScanner;
 import de.xavaro.android.iot.proxim.IOTProximServer;
 import de.xavaro.android.iot.simple.Json;
@@ -35,6 +36,7 @@ public class IOT implements GetDevices
 
     public IOTProximServer proximServer;
     public IOTProximScanner proximScanner;
+    public IOTProximLocation proximLocationListener;
 
     public IOT(Application appcontext)
     {
@@ -58,6 +60,8 @@ public class IOT implements GetDevices
             IOTProximServer.startService(appcontext);
 
             IOTProximScanner.startService();
+
+            IOTProximLocation.startLocationListener(appcontext);
         }
         else
         {

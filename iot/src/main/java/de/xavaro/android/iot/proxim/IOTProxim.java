@@ -1,9 +1,8 @@
 package de.xavaro.android.iot.proxim;
 
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothProfile;
-import android.bluetooth.le.AdvertiseCallback;
 import android.support.annotation.Nullable;
+
+import android.bluetooth.le.AdvertiseCallback;
 
 public class IOTProxim
 {

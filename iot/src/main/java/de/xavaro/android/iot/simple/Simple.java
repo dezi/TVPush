@@ -1,6 +1,8 @@
 package de.xavaro.android.iot.simple;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.location.LocationManager;
 import android.support.annotation.Nullable;
 
 import android.app.Application;
@@ -20,6 +22,7 @@ import android.provider.Settings;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.speech.SpeechRecognizer;
+import android.support.v4.app.ActivityCompat;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.os.Handler;
@@ -61,6 +64,7 @@ public class Simple
     private static WifiManager wifiManager;
     private static WindowManager windowManager;
     private static PackageManager packageManager;
+    private static LocationManager locationManager;
     private static ConnectivityManager connectivityManager;
     private static BluetoothManager bluetoothManager;
     private static BluetoothAdapter bluetoothAdapter;
@@ -75,6 +79,7 @@ public class Simple
 
         wifiManager = (WifiManager) app.getSystemService(Context.WIFI_SERVICE);
         windowManager = ((WindowManager) app.getSystemService(Context.WINDOW_SERVICE));
+        locationManager = (LocationManager) app.getSystemService(Context.LOCATION_SERVICE);
         connectivityManager = (ConnectivityManager) app.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -434,5 +439,25 @@ public class Simple
         }
 
         return new String(bytes, offset, size);
+    }
+
+    public static LocationManager getLocationManager()
+    {
+        return locationManager;
+    }
+
+    public static boolean checkLocationPermission(Context context)
+    {
+        boolean coarse = ActivityCompat.checkSelfPermission(context,
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED;
+
+        boolean fine = ActivityCompat.checkSelfPermission(context,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED;
+
+        Log.d(LOGTAG, "checkLocationPermission: fine=" + fine + " coarse=" + coarse);
+
+        return coarse && fine;
     }
 }

@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.simple.Simple;
+import de.xavaro.android.iot.status.IOTStatus;
 
 public class IOTProximServer
 {
@@ -27,8 +28,8 @@ public class IOTProximServer
     private AdvertiseSettings settings;
     private BluetoothLeAdvertiser btLEAdvertiser;
 
-    private IOTProximCallback callbackGPSLowQuality;
-    private IOTProximCallback callbackGPSHighQuality;
+    private IOTProximCallback callbackGPSCoarse;
+    private IOTProximCallback callbackGPSFine;
     private IOTProximCallback callbackIOTHuman;
     private IOTProximCallback callbackIOTDevice;
 
@@ -84,8 +85,8 @@ public class IOTProximServer
                     .setTimeout(0)
                     .build();
 
-            advertiseGPSLowQuality();
-            advertiseGPSHighQuality();
+            advertiseGPSCoarse();
+            advertiseGPSFine();
 
             advertiseIOTHuman();
             advertiseIOTDevice();
@@ -97,16 +98,16 @@ public class IOTProximServer
     {
         if (btLEAdvertiser == null) return;
 
-        if (callbackGPSLowQuality != null)
+        if (callbackGPSCoarse != null)
         {
-            btLEAdvertiser.stopAdvertising(callbackGPSLowQuality);
-            callbackGPSLowQuality = null;
+            btLEAdvertiser.stopAdvertising(callbackGPSCoarse);
+            callbackGPSCoarse = null;
         }
 
-        if (callbackGPSHighQuality != null)
+        if (callbackGPSFine != null)
         {
-            btLEAdvertiser.stopAdvertising(callbackGPSHighQuality);
-            callbackGPSHighQuality = null;
+            btLEAdvertiser.stopAdvertising(callbackGPSFine);
+            callbackGPSFine = null;
         }
 
         if (callbackIOTHuman != null)
@@ -123,37 +124,81 @@ public class IOTProximServer
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void advertiseGPSLowQuality()
+    private void advertiseGPSCoarse()
     {
-        double lat = 53.568235;
-        double lon = 10.140103;
+        Double lat = null;
+        Double lon = null;
 
-        byte[] bytes = ByteBuffer
-                .allocate(1 + 1 + 8 + 8)
-                .put(IOTProxim.ADVERTISE_GPS_COARSE)
-                .put(powerLevel)
-                .putDouble(lat)
-                .putDouble(lon)
-                .array();
+        if (IOT.device != null)
+        {
+            if ((IOT.device.fixedLatCoarse != null) && (IOT.device.fixedLonCoarse != null))
+            {
+                lat = IOT.device.fixedLatCoarse;
+                lon = IOT.device.fixedLonCoarse;
+            }
+            else
+            {
+                IOTStatus status = new IOTStatus(IOT.device.uuid);
 
-        callbackGPSLowQuality = advertiseDat(bytes);
+                if ((status.positionLatCoarse != null) && (status.positionLonCoarse != null))
+                {
+                    lat = status.positionLatCoarse;
+                    lon = status.positionLonCoarse;
+                }
+            }
+        }
+
+        if ((lat != null) && (lon != null))
+        {
+            byte[] bytes = ByteBuffer
+                    .allocate(1 + 1 + 8 + 8)
+                    .put(IOTProxim.ADVERTISE_GPS_COARSE)
+                    .put(powerLevel)
+                    .putDouble(lat)
+                    .putDouble(lon)
+                    .array();
+
+            callbackGPSCoarse = advertiseDat(bytes);
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void advertiseGPSHighQuality()
+    private void advertiseGPSFine()
     {
-        double lat = 53.568235;
-        double lon = 10.140103;
+        Double lat = null;
+        Double lon = null;
 
-        byte[] bytes = ByteBuffer
-                .allocate(1 + 1 + 8 + 8)
-                .put(IOTProxim.ADVERTISE_GPS_FINE)
-                .put(powerLevel)
-                .putDouble(lat)
-                .putDouble(lon)
-                .array();
+        if (IOT.device != null)
+        {
+            if ((IOT.device.fixedLatFine != null) && (IOT.device.fixedLonFine != null))
+            {
+                lat = IOT.device.fixedLatFine;
+                lon = IOT.device.fixedLonFine;
+            }
+            else
+            {
+                IOTStatus status = new IOTStatus(IOT.device.uuid);
 
-        callbackGPSHighQuality = advertiseDat(bytes);
+                if ((status.positionLatFine != null) && (status.positionLonFine != null))
+                {
+                    lat = status.positionLatFine;
+                    lon = status.positionLonFine;
+                }
+            }
+        }
+
+        if ((lat != null) && (lon != null))
+        {
+            byte[] bytes = ByteBuffer
+                    .allocate(1 + 1 + 8 + 8)
+                    .put(IOTProxim.ADVERTISE_GPS_FINE)
+                    .put(powerLevel)
+                    .putDouble(lat)
+                    .putDouble(lon)
+                    .array();
+
+            callbackGPSFine = advertiseDat(bytes);
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
