@@ -431,50 +431,16 @@ public class Simple
         return ba.isEnabled();
     }
 
-    public static String getBTStateDescription(int state)
+    public static String getString(byte[] bytes, int offset, int size)
     {
-        switch (state)
+        try
         {
-            case BluetoothProfile.STATE_CONNECTED: return "STATE_CONNECTED";
-            case BluetoothProfile.STATE_CONNECTING: return "STATE_CONNECTING";
-            case BluetoothProfile.STATE_DISCONNECTED: return "STATE_DISCONNECTED";
-            case BluetoothProfile.STATE_DISCONNECTING: return "STATE_DISCONNECTING";
+            return new String(bytes, offset, size, "UTF-8");
+        }
+        catch (Exception ignore)
+        {
         }
 
-        return "UNKNOWN_STATE=" + state;
-    }
-
-    public static String getBTStatusDescription(int status)
-    {
-        switch (status)
-        {
-            case BluetoothGatt.GATT_SUCCESS: return "GATT_SUCCESS";
-        }
-
-        return "UNKNOWN_STATUS=" + status;
-    }
-
-    public static String getBTAdvertiserFailDescription(int error)
-    {
-        switch (error)
-        {
-            case AdvertiseCallback.ADVERTISE_FAILED_FEATURE_UNSUPPORTED:
-                return "ADVERTISE_FAILED_FEATURE_UNSUPPORTED";
-
-            case AdvertiseCallback.ADVERTISE_FAILED_TOO_MANY_ADVERTISERS:
-                return "ADVERTISE_FAILED_TOO_MANY_ADVERTISERS";
-
-            case AdvertiseCallback.ADVERTISE_FAILED_ALREADY_STARTED:
-                return "ADVERTISE_FAILED_ALREADY_STARTED";
-
-            case AdvertiseCallback.ADVERTISE_FAILED_DATA_TOO_LARGE:
-                return "ADVERTISE_FAILED_DATA_TOO_LARGE";
-
-            case AdvertiseCallback.ADVERTISE_FAILED_INTERNAL_ERROR:
-                return "ADVERTISE_FAILED_INTERNAL_ERROR";
-
-        }
-
-        return "UNKNOWN_ERROR=" + error;
+        return new String(bytes, offset, size);
     }
 }

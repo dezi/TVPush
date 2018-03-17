@@ -1,15 +1,17 @@
 package de.xavaro.android.iot.proxim;
 
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothProfile;
+import android.bluetooth.le.AdvertiseCallback;
 import android.support.annotation.Nullable;
 
 public class IOTProxim
 {
-    public final static int MANUFACTURER_ID = 4711;
+    public final static int IOT_MANUFACTURER_ID = 4711;
 
+    public final static byte ADVERTISE_GPS_FINE = 1;
+    public final static byte ADVERTISE_GPS_COARSE = 2;
 
-    public final static byte ADVERTISE_GPSLQ = 1;
-    public final static byte ADVERTISE_GPSHQ = 2;
     public final static byte ADVERTISE_IOT_HUMAN = 3;
     public final static byte ADVERTISE_IOT_DOMAIN = 4;
     public final static byte ADVERTISE_IOT_DEVICE = 5;
@@ -19,8 +21,9 @@ public class IOTProxim
     {
         switch (type)
         {
-            case ADVERTISE_GPSLQ: return "ADVERTISE_GPSLQ";
-            case ADVERTISE_GPSHQ: return "ADVERTISE_GPSHQ";
+            case ADVERTISE_GPS_FINE: return "ADVERTISE_GPS_FINE";
+            case ADVERTISE_GPS_COARSE: return "ADVERTISE_GPS_COARSE";
+
             case ADVERTISE_IOT_HUMAN: return "ADVERTISE_IOT_HUMAN";
             case ADVERTISE_IOT_DOMAIN: return "ADVERTISE_IOT_DOMAIN";
             case ADVERTISE_IOT_DEVICE: return "ADVERTISE_IOT_DEVICE";
@@ -44,5 +47,28 @@ public class IOTProxim
         }
 
         return null;
+    }
+
+    public static String getBTAdvertiserFailDescription(int error)
+    {
+        switch (error)
+        {
+            case AdvertiseCallback.ADVERTISE_FAILED_FEATURE_UNSUPPORTED:
+                return "ADVERTISE_FAILED_FEATURE_UNSUPPORTED";
+
+            case AdvertiseCallback.ADVERTISE_FAILED_TOO_MANY_ADVERTISERS:
+                return "ADVERTISE_FAILED_TOO_MANY_ADVERTISERS";
+
+            case AdvertiseCallback.ADVERTISE_FAILED_ALREADY_STARTED:
+                return "ADVERTISE_FAILED_ALREADY_STARTED";
+
+            case AdvertiseCallback.ADVERTISE_FAILED_DATA_TOO_LARGE:
+                return "ADVERTISE_FAILED_DATA_TOO_LARGE";
+
+            case AdvertiseCallback.ADVERTISE_FAILED_INTERNAL_ERROR:
+                return "ADVERTISE_FAILED_INTERNAL_ERROR";
+        }
+
+        return "UNKNOWN_ERROR=" + error;
     }
 }
