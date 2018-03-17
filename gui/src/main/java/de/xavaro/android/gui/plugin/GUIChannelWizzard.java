@@ -3,6 +3,7 @@ package de.xavaro.android.gui.plugin;
 import android.content.Context;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -59,15 +60,20 @@ public class GUIChannelWizzard extends GUIPlugin
     private void init()
     {
         context = getContext();
-        setRoundedCorners(20, 0xffffffff);
+
+        GUIFrameLayout mainFrame = new GUIFrameLayout(context);
+        mainFrame.setRoundedCorners(20, 0xffffffff);
+        pluginFrame.addView(mainFrame);
 
         GUIScrollView scroll = new GUIScrollView(context);
-        scroll.setFocusable(false);
-        pluginFrame.addView(scroll);
+        mainFrame.addView(scroll);
 
         topFrame = new GUIFrameLayout(context);
-        topFrame.setFocusable(false);
         scroll.addView(topFrame);
+
+        createChennelView();
+
+        setFocusable(true);
 
         Log.d(LOGTAG, "init: width=" + WIDTH);
     }
@@ -106,12 +112,8 @@ public class GUIChannelWizzard extends GUIPlugin
             channelView.setPaddingDip(3);
             channelView.setFocusable(true);
             channelView.setTextSizeDip(12);
-//            channelView.setPaddingDip(10);
             channelView.setText(Json.getString(channel, "dial") + ": " + channelName);
-            // channelView.setBackgroundColor(0x88000088);
             channelView.setLayoutParams(new FrameLayout.LayoutParams(Simple.MP, Simple.MP, Gravity.CENTER));
-//            channelView.setRoundedCornersDip(0, 0xFFF8F8F8, 0xFF24292E);
-//            channelView.setRoundedCornersDip(0, 0xFFFFFFFF, 0xFFF8F8F8);
             channelView.setOnClickListener(new OnClickListener()
             {
                 @Override
@@ -121,9 +123,29 @@ public class GUIChannelWizzard extends GUIPlugin
                     channelView.setRoundedCornersDip(0, 0xFFFFFFFF, 0xFF00A2FF);
                 }
             });
-
+            
             container.addView(channelView);
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        Log.d(LOGTAG, "onKeyDown: event=" + event);
+
+        return super.onKeyDown(keyCode, event);
+
+        // KEYCODE_DPAD_CENTER
+//        if (keyCode == KeyEvent.)
+//        {
+//            GUI.instance.displaySpeechRecognition(true);
+//
+//            return true;
+//        }
+//
+//        Log.d(LOGTAG, "onKeyDown: event=" + event);
+//
+//        return super.onKeyDown(keyCode, event);
     }
 
     @Override
@@ -134,6 +156,5 @@ public class GUIChannelWizzard extends GUIPlugin
         super.onCreate();
 
         init();
-        createChennelView();
     }
 }
