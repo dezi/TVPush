@@ -15,15 +15,16 @@ public class IOTDevice extends IOTObject
 {
     private final static String LOGTAG = IOTDevice.class.getSimpleName();
 
-    public final String TYPE_PC = "pc";
-    public final String TYPE_TV = "tv";
-    public final String TYPE_PHONE = "phone";
-    public final String TYPE_TABLET = "tablet";
-    public final String TYPE_LAPTOP = "laptop";
-    public final String TYPE_CAMERA= "camera";
-    public final String TYPE_TVREMOTE= "tvremote";
-    public final String TYPE_SMARTBULB= "bulb";
-    public final String TYPE_SMARTPLUG= "plug";
+    public final static String TYPE_PC = "pc";
+    public final static String TYPE_TV = "tv";
+    public final static String TYPE_PHONE = "phone";
+    public final static String TYPE_TABLET = "tablet";
+    public final static String TYPE_LAPTOP = "laptop";
+    public final static String TYPE_CAMERA = "camera";
+    public final static String TYPE_TVREMOTE = "tvremote";
+    public final static String TYPE_SMARTBULB = "bulb";
+    public final static String TYPE_SMARTPLUG = "plug";
+    public final static String TYPE_BEACON = "beacon";
 
     public String did;
     public String nick;
@@ -35,6 +36,7 @@ public class IOTDevice extends IOTObject
     public String version;
     public String location;
 
+    public String macaddr;
     public String fixedwifi;
 
     public Double fixedLatFine;
@@ -137,6 +139,7 @@ public class IOTDevice extends IOTObject
         if (nequals(model,        check.model       )) model        = check.model;
         if (nequals(driver,       check.driver      )) driver       = check.driver;
         if (nequals(version,      check.version     )) version      = check.version;
+        if (nequals(macaddr,      check.macaddr     )) macaddr      = check.macaddr;
         if (nequals(fixedwifi,    check.fixedwifi   )) fixedwifi    = check.fixedwifi;
         if (nequals(capabilities, check.capabilities)) capabilities = check.capabilities;
 

@@ -7,14 +7,23 @@ import android.bluetooth.le.ScanResult;
 
 import android.os.Build;
 import android.os.ParcelUuid;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.util.SparseArray;
+
+import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
 import de.xavaro.android.iot.base.IOT;
+import de.xavaro.android.iot.base.IOTSimple;
+import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Simple;
+import de.xavaro.android.iot.status.IOTStatus;
+import de.xavaro.android.iot.status.IOTStatusses;
+import de.xavaro.android.iot.things.IOTDevice;
+import de.xavaro.android.iot.things.IOTDevices;
 
 public class IOTProximScanner
 {
@@ -38,6 +47,7 @@ public class IOTProximScanner
 
     public BluetoothLeScanner scanner;
     public ScanCallback scanCallback;
+    public String ownDeviceMac;
 
     public void startScan()
     {
@@ -97,47 +107,7 @@ public class IOTProximScanner
 
             if ((eddystone != null) && (eddystone[0] == 0x10))
             {
-                byte txp = eddystone[1];
-                byte urs = eddystone[2];
-
-                String urlstart = "";
-
-                if (urs == 0x00) urlstart = "http://www.";
-                if (urs == 0x01) urlstart = "https://www.";
-                if (urs == 0x02) urlstart = "http://";
-                if (urs == 0x03) urlstart = "https://";
-
-                String urlrest = Simple.getString(eddystone, 3, eddystone.length - 3);
-
-                String url = urlstart + urlrest;
-
-                //
-                // Fuck dat.
-                //
-
-                char x;
-
-                url = url.replace(Character.valueOf(x = 0x00).toString(), ".com/");
-                url = url.replace(Character.valueOf(x = 0x01).toString(), ".org/");
-                url = url.replace(Character.valueOf(x = 0x02).toString(), ".edu/");
-                url = url.replace(Character.valueOf(x = 0x03).toString(), ".net/");
-                url = url.replace(Character.valueOf(x = 0x04).toString(), ".info/");
-                url = url.replace(Character.valueOf(x = 0x05).toString(), ".biz/");
-                url = url.replace(Character.valueOf(x = 0x06).toString(), ".gov/");
-                url = url.replace(Character.valueOf(x = 0x07).toString(), ".com");
-                url = url.replace(Character.valueOf(x = 0x08).toString(), ".org");
-                url = url.replace(Character.valueOf(x = 0x09).toString(), ".edu");
-                url = url.replace(Character.valueOf(x = 0x0a).toString(), ".net");
-                url = url.replace(Character.valueOf(x = 0x0b).toString(), ".info");
-                url = url.replace(Character.valueOf(x = 0x0c).toString(), ".biz");
-                url = url.replace(Character.valueOf(x = 0x0d).toString(), ".gov");
-
-                Log.d(LOGTAG, "evalScan: EDY"
-                        + " rssi=" + result.getRssi()
-                        + " addr=" + result.getDevice().getAddress()
-                        + " name=" + result.getDevice().getName()
-                        + " url=" + url
-                );
+                buildEddystonDevice(result, eddystone);
 
                 return;
             }
@@ -161,37 +131,7 @@ public class IOTProximScanner
 
             if (bytes != null)
             {
-                ByteBuffer bb = ByteBuffer.wrap(bytes);
-
-                byte type = bb.get();
-                byte plev = bb.get();
-
-                String display = null;
-
-                if ((type == IOTProxim.ADVERTISE_GPS_FINE) || (type == IOTProxim.ADVERTISE_GPS_COARSE))
-                {
-                    double lat = bb.getDouble();
-                    double lon = bb.getDouble();
-
-                    display = lat + " - " + lon;
-                }
-                else
-                {
-                    long msb = bb.getLong();
-                    long lsb = bb.getLong();
-
-                    display = (new UUID(msb, lsb)).toString();
-                }
-
-                Log.d(LOGTAG, "evalScan: IOT"
-                        + " rssi=" + result.getRssi()
-                        + " addr=" + result.getDevice().getAddress()
-                        + " plev=" + plev
-                        + " type=" + IOTProxim.getAdvertiseType(type)
-                        + " disp=" + display
-                );
-
-                return;
+                evaluateIOTAdvertisement(result, bytes);
             }
 
             SparseArray<byte[]> bytbyt = result.getScanRecord().getManufacturerSpecificData();
@@ -213,5 +153,147 @@ public class IOTProximScanner
                 }
             }
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void buildEddystonDevice(ScanResult result, byte[] eddystone)
+    {
+        byte txp = eddystone[1];
+        byte urs = eddystone[2];
+
+        String urlstart = "";
+
+        if (urs == 0x00) urlstart = "http://www.";
+        if (urs == 0x01) urlstart = "https://www.";
+        if (urs == 0x02) urlstart = "http://";
+        if (urs == 0x03) urlstart = "https://";
+
+        String urlrest = Simple.getString(eddystone, 3, eddystone.length - 3);
+
+        String url = urlstart + urlrest;
+
+        //
+        // Fuck dat.
+        //
+
+        char x;
+
+        url = url.replace(Character.valueOf(x = 0x00).toString(), ".com/");
+        url = url.replace(Character.valueOf(x = 0x01).toString(), ".org/");
+        url = url.replace(Character.valueOf(x = 0x02).toString(), ".edu/");
+        url = url.replace(Character.valueOf(x = 0x03).toString(), ".net/");
+        url = url.replace(Character.valueOf(x = 0x04).toString(), ".info/");
+        url = url.replace(Character.valueOf(x = 0x05).toString(), ".biz/");
+        url = url.replace(Character.valueOf(x = 0x06).toString(), ".gov/");
+        url = url.replace(Character.valueOf(x = 0x07).toString(), ".com");
+        url = url.replace(Character.valueOf(x = 0x08).toString(), ".org");
+        url = url.replace(Character.valueOf(x = 0x09).toString(), ".edu");
+        url = url.replace(Character.valueOf(x = 0x0a).toString(), ".net");
+        url = url.replace(Character.valueOf(x = 0x0b).toString(), ".info");
+        url = url.replace(Character.valueOf(x = 0x0c).toString(), ".biz");
+        url = url.replace(Character.valueOf(x = 0x0d).toString(), ".gov");
+
+        String name = result.getDevice().getName();
+        String macAddr = result.getDevice().getAddress();
+        String uuid = IOTSimple.hmacSha1UUID(name, macAddr);
+
+        String caps = "beacon|eddystone|fixed|stupid";
+
+        if (name.equalsIgnoreCase("iBKS Plus"))
+        {
+            //
+            // Super long range beacon.
+            //
+
+            caps += "|gpscoarse";
+        }
+        else
+        {
+            caps += "|gpsfine";
+        }
+
+        Log.d(LOGTAG, "evalScan: EDY"
+                + " rssi=" + result.getRssi()
+                + " addr=" + macAddr
+                + " name=" + name
+                + " url=" + url
+        );
+
+        JSONObject beacondev = new JSONObject();
+
+        Json.put(beacondev, "uuid", uuid);
+        Json.put(beacondev, "type", IOTDevice.TYPE_BEACON);
+        Json.put(beacondev, "did", url);
+        Json.put(beacondev, "name", url);
+        Json.put(beacondev, "nick", url);
+        Json.put(beacondev, "model", name);
+        Json.put(beacondev, "macaddr", macAddr);
+        Json.put(beacondev, "driver", "iot");
+        Json.put(beacondev, "location", Simple.getConnectedWifiName());
+
+        Json.put(beacondev, "capabilities", Json.jsonArrayFromSeparatedString(caps, "\\|"));
+
+        IOTDevices.addEntry(new IOTDevice(beacondev), false);
+
+        JSONObject status = new JSONObject();
+
+        Json.put(status, "uuid", uuid);
+
+        IOTStatusses.addEntry(new IOTStatus(status), false);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void evaluateIOTAdvertisement(ScanResult result, byte[] bytes)
+    {
+        ByteBuffer bb = ByteBuffer.wrap(bytes);
+
+        byte type = bb.get();
+        byte plev = bb.get();
+
+        String uuid = null;
+        Double lat = null;
+        Double lon = null;
+
+        String display = null;
+        boolean ignore = true;
+
+        if ((type == IOTProxim.ADVERTISE_GPS_FINE) || (type == IOTProxim.ADVERTISE_GPS_COARSE))
+        {
+            lat = bb.getDouble();
+            lon = bb.getDouble();
+
+            display = lat + " - " + lon;
+        }
+        else
+        {
+            long msb = bb.getLong();
+            long lsb = bb.getLong();
+
+            uuid = (new UUID(msb, lsb)).toString();
+
+            display = uuid;
+
+            if (ownDeviceMac == null)
+            {
+                if ((IOT.device != null) && (IOT.device.uuid.equals(uuid)))
+                {
+                    ownDeviceMac = result.getDevice().getAddress();
+                }
+            }
+            else
+            {
+                ignore = ! ownDeviceMac.equals(result.getDevice().getAddress());
+            }
+        }
+
+        if (ignore) return;
+
+        Log.d(LOGTAG, "evalScan: IOT"
+                + " rssi=" + result.getRssi()
+                + " addr=" + result.getDevice().getAddress()
+                + " plev=" + plev
+                + " type=" + IOTProxim.getAdvertiseType(type)
+                + " disp=" + display
+        );
     }
 }
