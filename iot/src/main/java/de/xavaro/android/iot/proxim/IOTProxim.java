@@ -2,10 +2,18 @@ package de.xavaro.android.iot.proxim;
 
 import android.support.annotation.Nullable;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+
 import android.bluetooth.le.AdvertiseCallback;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
 public class IOTProxim
 {
+    private static final String LOGTAG = IOTProxim.class.getName();
+
     public final static int IOT_MANUFACTURER_ID = 4711;
 
     public final static byte ADVERTISE_GPS_FINE = 1;
@@ -69,5 +77,29 @@ public class IOTProxim
         }
 
         return "UNKNOWN_ERROR=" + error;
+    }
+
+    public static void checkBTPermissions(Context appcontent)
+    {
+        boolean bt = ContextCompat.checkSelfPermission(appcontent, Manifest.permission.BLUETOOTH)
+                == PackageManager.PERMISSION_GRANTED;
+
+        boolean bt_admin = ContextCompat.checkSelfPermission(appcontent, Manifest.permission.BLUETOOTH_ADMIN)
+                == PackageManager.PERMISSION_GRANTED;
+
+        boolean bt_privileged = ContextCompat.checkSelfPermission(appcontent, Manifest.permission.BLUETOOTH_PRIVILEGED)
+                == PackageManager.PERMISSION_GRANTED;
+
+        boolean gps_fine = ContextCompat.checkSelfPermission(appcontent, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED;
+
+        boolean gps_coarse = ContextCompat.checkSelfPermission(appcontent, Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED;
+
+        Log.d(LOGTAG, "checkBTPermissions: bt=" + bt);
+        Log.d(LOGTAG, "checkBTPermissions: bt_admin=" + bt_admin);
+        Log.d(LOGTAG, "checkBTPermissions: bt_privileged=" + bt_privileged);
+        Log.d(LOGTAG, "checkBTPermissions: gps_fine=" + gps_fine);
+        Log.d(LOGTAG, "checkBTPermissions: gps_coarse=" + gps_coarse);
     }
 }

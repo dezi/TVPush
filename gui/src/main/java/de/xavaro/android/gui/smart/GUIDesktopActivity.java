@@ -1,6 +1,7 @@
 package de.xavaro.android.gui.smart;
 
 import android.Manifest;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -51,6 +52,14 @@ public class GUIDesktopActivity extends GUIActivity
 
         checkWindowSize();
 
+        //Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        //startActivityForResult(enableIntent, 1234);
+
+        /*
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.BLUETOOTH_ADMIN},
+                4711);
+        */
 
         int permission = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE);

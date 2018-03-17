@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import de.xavaro.android.iot.comm.IOTMessageHandler;
 import de.xavaro.android.iot.handler.IOTHandleHelo;
+import de.xavaro.android.iot.proxim.IOTProxim;
 import de.xavaro.android.iot.proxim.IOTProximLocation;
 import de.xavaro.android.iot.proxim.IOTProximScanner;
 import de.xavaro.android.iot.proxim.IOTProximServer;
@@ -56,6 +57,8 @@ public class IOT implements GetDevices
             IOTMessageHandler.initialize();
 
             IOTHandleHelo.sendHELO();
+
+            IOTProxim.checkBTPermissions(appcontext);
 
             IOTProximServer.startService(appcontext);
 

@@ -94,6 +94,8 @@ public class IOTProximScanner
 
     private void evalScan(int callbackType, ScanResult result)
     {
+        Log.d(LOGTAG, "##########################");
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
             if (result.getScanRecord() == null)
@@ -140,16 +142,16 @@ public class IOTProximScanner
             {
                 int vendor = bytbyt.keyAt(inx);
 
-                if (vendor != IOTProxim.IOT_MANUFACTURER_ID)
+                Log.d(LOGTAG, "evalScan: ALT"
+                        + " rssi=" + result.getRssi()
+                        + " addr=" + result.getDevice().getAddress()
+                        + " vend=" + vendor
+                        + " name=" + IOTProxim.getAdvertiseVendor(vendor)
+                );
+
+                if (vendor == 301)
                 {
-                    /*
-                    Log.d(LOGTAG, "evalScan: ALT"
-                            + " rssi=" + result.getRssi()
-                            + " addr=" + result.getDevice().getAddress()
-                            + " vend=" + vendor
-                            + " name=" + IOTProxim.getAdvertiseVendor(vendor)
-                    );
-                    */
+                    Log.d(LOGTAG, "evalScan: ALT record=" + result.getScanRecord());
                 }
             }
         }
