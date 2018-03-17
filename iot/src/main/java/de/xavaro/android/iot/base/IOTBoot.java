@@ -2,11 +2,9 @@ package de.xavaro.android.iot.base;
 
 import android.util.Log;
 
-import de.xavaro.android.iot.comm.IOTMessageHandler;
-import de.xavaro.android.iot.handler.IOTHandleHelo;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
-import de.xavaro.android.iot.things.IOTDomains;
+import de.xavaro.android.iot.things.IOTLocations;
 import de.xavaro.android.iot.things.IOTHuman;
 import de.xavaro.android.iot.things.IOTHumans;
 
@@ -32,7 +30,7 @@ public class IOTBoot extends IOTObject
 
     private static void loadOwnIdentity()
     {
-        Log.d(LOGTAG, "loadOwnIdentity: domains=" + IOTDomains.getCount());
+        Log.d(LOGTAG, "loadOwnIdentity: domains=" + IOTLocations.getCount());
         Log.d(LOGTAG, "loadOwnIdentity: devices=" + IOTDevices.getCount());
         Log.d(LOGTAG, "loadOwnIdentity: humans=" + IOTHumans.getCount());
 

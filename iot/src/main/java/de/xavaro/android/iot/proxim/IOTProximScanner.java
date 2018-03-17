@@ -202,12 +202,14 @@ public class IOTProximScanner
 
                 if (vendor != IOTProxim.IOT_MANUFACTURER_ID)
                 {
+                    /*
                     Log.d(LOGTAG, "evalScan: ALT"
                             + " rssi=" + result.getRssi()
                             + " addr=" + result.getDevice().getAddress()
                             + " vend=" + vendor
                             + " name=" + IOTProxim.getAdvertiseVendor(vendor)
                     );
+                    */
                 }
             }
         }

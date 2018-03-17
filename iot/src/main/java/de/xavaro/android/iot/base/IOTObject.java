@@ -18,6 +18,8 @@ public abstract class IOTObject
 {
     private final static String LOGTAG = IOTObject.class.getSimpleName();
 
+    protected boolean changed;
+
     public String uuid;
     public Long time;
 
@@ -176,5 +178,45 @@ public abstract class IOTObject
         //if (json != null) Log.d(LOGTAG, json);
 
         return ok;
+    }
+
+    public boolean nequals(String str1, String str2)
+    {
+        if (! IOTSimple.equals(str1, str2))
+        {
+            return changed = true;
+        }
+
+        return false;
+    }
+
+    public boolean nequals(Double val1, Double val2)
+    {
+        if (! IOTSimple.equals(val1, val2))
+        {
+            return changed = true;
+        }
+
+        return false;
+    }
+
+    public boolean nequals(JSONArray json1, JSONArray json2)
+    {
+        if (! IOTSimple.equals(json1, json2))
+        {
+            return changed = true;
+        }
+
+        return false;
+    }
+
+    public boolean nequals(JSONObject json1, JSONObject json2)
+    {
+        if (! IOTSimple.equals(json1, json2))
+        {
+            return changed = true;
+        }
+
+        return false;
     }
 }

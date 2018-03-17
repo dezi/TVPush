@@ -68,7 +68,7 @@ public class IOTHuman extends IOTObject
 
     public void checkAndMergeContent(IOTHuman check, boolean external)
     {
-        boolean changed = false;
+        changed = false;
 
         //
         // Update possibly from software update.
@@ -86,10 +86,10 @@ public class IOTHuman extends IOTObject
 
             // @formatter:off
 
-            if (changed |= IOTSimple.nequals(nick,      check.nick      )) nick       = check.nick;
-            if (changed |= IOTSimple.nequals(firstname, check.firstname )) firstname  = check.firstname;
-            if (changed |= IOTSimple.nequals(middlename,check.middlename)) middlename = check.middlename;
-            if (changed |= IOTSimple.nequals(lastname,  check.lastname  )) lastname   = check.lastname;
+            if (nequals(nick,      check.nick      )) nick       = check.nick;
+            if (nequals(firstname, check.firstname )) firstname  = check.firstname;
+            if (nequals(middlename,check.middlename)) middlename = check.middlename;
+            if (nequals(lastname,  check.lastname  )) lastname   = check.lastname;
 
             // @formatter:on
         }

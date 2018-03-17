@@ -5,36 +5,35 @@ import org.json.JSONObject;
 import de.xavaro.android.iot.base.IOTObject;
 
 @SuppressWarnings("WeakerAccess")
-public class IOTDomain extends IOTObject
+public class IOTLocation extends IOTObject
 {
     public String nick;
     public String name;
 
-    public String fixedwifi;
     public Double fixedLat;
     public Double fixedLon;
 
-    public IOTDomain()
+    public IOTLocation()
     {
         super();
     }
 
-    public IOTDomain(String uuid)
+    public IOTLocation(String uuid)
     {
         super(uuid);
     }
 
-    public IOTDomain(JSONObject json)
+    public IOTLocation(JSONObject json)
     {
         super(json);
     }
 
-    public IOTDomain(String jsonstr, boolean dummy)
+    public IOTLocation(String jsonstr, boolean dummy)
     {
         super(jsonstr, dummy);
     }
 
-    public void checkAndMergeContent(IOTDomain check, boolean external)
+    public void checkAndMergeContent(IOTLocation check, boolean external)
     {
         changed = false;
 
@@ -44,7 +43,7 @@ public class IOTDomain extends IOTObject
 
         // @formatter:off
 
-        if (nequals(fixedwifi, check.fixedwifi)) fixedwifi = check.fixedwifi;
+        // None
 
         // @formatter:on
 
