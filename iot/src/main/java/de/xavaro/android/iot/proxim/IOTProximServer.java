@@ -28,8 +28,6 @@ public class IOTProximServer
 {
     private static final String LOGTAG = IOTProximServer.class.getName();
 
-    public static IOTProximServer instance;
-
     private final static int MANUFACTURER_ID = 4711;
 
     private byte reserved;
@@ -43,9 +41,11 @@ public class IOTProximServer
 
     static public void startService(Context context)
     {
-        if (instance == null)
+        if (IOT.instance == null) return;
+
+        if (IOT.instance.proximServer == null)
         {
-            instance = new IOTProximServer(context);
+            IOT.instance.proximServer = new IOTProximServer(context);
         }
     }
 
