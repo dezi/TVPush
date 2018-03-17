@@ -11,6 +11,8 @@ import android.widget.FrameLayout;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import de.xavaro.android.gui.base.GUIPlugin;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUIFrameLayout;
@@ -26,6 +28,9 @@ public class GUIChannelWizzard extends GUIPlugin
 
     private final static int WIDTH = 600;
     private final static int CHANNELS_LINE = 4;
+
+    private static final int CHANNEL_WIDTH = Simple.dipToPx(WIDTH / CHANNELS_LINE);
+    private static final int CHANNEL_HEIGTH = Simple.dipToPx(40);
 
     private GUIFrameLayout scrollContent;
 
@@ -74,47 +79,97 @@ public class GUIChannelWizzard extends GUIPlugin
 
     public GUIFrameLayout selectedContainer;
 
-    public void moveDat(GUIFrameLayout container, int keyCode)
+    private void moveToPosi(GUIFrameLayout layout, Integer[] posi)
     {
-        Log.d(LOGTAG, "moveDat: keyCode=" + keyCode);
+        FrameLayout.LayoutParams prams = (FrameLayout.LayoutParams) layout.getLayoutParams();
+        prams.leftMargin = CHANNEL_WIDTH  * posi[ 0 ];
+        prams.topMargin  = CHANNEL_HEIGTH * posi[ 1 ];
 
-        int width  = Simple.dipToPx(WIDTH / CHANNELS_LINE);
-        int heigth = Simple.dipToPx(40);
+        layout.setLayoutParams(prams);
+        invalidate();
+    }
 
-        FrameLayout.LayoutParams prams = (FrameLayout.LayoutParams) container.getLayoutParams();
+    private Integer[] key2Posi(Integer[] posi, int keyCode)
+    {
+        Integer[] newPosi = new Integer[]{posi[ 0 ], posi[ 1 ]};
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT)
         {
-            prams.leftMargin -= width;
+            newPosi[ 0 ] -= 1;
         }
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_UP)
         {
-            prams.topMargin -= heigth;
+            newPosi[ 1 ] -= 1;
         }
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)
         {
-            prams.leftMargin += width;
+            newPosi[ 0 ] += 1;
         }
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN)
         {
-            prams.topMargin += heigth;
+            newPosi[ 1 ] += 1;
         }
 
-        container.setLayoutParams(prams);
-        invalidate();
+        return newPosi;
+    }
+
+    private int getPosition(Integer[] posi)
+    {
+        return (posi[ 0 ] + CHANNELS_LINE * posi[ 1 ]);
+    }
+
+    private Integer[] getPosition(int posi)
+    {
+        return new Integer[]{
+                (posi % CHANNELS_LINE),
+                (posi / CHANNELS_LINE)
+        };
+    }
+
+    public void moveDat(int keyCode)
+    {
+        Log.d(LOGTAG, "moveDat: keyCode=" + keyCode);
+
+        int start = channelPosi.lastIndexOf(selectedContainer);
+        Integer[] oldPosi = getPosition(start);
+        Integer[] newPosi = key2Posi(oldPosi, keyCode);
+
+        int end = getPosition(newPosi);
+
+        Log.d(LOGTAG, "moveDat: start=" + start);
+        Log.d(LOGTAG, "moveDat: end=" + end);
+
+        if ((end < 0) || (end >= channelPosi.size())) return;
+
+        moveToPosi(selectedContainer, newPosi);
+
+        for (int inx = start + 1; inx <= end; inx++)
+        {
+            GUIFrameLayout moveObj = channelPosi.get(inx);
+
+            Integer[] movePosi = getPosition(inx - 1);
+            moveToPosi(moveObj, movePosi);
+        }
+
+        for (int inx = end; inx < start; inx++)
+        {
+            GUIFrameLayout moveObj = channelPosi.get(inx);
+
+            Integer[] movePosi = getPosition(inx + 1);
+            moveToPosi(moveObj, movePosi);
+        }
     }
 
     private GUIFrameLayout createContainer(int inx, int iny)
     {
-        int width  = Simple.dipToPx(WIDTH / CHANNELS_LINE);
-        int heigth = Simple.dipToPx(40);
+        final GUIFrameLayout bgLayout = new GUIFrameLayout(getContext());
 
-        FrameLayout.LayoutParams prams = new FrameLayout.LayoutParams(width, heigth);
-        prams.leftMargin = width  * inx;
-        prams.topMargin  = heigth * iny;
+        FrameLayout.LayoutParams prams = new FrameLayout.LayoutParams(CHANNEL_WIDTH, CHANNEL_HEIGTH);
+        prams.leftMargin = CHANNEL_WIDTH  * inx;
+        prams.topMargin  = CHANNEL_HEIGTH * iny;
 
         GUIFrameLayout container = new GUIFrameLayout(getContext())
         {
@@ -127,7 +182,7 @@ public class GUIChannelWizzard extends GUIPlugin
                 {
                     if (selectedContainer == this)
                     {
-                        moveDat(this, keyCode);
+                        moveDat(keyCode);
                         return true;
                     }
                 }
@@ -135,9 +190,6 @@ public class GUIChannelWizzard extends GUIPlugin
                 return super.onKeyDown(keyCode, event);
             }
         };
-
-        final GUIFrameLayout bgLayout = new GUIFrameLayout(getContext());
-        container.addView(bgLayout);
 
         container.setFocusable(true);
         container.setLayoutParams(prams);
@@ -164,16 +216,23 @@ public class GUIChannelWizzard extends GUIPlugin
             }
         });
 
+        container.addView(bgLayout);
         scrollContent.addView(container);
+
+        channelPosi.add(container);
 
         return bgLayout;
     }
+
+    private ArrayList<GUIFrameLayout> channelPosi;
 
     private void createChannelView()
     {
         JSONArray channels = getChannels();
 
         if (channels == null) return;
+
+        channelPosi = new ArrayList<>();
 
         int iny = 0;
 
