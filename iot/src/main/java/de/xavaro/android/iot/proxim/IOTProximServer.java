@@ -23,15 +23,6 @@ public class IOTProximServer
 {
     private static final String LOGTAG = IOTProximServer.class.getName();
 
-    private final static int MANUFACTURER_ID = 4711;
-
-    private final static byte ADVERTISE_GPSLQ = 1;
-    private final static byte ADVERTISE_GPSHQ = 2;
-    private final static byte ADVERTISE_IOT_HUMAN = 3;
-    private final static byte ADVERTISE_IOT_DOMAIN = 4;
-    private final static byte ADVERTISE_IOT_DEVICE = 5;
-    private final static byte ADVERTISE_IOT_LOCATION = 6;
-
     private byte powerLevel;
     private AdvertiseSettings settings;
     private BluetoothLeAdvertiser btLEAdvertiser;
@@ -139,7 +130,7 @@ public class IOTProximServer
 
         byte[] bytes = ByteBuffer
                 .allocate(1 + 1 + 8 + 8)
-                .put(ADVERTISE_GPSLQ)
+                .put(IOTProxim.ADVERTISE_GPSLQ)
                 .put(powerLevel)
                 .putDouble(lat)
                 .putDouble(lon)
@@ -156,7 +147,7 @@ public class IOTProximServer
 
         byte[] bytes = ByteBuffer
                 .allocate(1 + 1 + 8 + 8)
-                .put(ADVERTISE_GPSHQ)
+                .put(IOTProxim.ADVERTISE_GPSHQ)
                 .put(powerLevel)
                 .putDouble(lat)
                 .putDouble(lon)
@@ -172,7 +163,7 @@ public class IOTProximServer
 
         byte[] bytes = ByteBuffer
                 .allocate(1 + 1 + 8 + 8)
-                .put(ADVERTISE_IOT_HUMAN)
+                .put(IOTProxim.ADVERTISE_IOT_HUMAN)
                 .put(powerLevel)
                 .putLong(UUID.fromString(IOT.human.uuid).getMostSignificantBits())
                 .putLong(UUID.fromString(IOT.human.uuid).getLeastSignificantBits())
@@ -188,7 +179,7 @@ public class IOTProximServer
 
         byte[] bytes = ByteBuffer
                 .allocate(1 + 1 + 8 + 8)
-                .put(ADVERTISE_IOT_DEVICE)
+                .put(IOTProxim.ADVERTISE_IOT_DEVICE)
                 .put(powerLevel)
                 .putLong(UUID.fromString(IOT.device.uuid).getMostSignificantBits())
                 .putLong(UUID.fromString(IOT.device.uuid).getLeastSignificantBits())
@@ -203,7 +194,7 @@ public class IOTProximServer
         AdvertiseData data = new AdvertiseData.Builder()
                 .setIncludeDeviceName(false)
                 .setIncludeTxPowerLevel(false)
-                .addManufacturerData(MANUFACTURER_ID, bytes)
+                .addManufacturerData(IOTProxim.MANUFACTURER_ID, bytes)
                 .build();
 
         Log.d(LOGTAG, "advertiseDat: data=" + data.toString());
