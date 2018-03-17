@@ -44,6 +44,7 @@ public class IOT implements GetDevices
             register = new IOTRegister();
 
             Simple.initialize(appcontext);
+            Simple.checkBTFeatures(appcontext);
 
             IOTBoot.initialize();
 

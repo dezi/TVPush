@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
+import android.bluetooth.le.AdvertiseCallback;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -362,28 +363,7 @@ public class Simple
         return FirebaseInstanceId.getInstance().getToken();
     }
 
-    public static String getBTStateDescription(int state)
-    {
-        switch (state)
-        {
-            case BluetoothProfile.STATE_CONNECTED: return "Connected";
-            case BluetoothProfile.STATE_CONNECTING: return "Connecting";
-            case BluetoothProfile.STATE_DISCONNECTED: return "Disconnected";
-            case BluetoothProfile.STATE_DISCONNECTING: return "Disconnecting";
-        }
-
-        return "Unknown State state=" + state;
-    }
-
-    public static String getBTStatusDescription(int status)
-    {
-        switch (status)
-        {
-            case BluetoothGatt.GATT_SUCCESS: return "SUCCESS";
-        }
-
-        return "Unknown Status status=" + status;
-    }
+    //endregion Simple getters.
 
     @Nullable
     public static BluetoothManager getBTManager()
@@ -397,20 +377,18 @@ public class Simple
         return bluetoothAdapter;
     }
 
-    //endregion Simple getters.
-
-    static public boolean checkBluetooth(Context context)
+    static public boolean checkBTFeatures(Context context)
     {
         if (!context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE))
         {
-            Log.e(LOGTAG, "Bluetooth LE is not supported!");
+            Log.e(LOGTAG, "checkBTFeatures: Bluetooth LE is not supported!");
 
             return false;
         }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
         {
-            Log.d(LOGTAG, "Android version too old!");
+            Log.d(LOGTAG, "checkBTFeatures: Android version too old!");
 
             return false;
         }
@@ -419,26 +397,81 @@ public class Simple
 
         if (ba == null)
         {
-            Log.e(LOGTAG, "BluetoothAdapter ist not available!");
+            Log.e(LOGTAG, "checkBTFeatures: BluetoothAdapter ist not available!");
 
             return false;
         }
 
-        if (!ba.isEnabled())
-        {
-            Log.w(LOGTAG, "BluetoothAdapter is not enabled!");
+        if (!ba.isEnabled()) ba.enable();
 
-            ba.enable();
+        if (ba.isEnabled())
+        {
+            Log.d(LOGTAG, "checkBTFeatures: BluetoothAdapter is enabled!");
+        }
+        else
+        {
+            Log.e(LOGTAG, "checkBTFeatures: BluetoothAdapter is not enabled!");
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
-            if (!ba.isMultipleAdvertisementSupported())
+            if (ba.isMultipleAdvertisementSupported())
             {
-                Log.d(LOGTAG, "No Multiple Advertisement Support!");
+                Log.d(LOGTAG, "checkBTFeatures: Has Multiple Advertisement Support!");
+            }
+            else
+            {
+                Log.e(LOGTAG, "checkBTFeatures: No Multiple Advertisement Support!");
             }
         }
 
         return ba.isEnabled();
+    }
+
+    public static String getBTStateDescription(int state)
+    {
+        switch (state)
+        {
+            case BluetoothProfile.STATE_CONNECTED: return "STATE_CONNECTED";
+            case BluetoothProfile.STATE_CONNECTING: return "STATE_CONNECTING";
+            case BluetoothProfile.STATE_DISCONNECTED: return "STATE_DISCONNECTED";
+            case BluetoothProfile.STATE_DISCONNECTING: return "STATE_DISCONNECTING";
+        }
+
+        return "UNKNOWN_STATE=" + state;
+    }
+
+    public static String getBTStatusDescription(int status)
+    {
+        switch (status)
+        {
+            case BluetoothGatt.GATT_SUCCESS: return "GATT_SUCCESS";
+        }
+
+        return "UNKNOWN_STATUS=" + status;
+    }
+
+    public static String getBTAdvertiserFailDescription(int error)
+    {
+        switch (error)
+        {
+            case AdvertiseCallback.ADVERTISE_FAILED_FEATURE_UNSUPPORTED:
+                return "ADVERTISE_FAILED_FEATURE_UNSUPPORTED";
+
+            case AdvertiseCallback.ADVERTISE_FAILED_TOO_MANY_ADVERTISERS:
+                return "ADVERTISE_FAILED_TOO_MANY_ADVERTISERS";
+
+            case AdvertiseCallback.ADVERTISE_FAILED_ALREADY_STARTED:
+                return "ADVERTISE_FAILED_ALREADY_STARTED";
+
+            case AdvertiseCallback.ADVERTISE_FAILED_DATA_TOO_LARGE:
+                return "ADVERTISE_FAILED_DATA_TOO_LARGE";
+
+            case AdvertiseCallback.ADVERTISE_FAILED_INTERNAL_ERROR:
+                return "ADVERTISE_FAILED_INTERNAL_ERROR";
+
+        }
+
+        return "UNKNOWN_ERROR=" + error;
     }
 }
