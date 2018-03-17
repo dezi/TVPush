@@ -109,7 +109,7 @@ public class IOTProximScanner
 
             if ((eddystone != null) && (eddystone[0] == 0x10))
             {
-                buildEddystonDevice(result, eddystone);
+                buildEddystoneDevice(result, eddystone);
 
                 return;
             }
@@ -134,6 +134,8 @@ public class IOTProximScanner
             if (bytes != null)
             {
                 evaluateIOTAdvertisement(result, bytes);
+
+                return;
             }
 
             SparseArray<byte[]> bytbyt = result.getScanRecord().getManufacturerSpecificData();
@@ -158,7 +160,7 @@ public class IOTProximScanner
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void buildEddystonDevice(ScanResult result, byte[] eddystone)
+    private void buildEddystoneDevice(ScanResult result, byte[] eddystone)
     {
         byte txp = eddystone[1];
         byte urs = eddystone[2];
