@@ -1,48 +1,32 @@
 package de.xavaro.android.iot.simple;
 
 import android.annotation.SuppressLint;
+import android.support.annotation.Nullable;
 
 import android.app.Application;
 import android.app.UiModeManager;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothManager;
-import android.bluetooth.BluetoothProfile;
-import android.bluetooth.le.AdvertiseCallback;
 import android.content.ContentResolver;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.Context;
 import android.graphics.Point;
-import android.media.AudioManager;
 import android.net.wifi.WifiManager;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.speech.SpeechRecognizer;
-import android.support.annotation.Nullable;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
+import android.os.Handler;
+import android.os.Build;
+import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
-
-import static android.content.Context.BLUETOOTH_SERVICE;
 
 public class Simple
 {
@@ -58,6 +42,7 @@ public class Simple
     //region Device features.
 
     private static boolean istv;
+    private static boolean isgps;
     private static boolean istouch;
     private static boolean istablet;
     private static boolean iswidescreen;
@@ -94,7 +79,7 @@ public class Simple
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
         {
-            bluetoothManager = (BluetoothManager) app.getSystemService(BLUETOOTH_SERVICE);
+            bluetoothManager = (BluetoothManager) app.getSystemService(Context.BLUETOOTH_SERVICE);
 
             if (bluetoothManager != null)
             {
@@ -116,8 +101,9 @@ public class Simple
         UiModeManager uiModeManager = (UiModeManager) app.getSystemService(Context.UI_MODE_SERVICE);
         istv = (uiModeManager != null) && (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION);
 
-        iscamera = packageManager.hasSystemFeature("android.hardware.camera");
-        istouch = packageManager.hasSystemFeature("android.hardware.touchscreen");
+        iscamera = packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA);
+        istouch = packageManager.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN);
+        isgps = packageManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS);
 
         istablet = ((Resources.getSystem().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
@@ -133,6 +119,11 @@ public class Simple
     public static boolean isTV()
     {
         return istv;
+    }
+
+    public static boolean isGps()
+    {
+        return isgps;
     }
 
     public static boolean isTouch()
@@ -299,6 +290,7 @@ public class Simple
 
         caps += "|speaker|tcp|wifi";
 
+        if (isGps()) caps += "|gps";
         if (isTouch()) caps += "|touch";
         if (isIscamera()) caps += "|camera";
         if (isWideScreen()) caps += "|widescreen";
