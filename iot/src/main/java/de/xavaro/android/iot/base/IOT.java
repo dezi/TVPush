@@ -27,6 +27,7 @@ public class IOT implements GetDevices
     public static IOTMeme meme;
     public static IOTHuman human;
     public static IOTDevice device;
+    public static IOTDevice domain;
 
     public static IOTMessageHandler message;
 
