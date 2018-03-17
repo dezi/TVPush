@@ -57,13 +57,6 @@ public class GUIChannelWizzard extends GUIPlugin
         return null;
     }
 
-    public GUIFrameLayout selectedContainer;
-
-    public void moveDat(int keyCode)
-    {
-        Log.d(LOGTAG, "moveDat: keyCode=" + keyCode);
-    }
-
     private GUITextView createChannelTextView(JSONObject channel)
     {
         GUITextView channelView = new GUITextView(getContext());
@@ -77,6 +70,41 @@ public class GUIChannelWizzard extends GUIPlugin
         channelView.setLayoutParams(new FrameLayout.LayoutParams(Simple.MP, Simple.MP, Gravity.CENTER));
 
         return channelView;
+    }
+
+    public GUIFrameLayout selectedContainer;
+
+    public void moveDat(GUIFrameLayout container, int keyCode)
+    {
+        Log.d(LOGTAG, "moveDat: keyCode=" + keyCode);
+
+        int width  = Simple.dipToPx(WIDTH / CHANNELS_LINE);
+        int heigth = Simple.dipToPx(40);
+
+        FrameLayout.LayoutParams prams = (FrameLayout.LayoutParams) container.getLayoutParams();
+
+        if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT)
+        {
+            prams.leftMargin -= width;
+        }
+
+        if (keyCode == KeyEvent.KEYCODE_DPAD_UP)
+        {
+            prams.topMargin -= heigth;
+        }
+
+        if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)
+        {
+            prams.leftMargin += width;
+        }
+
+        if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN)
+        {
+            prams.topMargin += heigth;
+        }
+
+        container.setLayoutParams(prams);
+        invalidate();
     }
 
     private GUIFrameLayout createContainer(int inx, int iny)
@@ -99,7 +127,7 @@ public class GUIChannelWizzard extends GUIPlugin
                 {
                     if (selectedContainer == this)
                     {
-                        moveDat(keyCode);
+                        moveDat(this, keyCode);
                         return true;
                     }
                 }
@@ -155,7 +183,6 @@ public class GUIChannelWizzard extends GUIPlugin
 
             int left = inx % CHANNELS_LINE;
             int top = iny;
-
 
             GUITextView text = createChannelTextView(channel);
 
