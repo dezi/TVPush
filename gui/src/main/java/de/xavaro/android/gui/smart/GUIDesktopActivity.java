@@ -45,7 +45,7 @@ public class GUIDesktopActivity extends GUIActivity
 
         channelWizzard = new GUIChannelWizzard(this);
         channelWizzard.setPosition(100,100);
-        channelWizzard.setSizeDip(600,400);
+        channelWizzard.setSizeDip(GUIChannelWizzard.WIDTH,GUIChannelWizzard.HEIGTH);
 
         topframe.addView(channelWizzard);
 
