@@ -410,6 +410,9 @@ public class Simple
         }
         else
         {
+            //Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            //context.startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+
             Log.e(LOGTAG, "checkBTFeatures: BluetoothAdapter is not enabled!");
         }
 

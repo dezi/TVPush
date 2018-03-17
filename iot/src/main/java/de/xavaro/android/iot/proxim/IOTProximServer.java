@@ -36,10 +36,10 @@ public class IOTProximServer
     private AdvertiseSettings settings;
     private BluetoothLeAdvertiser btLEAdvertiser;
 
-    private IOTProximAdvertiseCallback callbackGPSLowQuality;
-    private IOTProximAdvertiseCallback callbackGPSHighQuality;
-    private IOTProximAdvertiseCallback callbackIOTHuman;
-    private IOTProximAdvertiseCallback callbackIOTDevice;
+    private IOTProximCallback callbackGPSLowQuality;
+    private IOTProximCallback callbackGPSHighQuality;
+    private IOTProximCallback callbackIOTHuman;
+    private IOTProximCallback callbackIOTDevice;
 
     static public void startService(Context context)
     {
@@ -198,7 +198,7 @@ public class IOTProximServer
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private IOTProximAdvertiseCallback advertiseDat(byte[] bytes)
+    private IOTProximCallback advertiseDat(byte[] bytes)
     {
         AdvertiseData data = new AdvertiseData.Builder()
                 .setIncludeDeviceName(false)
@@ -208,7 +208,7 @@ public class IOTProximServer
 
         Log.d(LOGTAG, "advertiseDat: data=" + data.toString());
 
-        IOTProximAdvertiseCallback callback = new IOTProximAdvertiseCallback();
+        IOTProximCallback callback = new IOTProximCallback();
 
         btLEAdvertiser.startAdvertising(settings, data, callback);
 

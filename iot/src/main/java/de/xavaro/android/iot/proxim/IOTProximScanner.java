@@ -1,5 +1,7 @@
 package de.xavaro.android.iot.proxim;
 
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
 import android.util.Log;
 
 import de.xavaro.android.iot.base.IOT;
@@ -31,4 +33,13 @@ public class IOTProximScanner extends Thread
 
         Log.d(LOGTAG, "run: done.");
     }
+
+    private ScanCallback leScanCallback = new ScanCallback()
+    {
+        @Override
+        public void onScanResult(int callbackType, ScanResult result)
+        {
+            Log.d(LOGTAG,"Device Name: " + result.getDevice().getName() + " rssi: " + result.getRssi() + "\n");
+        }
+    };
 }

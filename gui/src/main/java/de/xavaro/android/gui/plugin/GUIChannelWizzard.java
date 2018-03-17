@@ -27,7 +27,7 @@ public class GUIChannelWizzard extends GUIPlugin
     private final static int CHANNELS_LINE = 4;
 
     private Context context;
-    private GUIFrameLayout topFrame;
+    private GUIFrameLayout scrollContent;
 
     public GUIChannelWizzard(Context context)
     {
@@ -61,21 +61,37 @@ public class GUIChannelWizzard extends GUIPlugin
     {
         context = getContext();
 
-        GUIFrameLayout mainFrame = new GUIFrameLayout(context);
+        GUIFrameLayout mainFrame = new GUIFrameLayout(context)
+        {
+            @Override
+            public boolean onKeyDown(int keyCode, KeyEvent event)
+            {
+                Log.d(LOGTAG, "onKeyDown: aaaa event=" + event);
+
+                return super.onKeyDown(keyCode, event);
+            }
+        };
+
+        mainFrame.setFocusable(true);
         mainFrame.setRoundedCorners(20, 0xffffffff);
         pluginFrame.addView(mainFrame);
 
         GUIScrollView scroll = new GUIScrollView(context);
         mainFrame.addView(scroll);
 
-        topFrame = new GUIFrameLayout(context);
-        scroll.addView(topFrame);
+        scrollContent = new GUIFrameLayout(context);
+        scroll.addView(scrollContent);
 
         createChennelView();
 
-        setFocusable(true);
-
         Log.d(LOGTAG, "init: width=" + WIDTH);
+    }
+
+    public GUIFrameLayout selectedContainer;
+
+    public void moveDat(int keyCode)
+    {
+
     }
 
     private void createChennelView()
@@ -99,18 +115,34 @@ public class GUIChannelWizzard extends GUIPlugin
             prams.topMargin  = heigth * (((inx % CHANNELS_LINE) < (CHANNELS_LINE-1)) ? topInx : topInx++);
             prams.leftMargin = width  * (inx % CHANNELS_LINE);
 
-            GUIFrameLayout container = new GUIFrameLayout(context);
-            container.setFocusable(false);
+            GUIFrameLayout container = new GUIFrameLayout(context)
+            {
+                @Override
+                public boolean onKeyDown(int keyCode, KeyEvent event)
+                {
+                    Log.d(LOGTAG, "onKeyDown: conatiner event=" + event);
+
+                    if (selectedContainer == this)
+                    {
+                        moveDat(keyCode);
+                        return false;
+                    }
+
+                    return super.onKeyDown(keyCode, event);
+                }
+            };
+
+            container.setFocusable(true);
             container.setPaddingDip(3);
             //container.setBackgroundColor(0x88000088);
             container.setLayoutParams(prams);
-            topFrame.addView(container);
+            scrollContent.addView(container);
 
             final GUITextView channelView = new GUITextView(context);
             channelView.setGravity(Gravity.VERTICAL_GRAVITY_MASK);
             channelView.setMaxLines(1);
             channelView.setPaddingDip(3);
-            channelView.setFocusable(true);
+            channelView.setFocusable(false);
             channelView.setTextSizeDip(12);
             channelView.setText(Json.getString(channel, "dial") + ": " + channelName);
             channelView.setLayoutParams(new FrameLayout.LayoutParams(Simple.MP, Simple.MP, Gravity.CENTER));
@@ -131,7 +163,7 @@ public class GUIChannelWizzard extends GUIPlugin
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
-        Log.d(LOGTAG, "onKeyDown: event=" + event);
+        Log.d(LOGTAG, "onKeyDown: bbbb event=" + event);
 
         return super.onKeyDown(keyCode, event);
 
