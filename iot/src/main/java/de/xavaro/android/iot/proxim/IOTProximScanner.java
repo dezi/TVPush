@@ -9,6 +9,9 @@ import android.os.Build;
 import android.util.Log;
 import android.util.SparseArray;
 
+import java.nio.ByteBuffer;
+import java.util.UUID;
+
 import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.simple.Simple;
 
@@ -85,6 +88,7 @@ public class IOTProximScanner
 
                 Log.d(LOGTAG, "evalScan: ALT"
                         + " rssi=" + result.getRssi()
+                        + " addr=" + result.getDevice().getAddress()
                         + " name=" + result.getDevice().getName()
                 );
 
@@ -93,6 +97,7 @@ public class IOTProximScanner
 
             if (result.getScanRecord() == null) return;
 
+            /*
             SparseArray<byte[]> bytbyt = result.getScanRecord().getManufacturerSpecificData();
 
             for (int inx = 0; inx < bytbyt.size(); inx++)
@@ -104,22 +109,46 @@ public class IOTProximScanner
                 {
                     Log.d(LOGTAG, "evalScan: ALT"
                             + " rssi=" + result.getRssi()
+                            + " addr=" + result.getDevice().getAddress()
                             + " vend=" + vendor
                             + " name=" + IOTProxim.getAdvertiseVendor(vendor)
                     );
                 }
-                else
-                {
-                    byte type = bytes[0];
-                    byte plev = bytes[1];
-
-                    Log.d(LOGTAG, "evalScan: IOT"
-                            + " rssi=" + result.getRssi()
-                            + " plev=" + plev
-                            + " type=" + IOTProxim.getAdvertiseType(type)
-                    );
-                }
             }
+            */
+
+            byte[] bytes = result.getScanRecord().getManufacturerSpecificData(IOTProxim.MANUFACTURER_ID);
+            if (bytes == null) return;
+
+            ByteBuffer bb = ByteBuffer.wrap(bytes);
+
+            byte type = bb.get();
+            byte plev = bb.get();
+
+            String display = null;
+
+            if ((type == IOTProxim.ADVERTISE_GPSHQ) || (type == IOTProxim.ADVERTISE_GPSLQ))
+            {
+                double lat = bb.getDouble();
+                double lon = bb.getDouble();
+
+                display = lat + " - " + lon;
+            }
+            else
+            {
+                long msb = bb.getLong();
+                long lsb = bb.getLong();
+
+                display = (new UUID(msb, lsb)).toString();
+            }
+
+            Log.d(LOGTAG, "evalScan: IOT"
+                    + " rssi=" + result.getRssi()
+                    + " addr=" + result.getDevice().getAddress()
+                    + " plev=" + plev
+                    + " type=" + IOTProxim.getAdvertiseType(type)
+                    + " disp=" + display
+            );
         }
     }
 }
