@@ -398,4 +398,47 @@ public class Simple
     }
 
     //endregion Simple getters.
+
+    static public boolean checkBluetooth(Context context)
+    {
+        if (!context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE))
+        {
+            Log.e(LOGTAG, "Bluetooth LE is not supported!");
+
+            return false;
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+        {
+            Log.d(LOGTAG, "Android version too old!");
+
+            return false;
+        }
+
+        BluetoothAdapter ba = Simple.getBTAdapter();
+
+        if (ba == null)
+        {
+            Log.e(LOGTAG, "BluetoothAdapter ist not available!");
+
+            return false;
+        }
+
+        if (!ba.isEnabled())
+        {
+            Log.w(LOGTAG, "BluetoothAdapter is not enabled!");
+
+            ba.enable();
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            if (!ba.isMultipleAdvertisementSupported())
+            {
+                Log.d(LOGTAG, "No Multiple Advertisement Support!");
+            }
+        }
+
+        return ba.isEnabled();
+    }
 }

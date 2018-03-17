@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public class IOTProximMessage
 {
-    public static UUID CHARACTERISTIC_UUID = UUID.fromString("decafbad-f5d0-4cc0-aeb8-d00db16b00b5");
+    public static UUID CHARACTERISTIC_UUID = UUID.fromString("ba29606c-6dfa-443d-961c-f4403b788a10");
 
     static public final int SIZE = 2 + 8 + 8; // Short.BYTES + Double.BYTES + Double.BYTES;
 

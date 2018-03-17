@@ -14,7 +14,6 @@ import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.ParcelUuid;
 import android.util.Log;
@@ -22,61 +21,32 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.simple.Simple;
 
 public class IOTProximServer
 {
     private static final String LOGTAG = IOTProximServer.class.getName();
 
-    public static UUID IOT_PROXIM_SERVICE_UUID = UUID.fromString("feedface-b00b-dead-code-beefaffedada");
+    public static IOTProximServer instance;
 
+    private final static int MANUFACTURER_ID = 4711;
+
+    private byte reserved;
+    private byte powerLevel;
+    private UUID serverUUID;
     private ArrayList<BluetoothDevice> connectedDevices;
     private BluetoothGattCharacteristic proximCharacteristic;
 
-    private BluetoothLeAdvertiser btLEAdvertiser;
     private BluetoothGattServer btGattServer;
+    private BluetoothLeAdvertiser btLEAdvertiser;
 
-    static public boolean checkBluetooth(Context context)
+    static public void startService(Context context)
     {
-        if (!context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE))
+        if (instance == null)
         {
-            Log.e(LOGTAG, "Bluetooth LE is not supported!");
-
-            return false;
+            instance = new IOTProximServer(context);
         }
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-        {
-            Log.d(LOGTAG, "Android version too old!");
-
-            return false;
-        }
-
-        BluetoothAdapter ba = Simple.getBTAdapter();
-
-        if (ba == null)
-        {
-            Log.e(LOGTAG, "BluetoothAdapter ist not available!");
-
-            return false;
-        }
-
-        if (!ba.isEnabled())
-        {
-            Log.w(LOGTAG, "BluetoothAdapter is not enabled!");
-
-            ba.enable();
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        {
-            if (!ba.isMultipleAdvertisementSupported())
-            {
-                Log.d(LOGTAG, "No Multiple Advertisement Support!");
-            }
-        }
-
-        return ba.isEnabled();
     }
 
     public IOTProximServer(Context context)
@@ -94,6 +64,14 @@ public class IOTProximServer
             return;
         }
 
+        if ((IOT.device == null) || (IOT.device.uuid == null))
+        {
+            return;
+        }
+
+        serverUUID = UUID.fromString(IOT.device.uuid);
+        powerLevel = AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM;
+
         btGattServer = btManager.openGattServer(context, btGattServerCallback);
         btLEAdvertiser = btAdapter.getBluetoothLeAdvertiser();
 
@@ -107,6 +85,56 @@ public class IOTProximServer
     {
         stopAdvertising();
         shutdownServer();
+    }
+
+    private void initializeServer()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            BluetoothGattService service = new BluetoothGattService(
+                    serverUUID, BluetoothGattService.SERVICE_TYPE_PRIMARY);
+
+            int properties = BluetoothGattCharacteristic.PROPERTY_READ
+                    | BluetoothGattCharacteristic.PROPERTY_INDICATE;
+
+            proximCharacteristic = new BluetoothGattCharacteristic(
+                    IOTProximMessage.CHARACTERISTIC_UUID, properties,
+                    BluetoothGattCharacteristic.PERMISSION_READ);
+
+            service.addCharacteristic(proximCharacteristic);
+
+            btGattServer.addService(service);
+
+            Log.d(LOGTAG, "initializeServer: service added.");
+        }
+    }
+
+    private void startAdvertising()
+    {
+        if (btLEAdvertiser == null) return;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            AdvertiseSettings settings = new AdvertiseSettings.Builder()
+                    .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
+                    .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM)
+                    .setConnectable(true)
+                    .setTimeout(0)
+                    .build();
+
+            byte[] mdata = new byte[]{ 'I', 'O', 'T', 'D', powerLevel, reserved };
+
+            AdvertiseData data = new AdvertiseData.Builder()
+                    .setIncludeDeviceName(false)
+                    .setIncludeTxPowerLevel(false)
+                    .addManufacturerData(MANUFACTURER_ID, mdata)
+                    .addServiceUuid(new ParcelUuid(serverUUID))
+                    .build();
+
+            Log.d(LOGTAG, "startAdvertising: data=" + data.toString());
+
+            btLEAdvertiser.startAdvertising(settings, data, btAdvertiseCallback);
+        }
     }
 
     private final Object mLock = new Object();
@@ -137,30 +165,6 @@ public class IOTProximServer
         }
     }
 
-    private void startAdvertising()
-    {
-        if (btLEAdvertiser == null) return;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        {
-            AdvertiseSettings settings = new AdvertiseSettings.Builder()
-                    .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
-                    .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_LOW)
-                    .setConnectable(true)
-                    .setTimeout(0)
-                    .build();
-
-            AdvertiseData data = new AdvertiseData.Builder()
-                    .setIncludeDeviceName(false)
-                    .setIncludeTxPowerLevel(true)
-                    .addServiceData(new ParcelUuid(IOT_PROXIM_SERVICE_UUID), "IOTProxim".getBytes())
-                    .addServiceUuid(new ParcelUuid(IOT_PROXIM_SERVICE_UUID))
-                    .build();
-
-            btLEAdvertiser.startAdvertising(settings, data, btAdvertiseCallback);
-        }
-    }
-
     private void stopAdvertising()
     {
         if (btLEAdvertiser == null) return;
@@ -182,29 +186,28 @@ public class IOTProximServer
         @Override
         public void onStartFailure(int errorCode)
         {
-            Log.e(LOGTAG, "AdvertiseCallback: onStartFailure err=" + errorCode);
+            String desc = "unknown";
+
+            if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_FEATURE_UNSUPPORTED)
+                desc = "ADVERTISE_FAILED_FEATURE_UNSUPPORTED";
+
+            if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_TOO_MANY_ADVERTISERS)
+                desc = "ADVERTISE_FAILED_TOO_MANY_ADVERTISERS";
+
+            if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_ALREADY_STARTED)
+                desc = "ADVERTISE_FAILED_ALREADY_STARTED";
+
+            if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_DATA_TOO_LARGE)
+                desc = "ADVERTISE_FAILED_DATA_TOO_LARGE";
+
+            if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_INTERNAL_ERROR)
+                desc = "ADVERTISE_FAILED_INTERNAL_ERROR";
+
+            Log.e(LOGTAG, "AdvertiseCallback: onStartFailure"
+                    + " err=" + errorCode
+                    + " desc=" + desc);
         }
     };
-
-    private void initializeServer()
-    {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        {
-            BluetoothGattService service = new BluetoothGattService(
-                    IOT_PROXIM_SERVICE_UUID, BluetoothGattService.SERVICE_TYPE_PRIMARY);
-
-            int properties = BluetoothGattCharacteristic.PROPERTY_READ
-                    | BluetoothGattCharacteristic.PROPERTY_INDICATE;
-
-            proximCharacteristic = new BluetoothGattCharacteristic(
-                    IOTProximMessage.CHARACTERISTIC_UUID, properties,
-                    BluetoothGattCharacteristic.PERMISSION_READ);
-
-            service.addCharacteristic(proximCharacteristic);
-
-            btGattServer.addService(service);
-        }
-    }
 
     private void shutdownServer()
     {
