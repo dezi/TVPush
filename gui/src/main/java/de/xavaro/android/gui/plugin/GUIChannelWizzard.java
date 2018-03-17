@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import de.xavaro.android.gui.base.GUIPlugin;
 import de.xavaro.android.gui.simple.Simple;
@@ -31,6 +32,8 @@ public class GUIChannelWizzard extends GUIPlugin
 
     private static final int CHANNEL_WIDTH = Simple.dipToPx(WIDTH / CHANNELS_LINE);
     private static final int CHANNEL_HEIGTH = Simple.dipToPx(40);
+
+    private HashMap<GUIFrameLayout, GUITextView> containerText;
 
     private GUIFrameLayout scrollContent;
 
@@ -79,14 +82,24 @@ public class GUIChannelWizzard extends GUIPlugin
 
     public GUIFrameLayout selectedContainer;
 
-    private void moveToPosi(GUIFrameLayout layout, Integer[] posi)
+    private void moveToPosi(GUIFrameLayout layout, int posi)
     {
-        FrameLayout.LayoutParams prams = (FrameLayout.LayoutParams) layout.getLayoutParams();
-        prams.leftMargin = CHANNEL_WIDTH  * posi[ 0 ];
-        prams.topMargin  = CHANNEL_HEIGTH * posi[ 1 ];
+        Integer[] posixy = getPosition(posi);
 
+        FrameLayout.LayoutParams prams = (FrameLayout.LayoutParams) layout.getLayoutParams();
+        prams.leftMargin = CHANNEL_WIDTH  * posixy[ 0 ];
+        prams.topMargin  = CHANNEL_HEIGTH * posixy[ 1 ];
         layout.setLayoutParams(prams);
-        invalidate();
+
+        String newTxt = (posi + 1) + "";
+
+        if (posi < 100) newTxt = "0" + newTxt;
+        if (posi < 10)  newTxt = "0" + newTxt;
+
+        GUITextView txtView = containerText.get(layout);
+        String text = (String) txtView.getText();
+
+        txtView.setText(newTxt + ": " + text.substring(5));
     }
 
     private int key2Posi(int posi, int keyCode)
@@ -99,10 +112,10 @@ public class GUIChannelWizzard extends GUIPlugin
         return posi;
     }
 
-    private int getPosition(Integer[] posi)
-    {
-        return (posi[ 0 ] + CHANNELS_LINE * posi[ 1 ]);
-    }
+//    private int getPosition(Integer[] posi)
+//    {
+//        return (posi[ 0 ] + CHANNELS_LINE * posi[ 1 ]);
+//    }
 
     private Integer[] getPosition(int posi)
     {
@@ -114,59 +127,51 @@ public class GUIChannelWizzard extends GUIPlugin
 
     public void moveDat(int keyCode)
     {
-        Log.d(LOGTAG, "moveDat: keyCode=" + keyCode);
-
         int start = channelPosi.lastIndexOf(selectedContainer);
         int end = key2Posi(start, keyCode);
 
-        Integer[] oldPosi = getPosition(start);
-        Integer[] newPosi = getPosition(end);
-
-        Log.d(LOGTAG, "moveDat: start=" + start);
-        Log.d(LOGTAG, "moveDat: end=" + end);
-        Log.d(LOGTAG, "moveDat: oldPosi=" + oldPosi[ 0 ] + "/" + oldPosi[ 1 ]);
-        Log.d(LOGTAG, "moveDat: newPosi=" + newPosi[ 0 ] + "/" + newPosi[ 1 ]);
+//        Integer[] oldPosi = getPosition(start);
+//        Integer[] newPosi = getPosition(end);
+//
+//        Log.d(LOGTAG, "moveDat: start=" + start);
+//        Log.d(LOGTAG, "moveDat: end=" + end);
+//        Log.d(LOGTAG, "moveDat: oldPosi=" + oldPosi[ 0 ] + "/" + oldPosi[ 1 ]);
+//        Log.d(LOGTAG, "moveDat: newPosi=" + newPosi[ 0 ] + "/" + newPosi[ 1 ]);
 
         if ((end < 0) || (end >= channelPosi.size())) return;
 
-        moveToPosi(selectedContainer, newPosi);
+        moveToPosi(selectedContainer, end);
 
         // --->
         for (int inx = start + 1; inx <= end; inx++)
         {
-            Log.d(LOGTAG, "moveDat: for1 inx=" + inx);
-
             GUIFrameLayout moveObj = channelPosi.get(inx);
-
-            Integer[] movePosi = getPosition(inx - 1);
-            moveToPosi(moveObj, movePosi);
-
+            moveToPosi(moveObj, inx - 1);
             channelPosi.set(inx - 1, moveObj);
         }
 
         // <---
         for (int inx = start - 1; inx >= end; inx--)
         {
-            Log.d(LOGTAG, "moveDat: for2 inx=" + inx);
-
             GUIFrameLayout moveObj = channelPosi.get(inx);
-
-            Integer[] movePosi = getPosition(inx + 1);
-            moveToPosi(moveObj, movePosi);
-
+            moveToPosi(moveObj, inx + 1);
             channelPosi.set(inx + 1, moveObj);
         }
+
+        invalidate();
 
         channelPosi.set(end, selectedContainer);
     }
 
-    private GUIFrameLayout createContainer(int inx, int iny)
+    private void createContainer(JSONObject channel, int posi)
     {
         final GUIFrameLayout bgLayout = new GUIFrameLayout(getContext());
 
+        Integer[] initPosi = getPosition(posi);
+
         FrameLayout.LayoutParams prams = new FrameLayout.LayoutParams(CHANNEL_WIDTH, CHANNEL_HEIGTH);
-        prams.leftMargin = CHANNEL_WIDTH  * inx;
-        prams.topMargin  = CHANNEL_HEIGTH * iny;
+        prams.leftMargin = CHANNEL_WIDTH  * initPosi[ 0 ];
+        prams.topMargin  = CHANNEL_HEIGTH * initPosi[ 1 ];
 
         GUIFrameLayout container = new GUIFrameLayout(getContext())
         {
@@ -213,12 +218,15 @@ public class GUIChannelWizzard extends GUIPlugin
             }
         });
 
+        GUITextView text = createChannelTextView(channel);
+        bgLayout.addView(text);
+
         container.addView(bgLayout);
         scrollContent.addView(container);
 
         channelPosi.add(container);
 
-        return bgLayout;
+        containerText.put(container, text);
     }
 
     private ArrayList<GUIFrameLayout> channelPosi;
@@ -231,24 +239,14 @@ public class GUIChannelWizzard extends GUIPlugin
 
         channelPosi = new ArrayList<>();
 
-        int iny = 0;
-
         for (int inx = 0; inx < channels.length(); inx++)
         {
             JSONObject channel = Json.getObject(channels, inx);
 
-            int left = inx % CHANNELS_LINE;
-            int top = iny;
+            String type = Json.getString(channel, "type");
+            if ((type == null) || !type.equalsIgnoreCase("tv")) continue;
 
-            GUITextView text = createChannelTextView(channel);
-
-            GUIFrameLayout container = createContainer(left, top);
-            container.addView(text);
-
-            if (left == (CHANNELS_LINE-1))
-            {
-                iny++;
-            }
+            createContainer(channel, inx);
         }
     }
 
@@ -268,6 +266,8 @@ public class GUIChannelWizzard extends GUIPlugin
 
         scrollContent = new GUIFrameLayout(getContext());
         scroll.addView(scrollContent);
+
+        containerText = new HashMap<>();
 
         createChannelView();
     }
