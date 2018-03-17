@@ -89,31 +89,14 @@ public class GUIChannelWizzard extends GUIPlugin
         invalidate();
     }
 
-    private Integer[] key2Posi(Integer[] posi, int keyCode)
+    private int key2Posi(int posi, int keyCode)
     {
-        Integer[] newPosi = new Integer[]{posi[ 0 ], posi[ 1 ]};
+        if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT)  posi -= 1;
+        if (keyCode == KeyEvent.KEYCODE_DPAD_UP)    posi -= CHANNELS_LINE;
+        if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) posi += 1;
+        if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN)  posi += CHANNELS_LINE;
 
-        if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT)
-        {
-            newPosi[ 0 ] -= 1;
-        }
-
-        if (keyCode == KeyEvent.KEYCODE_DPAD_UP)
-        {
-            newPosi[ 1 ] -= 1;
-        }
-
-        if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)
-        {
-            newPosi[ 0 ] += 1;
-        }
-
-        if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN)
-        {
-            newPosi[ 1 ] += 1;
-        }
-
-        return newPosi;
+        return posi;
     }
 
     private int getPosition(Integer[] posi)
@@ -134,33 +117,47 @@ public class GUIChannelWizzard extends GUIPlugin
         Log.d(LOGTAG, "moveDat: keyCode=" + keyCode);
 
         int start = channelPosi.lastIndexOf(selectedContainer);
-        Integer[] oldPosi = getPosition(start);
-        Integer[] newPosi = key2Posi(oldPosi, keyCode);
+        int end = key2Posi(start, keyCode);
 
-        int end = getPosition(newPosi);
+        Integer[] oldPosi = getPosition(start);
+        Integer[] newPosi = getPosition(end);
 
         Log.d(LOGTAG, "moveDat: start=" + start);
         Log.d(LOGTAG, "moveDat: end=" + end);
+        Log.d(LOGTAG, "moveDat: oldPosi=" + oldPosi[ 0 ] + "/" + oldPosi[ 1 ]);
+        Log.d(LOGTAG, "moveDat: newPosi=" + newPosi[ 0 ] + "/" + newPosi[ 1 ]);
 
         if ((end < 0) || (end >= channelPosi.size())) return;
 
         moveToPosi(selectedContainer, newPosi);
 
+        // --->
         for (int inx = start + 1; inx <= end; inx++)
         {
+            Log.d(LOGTAG, "moveDat: for1 inx=" + inx);
+
             GUIFrameLayout moveObj = channelPosi.get(inx);
 
             Integer[] movePosi = getPosition(inx - 1);
             moveToPosi(moveObj, movePosi);
+
+            channelPosi.set(inx - 1, moveObj);
         }
 
-        for (int inx = end; inx < start; inx++)
+        // <---
+        for (int inx = start - 1; inx >= end; inx--)
         {
+            Log.d(LOGTAG, "moveDat: for2 inx=" + inx);
+
             GUIFrameLayout moveObj = channelPosi.get(inx);
 
             Integer[] movePosi = getPosition(inx + 1);
             moveToPosi(moveObj, movePosi);
+
+            channelPosi.set(inx + 1, moveObj);
         }
+
+        channelPosi.set(end, selectedContainer);
     }
 
     private GUIFrameLayout createContainer(int inx, int iny)
