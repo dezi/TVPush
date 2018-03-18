@@ -30,6 +30,7 @@ import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class IOTProximScanner
 {
     private static final String LOGTAG = IOTProximScanner.class.getName();
@@ -259,17 +260,13 @@ public class IOTProximScanner
         byte type = bb.get();
         byte plev = bb.get();
 
-        String uuid = null;
-        Double lat = null;
-        Double lon = null;
-
-        String display = null;
         boolean ignore = true;
+        String display;
 
         if ((type == IOTProxim.ADVERTISE_GPS_FINE) || (type == IOTProxim.ADVERTISE_GPS_COARSE))
         {
-            lat = bb.getDouble();
-            lon = bb.getDouble();
+            double lat = bb.getDouble();
+            double lon = bb.getDouble();
 
             display = lat + " - " + lon;
         }
@@ -278,7 +275,7 @@ public class IOTProximScanner
             long msb = bb.getLong();
             long lsb = bb.getLong();
 
-            uuid = (new UUID(msb, lsb)).toString();
+            String uuid = (new UUID(msb, lsb)).toString();
 
             display = uuid;
 
@@ -311,6 +308,7 @@ public class IOTProximScanner
     {
         if (eddystone[0] != 0x10) return;
 
+        //noinspection unused
         byte txp = eddystone[1];
         byte urs = eddystone[2];
 
