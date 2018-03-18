@@ -47,7 +47,7 @@ public class IOTProximScanner
     {
         if ((IOT.instance != null) && (IOT.instance.proximScanner == null))
         {
-            startSonyBleAdvertiser(appcontext);
+            startSonyBTStuff(appcontext);
 
             IOT.instance.proximScanner = new IOTProximScanner(appcontext);
 
@@ -61,20 +61,37 @@ public class IOTProximScanner
         }
     }
 
-    private static void startSonyBleAdvertiser(Context appcontext)
+    private static void startSonyBTStuff(Context appcontext)
     {
-        String packageName = "com.sony.dtv.bleadvertiseservice";
-        String serviceName = "com.sony.dtv.bleadvertiseservice.BleAdvertiseService";
-
         try
         {
+            String packageName = "com.sony.dtv.bleadvertiseservice";
+            String serviceName = "com.sony.dtv.bleadvertiseservice.BleAdvertiseService";
+
             Simple.getPackageManager().getPackageInfo(packageName, PackageManager.GET_SERVICES);
 
             Intent intent = new Intent(serviceName);
             intent.setPackage(packageName);
             appcontext.startService(intent);
 
-            Log.d(LOGTAG, "startSonyBleAdvertiser: found and startet.");
+            Log.d(LOGTAG, "startSonyBTStuff: BleAdvertiseService found and startet.");
+        }
+        catch (Exception ignore)
+        {
+        }
+
+        try
+        {
+            String packageName = "com.sony.dtv.braviabluetoothservice";
+            String serviceName = "com.sony.dtv.braviabluetoothservice.service.BraviaBluetoothService";
+
+            Simple.getPackageManager().getPackageInfo(packageName, PackageManager.GET_SERVICES);
+
+            Intent intent = new Intent(serviceName);
+            intent.setPackage(packageName);
+            appcontext.startService(intent);
+
+            Log.d(LOGTAG, "startSonyBTStuff: BraviaBluetoothService found and startet.");
         }
         catch (Exception ignore)
         {
@@ -280,6 +297,7 @@ public class IOTProximScanner
                     + " addr=" + result.getDevice().getAddress()
                     + " vend=" + "????"
                     + " name=" + result.getDevice().getName()
+                    + " scan=" + result.getScanRecord()
             );
         }
     }
@@ -402,7 +420,7 @@ public class IOTProximScanner
         Log.d(LOGTAG, "buildEddyDev: EDY"
                 + " rssi=" + result.getRssi()
                 + " addr=" + macAddr
-                + " vend=" + "000"
+                + " vend=" + "0000"
                 + " name=" + name
                 + " url=" + url
         );
