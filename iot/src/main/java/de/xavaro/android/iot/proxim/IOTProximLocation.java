@@ -33,18 +33,36 @@ public class IOTProximLocation implements LocationListener
             {
                 LocationManager locationManager = Simple.getLocationManager();
 
-                Criteria criteria = new Criteria();
-                criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+                boolean gpsIsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                boolean networkIsEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-                String provider = locationManager.getBestProvider(criteria, true);
+                Location last = null;
 
-                locationManager.requestLocationUpdates(
-                        provider, 0, 0,
-                        IOT.instance.proximLocationListener);
+                if (networkIsEnabled)
+                {
+                    locationManager.requestLocationUpdates(
+                            LocationManager.NETWORK_PROVIDER,
+                            5000L, 10F,
+                            IOT.instance.proximLocationListener);
 
-                Log.d(LOGTAG, "startLocationListener: listener installed provider=" + provider);
+                    Log.d(LOGTAG, "startLocationListener: NETWORK_PROVIDER installed.");
 
-                Location last = locationManager.getLastKnownLocation(provider);
+                    Location netLoc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    if (netLoc != null) last = netLoc;
+                }
+
+                if (gpsIsEnabled)
+                {
+                    locationManager.requestLocationUpdates(
+                            LocationManager.GPS_PROVIDER,
+                            5000L, 10F,
+                            IOT.instance.proximLocationListener);
+
+                    Log.d(LOGTAG, "startLocationListener: GPS_PROVIDER installed.");
+
+                    Location gpsLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    if (gpsLoc != null) last = gpsLoc;
+                }
 
                 if (last == null)
                 {
