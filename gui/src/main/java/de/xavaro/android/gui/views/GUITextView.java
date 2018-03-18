@@ -11,6 +11,7 @@ import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.skills.GUICanDip;
 import de.xavaro.android.gui.skills.GUICanFocus;
+import de.xavaro.android.gui.skills.GUICanFocusDelegate;
 import de.xavaro.android.gui.skills.GUICanRestoreBackground;
 import de.xavaro.android.gui.skills.GUICanRestoreBackgroundDelegate;
 import de.xavaro.android.gui.skills.GUICanRoundedCorners;
@@ -162,7 +163,9 @@ public class GUITextView extends AppCompatTextView implements
         canRC.restoreBackground();
     }
 
+    private boolean hasfocus;
     private boolean focusable;
+    private boolean highlight;
 
     @Override
     public void setFocusable(boolean focusable)
@@ -171,26 +174,33 @@ public class GUITextView extends AppCompatTextView implements
 
         super.setFocusable(focusable);
 
-        setOnFocusChangeListener(new OnFocusChangeListener()
-        {
-            @Override
-            public void onFocusChange(View view, boolean hasfocus)
-            {
-                if (Simple.isTV())
-                {
-                    if (hasfocus)
-                    {
-                        canRB.saveBackground();
+        GUICanFocusDelegate.setupFocusChange(this, focusable);
+    }
 
-                        setRoundedCorners(0, canRB.getBackgroundColor(), GUIDefs.COLOR_TV_FOCUS);
-                    }
-                    else
-                    {
-                        canRB.restoreBackground();
-                    }
-                }
-            }
-        });
+    @Override
+    public void setHighlight(boolean highlight)
+    {
+        this.highlight = highlight;
+
+        GUICanFocusDelegate.adjustHighlightState(this);
+    }
+
+    @Override
+    public boolean getHighlight()
+    {
+        return this.highlight;
+    }
+
+    @Override
+    public void setHasFocus(boolean hasfocus)
+    {
+        this.hasfocus = hasfocus;
+    }
+
+    @Override
+    public boolean getHasFocus()
+    {
+        return this.hasfocus;
     }
 
     @Override

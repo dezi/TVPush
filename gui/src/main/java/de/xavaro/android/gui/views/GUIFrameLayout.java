@@ -1,11 +1,10 @@
 package de.xavaro.android.gui.views;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.widget.FrameLayout;
+import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.skills.GUICanDip;
@@ -159,7 +158,9 @@ public class GUIFrameLayout extends FrameLayout implements
 
     //endregion Skills implementation.
 
+    private boolean hasfocus;
     private boolean focusable;
+    private boolean highlight;
 
     @Override
     public void setFocusable(boolean focusable)
@@ -169,6 +170,32 @@ public class GUIFrameLayout extends FrameLayout implements
         super.setFocusable(focusable);
 
         GUICanFocusDelegate.setupFocusChange(this, focusable);
+    }
+
+    @Override
+    public void setHighlight(boolean highlight)
+    {
+        this.highlight = highlight;
+
+        GUICanFocusDelegate.adjustHighlightState(this);
+    }
+
+    @Override
+    public boolean getHighlight()
+    {
+        return this.highlight;
+    }
+
+    @Override
+    public void setHasFocus(boolean hasfocus)
+    {
+        this.hasfocus = hasfocus;
+    }
+
+    @Override
+    public boolean getHasFocus()
+    {
+        return this.hasfocus;
     }
 
     @Override

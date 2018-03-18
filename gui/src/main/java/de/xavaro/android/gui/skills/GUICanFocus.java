@@ -5,7 +5,12 @@ import android.view.View;
 public interface GUICanFocus extends GUICanRoundedCorners
 {
     void setFocusable(boolean focusable);
-    void setActivatable(boolean activatable);
+
+    void setHighlight(boolean highlight);
+    boolean getHighlight();
+
+    void setHasFocus(boolean hasfocus);
+    boolean getHasFocus();
 
     int getBackgroundColor();
 

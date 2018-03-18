@@ -31,6 +31,8 @@ public class GUICanFocusDelegate
                     gf.saveBackground();
 
                     gf.setRoundedCorners(0, gf.getBackgroundColor(), GUIDefs.COLOR_TV_FOCUS);
+
+                    gf.setHasFocus(true);
                 }
             }
             else
@@ -42,10 +44,29 @@ public class GUICanFocusDelegate
                 if (gf != null)
                 {
                     gf.restoreBackground();
+
+                    gf.setHasFocus(false);
                 }
             }
         }
     };
+
+    public static void adjustHighlightState(View view)
+    {
+        GUICanFocus gf = view instanceof GUICanFocus ? (GUICanFocus) view : null;
+
+        if ((gf != null) && gf.getHasFocus())
+        {
+            if (gf.getHighlight())
+            {
+                gf.setRoundedCorners(0, gf.getBackgroundColor(), GUIDefs.COLOR_TV_FOCUS_HIGHLIGHT);
+            }
+            else
+            {
+                gf.setRoundedCorners(0, gf.getBackgroundColor(), GUIDefs.COLOR_TV_FOCUS);
+            }
+        }
+    }
 
     public static void setupFocusChange(View view, boolean focusable)
     {
