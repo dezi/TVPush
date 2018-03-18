@@ -47,10 +47,9 @@ public class IOTProximScanner
     {
         if ((IOT.instance != null) && (IOT.instance.proximScanner == null))
         {
-            startSonyBTStuff(appcontext);
-
             IOT.instance.proximScanner = new IOTProximScanner(appcontext);
 
+            IOT.instance.proximScanner.startSonyBTStuff();
             IOT.instance.proximScanner.startLEScanner();
 
             if (Simple.isTV())
@@ -58,43 +57,6 @@ public class IOTProximScanner
                 IOT.instance.proximScanner.startReceiver();
                 IOT.instance.proximScanner.startDiscovery();
             }
-        }
-    }
-
-    private static void startSonyBTStuff(Context appcontext)
-    {
-        try
-        {
-            String packageName = "com.sony.dtv.bleadvertiseservice";
-            String serviceName = "com.sony.dtv.bleadvertiseservice.BleAdvertiseService";
-
-            Simple.getPackageManager().getPackageInfo(packageName, PackageManager.GET_SERVICES);
-
-            Intent intent = new Intent(serviceName);
-            intent.setPackage(packageName);
-            appcontext.startService(intent);
-
-            Log.d(LOGTAG, "startSonyBTStuff: BleAdvertiseService found and startet.");
-        }
-        catch (Exception ignore)
-        {
-        }
-
-        try
-        {
-            String packageName = "com.sony.dtv.braviabluetoothservice";
-            String serviceName = "com.sony.dtv.braviabluetoothservice.service.BraviaBluetoothService";
-
-            Simple.getPackageManager().getPackageInfo(packageName, PackageManager.GET_SERVICES);
-
-            Intent intent = new Intent(serviceName);
-            intent.setPackage(packageName);
-            appcontext.startService(intent);
-
-            Log.d(LOGTAG, "startSonyBTStuff: BraviaBluetoothService found and startet.");
-        }
-        catch (Exception ignore)
-        {
         }
     }
 
@@ -115,8 +77,8 @@ public class IOTProximScanner
     }
 
     private Context context;
-    BluetoothAdapter adapter;
     private String ownDeviceMac;
+    private BluetoothAdapter adapter;
     private BluetoothLeScanner scanner;
 
     public IOTProximScanner(Context context)
@@ -125,7 +87,44 @@ public class IOTProximScanner
         this.adapter = Simple.getBTAdapter();
     }
 
-    public void startReceiver()
+    private void startSonyBTStuff()
+    {
+        try
+        {
+            String packageName = "com.sony.dtv.bleadvertiseservice";
+            String serviceName = "com.sony.dtv.bleadvertiseservice.BleAdvertiseService";
+
+            Simple.getPackageManager().getPackageInfo(packageName, PackageManager.GET_SERVICES);
+
+            Intent intent = new Intent(serviceName);
+            intent.setPackage(packageName);
+            context.startService(intent);
+
+            Log.d(LOGTAG, "startSonyBTStuff: BleAdvertiseService found and startet.");
+        }
+        catch (Exception ignore)
+        {
+        }
+
+        try
+        {
+            String packageName = "com.sony.dtv.braviabluetoothservice";
+            String serviceName = "com.sony.dtv.braviabluetoothservice.service.BraviaBluetoothService";
+
+            Simple.getPackageManager().getPackageInfo(packageName, PackageManager.GET_SERVICES);
+
+            Intent intent = new Intent(serviceName);
+            intent.setPackage(packageName);
+            context.startService(intent);
+
+            Log.d(LOGTAG, "startSonyBTStuff: BraviaBluetoothService found and startet.");
+        }
+        catch (Exception ignore)
+        {
+        }
+    }
+
+    private void startReceiver()
     {
         IntentFilter filterStarted = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         context.registerReceiver(receiver, filterStarted);
@@ -137,12 +136,12 @@ public class IOTProximScanner
         context.registerReceiver(receiver, filterFound);
     }
 
-    public void stopReceiver()
+    private void stopReceiver()
     {
         context.unregisterReceiver(receiver);
     }
 
-    public void startDiscovery()
+    private void startDiscovery()
     {
         if (adapter != null)
         {
@@ -152,7 +151,7 @@ public class IOTProximScanner
         }
     }
 
-    public void stopDiscovery()
+    private void stopDiscovery()
     {
         if ((adapter != null) &&  adapter.isDiscovering())
         {
@@ -162,7 +161,7 @@ public class IOTProximScanner
         }
     }
 
-    public void startLEScanner()
+    private void startLEScanner()
     {
         if ((scanner == null) && (adapter != null))
         {
@@ -176,7 +175,7 @@ public class IOTProximScanner
         }
     }
 
-    public void stopLEScanner()
+    private void stopLEScanner()
     {
         if (scanner != null)
         {
@@ -290,6 +289,8 @@ public class IOTProximScanner
                             + " uuid=" + entry.getKey()
                     );
                 }
+
+                return;
             }
 
             Log.d(LOGTAG, "evaluateScan: ALT"
@@ -350,6 +351,7 @@ public class IOTProximScanner
                 + " vend=" + Simple.padZero(IOTProxim.IOT_MANUFACTURER_ID, 4)
                 + " type=" + IOTProxim.getAdvertiseType(type)
                 + " disp=" + display
+                + " self=" + IOT.device.uuid
         );
     }
 
