@@ -2,6 +2,8 @@ package de.xavaro.android.systems;
 
 import android.app.Application;
 
+import de.xavaro.android.iot.base.IOTBackup;
+
 public class Systems
 {
     public static SystemsGUI gui;
@@ -22,5 +24,7 @@ public class Systems
         p2p.login("dezi@kappa-mm.de", "blabla1234!");
 
         sny = new SystemsSNY(application);
+
+        IOTBackup.saveBackup();
     }
 }

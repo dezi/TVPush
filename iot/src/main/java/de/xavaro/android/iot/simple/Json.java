@@ -536,6 +536,33 @@ public class Json
         return (json == null) ? "{}" : json.replace("\\/","/");
     }
 
+    public static JSONArray sort(JSONArray array, boolean descending)
+    {
+        final boolean desc = descending;
+
+        class comparedat implements Comparator<String>
+        {
+            public int compare(String a, String b)
+            {
+                String astr = desc ? b : a;
+                String bstr = desc ? a : b;
+
+                return ((astr != null) && (bstr != null)) ? astr.compareTo(bstr) : 0;
+            }
+        }
+
+        List<String> jsonValues = new ArrayList<>();
+
+        for (int inx = 0; inx < array.length(); inx++)
+        {
+            jsonValues.add(getString(array, inx));
+        }
+
+        Collections.sort(jsonValues, new comparedat());
+
+        return new JSONArray(jsonValues);
+    }
+
     public static JSONArray sort(JSONArray array, String field, boolean descending)
     {
         final String sort = field;
