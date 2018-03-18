@@ -50,7 +50,7 @@ public class GUILocationWizzard extends GUIPlugin
             public void onMapReady(GoogleMap googleMap)
             {
                 Log.d(LOGTAG, "onMapReady:");
-                LatLng coordinates = new LatLng(53.5684562, 10.1303862);
+                LatLng coordinates = new LatLng(53.568208, 10.140186);
 
                 googleMap.addMarker(new MarkerOptions()
                         .position(coordinates)

@@ -21,6 +21,7 @@ import android.util.Log;
 import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -219,6 +220,7 @@ public class IOTProximScanner
         }
     };
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private final ScanCallback scanCallback = new ScanCallback()
     {
         @Override
@@ -228,83 +230,86 @@ public class IOTProximScanner
         }
     };
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void evaluateScan(int callbackType, ScanResult result)
     {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        if (result.getScanRecord() == null) return;
+
+        //region Well known devices.
+
+        byte[] eddystone = result.getScanRecord().getServiceData(ParcelUuid.fromString("0000FEAA-0000-1000-8000-00805F9B34FB"));
+
+        if (eddystone != null)
         {
-            if (result.getScanRecord() == null) return;
+            buildEddyDev(result, eddystone);
 
-            byte[] eddystone = result.getScanRecord().getServiceData(ParcelUuid.fromString("0000FEAA-0000-1000-8000-00805F9B34FB"));
-
-            if (eddystone != null)
-            {
-                buildEddyDev(result, eddystone);
-
-                return;
-            }
-
-            byte[] bytes = result.getScanRecord().getManufacturerSpecificData(IOTProxim.IOT_MANUFACTURER_ID);
-
-            if (bytes != null)
-            {
-                evaluateIOTAdvertisement(result, bytes);
-
-                return;
-            }
-
-            SparseArray<byte[]> bytbyt = result.getScanRecord().getManufacturerSpecificData();
-
-            if (bytbyt.size() > 0)
-            {
-                for (int inx = 0; inx < bytbyt.size(); inx++)
-                {
-                    int vendor = bytbyt.keyAt(inx);
-
-                    Log.d(LOGTAG, "evaluateScan: ALT"
-                            + " rssi=" + result.getRssi()
-                            + " addr=" + result.getDevice().getAddress()
-                            + " vend=" + Simple.padZero(vendor, 4)
-                            + " name=" + result.getDevice().getName()
-                            + " vend=" + IOTProxim.getAdvertiseVendor(vendor)
-                    );
-
-                    if (vendor == 301)
-                    {
-                        buildSonyDev(result, vendor, bytbyt.get(vendor));
-                    }
-                }
-
-                return;
-            }
-
-            Map<ParcelUuid, byte[]> datas = result.getScanRecord().getServiceData();
-
-            if (datas.size() > 0)
-            {
-                for (Map.Entry<ParcelUuid, byte[]> entry : datas.entrySet())
-                {
-                    Log.d(LOGTAG, "evaluateScan: ####### ALT"
-                            + " rssi=" + result.getRssi()
-                            + " addr=" + result.getDevice().getAddress()
-                            + " uuid=" + entry.getKey()
-                    );
-                }
-
-                return;
-            }
-
-            Log.d(LOGTAG, "evaluateScan: ALT"
-                    + " rssi=" + result.getRssi()
-                    + " addr=" + result.getDevice().getAddress()
-                    + " vend=" + "????"
-                    + " name=" + result.getDevice().getName()
-                    + " scan=" + result.getScanRecord()
-            );
+            return;
         }
+
+        byte[] bytes = result.getScanRecord().getManufacturerSpecificData(IOTProxim.IOT_MANUFACTURER_ID);
+
+        if (bytes != null)
+        {
+            evalIOTAdver(result, bytes);
+
+            return;
+        }
+
+        //endregion Well known devices.
+
+        int vendor = 0;
+
+        ParcelUuid serviceUuid = null;
+        ParcelUuid serviceDataUuid = null;
+
+        List<ParcelUuid> serviceUuids = result.getScanRecord().getServiceUuids();
+
+        if ((serviceUuids != null) && (serviceUuids.size() > 0))
+        {
+            for (ParcelUuid uuid : serviceUuids)
+            {
+                serviceUuid = uuid;
+            }
+        }
+
+        Map<ParcelUuid, byte[]> serviceDatas = result.getScanRecord().getServiceData();
+
+        if ((serviceDatas != null) && (serviceDatas.size() > 0))
+        {
+            for (Map.Entry<ParcelUuid, byte[]> entry : serviceDatas.entrySet())
+            {
+                serviceDataUuid = entry.getKey();
+            }
+        }
+
+        SparseArray<byte[]> manufacturerData = result.getScanRecord().getManufacturerSpecificData();
+
+        if (manufacturerData.size() > 0)
+        {
+            for (int inx = 0; inx < manufacturerData.size(); inx++)
+            {
+                vendor = manufacturerData.keyAt(inx);
+
+                if (vendor == 301)
+                {
+                    buildSonyDev(result, vendor, manufacturerData.get(vendor));
+                }
+            }
+        }
+
+        Log.d(LOGTAG, "evaluateScan: ALT"
+                + " rssi=" + result.getRssi()
+                + " addr=" + result.getDevice().getAddress()
+                + " vend=" + Simple.padZero(vendor, 4)
+                + " name=" + result.getDevice().getName()
+                + " uuid=" + serviceUuid
+                + " data=" + serviceDataUuid
+                + " scan=" + result.getScanRecord()
+        );
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void evaluateIOTAdvertisement(ScanResult result, byte[] bytes)
+    private void evalIOTAdver(ScanResult result, byte[] bytes)
     {
         ByteBuffer bb = ByteBuffer.wrap(bytes);
 
@@ -345,7 +350,7 @@ public class IOTProximScanner
 
         //if (ignore) return;
 
-        Log.d(LOGTAG, "evaluateScan: IOT"
+        Log.d(LOGTAG, "evalIOTAdver: IOT"
                 + " rssi=" + result.getRssi()
                 + " addr=" + result.getDevice().getAddress()
                 + " vend=" + Simple.padZero(IOTProxim.IOT_MANUFACTURER_ID, 4)
