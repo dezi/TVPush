@@ -79,6 +79,8 @@ public class IOTProximLocation implements LocationListener
                         Log.d(LOGTAG, "startLocationListener: last GPS location"
                                 + " lat=" + last.getLatitude()
                                 + " lon=" + last.getLongitude()
+                                + " alt=" + last.getAltitude()
+                                + " acc=" + last.getAccuracy()
                                 + " age=" + Simple.getAgeInSeconds(last.getTime())
                         );
                     }
@@ -122,7 +124,9 @@ public class IOTProximLocation implements LocationListener
         Log.d(LOGTAG, "onLocationChanged:"
                 + " lat=" + location.getLatitude()
                 + " lon=" + location.getLongitude()
+                + " alt=" + location.getAltitude()
                 + " age=" + Simple.getAgeInSeconds(location.getTime())
+                + " acc=" + location.getAccuracy()
                 + " pro=" + location.getProvider()
         );
     }

@@ -41,8 +41,11 @@ public class IOTDevice extends IOTObject
 
     public Double fixedLatFine;
     public Double fixedLonFine;
+    public Double fixedAltFine;
+
     public Double fixedLatCoarse;
     public Double fixedLonCoarse;
+    public Double fixedAltCoarse;
 
     public JSONArray capabilities;
 
@@ -125,13 +128,9 @@ public class IOTDevice extends IOTObject
 
     public void checkAndMergeContent(IOTDevice check, boolean external)
     {
-        changed = false;
-
-        //
-        // Update possibly from software update.
-        //
-
         // @formatter:off
+
+        changed = false;
 
         if (nequals(did,          check.did         )) did          = check.did;
         if (nequals(type,         check.type        )) type         = check.type;
@@ -145,16 +144,17 @@ public class IOTDevice extends IOTObject
 
         if (nequals(fixedLatCoarse, check.fixedLatCoarse)) fixedLatCoarse = check.fixedLatCoarse;
         if (nequals(fixedLonCoarse, check.fixedLonCoarse)) fixedLonCoarse = check.fixedLonCoarse;
+        if (nequals(fixedAltCoarse, check.fixedAltCoarse)) fixedAltCoarse = check.fixedAltCoarse;
+
+        changedSys = changed;
 
         // @formatter:on
 
         if (external)
         {
-            //
-            // Update possibly from user.
-            //
-
             // @formatter:off
+
+            changed = false;
 
             if (nequals(nick,     check.nick    )) nick     = check.nick;
             if (nequals(name,     check.name    )) name     = check.name;
@@ -162,15 +162,13 @@ public class IOTDevice extends IOTObject
 
             if (nequals(fixedLatFine, check.fixedLatFine)) fixedLatFine = check.fixedLatFine;
             if (nequals(fixedLonFine, check.fixedLonFine)) fixedLonFine = check.fixedLonFine;
+            if (nequals(fixedAltFine, check.fixedAltFine)) fixedAltFine = check.fixedAltFine;
+
+            changedUsr = changed;
 
             // @formatter:on
         }
 
-        if (changed || (time == null) || (time == 0))
-        {
-            time = System.currentTimeMillis();
-
-            saveToStorage();
-        }
+        saveIfChanged();
     }
 }

@@ -68,37 +68,24 @@ public class IOTHuman extends IOTObject
 
     public void checkAndMergeContent(IOTHuman check, boolean external)
     {
-        changed = false;
-
-        //
-        // Update possibly from software update.
-        //
-
-        //
-        // None.
-        //
+        changedSys = false;
 
         if (external)
         {
-            //
-            // Update possibly from user.
-            //
-
             // @formatter:off
+
+            changed = false;
 
             if (nequals(nick,      check.nick      )) nick       = check.nick;
             if (nequals(firstname, check.firstname )) firstname  = check.firstname;
             if (nequals(middlename,check.middlename)) middlename = check.middlename;
             if (nequals(lastname,  check.lastname  )) lastname   = check.lastname;
 
+            changedUsr = changed;
+
             // @formatter:on
         }
 
-        if (changed || (time == null) || (time == 0))
-        {
-            time = System.currentTimeMillis();
-
-            saveToStorage();
-        }
+        saveIfChanged();
     }
 }

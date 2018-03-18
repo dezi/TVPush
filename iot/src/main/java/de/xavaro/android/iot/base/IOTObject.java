@@ -19,9 +19,12 @@ public abstract class IOTObject
     private final static String LOGTAG = IOTObject.class.getSimpleName();
 
     protected boolean changed;
+    protected boolean changedSys;
+    protected boolean changedUsr;
 
     public String uuid;
-    public Long time;
+    public Long sts;
+    public Long uts;
 
     public IOTObject()
     {
@@ -238,5 +241,27 @@ public abstract class IOTObject
         }
 
         return false;
+    }
+
+    public void saveIfChanged()
+    {
+        if (changedSys || (sts == null) || (sts == 0))
+        {
+            sts = System.currentTimeMillis();
+        }
+
+        if (changedUsr || (uts == null) || (uts == 0))
+        {
+            uts = System.currentTimeMillis();
+        }
+
+        if (changedSys || changedUsr)
+        {
+            saveToStorage();
+        }
+
+        changed = false;
+        changedSys = false;
+        changedUsr = false;
     }
 }
