@@ -19,7 +19,7 @@ import de.xavaro.android.iot.things.IOTDevices;
 
 public class IOTProximLocation implements LocationListener
 {
-    private static final String LOGTAG = IOTProximLocation.class.getName();
+    private static final String LOGTAG = IOTProximLocation.class.getSimpleName();
 
     public static void startLocationListener(Context appcontext)
     {

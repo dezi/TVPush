@@ -10,7 +10,7 @@ import android.util.Log;
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class IOTProximCallback extends AdvertiseCallback
 {
-    private static final String LOGTAG = IOTProximCallback.class.getName();
+    private static final String LOGTAG = IOTProximCallback.class.getSimpleName();
 
     @Override
     public void onStartSuccess(AdvertiseSettings settingsInEffect)

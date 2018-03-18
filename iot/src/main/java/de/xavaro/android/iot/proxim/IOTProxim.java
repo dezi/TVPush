@@ -12,7 +12,7 @@ import android.util.Log;
 
 public class IOTProxim
 {
-    private static final String LOGTAG = IOTProxim.class.getName();
+    private static final String LOGTAG = IOTProxim.class.getSimpleName();
 
     public final static int IOT_MANUFACTURER_ID = 4711;
 

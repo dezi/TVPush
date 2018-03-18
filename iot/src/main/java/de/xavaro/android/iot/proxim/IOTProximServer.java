@@ -22,7 +22,7 @@ import de.xavaro.android.iot.status.IOTStatus;
 
 public class IOTProximServer
 {
-    private static final String LOGTAG = IOTProximServer.class.getName();
+    private static final String LOGTAG = IOTProximServer.class.getSimpleName();
 
     private byte powerLevel;
     private AdvertiseSettings settings;
@@ -81,7 +81,7 @@ public class IOTProximServer
             settings = new AdvertiseSettings.Builder()
                     .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
                     .setTxPowerLevel(powerLevel)
-                    .setConnectable(false)
+                    .setConnectable(true)
                     .setTimeout(0)
                     .build();
 

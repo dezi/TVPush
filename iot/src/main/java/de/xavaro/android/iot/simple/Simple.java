@@ -446,6 +446,11 @@ public class Simple
         return locationManager;
     }
 
+    public static PackageManager getPackageManager()
+    {
+        return packageManager;
+    }
+
     public static boolean checkLocationPermission(Context context)
     {
         boolean coarse = ActivityCompat.checkSelfPermission(context,

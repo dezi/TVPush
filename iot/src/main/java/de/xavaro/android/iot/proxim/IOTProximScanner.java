@@ -1,24 +1,27 @@
 package de.xavaro.android.iot.proxim;
 
+import android.support.annotation.RequiresApi;
+
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 
+import android.content.pm.PackageManager;
 import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Build;
 import android.os.ParcelUuid;
-import android.support.annotation.RequiresApi;
-import android.util.Log;
+import android.os.Build;
 import android.util.SparseArray;
+import android.util.Log;
 
 import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
+import java.util.Map;
 import java.util.UUID;
 
 import de.xavaro.android.iot.base.IOT;
@@ -33,7 +36,7 @@ import de.xavaro.android.iot.things.IOTDevices;
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class IOTProximScanner
 {
-    private static final String LOGTAG = IOTProximScanner.class.getName();
+    private static final String LOGTAG = IOTProximScanner.class.getSimpleName();
 
     //
     // adb shell setprop log.tag.ScanRecord WARN
@@ -44,6 +47,8 @@ public class IOTProximScanner
     {
         if ((IOT.instance != null) && (IOT.instance.proximScanner == null))
         {
+            startSonyBleAdvertiser(appcontext);
+
             IOT.instance.proximScanner = new IOTProximScanner(appcontext);
 
             IOT.instance.proximScanner.startLEScanner();
@@ -53,6 +58,26 @@ public class IOTProximScanner
                 IOT.instance.proximScanner.startReceiver();
                 IOT.instance.proximScanner.startDiscovery();
             }
+        }
+    }
+
+    private static void startSonyBleAdvertiser(Context appcontext)
+    {
+        String packageName = "com.sony.dtv.bleadvertiseservice";
+        String serviceName = "com.sony.dtv.bleadvertiseservice.BleAdvertiseService";
+
+        try
+        {
+            Simple.getPackageManager().getPackageInfo(packageName, PackageManager.GET_SERVICES);
+
+            Intent intent = new Intent(serviceName);
+            intent.setPackage(packageName);
+            appcontext.startService(intent);
+
+            Log.d(LOGTAG, "startSonyBleAdvertiser: found and startet.");
+        }
+        catch (Exception ignore)
+        {
         }
     }
 
@@ -73,12 +98,14 @@ public class IOTProximScanner
     }
 
     private Context context;
+    BluetoothAdapter adapter;
     private String ownDeviceMac;
     private BluetoothLeScanner scanner;
 
-    public IOTProximScanner(Context contenxt)
+    public IOTProximScanner(Context context)
     {
-        this.context = contenxt;
+        this.context = context;
+        this.adapter = Simple.getBTAdapter();
     }
 
     public void startReceiver()
@@ -100,8 +127,6 @@ public class IOTProximScanner
 
     public void startDiscovery()
     {
-        BluetoothAdapter adapter = Simple.getBTAdapter();
-
         if (adapter != null)
         {
             adapter.startDiscovery();
@@ -112,8 +137,6 @@ public class IOTProximScanner
 
     public void stopDiscovery()
     {
-        BluetoothAdapter adapter = Simple.getBTAdapter();
-
         if ((adapter != null) &&  adapter.isDiscovering())
         {
             adapter.cancelDiscovery();
@@ -124,19 +147,14 @@ public class IOTProximScanner
 
     public void startLEScanner()
     {
-        if (scanner == null)
+        if ((scanner == null) && (adapter != null))
         {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             {
-                BluetoothAdapter adapter = Simple.getBTAdapter();
+                scanner = adapter.getBluetoothLeScanner();
+                scanner.startScan(scanCallback);
 
-                if (adapter != null)
-                {
-                    scanner = adapter.getBluetoothLeScanner();
-                    scanner.startScan(scanCallback);
-
-                    Log.d(LOGTAG, "startLEScanner: scanner started.");
-                }
+                Log.d(LOGTAG, "startLEScanner: scanner started.");
             }
         }
     }
@@ -229,7 +247,7 @@ public class IOTProximScanner
                     Log.d(LOGTAG, "evaluateScan: ALT"
                             + " rssi=" + result.getRssi()
                             + " addr=" + result.getDevice().getAddress()
-                            + " vend=" + Simple.padZero(vendor, 3)
+                            + " vend=" + Simple.padZero(vendor, 4)
                             + " name=" + result.getDevice().getName()
                             + " vend=" + IOTProxim.getAdvertiseVendor(vendor)
                     );
@@ -239,16 +257,30 @@ public class IOTProximScanner
                         buildSonyDev(result, vendor, bytbyt.get(vendor));
                     }
                 }
+
+                return;
             }
-            else
+
+            Map<ParcelUuid, byte[]> datas = result.getScanRecord().getServiceData();
+
+            if (datas.size() > 0)
             {
-                Log.d(LOGTAG, "evaluateScan: ALT"
-                        + " rssi=" + result.getRssi()
-                        + " addr=" + result.getDevice().getAddress()
-                        + " vend=" + "???"
-                        + " name=" + result.getDevice().getName()
-                );
+                for (Map.Entry<ParcelUuid, byte[]> entry : datas.entrySet())
+                {
+                    Log.d(LOGTAG, "evaluateScan: ####### ALT"
+                            + " rssi=" + result.getRssi()
+                            + " addr=" + result.getDevice().getAddress()
+                            + " uuid=" + entry.getKey()
+                    );
+                }
             }
+
+            Log.d(LOGTAG, "evaluateScan: ALT"
+                    + " rssi=" + result.getRssi()
+                    + " addr=" + result.getDevice().getAddress()
+                    + " vend=" + "????"
+                    + " name=" + result.getDevice().getName()
+            );
         }
     }
 
@@ -292,12 +324,12 @@ public class IOTProximScanner
             }
         }
 
-        if (ignore) return;
+        //if (ignore) return;
 
         Log.d(LOGTAG, "evaluateScan: IOT"
                 + " rssi=" + result.getRssi()
                 + " addr=" + result.getDevice().getAddress()
-                + " plev=" + plev
+                + " vend=" + Simple.padZero(IOTProxim.IOT_MANUFACTURER_ID, 4)
                 + " type=" + IOTProxim.getAdvertiseType(type)
                 + " disp=" + display
         );
@@ -370,7 +402,7 @@ public class IOTProximScanner
         Log.d(LOGTAG, "buildEddyDev: EDY"
                 + " rssi=" + result.getRssi()
                 + " addr=" + macAddr
-                + " vend=" + "???"
+                + " vend=" + "000"
                 + " name=" + name
                 + " url=" + url
         );
@@ -410,7 +442,7 @@ public class IOTProximScanner
         Log.d(LOGTAG, "buildSonyDev: ALT"
                 + " rssi=" + result.getRssi()
                 + " addr=" + macAddr
-                + " vend=" + Simple.padZero(vendor, 3)
+                + " vend=" + Simple.padZero(vendor, 4)
                 + " name=" + name
                 + " uuid=" + uuid
         );
