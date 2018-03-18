@@ -219,22 +219,34 @@ public class IOTProximScanner
 
             SparseArray<byte[]> bytbyt = result.getScanRecord().getManufacturerSpecificData();
 
-            for (int inx = 0; inx < bytbyt.size(); inx++)
+            if (bytbyt.size() > 0)
             {
-                int vendor = bytbyt.keyAt(inx);
+                for (int inx = 0; inx < bytbyt.size(); inx++)
+                {
+                    int vendor = bytbyt.keyAt(inx);
 
+                    Log.d(LOGTAG, "evaluateScan: ALT"
+                            + " rssi=" + result.getRssi()
+                            + " addr=" + result.getDevice().getAddress()
+                            + " vend=" + Simple.padZero(vendor, 3)
+                            + " name=" + result.getDevice().getName()
+                            + " vend=" + IOTProxim.getAdvertiseVendor(vendor)
+                    );
+
+                    if (vendor == 301)
+                    {
+                        buildSonyDev(result, vendor, bytbyt.get(vendor));
+                    }
+                }
+            }
+            else
+            {
                 Log.d(LOGTAG, "evaluateScan: ALT"
                         + " rssi=" + result.getRssi()
                         + " addr=" + result.getDevice().getAddress()
-                        + " vend=" + Simple.padZero(vendor, 3)
+                        + " vend=" + "???"
                         + " name=" + result.getDevice().getName()
-                        + " vend=" + IOTProxim.getAdvertiseVendor(vendor)
                 );
-
-                if (vendor == 301)
-                {
-                    buildSonyDev(result, bytbyt.get(vendor));
-                }
             }
         }
     }
@@ -385,9 +397,9 @@ public class IOTProximScanner
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void buildSonyDev(ScanResult result, byte[] bytes)
+    private void buildSonyDev(ScanResult result, int vendor, byte[] bytes)
     {
-        String name = "Sony Corporation";
+        String name = result.getDevice().getName();
         String macAddr = result.getDevice().getAddress();
         String uuid = IOTSimple.hmacSha1UUID(name, macAddr);
 
@@ -396,6 +408,7 @@ public class IOTProximScanner
         Log.d(LOGTAG, "buildSonyDev: ALT"
                 + " rssi=" + result.getRssi()
                 + " addr=" + macAddr
+                + " vend=" + Simple.padZero(vendor, 3)
                 + " name=" + name
                 + " uuid=" + uuid
         );
@@ -404,8 +417,8 @@ public class IOTProximScanner
 
         Json.put(beacondev, "uuid", uuid);
         Json.put(beacondev, "type", IOTDevice.TYPE_BEACON);
-        Json.put(beacondev, "name", name + " TV Beacon");
-        Json.put(beacondev, "nick", name + " TV Beacon");
+        Json.put(beacondev, "name", name);
+        Json.put(beacondev, "nick", name);
         Json.put(beacondev, "macaddr", macAddr);
         Json.put(beacondev, "driver", "iot");
         Json.put(beacondev, "location", Simple.getConnectedWifiName());
