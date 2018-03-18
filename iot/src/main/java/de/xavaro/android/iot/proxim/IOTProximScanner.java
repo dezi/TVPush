@@ -303,6 +303,7 @@ public class IOTProximScanner
         );
     }
 
+    @SuppressWarnings("UnusedAssignment")
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void buildEddyDev(ScanResult result, byte[] eddystone)
     {
