@@ -384,13 +384,11 @@ public class SNYPrograms
         return null;
     }
 
-    @Nullable
     private static boolean writeTextFile(File filename, String content)
     {
         return writeBinaryFile(filename, content.getBytes());
     }
 
-    @Nullable
     private static boolean writeBinaryFile(File filename, byte[] bytes)
     {
         try

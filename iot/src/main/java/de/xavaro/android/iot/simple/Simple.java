@@ -31,6 +31,10 @@ import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
 public class Simple
 {
     private static final String LOGTAG = Simple.class.getSimpleName();
@@ -466,6 +470,21 @@ public class Simple
         return coarse && fine;
     }
 
+    public static boolean checkStoragePermission(Context context)
+    {
+        boolean read = ActivityCompat.checkSelfPermission(context,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED;
+
+        boolean write = ActivityCompat.checkSelfPermission(context,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED;
+
+        Log.d(LOGTAG, "checkStoragePermission: read=" + read + " write=" + write);
+
+        return read && write;
+    }
+
     public static String padZero(int number, int digits)
     {
         String str = Integer.valueOf(number).toString();
@@ -478,5 +497,31 @@ public class Simple
     public static long getAgeInSeconds(long timestamp)
     {
         return (System.currentTimeMillis() - timestamp) / 1000;
+    }
+
+    public static boolean writeTextFile(File filename, String content)
+    {
+        return writeBinaryFile(filename, content.getBytes());
+    }
+
+    public static boolean writeBinaryFile(File filename, byte[] bytes)
+    {
+        try
+        {
+            FileOutputStream outputStream = new FileOutputStream(filename);
+            outputStream.write(bytes);
+            outputStream.close();
+
+            return true;
+        }
+        catch (FileNotFoundException ignore)
+        {
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return false;
     }
 }

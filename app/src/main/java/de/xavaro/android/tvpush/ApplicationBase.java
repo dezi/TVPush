@@ -19,7 +19,7 @@ public class ApplicationBase extends GUIApplication
     {
         super.onCreate();
 
-        Simple.removeALLPrefs(this);
+        //Simple.removeALLPrefs(this);
 
         Simple.initialize(this);
 
