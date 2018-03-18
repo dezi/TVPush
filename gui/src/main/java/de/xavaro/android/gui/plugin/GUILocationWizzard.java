@@ -61,6 +61,7 @@ public class GUILocationWizzard extends GUIPlugin
                 if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER)
                 {
                     takeFoucus = !takeFoucus;
+                    setHighlight(takeFoucus);
                 }
                 else
                 {
