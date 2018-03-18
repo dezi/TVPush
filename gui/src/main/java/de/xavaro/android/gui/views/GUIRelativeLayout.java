@@ -157,7 +157,9 @@ public class GUIRelativeLayout extends RelativeLayout implements
 
     //endregion Skills implementation.
 
+    private boolean hasfocus;
     private boolean focusable;
+    private boolean highlight;
 
     @Override
     public void setFocusable(boolean focusable)
@@ -167,6 +169,32 @@ public class GUIRelativeLayout extends RelativeLayout implements
         super.setFocusable(focusable);
 
         GUICanFocusDelegate.setupFocusChange(this, focusable);
+    }
+
+    @Override
+    public void setHighlight(boolean highlight)
+    {
+        this.highlight = highlight;
+
+        GUICanFocusDelegate.adjustHighlightState(this);
+    }
+
+    @Override
+    public boolean getHighlight()
+    {
+        return this.highlight;
+    }
+
+    @Override
+    public void setHasFocus(boolean hasfocus)
+    {
+        this.hasfocus = hasfocus;
+    }
+
+    @Override
+    public boolean getHasFocus()
+    {
+        return this.hasfocus;
     }
 
     @Override
