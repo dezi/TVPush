@@ -34,12 +34,12 @@ public class IOTCredential extends IOTObject
 
     public void checkAndMergeContent(IOTCredential check, boolean external)
     {
-        credentials = check.credentials;
+        changed = false;
 
-        time = System.currentTimeMillis();
+        if (nequals(credentials, check.credentials)) credentials = check.credentials;
 
-        //Log.d(LOGTAG, "checkAndMergeContent: json=" + this.toJsonString());
+        changedSys = changed;
 
-        saveToStorage();
+        saveIfChanged();
     }
 }

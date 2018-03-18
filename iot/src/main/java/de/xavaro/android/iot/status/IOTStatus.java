@@ -32,8 +32,11 @@ public class IOTStatus extends IOTObject
 
     public Double positionLatCoarse;
     public Double positionLonCoarse;
+    public Double positionAltCoarse;
+
     public Double positionLatFine;
     public Double positionLonFine;
+    public Double positionAltFine;
 
     public IOTStatus()
     {
@@ -57,9 +60,10 @@ public class IOTStatus extends IOTObject
 
     public void checkAndMergeContent(IOTStatus check, boolean external)
     {
-        changed = false;
 
         // @formatter:off
+
+        changed = false;
 
         if (nequals(wifi,       check.wifi      )) wifi       = check.wifi;
         if (nequals(ipaddr,     check.ipaddr    )) ipaddr     = check.ipaddr;
@@ -78,16 +82,16 @@ public class IOTStatus extends IOTObject
 
         if (nequals(positionLatCoarse, check.positionLatCoarse)) positionLatCoarse = check.positionLatCoarse;
         if (nequals(positionLonCoarse, check.positionLonCoarse)) positionLonCoarse = check.positionLonCoarse;
+        if (nequals(positionAltCoarse, check.positionAltCoarse)) positionAltCoarse = check.positionAltCoarse;
+
         if (nequals(positionLatFine,   check.positionLatFine  )) positionLatFine   = check.positionLatFine;
         if (nequals(positionLonFine,   check.positionLonFine  )) positionLonFine   = check.positionLonFine;
+        if (nequals(positionAltFine,   check.positionAltFine  )) positionAltFine   = check.positionAltFine;
+
+        changedSys = changed;
 
         // @formatter:on
 
-        if (changed || (time == null) || (time == 0))
-        {
-            time = System.currentTimeMillis();
-
-            saveToStorage();
-        }
+        saveIfChanged();
     }
 }

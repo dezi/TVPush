@@ -34,12 +34,12 @@ public class IOTMetadata extends IOTObject
 
     public void checkAndMergeContent(IOTMetadata check, boolean external)
     {
-        metadata = check.metadata;
+        changed = false;
 
-        time = System.currentTimeMillis();
+        if (nequals(metadata, check.metadata)) metadata = check.metadata;
 
-        //Log.d(LOGTAG, "checkAndMergeContent: json=" + this.toJsonString());
+        changedSys = changed;
 
-        saveToStorage();
+        saveIfChanged();
     }
 }

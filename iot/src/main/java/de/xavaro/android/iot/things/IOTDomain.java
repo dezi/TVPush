@@ -11,8 +11,10 @@ public class IOTDomain extends IOTObject
     public String name;
 
     public String fixedwifi;
-    public Double fixedLat;
-    public Double fixedLon;
+
+    public Double fixedLatFine;
+    public Double fixedLonFine;
+    public Double fixedAltFine;
 
     public IOTDomain()
     {
@@ -36,15 +38,13 @@ public class IOTDomain extends IOTObject
 
     public void checkAndMergeContent(IOTDomain check, boolean external)
     {
-        changed = false;
-
-        //
-        // Update possibly from software update.
-        //
-
         // @formatter:off
 
+        changed = false;
+
         if (nequals(fixedwifi, check.fixedwifi)) fixedwifi = check.fixedwifi;
+
+        changedSys = changed;
 
         // @formatter:on
 
@@ -54,25 +54,22 @@ public class IOTDomain extends IOTObject
 
         if (external)
         {
-            //
-            // Update possibly from user.
-            //
-
             // @formatter:off
+
+            changed = false;
 
             if (nequals(nick,     check.nick    )) nick     = check.nick;
             if (nequals(name,     check.name    )) name     = check.name;
-            if (nequals(fixedLat, check.fixedLat)) fixedLat = check.fixedLat;
-            if (nequals(fixedLon, check.fixedLon)) fixedLon = check.fixedLon;
+
+            if (nequals(fixedLatFine, check.fixedLatFine)) fixedLatFine = check.fixedLatFine;
+            if (nequals(fixedLonFine, check.fixedLonFine)) fixedLonFine = check.fixedLonFine;
+            if (nequals(fixedAltFine, check.fixedAltFine)) fixedAltFine = check.fixedAltFine;
+
+            changedUsr = changed;
 
             // @formatter:on
         }
 
-        if (changed || (time == null) || (time == 0))
-        {
-            time = System.currentTimeMillis();
-
-            saveToStorage();
-        }
+        saveIfChanged();
     }
 }
