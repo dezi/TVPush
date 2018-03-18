@@ -15,6 +15,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import de.xavaro.android.gui.base.GUIPlugin;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUIFrameLayout;
@@ -97,6 +104,59 @@ public class GUILocationWizzard extends GUIPlugin
         });
     }
 
+    private double getAltitude(Double longitude, Double latitude)
+    {
+        double result = Double.NaN;
+
+        String url = "http://maps.googleapis.com/maps/api/elevation/"
+                + "xml?locations=" + String.valueOf(latitude)
+                + "," + String.valueOf(longitude)
+                + "&sensor=true";
+
+        Log.d(LOGTAG, "getAltitude: url=" + url);
+
+        try
+        {
+            HttpURLConnection connection = (HttpURLConnection) (new URL(url)).openConnection();
+            connection.setDoOutput(true);
+            connection.setUseCaches(false);
+            connection.setRequestMethod("GET");
+
+            InputStream stream = connection.getInputStream();
+            if (stream == null) return result;
+
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
+            StringBuilder respStr = new StringBuilder();
+
+            String line;
+            while ((line = bufferedReader.readLine()) != null)
+            {
+                respStr.append(line);
+                respStr.append("\n");
+            }
+
+            Log.d(LOGTAG, "getAltitude: respStr=" + respStr);
+
+            String tagOpen = "<elevation>";
+            String tagClose = "</elevation>";
+
+            if (respStr.indexOf(tagOpen) != -1)
+            {
+                int start = respStr.indexOf(tagOpen) + tagOpen.length();
+                int end = respStr.indexOf(tagClose);
+                String value = respStr.substring(start, end);
+                result = Double.parseDouble(value);
+            }
+
+            stream.close();
+        }
+        catch (IOException exc)
+        {
+            exc.printStackTrace();
+        }
+
+        return result;
+    }
 
     private void moveMap(int keyCode)
     {
@@ -140,5 +200,6 @@ public class GUILocationWizzard extends GUIPlugin
 //
 //        Log.d(LOGTAG, "moveMap: hasAltitude=" + targetLocation.hasAltitude());
 //        Log.d(LOGTAG, "moveMap: altitude=" + targetLocation.getAltitude());
+//        Log.d(LOGTAG, "moveMap: getAltitude=" + getAltitude(lat, lon));
     }
 }
