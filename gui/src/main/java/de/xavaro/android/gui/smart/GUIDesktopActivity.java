@@ -14,6 +14,7 @@ import android.widget.FrameLayout;
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIActivity;
 import de.xavaro.android.gui.plugin.GUIChannelWizzard;
+import de.xavaro.android.gui.plugin.GUILocationWizzard;
 import de.xavaro.android.gui.plugin.GUISpeechRecogniton;
 import de.xavaro.android.gui.plugin.GUIVideoSurface;
 import de.xavaro.android.gui.simple.Simple;
@@ -26,6 +27,7 @@ public class GUIDesktopActivity extends GUIActivity
 
     public GUISpeechRecogniton speechRecognition;
     public GUIChannelWizzard channelWizzard;
+    public GUILocationWizzard locationWizzard;
 
     private GUIVideoSurface videoSurface1;
     private GUIVideoSurface videoSurface2;
@@ -44,11 +46,15 @@ public class GUIDesktopActivity extends GUIActivity
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(Simple.MP, Simple.WC, Gravity.BOTTOM);
         topframe.addView(speechRecognition, lp);
 
-        channelWizzard = new GUIChannelWizzard(this);
-        channelWizzard.setPosition(100,100);
-        channelWizzard.setSizeDip(GUIChannelWizzard.WIDTH,GUIChannelWizzard.HEIGTH);
+//        channelWizzard = new GUIChannelWizzard(this);
+//        channelWizzard.setPosition(100,100);
+//        channelWizzard.setSizeDip(GUIChannelWizzard.WIDTH, GUIChannelWizzard.HEIGTH);
+//        topframe.addView(channelWizzard);
 
-        topframe.addView(channelWizzard);
+        locationWizzard = new GUILocationWizzard(this);
+        locationWizzard.setPosition(100,100);
+        locationWizzard.setSizeDip(GUILocationWizzard.WIDTH, GUILocationWizzard.HEIGTH);
+        topframe.addView(locationWizzard);
 
         checkWindowSize();
 
@@ -158,6 +164,28 @@ public class GUIDesktopActivity extends GUIActivity
             if (channelWizzard.getParent() != null)
             {
                 topframe.removeView(channelWizzard);
+            }
+        }
+
+        checkWindowSize();
+    }
+
+    public void displayLocationWizzard(boolean show)
+    {
+        if (show)
+        {
+            bringToFront();
+
+            if (locationWizzard.getParent() == null)
+            {
+                topframe.addView(locationWizzard);
+            }
+        }
+        else
+        {
+            if (locationWizzard.getParent() != null)
+            {
+                topframe.removeView(locationWizzard);
             }
         }
 

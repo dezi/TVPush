@@ -174,24 +174,25 @@ public class GUIChannelWizzard extends GUIPlugin
 
         if (selectedContainerBottom > scrollBottom)
         {
-            scroll.smoothScrollTo(0, selectedContainer.getTop());
+//            Log.d(LOGTAG, "moveDat: 1111 smoothScrollTo");
+//            scroll.smoothScrollTo(0, selectedContainer.getTop());
         }
 
 //        int selectedContainerTop = selectedContainer.getBottom();
 
 //        int scrollTop = scroll.getBottom() - scroll.getScrollY();
 
-        Log.d(LOGTAG, "moveDat: selectedContainer.getY=" + selectedContainer.getY());
-        Log.d(LOGTAG, "moveDat: selectedContainer.getTop=" + (selectedContainer.getTop() + CHANNEL_HEIGTH));
-        Log.d(LOGTAG, "moveDat: selectedContainer.getBottom=" + selectedContainer.getBottom());
-        Log.d(LOGTAG, "moveDat: getBottom=" + scroll.getBottom());
-        Log.d(LOGTAG, "moveDat: getTop=" + scroll.getTop());
+//        Log.d(LOGTAG, "moveDat: selectedContainer.getY=" + selectedContainer.getY());
+        Log.d(LOGTAG, "moveDat: selectedContainer.getTop=" + selectedContainer.getTop());
+//        Log.d(LOGTAG, "moveDat: selectedContainer.getBottom=" + selectedContainer.getBottom());
+//        Log.d(LOGTAG, "moveDat: getBottom=" + scroll.getBottom());
+//        Log.d(LOGTAG, "moveDat: getTop=" + scroll.getTop());
         Log.d(LOGTAG, "moveDat: getScrollY=" + scroll.getScrollY());
 
-        if (scroll.getScrollY() > selectedContainer.getBottom())
+        if (scroll.getScrollY() > selectedContainer.getTop())
         {
-            Log.d(LOGTAG, "moveDat: smoothScrollTo");
-            scroll.smoothScrollTo(0, selectedContainer.getBottom());
+            Log.d(LOGTAG, "moveDat: 2222 smoothScrollTo");
+            scroll.smoothScrollTo(0, selectedContainer.getTop() - CHANNEL_HEIGTH - 50);
         }
     }
 
