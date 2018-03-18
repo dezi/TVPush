@@ -13,6 +13,9 @@ public class IOTBoot extends IOTObject
 {
     private final static String LOGTAG = IOTBoot.class.getSimpleName();
 
+    public String bootHumanUUID;
+    public String bootDeviceUUID;
+
     @Override
     public String getUUIDKey()
     {
@@ -34,36 +37,24 @@ public class IOTBoot extends IOTObject
         Log.d(LOGTAG, "loadOwnIdentity: devices=" + IOTDevices.getCount());
         Log.d(LOGTAG, "loadOwnIdentity: humans=" + IOTHumans.getCount());
 
-        IOTBoot root = new IOTBoot();
+        IOT.boot = new IOTBoot();
 
-        if (! root.loadFromStorage())
+        if (! IOT.boot.loadFromStorage())
         {
             //
             // Create root UUID.
             //
 
-            root.saveToStorage();
+            IOT.boot.saveToStorage();
         }
 
-        IOT.meme = new IOTMeme(root.uuid);
-
-        if (! IOT.meme.loadFromStorage())
-        {
-            //
-            // Create meme entry.
-            //
-
-            IOT.meme.saveToStorage();
-        }
-
-        Log.d(LOGTAG, "loadOwnIdentity: meme=" + IOT.meme.uuid);
-        Log.d(LOGTAG, "loadOwnIdentity: memeHumanUUID=" + IOT.meme.memeHumanUUID);
-        Log.d(LOGTAG, "loadOwnIdentity: memeDeviceUUID=" + IOT.meme.memeDeviceUUID);
+        Log.d(LOGTAG, "loadOwnIdentity: bootHumanUUID=" + IOT.boot.bootHumanUUID);
+        Log.d(LOGTAG, "loadOwnIdentity: bootDeviceUUID=" + IOT.boot.bootDeviceUUID);
 
         IOTHuman localHuman = IOTHuman.buildLocalHuman();
         IOTDevice localDevice = IOTDevice.buildLocalDevice();
 
-        if ((IOT.meme.memeDeviceUUID == null) || IOT.meme.memeDeviceUUID.isEmpty())
+        if ((IOT.boot.bootDeviceUUID == null) || IOT.boot.bootDeviceUUID.isEmpty())
         {
             //
             // Create device entry.
@@ -73,20 +64,20 @@ public class IOTBoot extends IOTObject
 
             Log.d(LOGTAG, "static: new device=" + IOT.device.uuid);
 
-            IOT.meme.memeDeviceUUID = IOT.device.uuid;
+            IOT.boot.bootDeviceUUID = IOT.device.uuid;
 
-            if (IOT.meme.saveToStorage())
+            if (IOT.boot.saveToStorage())
             {
                 IOT.device.saveToStorage();
             }
         }
         else
         {
-            IOT.device = new IOTDevice(IOT.meme.memeDeviceUUID);
+            IOT.device = new IOTDevice(IOT.boot.bootDeviceUUID);
             IOT.device.checkAndMergeContent(localDevice, false);
         }
 
-        if ((IOT.meme.memeHumanUUID == null) || IOT.meme.memeHumanUUID.isEmpty())
+        if ((IOT.boot.bootHumanUUID == null) || IOT.boot.bootHumanUUID.isEmpty())
         {
             //
             // Only create if there are NO humans at all known.
@@ -98,9 +89,9 @@ public class IOTBoot extends IOTObject
 
                 Log.d(LOGTAG, "static: new human=" + IOT.human.uuid);
 
-                IOT.meme.memeHumanUUID = IOT.human.uuid;
+                IOT.boot.bootHumanUUID = IOT.human.uuid;
 
-                if (IOT.meme.saveToStorage())
+                if (IOT.boot.saveToStorage())
                 {
                     IOT.human.saveToStorage();
                 }
@@ -108,7 +99,7 @@ public class IOTBoot extends IOTObject
         }
         else
         {
-            IOT.human = new IOTHuman(IOT.meme.memeHumanUUID);
+            IOT.human = new IOTHuman(IOT.boot.bootHumanUUID);
             IOT.human.checkAndMergeContent(localHuman, false);
         }
     }

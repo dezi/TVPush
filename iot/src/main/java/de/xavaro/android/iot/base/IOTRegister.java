@@ -52,7 +52,6 @@ public class IOTRegister
         Json.put(device, "capabilities", capabilities);
 
         IOTDevice newDevice = new IOTDevice(device);
-
         IOTDevices.addEntry(newDevice, false);
 
         if (credentials != null)
@@ -63,7 +62,6 @@ public class IOTRegister
             Json.put(crendital, "credentials", credentials);
 
             IOTCredential newCredential = new IOTCredential(crendital);
-
             IOTCredentials.addEntry(newCredential, false);
         }
     }
@@ -80,7 +78,6 @@ public class IOTRegister
             Log.d(LOGTAG, "registerDeviceStatus: uuid=" + uuid + " ipaddr=" + ipaddr);
 
             IOTStatus newStatus = new IOTStatus(status);
-
             IOTStatusses.addEntry(newStatus, false);
         }
         else

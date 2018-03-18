@@ -15,6 +15,7 @@ import de.xavaro.android.iot.proxim.IOTProximServer;
 import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
+import de.xavaro.android.iot.things.IOTDomain;
 import de.xavaro.android.iot.things.IOTHuman;
 import de.xavaro.android.iot.simple.Simple;
 
@@ -26,10 +27,10 @@ public class IOT implements GetDevices
 
     public static IOT instance;
 
-    public static IOTMeme meme;
+    public static IOTBoot boot;
     public static IOTHuman human;
     public static IOTDevice device;
-    public static IOTDevice domain;
+    public static IOTDomain domain;
 
     public static IOTMessageHandler message;
 
