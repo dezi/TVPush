@@ -24,7 +24,6 @@ public class GUILocationWizzard extends GUIPlugin
     public final static int WIDTH = 600;
     public final static int HEIGTH = 400;
 
-//    private MapView mapView;
     private Marker marker;
     private GoogleMap map;
     private LatLng coordinates = new LatLng(53.568208, 10.140186);
