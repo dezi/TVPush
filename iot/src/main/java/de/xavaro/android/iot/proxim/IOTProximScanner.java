@@ -259,29 +259,6 @@ public class IOTProximScanner
 
         int vendor = 0;
 
-        ParcelUuid serviceUuid = null;
-        ParcelUuid serviceDataUuid = null;
-
-        List<ParcelUuid> serviceUuids = result.getScanRecord().getServiceUuids();
-
-        if ((serviceUuids != null) && (serviceUuids.size() > 0))
-        {
-            for (ParcelUuid uuid : serviceUuids)
-            {
-                serviceUuid = uuid;
-            }
-        }
-
-        Map<ParcelUuid, byte[]> serviceDatas = result.getScanRecord().getServiceData();
-
-        if ((serviceDatas != null) && (serviceDatas.size() > 0))
-        {
-            for (Map.Entry<ParcelUuid, byte[]> entry : serviceDatas.entrySet())
-            {
-                serviceDataUuid = entry.getKey();
-            }
-        }
-
         SparseArray<byte[]> manufacturerData = result.getScanRecord().getManufacturerSpecificData();
 
         if (manufacturerData.size() > 0)
@@ -293,7 +270,31 @@ public class IOTProximScanner
                 if (vendor == 301)
                 {
                     buildSonyDev(result, vendor, manufacturerData.get(vendor));
+
+                    return;
                 }
+            }
+        }
+
+        ParcelUuid serviceUuid = null;
+        List<ParcelUuid> serviceUuids = result.getScanRecord().getServiceUuids();
+
+        if ((serviceUuids != null) && (serviceUuids.size() > 0))
+        {
+            for (ParcelUuid uuid : serviceUuids)
+            {
+                serviceUuid = uuid;
+            }
+        }
+
+        ParcelUuid serviceDataUuid = null;
+        Map<ParcelUuid, byte[]> serviceDatas = result.getScanRecord().getServiceData();
+
+        if ((serviceDatas != null) && (serviceDatas.size() > 0))
+        {
+            for (Map.Entry<ParcelUuid, byte[]> entry : serviceDatas.entrySet())
+            {
+                serviceDataUuid = entry.getKey();
             }
         }
 
@@ -316,17 +317,21 @@ public class IOTProximScanner
         byte type = bb.get();
         byte plev = bb.get();
 
-        boolean ignore = true;
-        String display;
+        String display = null;
 
-        if ((type == IOTProxim.ADVERTISE_GPS_FINE) || (type == IOTProxim.ADVERTISE_GPS_COARSE))
+        if ((type == IOTProxim.ADVERTISE_GPS_FINE)
+                || (type == IOTProxim.ADVERTISE_GPS_COARSE))
         {
             double lat = bb.getDouble();
             double lon = bb.getDouble();
 
             display = lat + " - " + lon;
         }
-        else
+
+        if ((type == IOTProxim.ADVERTISE_IOT_HUMAN)
+                || (type == IOTProxim.ADVERTISE_IOT_DOMAIN)
+                || (type == IOTProxim.ADVERTISE_IOT_DEVICE)
+                || (type == IOTProxim.ADVERTISE_IOT_LOCATION))
         {
             long msb = bb.getLong();
             long lsb = bb.getLong();
@@ -334,21 +339,7 @@ public class IOTProximScanner
             String uuid = (new UUID(msb, lsb)).toString();
 
             display = uuid;
-
-            if (ownDeviceMac == null)
-            {
-                if ((IOT.device != null) && (IOT.device.uuid.equals(uuid)))
-                {
-                    ownDeviceMac = result.getDevice().getAddress();
-                }
-            }
-            else
-            {
-                ignore = ! ownDeviceMac.equals(result.getDevice().getAddress());
-            }
         }
-
-        //if (ignore) return;
 
         Log.d(LOGTAG, "evalIOTAdver: IOT"
                 + " rssi=" + result.getRssi()

@@ -42,10 +42,22 @@ public class IOTProximLocation implements LocationListener
                         provider, 0, 0,
                         IOT.instance.proximLocationListener);
 
-                Log.d(LOGTAG, "startLocationListener: listener installed.");
+                Log.d(LOGTAG, "startLocationListener: listener installed provider=" + provider);
 
                 Location last = locationManager.getLastKnownLocation(provider);
-                IOT.instance.proximLocationListener.onLocationChanged(last);
+
+                if (last == null)
+                {
+                    Log.e(LOGTAG, "startLocationListener: no last location.");
+                }
+                else
+                {
+                    Log.e(LOGTAG, "startLocationListener: last location"
+                            + " lat=" + last.getLatitude()
+                            + " lon=" + last.getLongitude());
+
+                    IOT.instance.proximLocationListener.onLocationChanged(last);
+                }
             }
             else
             {
