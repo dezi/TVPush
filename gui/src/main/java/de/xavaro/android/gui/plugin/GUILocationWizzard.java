@@ -1,6 +1,8 @@
 package de.xavaro.android.gui.plugin;
 
 import android.content.Context;
+import android.location.Location;
+import android.location.LocationManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.FrameLayout;
@@ -21,8 +23,8 @@ public class GUILocationWizzard extends GUIPlugin
 {
     private final static String LOGTAG = GUILocationWizzard.class.getSimpleName();
 
-    public final static int WIDTH = 600;
-    public final static int HEIGTH = 400;
+    public final static int WIDTH = 300;
+    public final static int HEIGTH = 150;
 
     private Marker marker;
     private GoogleMap map;
@@ -32,6 +34,8 @@ public class GUILocationWizzard extends GUIPlugin
     {
         super(context);
     }
+
+    private boolean takeFoucus = false;
 
     @Override
     public void onCreate()
@@ -45,15 +49,18 @@ public class GUILocationWizzard extends GUIPlugin
             @Override
             public boolean onKeyDown(int keyCode, KeyEvent event)
             {
-//                Log.d(LOGTAG, "onKeyDown: conatiner event=" + event);
+                Log.d(LOGTAG, "onKeyDown: mainFrame takeFoucus=" + takeFoucus);
 
-                if (keyCode != KeyEvent.KEYCODE_DPAD_CENTER)
+                if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER)
                 {
+                    takeFoucus = !takeFoucus;
+                }
+                else
+                {
+                    moveMap(keyCode);
                 }
 
-                moveMap(keyCode);
-
-                return super.onKeyDown(keyCode, event);
+                return takeFoucus;
             }
         };
 
@@ -61,11 +68,15 @@ public class GUILocationWizzard extends GUIPlugin
         mainFrame.setRoundedCorners(20, 0xff00ffff);
         pluginFrame.addView(mainFrame);
 
+        GUIFrameLayout moveFrame = new GUIFrameLayout(getContext());
+        moveFrame.setFocusable(false);
+        mainFrame.addView(moveFrame);
+
         final MapView mapView = new MapView(getContext());
         mapView.setLayoutParams(new FrameLayout.LayoutParams(Simple.MP, Simple.MP));
         mapView.setBackgroundColor(0xff00ff00);
         mapView.onCreate(null);
-        mainFrame.addView(mapView);
+        moveFrame.addView(mapView);
 
         mapView.getMapAsync(new OnMapReadyCallback()
         {
@@ -85,6 +96,7 @@ public class GUILocationWizzard extends GUIPlugin
             }
         });
     }
+
 
     private void moveMap(int keyCode)
     {
@@ -121,5 +133,12 @@ public class GUILocationWizzard extends GUIPlugin
 
         marker.setPosition(coordinates);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 20));
+
+//        Location targetLocation = new Location(LocationManager.GPS_PROVIDER);//provider name is unnecessary
+//        targetLocation.setLatitude(lat);//your coords of course
+//        targetLocation.setLongitude(lon);
+//
+//        Log.d(LOGTAG, "moveMap: hasAltitude=" + targetLocation.hasAltitude());
+//        Log.d(LOGTAG, "moveMap: altitude=" + targetLocation.getAltitude());
     }
 }

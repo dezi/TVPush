@@ -46,15 +46,15 @@ public class GUIDesktopActivity extends GUIActivity
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(Simple.MP, Simple.WC, Gravity.BOTTOM);
         topframe.addView(speechRecognition, lp);
 
-//        channelWizzard = new GUIChannelWizzard(this);
-//        channelWizzard.setPosition(100,100);
-//        channelWizzard.setSizeDip(GUIChannelWizzard.WIDTH, GUIChannelWizzard.HEIGTH);
-//        topframe.addView(channelWizzard);
-
         locationWizzard = new GUILocationWizzard(this);
-        locationWizzard.setPosition(100,100);
+        locationWizzard.setPosition(Simple.dipToPx(GUIChannelWizzard.WIDTH + 50),200);
         locationWizzard.setSizeDip(GUILocationWizzard.WIDTH, GUILocationWizzard.HEIGTH);
         topframe.addView(locationWizzard);
+
+        channelWizzard = new GUIChannelWizzard(this);
+        channelWizzard.setPosition(50,100);
+        channelWizzard.setSizeDip(GUIChannelWizzard.WIDTH, GUIChannelWizzard.HEIGTH);
+        topframe.addView(channelWizzard);
 
         checkWindowSize();
 
