@@ -460,4 +460,13 @@ public class Simple
 
         return coarse && fine;
     }
+
+    public static String padZero(int number, int digits)
+    {
+        String str = Integer.valueOf(number).toString();
+
+        while (str.length() < digits) str = "0" + str;
+
+        return str;
+    }
 }

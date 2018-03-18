@@ -45,9 +45,13 @@ public class IOTProximScanner
         {
             IOT.instance.proximScanner = new IOTProximScanner(appcontext);
 
-            IOT.instance.proximScanner.startReceiver();
-            IOT.instance.proximScanner.startDiscovery();
             IOT.instance.proximScanner.startLEScanner();
+
+            if (Simple.isTV())
+            {
+                IOT.instance.proximScanner.startReceiver();
+                IOT.instance.proximScanner.startDiscovery();
+            }
         }
     }
 
@@ -56,8 +60,12 @@ public class IOTProximScanner
         if ((IOT.instance != null) && (IOT.instance.proximScanner != null))
         {
             IOT.instance.proximScanner.stopLEScanner();
-            IOT.instance.proximScanner.stopDiscovery();
-            IOT.instance.proximScanner.stopReceiver();
+
+            if (Simple.isTV())
+            {
+                IOT.instance.proximScanner.stopDiscovery();
+                IOT.instance.proximScanner.stopReceiver();
+            }
 
             IOT.instance.proximScanner = null;
         }
@@ -160,6 +168,8 @@ public class IOTProximScanner
             if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action))
             {
                 Log.d(LOGTAG, "onReceive: finished.");
+
+                startDiscovery();
             }
 
             if (BluetoothDevice.ACTION_FOUND.equals(action))
@@ -179,11 +189,11 @@ public class IOTProximScanner
         @Override
         public void onScanResult(int callbackType, ScanResult result)
         {
-            evalScan(callbackType, result);
+            evaluateScan(callbackType, result);
         }
     };
 
-    private void evalScan(int callbackType, ScanResult result)
+    private void evaluateScan(int callbackType, ScanResult result)
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
@@ -191,9 +201,9 @@ public class IOTProximScanner
 
             byte[] eddystone = result.getScanRecord().getServiceData(ParcelUuid.fromString("0000FEAA-0000-1000-8000-00805F9B34FB"));
 
-            if ((eddystone != null) && (eddystone[0] == 0x10))
+            if (eddystone != null)
             {
-                buildEddystoneDevice(result, eddystone);
+                buildEddyDev(result, eddystone);
 
                 return;
             }
@@ -213,17 +223,17 @@ public class IOTProximScanner
             {
                 int vendor = bytbyt.keyAt(inx);
 
-                Log.d(LOGTAG, "evalScan: ALT"
+                Log.d(LOGTAG, "evaluateScan: ALT"
                         + " rssi=" + result.getRssi()
                         + " addr=" + result.getDevice().getAddress()
+                        + " vend=" + Simple.padZero(vendor, 3)
                         + " name=" + result.getDevice().getName()
-                        + " vend=" + vendor
                         + " vend=" + IOTProxim.getAdvertiseVendor(vendor)
                 );
 
                 if (vendor == 301)
                 {
-                    buildSonyTVBeaconDevice(result, bytbyt.get(vendor));
+                    buildSonyDev(result, bytbyt.get(vendor));
                 }
             }
         }
@@ -275,7 +285,7 @@ public class IOTProximScanner
 
         if (ignore) return;
 
-        Log.d(LOGTAG, "evalScan: IOT"
+        Log.d(LOGTAG, "evaluateScan: IOT"
                 + " rssi=" + result.getRssi()
                 + " addr=" + result.getDevice().getAddress()
                 + " plev=" + plev
@@ -285,8 +295,10 @@ public class IOTProximScanner
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void buildEddystoneDevice(ScanResult result, byte[] eddystone)
+    private void buildEddyDev(ScanResult result, byte[] eddystone)
     {
+        if (eddystone[0] != 0x10) return;
+
         byte txp = eddystone[1];
         byte urs = eddystone[2];
 
@@ -341,9 +353,10 @@ public class IOTProximScanner
             caps += "|gpsfine";
         }
 
-        Log.d(LOGTAG, "buildEddystoneDevice: EDY"
+        Log.d(LOGTAG, "buildEddyDev: EDY"
                 + " rssi=" + result.getRssi()
                 + " addr=" + macAddr
+                + " vend=" + "???"
                 + " name=" + name
                 + " url=" + url
         );
@@ -372,7 +385,7 @@ public class IOTProximScanner
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void buildSonyTVBeaconDevice(ScanResult result, byte[] bytes)
+    private void buildSonyDev(ScanResult result, byte[] bytes)
     {
         String name = "Sony Corporation";
         String macAddr = result.getDevice().getAddress();
@@ -380,7 +393,7 @@ public class IOTProximScanner
 
         String caps = "beacon|sonytv|fixed|stupid|gpsfine";
 
-        Log.d(LOGTAG, "buildSonyTVBeaconDevice: ALT"
+        Log.d(LOGTAG, "buildSonyDev: ALT"
                 + " rssi=" + result.getRssi()
                 + " addr=" + macAddr
                 + " name=" + name
