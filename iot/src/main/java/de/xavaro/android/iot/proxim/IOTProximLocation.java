@@ -48,7 +48,17 @@ public class IOTProximLocation implements LocationListener
                     Log.d(LOGTAG, "startLocationListener: NETWORK_PROVIDER installed.");
 
                     Location netLoc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                    if (netLoc != null) last = netLoc;
+
+                    if (netLoc != null)
+                    {
+                        last = netLoc;
+
+                        Log.d(LOGTAG, "startLocationListener: last NET location"
+                                + " lat=" + last.getLatitude()
+                                + " lon=" + last.getLongitude()
+                                + " age=" + Simple.getAgeInSeconds(last.getTime())
+                        );
+                    }
                 }
 
                 if (gpsIsEnabled)
@@ -61,20 +71,22 @@ public class IOTProximLocation implements LocationListener
                     Log.d(LOGTAG, "startLocationListener: GPS_PROVIDER installed.");
 
                     Location gpsLoc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    if (gpsLoc != null) last = gpsLoc;
+
+                    if (gpsLoc != null)
+                    {
+                        last = gpsLoc;
+
+                        Log.d(LOGTAG, "startLocationListener: last GPS location"
+                                + " lat=" + last.getLatitude()
+                                + " lon=" + last.getLongitude()
+                                + " age=" + Simple.getAgeInSeconds(last.getTime())
+                        );
+                    }
                 }
 
                 if (last == null)
                 {
                     Log.e(LOGTAG, "startLocationListener: no last location.");
-                }
-                else
-                {
-                    Log.e(LOGTAG, "startLocationListener: last location"
-                            + " lat=" + last.getLatitude()
-                            + " lon=" + last.getLongitude());
-
-                    IOT.instance.proximLocationListener.onLocationChanged(last);
                 }
             }
             else
@@ -107,7 +119,12 @@ public class IOTProximLocation implements LocationListener
             IOTStatusses.addEntry(status, false);
         }
 
-        Log.d(LOGTAG, "onLocationChanged: lat=" + location.getLatitude() + " lon=" + location.getLongitude());
+        Log.d(LOGTAG, "onLocationChanged:"
+                + " lat=" + location.getLatitude()
+                + " lon=" + location.getLongitude()
+                + " age=" + Simple.getAgeInSeconds(location.getTime())
+                + " pro=" + location.getProvider()
+        );
     }
 
     @Override

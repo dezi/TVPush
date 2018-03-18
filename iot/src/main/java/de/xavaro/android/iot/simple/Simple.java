@@ -474,4 +474,9 @@ public class Simple
 
         return str;
     }
+
+    public static long getAgeInSeconds(long timestamp)
+    {
+        return (System.currentTimeMillis() - timestamp) / 1000;
+    }
 }
