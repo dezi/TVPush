@@ -354,9 +354,10 @@ public class IOTProximScanner
         if (name.equalsIgnoreCase("iBKS Plus"))
         {
             //
-            // Super long range Bodomann beacon. Not usefull
-            // for fine location. Usefull for premises
-            // area location.
+            // Super long range Bodomann beacon. Not usefull for
+            // fine location. Usefull for domain area location.
+            //
+            // Elvis has entered/left the building.
             //
 
             caps += "|gpscoarse";
