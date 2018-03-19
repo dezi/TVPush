@@ -49,12 +49,12 @@ public class GUIDesktopActivity extends GUIActivity
         locationWizzard = new GUILocationWizzard(this);
         locationWizzard.setPosition(Simple.dipToPx(GUIChannelWizzard.WIDTH + 50),200);
         locationWizzard.setSizeDip(GUILocationWizzard.WIDTH, GUILocationWizzard.HEIGTH);
-        topframe.addView(locationWizzard);
+        //topframe.addView(locationWizzard);
 
         channelWizzard = new GUIChannelWizzard(this);
         channelWizzard.setPosition(50,100);
         channelWizzard.setSizeDip(GUIChannelWizzard.WIDTH, GUIChannelWizzard.HEIGTH);
-        topframe.addView(channelWizzard);
+        //topframe.addView(channelWizzard);
 
         checkWindowSize();
 

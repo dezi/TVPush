@@ -336,6 +336,16 @@ public class IOTProximScanner
             display = uuid;
         }
 
+        if (type == IOTProxim.ADVERTISE_IOT_DEVNAME)
+        {
+            int devsize = bytes.length - 2;
+            byte[] devbytes = new byte[devsize];
+
+            bb.get(devbytes, 0, devbytes.length);
+
+            display = new String(devbytes);
+        }
+
         int rssi = result.getRssi();
 
         Log.d(LOGTAG, "evalIOTAdver: IOT"

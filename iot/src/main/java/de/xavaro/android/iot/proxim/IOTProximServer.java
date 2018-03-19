@@ -32,6 +32,7 @@ public class IOTProximServer
     private IOTProximCallback callbackGPSFine;
     private IOTProximCallback callbackIOTHuman;
     private IOTProximCallback callbackIOTDevice;
+    private IOTProximCallback callbackIOTDevname;
 
     static public void startService(Context context)
     {
@@ -90,6 +91,8 @@ public class IOTProximServer
 
             advertiseIOTHuman();
             advertiseIOTDevice();
+
+            advertiseIOTDevname();
         }
     }
 
@@ -120,6 +123,12 @@ public class IOTProximServer
         {
             btLEAdvertiser.stopAdvertising(callbackIOTDevice);
             callbackIOTDevice = null;
+        }
+
+        if (callbackIOTDevname != null)
+        {
+            btLEAdvertiser.stopAdvertising(callbackIOTDevname);
+            callbackIOTDevname = null;
         }
     }
 
@@ -171,7 +180,7 @@ public class IOTProximServer
 
                 callbackGPSCoarse = advertiseDat(bytes);
 
-                Log.d(LOGTAG, "advertiseGPSCoarse: lat=" + lat + " lon=" + lon);
+                Log.d(LOGTAG, "advertiseGPSCoarse: lat=" + lat + " lon=" + lon + " alt=" + alt);
             }
         }
     }
@@ -224,7 +233,7 @@ public class IOTProximServer
 
                 callbackGPSFine = advertiseDat(bytes);
 
-                Log.d(LOGTAG, "advertiseGPSFine: lat=" + lat + " lon=" + lon);
+                Log.d(LOGTAG, "advertiseGPSFine: lat=" + lat + " lon=" + lon + " alt=" + alt);
             }
         }
     }
@@ -279,6 +288,35 @@ public class IOTProximServer
             callbackIOTDevice = advertiseDat(bytes);
 
             Log.d(LOGTAG, "advertiseIOTDevice: uuid=" + IOT.device.uuid);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void advertiseIOTDevname()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            if (callbackIOTDevname != null)
+            {
+                btLEAdvertiser.stopAdvertising(callbackIOTDevname);
+                callbackIOTDevname = null;
+            }
+
+            String devname = Simple.getDeviceUserName();
+            if (devname.length() > 20) devname = devname.substring(0, 20);
+
+            byte[] devbytes = devname.getBytes();
+
+            byte[] bytes = ByteBuffer
+                    .allocate(1 + 1 + devbytes.length)
+                    .put(IOTProxim.ADVERTISE_IOT_DEVNAME)
+                    .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
+                    .put(devbytes)
+                    .array();
+
+            callbackIOTDevname = advertiseDat(bytes);
+
+            Log.d(LOGTAG, "advertiseIOTDevname: devname=" + devname);
         }
     }
 

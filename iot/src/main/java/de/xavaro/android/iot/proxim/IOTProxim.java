@@ -33,6 +33,7 @@ public class IOTProxim
     public final static byte ADVERTISE_IOT_DOMAIN = 4;
     public final static byte ADVERTISE_IOT_DEVICE = 5;
     public final static byte ADVERTISE_IOT_LOCATION = 6;
+    public final static byte ADVERTISE_IOT_DEVNAME = 7;
 
     public static String getAdvertiseType(int type)
     {
@@ -45,6 +46,8 @@ public class IOTProxim
             case ADVERTISE_IOT_DOMAIN: return "ADVERTISE_IOT_DOMAIN";
             case ADVERTISE_IOT_DEVICE: return "ADVERTISE_IOT_DEVICE";
             case ADVERTISE_IOT_LOCATION: return "ADVERTISE_IOT_LOCATION";
+
+            case ADVERTISE_IOT_DEVNAME: return "ADVERTISE_IOT_DEVNAME";
         }
 
         return "UNKNOWN_TYPE=" + type;
