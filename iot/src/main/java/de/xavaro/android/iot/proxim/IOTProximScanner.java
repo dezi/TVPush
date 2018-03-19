@@ -272,8 +272,12 @@ public class IOTProximScanner
             }
         }
 
+        int rssi = result.getRssi();
+        int txpo = (result.getScanRecord() != null) ? result.getScanRecord().getTxPowerLevel() : -1;
+
         Log.d(LOGTAG, "evaluateScan: ALT"
-                + " rssi=" + result.getRssi()
+                + " rssi=" + rssi
+                + " txpo=" + txpo
                 + " addr=" + result.getDevice().getAddress()
                 + " vend=" + Simple.padZero(vendor, 4)
                 + " name=" + result.getDevice().getName()
@@ -288,8 +292,8 @@ public class IOTProximScanner
     {
         ByteBuffer bb = ByteBuffer.wrap(bytes);
 
-        byte type = bb.get();
-        byte plev = bb.get();
+        int type = bb.get();
+        int txpo = bb.get();
 
         String display = null;
 
@@ -315,8 +319,11 @@ public class IOTProximScanner
             display = uuid;
         }
 
+        int rssi = result.getRssi();
+
         Log.d(LOGTAG, "evalIOTAdver: IOT"
-                + " rssi=" + result.getRssi()
+                + " rssi=" + rssi
+                + " txpo=" + txpo
                 + " addr=" + result.getDevice().getAddress()
                 + " vend=" + Simple.padZero(IOTProxim.IOT_MANUFACTURER_ID, 4)
                 + " type=" + IOTProxim.getAdvertiseType(type)
@@ -332,15 +339,15 @@ public class IOTProximScanner
         if (eddystone[0] != 0x10) return;
 
         //noinspection unused
-        byte txp = eddystone[1];
-        byte urs = eddystone[2];
+        int txpo = eddystone[1];
+        byte urls = eddystone[2];
 
         String urlstart = "";
 
-        if (urs == 0x00) urlstart = "http://www.";
-        if (urs == 0x01) urlstart = "https://www.";
-        if (urs == 0x02) urlstart = "http://";
-        if (urs == 0x03) urlstart = "https://";
+        if (urls == 0x00) urlstart = "http://www.";
+        if (urls == 0x01) urlstart = "https://www.";
+        if (urls == 0x02) urlstart = "http://";
+        if (urls == 0x03) urlstart = "https://";
 
         String urlrest = Simple.getString(eddystone, 3, eddystone.length - 3);
 
@@ -391,8 +398,11 @@ public class IOTProximScanner
             caps += "|gpsfine";
         }
 
+        int rssi = result.getRssi();
+
         Log.d(LOGTAG, "buildEddyDev: EDY"
-                + " rssi=" + result.getRssi()
+                + " rssi=" + rssi
+                + " txpo=" + txpo
                 + " addr=" + macAddr
                 + " vend=" + "0000"
                 + " type=" + IOTDevice.TYPE_BEACON
@@ -419,6 +429,8 @@ public class IOTProximScanner
         JSONObject status = new JSONObject();
 
         Json.put(status, "uuid", uuid);
+        Json.put(status, "rssi", rssi);
+        Json.put(status, "txpower", txpo);
 
         IOTStatusses.addEntry(new IOTStatus(status), false);
     }
@@ -432,16 +444,20 @@ public class IOTProximScanner
 
         if (! shouldUpdate(uuid)) return;
 
-        String caps = "beacon|sonytv|fixed|stupid|gpsfine";
+        int rssi = result.getRssi();
+        int txpo = (result.getScanRecord() != null) ? result.getScanRecord().getTxPowerLevel() : -1;
 
         Log.d(LOGTAG, "buildBeacDev: ALT"
-                + " rssi=" + result.getRssi()
+                + " rssi=" + rssi
+                + " txpo=" + txpo
                 + " addr=" + macAddr
                 + " vend=" + Simple.padZero(vendor, 4)
                 + " type=" + IOTDevice.TYPE_BEACON
                 + " uuid=" + uuid
                 + " name=" + name
         );
+
+        String caps = "beacon|uuidbeacon|fixed|stupid|gpsfine";
 
         JSONObject beacondev = new JSONObject();
 
@@ -461,6 +477,8 @@ public class IOTProximScanner
         JSONObject status = new JSONObject();
 
         Json.put(status, "uuid", uuid);
+        Json.put(status, "rssi", rssi);
+        Json.put(status, "txpower", txpo);
 
         IOTStatusses.addEntry(new IOTStatus(status), false);
     }

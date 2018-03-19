@@ -124,13 +124,14 @@ public abstract class IOTObject
                         field.set(this, jval);
                         ok = true;
                     }
-                    catch (Exception ignore)
+                    catch (Exception ex)
                     {
                         //
-                        // Someone changed the data type in between.
+                        // Someone changed the data type in between
+                        // or supplied wrong data type.
                         //
 
-                        ignore.printStackTrace();
+                        ex.printStackTrace();
                     }
                 }
             }

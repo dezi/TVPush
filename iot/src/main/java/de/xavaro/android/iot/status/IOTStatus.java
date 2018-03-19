@@ -19,6 +19,9 @@ public class IOTStatus extends IOTObject
     public String ipaddr;
     public Integer ipport;
 
+    public Integer rssi;
+    public Integer txpower;
+
     public Integer camblind;
 
     public Integer ledstate;
@@ -68,6 +71,9 @@ public class IOTStatus extends IOTObject
         if (nequals(wifi,       check.wifi      )) wifi       = check.wifi;
         if (nequals(ipaddr,     check.ipaddr    )) ipaddr     = check.ipaddr;
         if (nequals(ipport,     check.ipport    )) ipport     = check.ipport;
+
+        if (nequals(rssi,       check.rssi      )) rssi       = check.rssi;
+        if (nequals(txpower,    check.txpower   )) txpower    = check.txpower;
 
         if (nequals(camblind,   check.camblind  )) camblind   = check.camblind;
 
