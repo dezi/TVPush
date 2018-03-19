@@ -16,20 +16,26 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import de.xavaro.android.gui.views.GUIFrameLayout;
 import de.xavaro.android.gui.base.GUIPlugin;
 import de.xavaro.android.gui.simple.Simple;
+import de.xavaro.android.iot.base.IOTObject;
 
 public class GUILocationWizzard extends GUIPlugin
 {
     private final static String LOGTAG = GUILocationWizzard.class.getSimpleName();
 
-    public final static int WIDTH = 300;
-    public final static int HEIGTH = 150;
+    public final static int DEFAULT_WIDTH = 500;
+    public final static int DEFAULT_HEIGTH = 300;
+
+    public final static int INITIAL_ZOOM = 20;
+    public final static double MOVE_STEP = 0.000002;
+
+    private IOTObject iotObject;
 
     private GoogleMap map;
     private Marker marker;
     private MapView mapView;
     private LatLng coordinates;
 
-    private boolean takeFoucus = false;
+    private boolean haveHighlight;
 
     public GUILocationWizzard(Context context)
     {
@@ -48,19 +54,25 @@ public class GUILocationWizzard extends GUIPlugin
             @Override
             public boolean onKeyDown(int keyCode, KeyEvent event)
             {
-                Log.d(LOGTAG, "onKeyDown: mainFrame takeFoucus=" + takeFoucus);
+                Log.d(LOGTAG, "onKeyDown: mainFrame haveHighlight=" + haveHighlight);
+
+                boolean usedKey = false;
 
                 if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER)
                 {
-                    takeFoucus = !takeFoucus;
-                    setHighlight(takeFoucus);
+                    haveHighlight = !haveHighlight;
+                    setHighlight(haveHighlight);
+                    usedKey = true;
                 }
                 else
                 {
-                    moveMap(keyCode);
+                    if (haveHighlight)
+                    {
+                        usedKey = moveMap(keyCode);
+                    }
                 }
 
-                return takeFoucus;
+                return usedKey;
             }
         };
 
@@ -105,41 +117,51 @@ public class GUILocationWizzard extends GUIPlugin
         });
     }
 
-    private void moveMap(int keyCode)
+    public void setIOTObject(IOTObject iotObject)
     {
-        if (map == null) return;
+        this.iotObject = iotObject;
+    }
 
-        Log.d(LOGTAG, "moveMap:");
+    private boolean moveMap(int keyCode)
+    {
+        if (map == null) return false;
 
-        Double moveParm = 0.000001;
+        boolean usedkey = false;
 
         Double lat = coordinates.latitude;
         Double lon = coordinates.longitude;
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT)
         {
-            lon -= moveParm;
+            lon -= MOVE_STEP;
+            usedkey = true;
         }
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_UP)
         {
-            lat += moveParm;
+            lat += MOVE_STEP;
+            usedkey = true;
         }
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)
         {
-            lon += moveParm;
+            lon += MOVE_STEP;
+            usedkey = true;
         }
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN)
         {
-            lat -= moveParm;
+            lat -= MOVE_STEP;
+            usedkey = true;
         }
 
-        coordinates = new LatLng(lat, lon);
+        if (usedkey)
+        {
+            coordinates = new LatLng(lat, lon);
+            marker.setPosition(coordinates);
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 20));
+        }
 
-        marker.setPosition(coordinates);
-
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 20));
+        return usedkey;
     }
 }

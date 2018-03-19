@@ -19,6 +19,7 @@ import de.xavaro.android.gui.plugin.GUISpeechRecogniton;
 import de.xavaro.android.gui.plugin.GUIVideoSurface;
 import de.xavaro.android.gui.simple.Simple;
 
+import de.xavaro.android.iot.base.IOT;
 import pub.android.interfaces.cam.Camera;
 
 public class GUIDesktopActivity extends GUIActivity
@@ -47,9 +48,40 @@ public class GUIDesktopActivity extends GUIActivity
         topframe.addView(speechRecognition, lp);
 
         locationWizzard = new GUILocationWizzard(this);
-        locationWizzard.setPosition(Simple.dipToPx(GUIChannelWizzard.WIDTH + 50),200);
-        locationWizzard.setSizeDip(GUILocationWizzard.WIDTH, GUILocationWizzard.HEIGTH);
+        locationWizzard.setPositionDip(100,100);
+
+        locationWizzard.setSizeDip(GUILocationWizzard.DEFAULT_WIDTH, GUILocationWizzard.DEFAULT_HEIGTH);
+
         topframe.addView(locationWizzard);
+
+        if ((IOT.device != null) && IOT.device.hasCapability("fixed"))
+        {
+            if ((IOT.device.fixedLatFine != null)
+                    && (IOT.device.fixedLonFine != null)
+                    && (IOT.device.fixedAltFine != null))
+            {
+                locationWizzard.setIOTObject(IOT.device);
+
+                locationWizzard.setCoordinates(
+                        IOT.device.fixedLatFine,
+                        IOT.device.fixedLonFine,
+                        IOT.device.fixedAltFine);
+            }
+            else
+            {
+                if ((IOT.device.fixedLatCoarse != null)
+                        && (IOT.device.fixedLonCoarse != null)
+                        && (IOT.device.fixedAltCoarse != null))
+                {
+                    locationWizzard.setIOTObject(IOT.device);
+
+                    locationWizzard.setCoordinates(
+                            IOT.device.fixedLatCoarse,
+                            IOT.device.fixedLonCoarse,
+                            IOT.device.fixedAltCoarse);
+                }
+            }
+        }
 
         channelWizzard = new GUIChannelWizzard(this);
         channelWizzard.setPosition(50,100);
@@ -80,10 +112,6 @@ public class GUIDesktopActivity extends GUIActivity
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     4711);
         }
-    }
-
-    public void checkPermissions()
-    {
     }
 
     @Override

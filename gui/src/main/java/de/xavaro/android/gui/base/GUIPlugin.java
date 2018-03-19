@@ -61,6 +61,14 @@ public class GUIPlugin extends GUIFrameLayout
         pluginFrame.setLayoutParams(pluginFrameParams);
     }
 
+    public void setPositionDip(int left, int top)
+    {
+        pluginFrameParams.leftMargin = Simple.dipToPx(left);
+        pluginFrameParams.topMargin = Simple.dipToPx(top);
+
+        pluginFrame.setLayoutParams(pluginFrameParams);
+    }
+
     public int getPluginWidth()
     {
         return pluginFrameParams.width;
