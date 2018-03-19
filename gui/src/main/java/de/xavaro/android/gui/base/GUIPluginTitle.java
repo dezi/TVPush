@@ -81,6 +81,15 @@ public class GUIPluginTitle extends GUIPlugin
 
     public void setTitleEdit(String text, String hint, String toast)
     {
+        if ((text != null) && text.equals(titleText.getText()))
+        {
+            //
+            // Unset bogus self repeating stuff.
+            //
+
+            text = "";
+        }
+
         titleEdit.setText(text);
         titleEdit.setHint(hint);
         titleEdit.setToast(toast);

@@ -166,7 +166,7 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
 
         speechText.setText(toastMessage);
         speechText.setTextColor(Color.LTGRAY);
-        centerCont.setRoundedCornersDip(GUIDefs.ROUNDED_MEDIUM, GUIDefs.COLOR_NORMAL_TRANSPARENT);
+        centerCont.setRoundedCornersDip(GUIDefs.ROUNDED_MEDIUM, GUIDefs.COLOR_DARK_TRANSPARENT);
 
         if (emphasis) colorFrame.start(2);
         GUI.instance.desktopActivity.bringToFront();
