@@ -57,4 +57,9 @@ public abstract class IOTList
 
         return result;
     }
+
+    public void putEntry(IOTObject object)
+    {
+        list.put(object.uuid, object);
+    }
 }

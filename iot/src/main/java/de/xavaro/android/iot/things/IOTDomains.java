@@ -5,7 +5,7 @@ import de.xavaro.android.iot.base.IOTObject;
 
 public class IOTDomains extends IOTList
 {
-    private static IOTDomains instance = new IOTDomains();
+    public static IOTDomains instance = new IOTDomains();
 
     private IOTDomains()
     {

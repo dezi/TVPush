@@ -5,7 +5,7 @@ import de.xavaro.android.iot.base.IOTObject;
 
 public class IOTHumans extends IOTList
 {
-    private static IOTHumans instance = new IOTHumans();
+    public static IOTHumans instance = new IOTHumans();
 
     private IOTHumans()
     {

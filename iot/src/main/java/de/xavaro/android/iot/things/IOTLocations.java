@@ -5,7 +5,7 @@ import de.xavaro.android.iot.base.IOTObject;
 
 public class IOTLocations extends IOTList
 {
-    private static IOTLocations instance = new IOTLocations();
+    public static IOTLocations instance = new IOTLocations();
 
     private IOTLocations()
     {

@@ -12,6 +12,18 @@ import java.util.UUID;
 
 import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Prefs;
+import de.xavaro.android.iot.status.IOTCredential;
+import de.xavaro.android.iot.status.IOTCredentials;
+import de.xavaro.android.iot.status.IOTMetadata;
+import de.xavaro.android.iot.status.IOTMetadatas;
+import de.xavaro.android.iot.status.IOTStatus;
+import de.xavaro.android.iot.status.IOTStatusses;
+import de.xavaro.android.iot.things.IOTDevice;
+import de.xavaro.android.iot.things.IOTDevices;
+import de.xavaro.android.iot.things.IOTDomain;
+import de.xavaro.android.iot.things.IOTDomains;
+import de.xavaro.android.iot.things.IOTHuman;
+import de.xavaro.android.iot.things.IOTHumans;
 
 @SuppressWarnings("WeakerAccess")
 public abstract class IOTObject
@@ -173,6 +185,40 @@ public abstract class IOTObject
 
             Log.d(LOGTAG, "saveToStorage: key=" + key + " ok=" + ok + " json=" + ((json == null) ? "null" : "ok"));
         }
+
+        if (this instanceof IOTDevice)
+        {
+            if ((IOT.device != null) && IOT.device.uuid.equals(uuid))
+            {
+                IOT.device = (IOTDevice) this;
+            }
+
+            IOTDevices.instance.putEntry(this);
+        }
+
+        if (this instanceof IOTHuman)
+        {
+            if ((IOT.human != null) && IOT.human.uuid.equals(uuid))
+            {
+                IOT.human = (IOTHuman) this;
+            }
+
+            IOTHumans.instance.putEntry(this);
+        }
+
+        if (this instanceof IOTDomain)
+        {
+            if ((IOT.domain != null) && IOT.domain.uuid.equals(uuid))
+            {
+                IOT.domain = (IOTDomain) this;
+            }
+
+            IOTDomains.instance.putEntry(this);
+        }
+
+        if (this instanceof IOTStatus) IOTStatusses.instance.putEntry(this);
+        if (this instanceof IOTMetadata) IOTMetadatas.instance.putEntry(this);
+        if (this instanceof IOTCredential) IOTCredentials.instance.putEntry(this);
 
         return ok;
     }

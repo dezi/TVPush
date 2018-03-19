@@ -375,6 +375,10 @@ public class IOTProximScanner
                     && (IOT.device.fixedLonCoarse == null)
                     && (IOT.device.fixedAltCoarse == null)))
             {
+                Float googlealt = IOTProximLocation.getAltitude(lat, lon);
+                Log.d(LOGTAG, "evalIOTAdver: Bootstrap altitude googlealt=" + googlealt);
+
+                if (googlealt != null) alt = googlealt;
 
                 IOTDevice newDevice = new IOTDevice(IOT.device.uuid);
 

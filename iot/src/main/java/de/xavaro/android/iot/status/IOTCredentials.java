@@ -40,10 +40,7 @@ public class IOTCredentials extends IOTList
         {
             Log.d(LOGTAG, "addEntry: new uuid=" + newCredential.uuid);
 
-            if (newCredential.saveToStorage())
-            {
-                instance.list.put(newCredential.uuid, newCredential);
-            }
+            newCredential.saveToStorage();
         }
         else
         {

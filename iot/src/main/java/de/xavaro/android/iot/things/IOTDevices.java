@@ -40,10 +40,7 @@ public class IOTDevices extends IOTList
         {
             Log.d(LOGTAG, "addEntry: new uuid=" + newDevice.uuid);
 
-            if (newDevice.saveToStorage())
-            {
-                instance.list.put(newDevice.uuid, newDevice);
-            }
+            newDevice.saveToStorage();
         }
         else
         {

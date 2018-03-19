@@ -3,6 +3,7 @@ package de.xavaro.android.gui.plugin;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.FrameLayout;
@@ -103,60 +104,6 @@ public class GUILocationWizzard extends GUIPlugin
                 mapView.onResume();
             }
         });
-    }
-
-    private double getAltitude(Double longitude, Double latitude)
-    {
-        double result = Double.NaN;
-
-        String url = "http://maps.googleapis.com/maps/api/elevation/"
-                + "xml?locations=" + String.valueOf(latitude)
-                + "," + String.valueOf(longitude)
-                + "&sensor=true";
-
-        Log.d(LOGTAG, "getAltitude: url=" + url);
-
-        try
-        {
-            HttpURLConnection connection = (HttpURLConnection) (new URL(url)).openConnection();
-            connection.setDoOutput(true);
-            connection.setUseCaches(false);
-            connection.setRequestMethod("GET");
-
-            InputStream stream = connection.getInputStream();
-            if (stream == null) return result;
-
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
-            StringBuilder respStr = new StringBuilder();
-
-            String line;
-            while ((line = bufferedReader.readLine()) != null)
-            {
-                respStr.append(line);
-                respStr.append("\n");
-            }
-
-            Log.d(LOGTAG, "getAltitude: respStr=" + respStr);
-
-            String tagOpen = "<elevation>";
-            String tagClose = "</elevation>";
-
-            if (respStr.indexOf(tagOpen) != -1)
-            {
-                int start = respStr.indexOf(tagOpen) + tagOpen.length();
-                int end = respStr.indexOf(tagClose);
-                String value = respStr.substring(start, end);
-                result = Double.parseDouble(value);
-            }
-
-            stream.close();
-        }
-        catch (IOException exc)
-        {
-            exc.printStackTrace();
-        }
-
-        return result;
     }
 
     private void moveMap(int keyCode)

@@ -6,11 +6,21 @@ import android.location.LocationListener;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import de.xavaro.android.iot.base.IOT;
+import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Simple;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.status.IOTStatusses;
@@ -153,5 +163,61 @@ public class IOTProximLocation implements LocationListener
     public void onStatusChanged(String provider, int status, Bundle extras)
     {
         Log.d(LOGTAG, "onStatusChanged: provider=" + provider + " status=" + status + " extras=" + extras);
+    }
+
+    @Nullable
+    public static Float getAltitude(Double lat, Double lon)
+    {
+        Float result = null;
+
+        String url = "https://maps.googleapis.com/maps/api/elevation/json"
+                + "?locations=" + String.valueOf(lat) + "," + String.valueOf(lon)
+                + "&sensor=true" + "&key=AIzaSyBJ1BXy83xwFwJNhJdD-imW7AfxBZsRkZs";
+
+        Log.d(LOGTAG, "getAltitude: url=" + url);
+
+        try
+        {
+            HttpURLConnection connection = (HttpURLConnection) (new URL(url)).openConnection();
+            connection.setDoOutput(true);
+            connection.setUseCaches(false);
+            connection.setRequestMethod("GET");
+
+            InputStream stream = connection.getInputStream();
+            if (stream == null) return result;
+
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
+            StringBuilder respStr = new StringBuilder();
+
+            String line;
+
+            while ((line = bufferedReader.readLine()) != null)
+            {
+                respStr.append(line);
+                respStr.append("\n");
+            }
+
+            stream.close();
+
+            Log.d(LOGTAG, "getAltitude: respStr=" + respStr);
+
+            JSONObject respJson = Json.fromStringObject(respStr.toString());
+            JSONArray results = Json.getArray(respJson, "results");
+
+            if ((results != null) && (results.length() > 0))
+            {
+                JSONObject entry = Json.getObject(results, 0);
+                if (entry != null)
+                {
+                    result = Json.getFloat(entry, "elevation");
+                }
+            }
+        }
+        catch (IOException exc)
+        {
+            exc.printStackTrace();
+        }
+
+        return result;
     }
 }
