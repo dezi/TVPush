@@ -73,6 +73,10 @@ public class IOTBoot extends IOTObject
         }
         else
         {
+            //
+            // Just in case the bootstrapping buildLocalDevice was changed.
+            //
+
             IOT.device = new IOTDevice(IOT.boot.bootDeviceUUID);
             IOT.device.checkAndMergeContent(localDevice, false);
         }
@@ -99,6 +103,10 @@ public class IOTBoot extends IOTObject
         }
         else
         {
+            //
+            // Just in case the bootstrapping buildLocalHuman was changed.
+            //
+
             IOT.human = new IOTHuman(IOT.boot.bootHumanUUID);
             IOT.human.checkAndMergeContent(localHuman, false);
         }

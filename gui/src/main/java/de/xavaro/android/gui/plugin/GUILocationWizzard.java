@@ -1,12 +1,9 @@
 package de.xavaro.android.gui.plugin;
 
 import android.content.Context;
-import android.location.Location;
-import android.location.LocationManager;
-import android.support.annotation.Nullable;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.widget.FrameLayout;
+import android.view.KeyEvent;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -16,16 +13,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
+import de.xavaro.android.gui.views.GUIFrameLayout;
 import de.xavaro.android.gui.base.GUIPlugin;
 import de.xavaro.android.gui.simple.Simple;
-import de.xavaro.android.gui.views.GUIFrameLayout;
 
 public class GUILocationWizzard extends GUIPlugin
 {
@@ -34,16 +24,17 @@ public class GUILocationWizzard extends GUIPlugin
     public final static int WIDTH = 300;
     public final static int HEIGTH = 150;
 
-    private Marker marker;
     private GoogleMap map;
-    private LatLng coordinates = new LatLng(53.568208, 10.140186);
+    private Marker marker;
+    private MapView mapView;
+    private LatLng coordinates;
+
+    private boolean takeFoucus = false;
 
     public GUILocationWizzard(Context context)
     {
         super(context);
     }
-
-    private boolean takeFoucus = false;
 
     @Override
     public void onCreate()
@@ -75,17 +66,25 @@ public class GUILocationWizzard extends GUIPlugin
 
         mainFrame.setFocusable(true);
         mainFrame.setRoundedCorners(20, 0xff00ffff);
+
         pluginFrame.addView(mainFrame);
 
         GUIFrameLayout moveFrame = new GUIFrameLayout(getContext());
         moveFrame.setFocusable(false);
+
         mainFrame.addView(moveFrame);
 
-        final MapView mapView = new MapView(getContext());
+        mapView = new MapView(getContext());
         mapView.setLayoutParams(new FrameLayout.LayoutParams(Simple.MP, Simple.MP));
         mapView.setBackgroundColor(0xff00ff00);
         mapView.onCreate(null);
+
         moveFrame.addView(mapView);
+    }
+
+    public void setCoordinates(Double lat, Double lon, Float alt)
+    {
+        coordinates = new LatLng(lat, lon);
 
         mapView.getMapAsync(new OnMapReadyCallback()
         {
@@ -140,14 +139,7 @@ public class GUILocationWizzard extends GUIPlugin
         coordinates = new LatLng(lat, lon);
 
         marker.setPosition(coordinates);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 20));
 
-//        Location targetLocation = new Location(LocationManager.GPS_PROVIDER);//provider name is unnecessary
-//        targetLocation.setLatitude(lat);//your coords of course
-//        targetLocation.setLongitude(lon);
-//
-//        Log.d(LOGTAG, "moveMap: hasAltitude=" + targetLocation.hasAltitude());
-//        Log.d(LOGTAG, "moveMap: altitude=" + targetLocation.getAltitude());
-//        Log.d(LOGTAG, "moveMap: getAltitude=" + getAltitude(lat, lon));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 20));
     }
 }

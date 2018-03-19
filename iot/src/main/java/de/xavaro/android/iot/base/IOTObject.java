@@ -236,9 +236,9 @@ public abstract class IOTObject
         return ok;
     }
 
-    public boolean nequals(String str1, String str2)
+    public boolean nequals(String orig, String check)
     {
-        if (! IOTSimple.equals(str1, str2))
+        if ((check != null) && ! IOTSimple.equals(orig, check))
         {
             return changed = true;
         }
@@ -246,9 +246,9 @@ public abstract class IOTObject
         return false;
     }
 
-    public boolean nequals(Long val1, Long val2)
+    public boolean nequals(Long orig, Long check)
     {
-        if (! IOTSimple.equals(val1, val2))
+        if ((check != null) && ! IOTSimple.equals(orig, check))
         {
             return changed = true;
         }
@@ -256,9 +256,9 @@ public abstract class IOTObject
         return false;
     }
 
-    public boolean nequals(Float val1, Float val2)
+    public boolean nequals(Float orig, Float check)
     {
-        if (! IOTSimple.equals(val1, val2))
+        if ((check != null) && ! IOTSimple.equals(orig, check))
         {
             return changed = true;
         }
@@ -266,9 +266,9 @@ public abstract class IOTObject
         return false;
     }
 
-    public boolean nequals(Double val1, Double val2)
+    public boolean nequals(Double orig, Double check)
     {
-        if (! IOTSimple.equals(val1, val2))
+        if ((check != null) && ! IOTSimple.equals(orig, check))
         {
             return changed = true;
         }
@@ -276,9 +276,9 @@ public abstract class IOTObject
         return false;
     }
 
-    public boolean nequals(Integer val1, Integer val2)
+    public boolean nequals(Integer orig, Integer check)
     {
-        if (! IOTSimple.equals(val1, val2))
+        if ((check != null) && ! IOTSimple.equals(orig, check))
         {
             return changed = true;
         }
@@ -286,9 +286,9 @@ public abstract class IOTObject
         return false;
     }
 
-    public boolean nequals(JSONArray json1, JSONArray json2)
+    public boolean nequals(JSONArray orig, JSONArray check)
     {
-        if (! IOTSimple.equals(json1, json2))
+        if ((check != null) && ! IOTSimple.equals(orig, check))
         {
             return changed = true;
         }
@@ -296,9 +296,9 @@ public abstract class IOTObject
         return false;
     }
 
-    public boolean nequals(JSONObject json1, JSONObject json2)
+    public boolean nequals(JSONObject orig, JSONObject check)
     {
-        if (! IOTSimple.equals(json1, json2))
+        if ((check != null) && ! IOTSimple.equals(orig, check))
         {
             return changed = true;
         }
