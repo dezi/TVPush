@@ -166,6 +166,7 @@ public class GUITextView extends AppCompatTextView implements
     private boolean hasfocus;
     private boolean focusable;
     private boolean highlight;
+    private boolean highlightable;
 
     @Override
     public void setFocusable(boolean focusable)
@@ -189,6 +190,18 @@ public class GUITextView extends AppCompatTextView implements
     public boolean getHighlight()
     {
         return this.highlight;
+    }
+
+    @Override
+    public void setHighlightable(boolean highlightable)
+    {
+        this.highlightable = highlightable;
+    }
+
+    @Override
+    public boolean getHighlightable()
+    {
+        return this.highlightable;
     }
 
     @Override

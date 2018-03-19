@@ -159,6 +159,7 @@ public class GUIScrollView extends ScrollView implements
     private boolean hasfocus;
     private boolean focusable;
     private boolean highlight;
+    private boolean highlightable;
 
     @Override
     public void setFocusable(boolean focusable)
@@ -183,6 +184,19 @@ public class GUIScrollView extends ScrollView implements
     {
         return this.highlight;
     }
+
+    @Override
+    public void setHighlightable(boolean highlightable)
+    {
+        this.highlightable = highlightable;
+    }
+
+    @Override
+    public boolean getHighlightable()
+    {
+        return this.highlightable;
+    }
+
 
     @Override
     public void setHasFocus(boolean hasfocus)

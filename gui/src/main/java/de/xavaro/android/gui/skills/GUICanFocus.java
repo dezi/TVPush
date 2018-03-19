@@ -9,6 +9,9 @@ public interface GUICanFocus extends GUICanRoundedCorners
     void setHighlight(boolean highlight);
     boolean getHighlight();
 
+    void setHighlightable(boolean highlighttable);
+    boolean getHighlightable();
+
     void setHasFocus(boolean hasfocus);
     boolean getHasFocus();
 
