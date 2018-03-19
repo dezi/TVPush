@@ -1,8 +1,7 @@
 package de.xavaro.android.gui.base;
 
-import android.content.Context;
-import android.view.Gravity;
 import android.widget.FrameLayout;
+import android.content.Context;
 
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUIFrameLayout;
@@ -74,8 +73,18 @@ public class GUIPlugin extends GUIFrameLayout
         return pluginFrameParams.width;
     }
 
+    public int getPluginWidthDip()
+    {
+        return Simple.pxToDip(pluginFrameParams.width);
+    }
+
     public int getPluginHeight()
     {
         return pluginFrameParams.height;
+    }
+
+    public int getPluginHeightDip()
+    {
+        return Simple.pxToDip(pluginFrameParams.height);
     }
 }

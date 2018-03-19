@@ -6,17 +6,20 @@ import android.view.KeyEvent;
 import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.OnMapReadyCallback;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-import de.xavaro.android.gui.views.GUIFrameLayout;
 import de.xavaro.android.gui.base.GUIPlugin;
 import de.xavaro.android.gui.simple.Simple;
+
 import de.xavaro.android.iot.base.IOTObject;
+import de.xavaro.android.iot.things.IOTDevice;
+import de.xavaro.android.iot.things.IOTDevices;
 
 public class GUILocationWizzard extends GUIPlugin
 {
@@ -34,6 +37,8 @@ public class GUILocationWizzard extends GUIPlugin
     private Marker marker;
     private MapView mapView;
     private LatLng coordinates;
+    private Float altitude;
+    private int zoom;
 
     private boolean haveHighlight;
 
@@ -49,54 +54,50 @@ public class GUILocationWizzard extends GUIPlugin
 
         super.onCreate();
 
-        GUIFrameLayout mainFrame = new GUIFrameLayout(getContext())
-        {
-            @Override
-            public boolean onKeyDown(int keyCode, KeyEvent event)
-            {
-                Log.d(LOGTAG, "onKeyDown: mainFrame haveHighlight=" + haveHighlight);
-
-                boolean usedKey = false;
-
-                if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER)
-                {
-                    haveHighlight = !haveHighlight;
-                    setHighlight(haveHighlight);
-                    usedKey = true;
-                }
-                else
-                {
-                    if (haveHighlight)
-                    {
-                        usedKey = moveMap(keyCode);
-                    }
-                }
-
-                return usedKey;
-            }
-        };
-
-        mainFrame.setFocusable(true);
-        mainFrame.setRoundedCorners(20, 0xff00ffff);
-
-        pluginFrame.addView(mainFrame);
-
-        GUIFrameLayout moveFrame = new GUIFrameLayout(getContext());
-        moveFrame.setFocusable(false);
-
-        mainFrame.addView(moveFrame);
+        setFocusable(true);
 
         mapView = new MapView(getContext());
         mapView.setLayoutParams(new FrameLayout.LayoutParams(Simple.MP, Simple.MP));
         mapView.setBackgroundColor(0xff00ff00);
         mapView.onCreate(null);
 
-        moveFrame.addView(mapView);
+        pluginFrame.addView(mapView);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        Log.d(LOGTAG, "onKeyDown: event=" + event);
+
+        boolean usedKey = false;
+
+        if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER)
+        {
+            if (haveHighlight)
+            {
+                saveIOTObject();
+            }
+
+            haveHighlight = !haveHighlight;
+            setHighlight(haveHighlight);
+            usedKey = true;
+        }
+        else
+        {
+            if (haveHighlight)
+            {
+                usedKey = moveMap(keyCode);
+            }
+        }
+
+        return usedKey;
     }
 
     public void setCoordinates(Double lat, Double lon, Float alt)
     {
+        altitude = alt;
         coordinates = new LatLng(lat, lon);
+        zoom = INITIAL_ZOOM;
 
         mapView.getMapAsync(new OnMapReadyCallback()
         {
@@ -111,7 +112,7 @@ public class GUILocationWizzard extends GUIPlugin
                         .position(coordinates)
                         .title("Marker"));
 
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 20));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, zoom));
                 mapView.onResume();
             }
         });
@@ -120,6 +121,20 @@ public class GUILocationWizzard extends GUIPlugin
     public void setIOTObject(IOTObject iotObject)
     {
         this.iotObject = iotObject;
+    }
+
+    private void saveIOTObject()
+    {
+        if (iotObject instanceof IOTDevice)
+        {
+            IOTDevice saveme = new IOTDevice(iotObject.uuid);
+
+            saveme.fixedLatFine = coordinates.latitude;
+            saveme.fixedLonFine = coordinates.longitude;
+            saveme.fixedAltFine = altitude;
+
+            IOTDevices.addEntry(saveme, true);
+        }
     }
 
     private boolean moveMap(int keyCode)
@@ -155,11 +170,24 @@ public class GUILocationWizzard extends GUIPlugin
             usedkey = true;
         }
 
+        if (keyCode == KeyEvent.KEYCODE_MEDIA_REWIND)
+        {
+            if (zoom > 15) zoom -= 1;
+            usedkey = true;
+        }
+
+        if (keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD)
+        {
+            if (zoom < 20) zoom += 1;
+            usedkey = true;
+        }
+
         if (usedkey)
         {
             coordinates = new LatLng(lat, lon);
             marker.setPosition(coordinates);
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 20));
+
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, zoom));
         }
 
         return usedkey;
