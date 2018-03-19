@@ -312,13 +312,17 @@ public class IOTProximScanner
         int txpo = bb.get();
 
         String display = null;
+        String uuid = null;
+        Double lat = null;
+        Double lon = null;
+        Float alt = null;
 
         if ((type == IOTProxim.ADVERTISE_GPS_FINE)
                 || (type == IOTProxim.ADVERTISE_GPS_COARSE))
         {
-            double lat = bb.getDouble();
-            double lon = bb.getDouble();
-            float alt = bb.getFloat();
+            lat = bb.getDouble();
+            lon = bb.getDouble();
+            alt = bb.getFloat();
 
             display = lat + " - " + lon + " - " + alt;
         }
@@ -331,7 +335,7 @@ public class IOTProximScanner
             long msb = bb.getLong();
             long lsb = bb.getLong();
 
-            String uuid = (new UUID(msb, lsb)).toString();
+            uuid = (new UUID(msb, lsb)).toString();
 
             display = uuid;
         }
@@ -357,6 +361,36 @@ public class IOTProximScanner
                 + " disp=" + display
                 + " self=" + IOT.device.uuid
         );
+
+        if ((type == IOTProxim.ADVERTISE_GPS_FINE)
+                || (type == IOTProxim.ADVERTISE_GPS_COARSE))
+        {
+            //
+            // Bootstrap location if not yet set.
+            //
+
+            if ((IOT.device != null)
+                    && (IOT.device.hasCapability("fixed")
+                    && (IOT.device.fixedLatCoarse == null)
+                    && (IOT.device.fixedLonCoarse == null)
+                    && (IOT.device.fixedAltCoarse == null)))
+            {
+
+                IOTDevice newDevice = new IOTDevice(IOT.device.uuid);
+
+                newDevice.fixedLatCoarse = lat;
+                newDevice.fixedLonCoarse = lon;
+                newDevice.fixedAltCoarse = alt;
+
+                Log.d(LOGTAG, "evalIOTAdver: Bootstrap location"
+                    + " lat=" + newDevice.fixedLatCoarse
+                    + " lon=" + newDevice.fixedLonCoarse
+                    + " alt=" + newDevice.fixedAltCoarse
+                );
+
+                IOTDevices.addEntry(newDevice, false);
+            }
+        }
 
         return true;
     }
