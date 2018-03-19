@@ -161,10 +161,15 @@ public class GUILocationWizzard extends GUIPluginTitle
 
         if (iotObject instanceof IOTDevice)
         {
+            String hint = "Bitte Nicknamen hier eintragen";
+
+            String toast = "Sprechen Sie jetzt die Nicknamen ein"
+                    + " oder drücken Sie "
+                    + GUIDefs.UTF_OK
+                    + " zum Bearbeiten";
+
             setTitleText(((IOTDevice) iotObject).name);
-            setTitleEdit(((IOTDevice) iotObject).nick,
-                    "Bitte Nicknamen hier eintragen",
-                    "Sprechen Sie jetzt die Nicknamen ein");
+            setTitleEdit(((IOTDevice) iotObject).nick, hint, toast);
         }
     }
 
