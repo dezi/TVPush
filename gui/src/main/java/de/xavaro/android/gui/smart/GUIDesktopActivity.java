@@ -1,7 +1,6 @@
 package de.xavaro.android.gui.smart;
 
 import android.Manifest;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -48,9 +47,9 @@ public class GUIDesktopActivity extends GUIActivity
         topframe.addView(speechRecognition, lp);
 
         locationWizzard = new GUILocationWizzard(this);
-        locationWizzard.setPositionDip(100,100);
 
-        locationWizzard.setSizeDip(GUILocationWizzard.DEFAULT_WIDTH, GUILocationWizzard.DEFAULT_HEIGTH);
+        locationWizzard.setPluginPositionDip(100,100);
+        locationWizzard.setPluginSizeDip(GUILocationWizzard.DEFAULT_WIDTH, GUILocationWizzard.DEFAULT_HEIGTH);
 
         topframe.addView(locationWizzard);
 
@@ -84,7 +83,7 @@ public class GUIDesktopActivity extends GUIActivity
         }
 
         channelWizzard = new GUIChannelWizzard(this);
-        channelWizzard.setPosition(50,100);
+        channelWizzard.setPluginPositionDip(50,100);
         channelWizzard.setSizeDip(GUIChannelWizzard.WIDTH, GUIChannelWizzard.HEIGTH);
         //topframe.addView(channelWizzard);
 
@@ -162,7 +161,7 @@ public class GUIDesktopActivity extends GUIActivity
 
             if (index < 0) return;
 
-            videoSurface.setPosition(margin, margin + index * (videoSurface.getPluginHeight() + margin));
+            videoSurface.setPluginPositionDip(margin, margin + index * (videoSurface.getPluginHeight() + margin));
             topframe.addView(videoSurface);
 
             camera.connectCamera();

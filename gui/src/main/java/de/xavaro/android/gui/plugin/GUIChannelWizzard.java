@@ -43,6 +43,39 @@ public class GUIChannelWizzard extends GUIPlugin
     public GUIChannelWizzard(Context context)
     {
         super(context);
+
+        GUIFrameLayout mainFrame = new GUIFrameLayout(getContext());
+        mainFrame.setRoundedCorners(20, 0xffffffff);
+        contentFrame.addView(mainFrame);
+
+        scroll = new GUIScrollView(getContext());
+        mainFrame.addView(scroll);
+
+//        GUIFrameLayout scrollContentHeadline = new GUIFrameLayout(getContext());
+//        scrollContentHeadline.setPaddingDip(10);
+//        scroll.addView(scrollContentHeadline);
+
+        int headlineHeight = 100;
+
+//        GUITextView headline = new GUITextView(getContext());
+//        headline.setText("TV");
+//        headline.setTextSizeDip(20);
+//        headline.setGravity(Gravity.VERTICAL_GRAVITY_MASK);
+//        headline.setLayoutParams(new FrameLayout.LayoutParams(Simple.MP, headlineHeight));
+//        scrollContentHeadline.addView(headline);
+
+        FrameLayout.LayoutParams scrollPrams = new FrameLayout.LayoutParams(Simple.MP, Simple.MP);
+//        scrollPrams.topMargin = headlineHeight;
+
+        scrollContent = new GUIFrameLayout(getContext());
+        scrollContent.setLayoutParams(scrollPrams);
+//        scrollContentHeadline.addView(scrollContent);
+        scroll.addView(scrollContent);
+
+        containerText = new HashMap<>();
+
+        createChannelView();
+
     }
 
     private JSONArray getChannels()
@@ -281,45 +314,5 @@ public class GUIChannelWizzard extends GUIPlugin
 
             createContainer(channel, inx);
         }
-    }
-
-    @Override
-    public void onCreate()
-    {
-        Log.d(LOGTAG, "onCreate:");
-
-        super.onCreate();
-
-        GUIFrameLayout mainFrame = new GUIFrameLayout(getContext());
-        mainFrame.setRoundedCorners(20, 0xffffffff);
-        pluginFrame.addView(mainFrame);
-
-        scroll = new GUIScrollView(getContext());
-        mainFrame.addView(scroll);
-
-//        GUIFrameLayout scrollContentHeadline = new GUIFrameLayout(getContext());
-//        scrollContentHeadline.setPaddingDip(10);
-//        scroll.addView(scrollContentHeadline);
-
-        int headlineHeight = 100;
-
-//        GUITextView headline = new GUITextView(getContext());
-//        headline.setText("TV");
-//        headline.setTextSizeDip(20);
-//        headline.setGravity(Gravity.VERTICAL_GRAVITY_MASK);
-//        headline.setLayoutParams(new FrameLayout.LayoutParams(Simple.MP, headlineHeight));
-//        scrollContentHeadline.addView(headline);
-
-        FrameLayout.LayoutParams scrollPrams = new FrameLayout.LayoutParams(Simple.MP, Simple.MP);
-//        scrollPrams.topMargin = headlineHeight;
-
-        scrollContent = new GUIFrameLayout(getContext());
-        scrollContent.setLayoutParams(scrollPrams);
-//        scrollContentHeadline.addView(scrollContent);
-        scroll.addView(scrollContent);
-
-        containerText = new HashMap<>();
-
-        createChannelView();
     }
 }

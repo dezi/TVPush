@@ -19,7 +19,6 @@ import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUIPlugin;
 import de.xavaro.android.gui.simple.Simple;
 
-import de.xavaro.android.gui.smart.GUIDesktopActivity;
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
@@ -48,23 +47,15 @@ public class GUILocationWizzard extends GUIPlugin
     public GUILocationWizzard(Context context)
     {
         super(context);
-    }
 
-    @Override
-    public void onCreate()
-    {
-        Log.d(LOGTAG, "onCreate:");
-
-        super.onCreate();
-
-        setFocusable(true);
+        contentFrame.setFocusable(true);
 
         mapView = new MapView(getContext());
         mapView.setLayoutParams(new FrameLayout.LayoutParams(Simple.MP, Simple.MP));
         mapView.setBackgroundColor(0xff00ff00);
         mapView.onCreate(null);
 
-        pluginFrame.addView(mapView);
+        contentFrame.addView(mapView);
     }
 
     @Override

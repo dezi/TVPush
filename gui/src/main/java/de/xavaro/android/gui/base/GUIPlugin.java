@@ -10,26 +10,13 @@ public class GUIPlugin extends GUIFrameLayout
 {
     private final static String LOGTAG = GUIPlugin.class.getSimpleName();
 
-    public final GUIFrameLayout pluginFrame;
-
-    public final FrameLayout.LayoutParams pluginFrameParams;
+    public GUIFrameLayout contentFrame;
 
     public GUIPlugin(Context context)
     {
         super(context);
 
-        //
-        // Courtesy copy to make things more transparent.
-        //
-
-        pluginFrame = this;
-        pluginFrameParams = params;
-
-        onCreate();
-    }
-
-    public void onCreate()
-    {
+        contentFrame = this;
     }
 
     public void onStart()
@@ -52,39 +39,36 @@ public class GUIPlugin extends GUIFrameLayout
     {
     }
 
-    public void setPosition(int left, int top)
+    public void setPluginSizeDip(int width, int height)
     {
-        pluginFrameParams.leftMargin = left;
-        pluginFrameParams.topMargin = top;
-
-        pluginFrame.setLayoutParams(pluginFrameParams);
+        setSizeDip(width, height);
     }
 
-    public void setPositionDip(int left, int top)
+    public void setPluginPositionDip(int left, int top)
     {
-        pluginFrameParams.leftMargin = Simple.dipToPx(left);
-        pluginFrameParams.topMargin = Simple.dipToPx(top);
+        params.leftMargin = Simple.dipToPx(left);
+        params.topMargin = Simple.dipToPx(top);
 
-        pluginFrame.setLayoutParams(pluginFrameParams);
+        setLayoutParams(params);
     }
 
     public int getPluginWidth()
     {
-        return pluginFrameParams.width;
+        return params.width;
     }
 
     public int getPluginWidthDip()
     {
-        return Simple.pxToDip(pluginFrameParams.width);
+        return Simple.pxToDip(params.width);
     }
 
     public int getPluginHeight()
     {
-        return pluginFrameParams.height;
+        return params.height;
     }
 
     public int getPluginHeightDip()
     {
-        return Simple.pxToDip(pluginFrameParams.height);
+        return Simple.pxToDip(params.height);
     }
 }

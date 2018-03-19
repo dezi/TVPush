@@ -20,25 +20,17 @@ public class GUIVideoSurface extends GUIPlugin
     public GUIVideoSurface(Context context)
     {
         super(context);
-    }
 
-    @Override
-    public void onCreate()
-    {
-        Log.d(LOGTAG, "onCreate:");
+        params.width = 320;
+        params.height = 180;
 
-        super.onCreate();
+        params.gravity = Gravity.TOP;
 
-        pluginFrameParams.width = 320;
-        pluginFrameParams.height = 180;
-
-        pluginFrameParams.gravity = Gravity.TOP;
-
-        pluginFrame.setLayoutParams(pluginFrameParams);
+        setLayoutParams(params);
 
         glsVideoView = new GLSVideoView(getContext());
 
-        pluginFrame.addView(glsVideoView);
+        contentFrame.addView(glsVideoView);
     }
 
     public GLSVideoView getGLSVideoView()

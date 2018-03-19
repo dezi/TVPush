@@ -36,18 +36,10 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
     public GUISpeechRecogniton(Context context)
     {
         super(context);
-    }
-
-    @Override
-    public void onCreate()
-    {
-        Log.d(LOGTAG, "onCreate:");
-
-        super.onCreate();
 
         colorFrame = new GUIRainbowLayout(getContext());
 
-        pluginFrame.addView(colorFrame);
+        contentFrame.addView(colorFrame);
 
         GUIRelativeLayout centerCont = new GUIRelativeLayout(getContext());
         centerCont.setGravity(Gravity.CENTER_VERTICAL + Gravity.CENTER_HORIZONTAL);
@@ -65,7 +57,7 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
         {
             speechText.setMinLines(3);
 
-            pluginFrame.setBackgroundColor(Color.BLACK);
+            contentFrame.setBackgroundColor(Color.BLACK);
             colorFrame.setBackgroundColor(Color.BLACK);
             speechText.setBackgroundColor(Color.BLACK);
 
@@ -75,7 +67,7 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
             centerCont.setSizeDip(Simple.MP, Simple.MP);
             speechText.setSizeDip(Simple.MP, Simple.WC);
 
-            pluginFrame.setPaddingDip(GUIDefs.PADDING_LARGE);
+            contentFrame.setPaddingDip(GUIDefs.PADDING_LARGE);
             colorFrame.setPaddingDip(GUIDefs.PADDING_LARGE);
             centerCont.setPaddingDip(GUIDefs.PADDING_LARGE);
             speechText.setPaddingDip(GUIDefs.PADDING_LARGE);
@@ -85,7 +77,7 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
             speechText.setSingleLine(true);
             speechText.setEllipsize(TextUtils.TruncateAt.START);
 
-            pluginFrame.setBackgroundColor(Color.TRANSPARENT);
+            contentFrame.setBackgroundColor(Color.TRANSPARENT);
             colorFrame.setBackgroundColor(Color.TRANSPARENT);
             speechText.setBackgroundColor(Color.TRANSPARENT);
 
@@ -95,7 +87,7 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
             centerCont.setSizeDip(Simple.MP, Simple.WC);
             speechText.setSizeDip(Simple.WC, Simple.WC);
 
-            pluginFrame.setPaddingDip(GUIDefs.PADDING_SMALL);
+            contentFrame.setPaddingDip(GUIDefs.PADDING_SMALL);
             colorFrame.setPaddingDip(GUIDefs.PADDING_SMALL);
             centerCont.setPaddingDip(GUIDefs.PADDING_SMALL);
             speechText.setPaddingDip(GUIDefs.PADDING_ZERO);
