@@ -52,8 +52,8 @@ public class IOTProximScanner
 
             IOT.instance.proximScanner.startLEScanner();
 
-            //IOT.instance.proximScanner.startReceiver();
-            //IOT.instance.proximScanner.startDiscovery();
+            IOT.instance.proximScanner.startReceiver();
+            IOT.instance.proximScanner.startDiscovery();
         }
     }
 
@@ -63,8 +63,8 @@ public class IOTProximScanner
         {
             IOT.instance.proximScanner.stopLEScanner();
 
-            //IOT.instance.proximScanner.stopDiscovery();
-            //IOT.instance.proximScanner.stopReceiver();
+            IOT.instance.proximScanner.stopDiscovery();
+            IOT.instance.proximScanner.stopReceiver();
 
             IOT.instance.proximScanner = null;
         }
@@ -76,6 +76,7 @@ public class IOTProximScanner
     private BluetoothLeScanner scanner;
 
     private final Map<String, Long> lastUpdates = new HashMap<>();
+    private final Map<String, String> mac2Name = new HashMap<>();
 
     public IOTProximScanner(Context context)
     {
@@ -112,7 +113,7 @@ public class IOTProximScanner
 
     private void stopDiscovery()
     {
-        if ((adapter != null) &&  adapter.isDiscovering())
+        if ((adapter != null) && adapter.isDiscovering())
         {
             adapter.cancelDiscovery();
 
@@ -173,7 +174,13 @@ public class IOTProximScanner
                 Log.d(LOGTAG, "onReceive: found"
                         + " mac=" + device.getAddress()
                         + " name=" + device.getName()
+                        + " intent=" + intent.getExtras()
                 );
+
+                if (device.getName() != null)
+                {
+                    mac2Name.put(device.getAddress(), device.getName());
+                }
             }
         }
     };
@@ -231,21 +238,27 @@ public class IOTProximScanner
 
                 byte[] manData = manufacturerData.get(vendor);
 
+                if (vendor == 76)
+                {
+                    if (buildApplDev(result, vendor, manData)) return;
+                }
+
                 if ((vendor == 117)
                         && (result.getDevice() != null)
                         && (result.getDevice().getName() != null)
                         && (result.getDevice().getName().startsWith("[TV]")))
                 {
-                    buildBeacDev(result, vendor, manData);
+                    if (buildBeacDev(result, vendor, manData)) return;
+                }
 
-                    return;
+                if (vendor == 224)
+                {
+                    if (buildGoogDev(result, vendor, manData)) return;
                 }
 
                 if (vendor == 301)
                 {
-                    buildBeacDev(result, vendor, manData);
-
-                    return;
+                    if (buildBeacDev(result, vendor, manData)) return;
                 }
             }
         }
@@ -273,7 +286,14 @@ public class IOTProximScanner
         }
 
         int rssi = result.getRssi();
-        int txpo = (result.getScanRecord() != null) ? result.getScanRecord().getTxPowerLevel() : -1;
+        int txpo = -21;
+
+        if ((result.getScanRecord() != null)
+                && (result.getScanRecord().getTxPowerLevel() < 0)
+                && (result.getScanRecord().getTxPowerLevel() > -100))
+        {
+            txpo = result.getScanRecord().getTxPowerLevel();
+        }
 
         Log.d(LOGTAG, "evaluateScan: ALT"
                 + " rssi=" + rssi
@@ -374,11 +394,11 @@ public class IOTProximScanner
         url = url.replace(Character.valueOf(x = 0x0c).toString(), ".biz");
         url = url.replace(Character.valueOf(x = 0x0d).toString(), ".gov");
 
-        String name = result.getDevice().getName() + "@" + url;
+        String name = url;
         String macAddr = result.getDevice().getAddress();
         String uuid = IOTSimple.hmacSha1UUID(name, macAddr);
 
-        if (! shouldUpdate(uuid)) return;
+        if (!shouldUpdate(uuid)) return;
 
         String caps = "beacon|eddystone|fixed|stupid";
 
@@ -436,51 +456,68 @@ public class IOTProximScanner
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void buildBeacDev(ScanResult result, int vendor, byte[] bytes)
+    private boolean buildBeacDev(ScanResult result, int vendor, byte[] bytes)
     {
         String name = result.getDevice().getName();
+
+        if (name == null)
+        {
+            //301 => D8:0F:99:31:37:5C
+            Log.d(LOGTAG, "#########" + result.getScanRecord());
+
+        }
         String macAddr = result.getDevice().getAddress();
         String uuid = IOTSimple.hmacSha1UUID(name, macAddr);
 
-        if (! shouldUpdate(uuid)) return;
+        if (shouldUpdate(uuid))
+        {
+            int rssi = result.getRssi();
+            int txpo = -20;
 
-        int rssi = result.getRssi();
-        int txpo = (result.getScanRecord() != null) ? result.getScanRecord().getTxPowerLevel() : -1;
+            if ((result.getScanRecord() != null)
+                    && (result.getScanRecord().getTxPowerLevel() < 0)
+                    && (result.getScanRecord().getTxPowerLevel() > -100))
+            {
+                txpo = result.getScanRecord().getTxPowerLevel();
+            }
 
-        Log.d(LOGTAG, "buildBeacDev: ALT"
-                + " rssi=" + rssi
-                + " txpo=" + txpo
-                + " addr=" + macAddr
-                + " vend=" + Simple.padZero(vendor, 4)
-                + " type=" + IOTDevice.TYPE_BEACON
-                + " uuid=" + uuid
-                + " name=" + name
-        );
+            Log.d(LOGTAG, "buildBeacDev: ALT"
+                    + " rssi=" + rssi
+                    + " txpo=" + txpo
+                    + " addr=" + macAddr
+                    + " vend=" + Simple.padZero(vendor, 4)
+                    + " type=" + IOTDevice.TYPE_BEACON
+                    + " uuid=" + uuid
+                    + " name=" + name
+            );
 
-        String caps = "beacon|uuidbeacon|fixed|stupid|gpsfine";
+            String caps = "beacon|uuidbeacon|fixed|stupid|gpsfine";
 
-        JSONObject beacondev = new JSONObject();
+            JSONObject beacondev = new JSONObject();
 
-        Json.put(beacondev, "uuid", uuid);
-        Json.put(beacondev, "type", IOTDevice.TYPE_BEACON);
-        Json.put(beacondev, "name", name);
-        Json.put(beacondev, "nick", name);
-        Json.put(beacondev, "vendor", IOTProxim.getAdvertiseVendor(vendor));
-        Json.put(beacondev, "macaddr", macAddr);
-        Json.put(beacondev, "driver", "iot");
-        Json.put(beacondev, "location", Simple.getConnectedWifiName());
+            Json.put(beacondev, "uuid", uuid);
+            Json.put(beacondev, "type", IOTDevice.TYPE_BEACON);
+            Json.put(beacondev, "name", name);
+            Json.put(beacondev, "nick", name);
+            Json.put(beacondev, "vendor", IOTProxim.getAdvertiseVendor(vendor));
+            Json.put(beacondev, "macaddr", macAddr);
+            Json.put(beacondev, "driver", "iot");
+            Json.put(beacondev, "location", Simple.getConnectedWifiName());
 
-        Json.put(beacondev, "capabilities", Json.jsonArrayFromSeparatedString(caps, "\\|"));
+            Json.put(beacondev, "capabilities", Json.jsonArrayFromSeparatedString(caps, "\\|"));
 
-        IOTDevices.addEntry(new IOTDevice(beacondev), false);
+            IOTDevices.addEntry(new IOTDevice(beacondev), false);
 
-        JSONObject status = new JSONObject();
+            JSONObject status = new JSONObject();
 
-        Json.put(status, "uuid", uuid);
-        Json.put(status, "rssi", rssi);
-        Json.put(status, "txpower", txpo);
+            Json.put(status, "uuid", uuid);
+            Json.put(status, "rssi", rssi);
+            Json.put(status, "txpower", txpo);
 
-        IOTStatusses.addEntry(new IOTStatus(status), false);
+            IOTStatusses.addEntry(new IOTStatus(status), false);
+        }
+
+        return true;
     }
 
     private boolean shouldUpdate(String uuid)
@@ -494,6 +531,119 @@ public class IOTProximScanner
             return true;
         }
 
+        return false;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private boolean buildApplDev(ScanResult result, int vendor, byte[] bytes)
+    {
+        String macAddr = result.getDevice().getAddress();
+        String uuid = null;
+        String type = null;
+        String caps = null;
+        String name = null;
+
+        int rssi = result.getRssi();
+        int txpo = -1;
+        int major = -1;
+        int minor = -1;
+
+        if (bytes.length == 23)
+        {
+            //
+            // Could be an Apple beacon.
+            //
+
+            if ((bytes[ 0 ] == 0x02) && (bytes[ 1 ] == 0x15))
+            {
+                major = bytes[18] & 0xff;
+                minor = bytes[19] & 0xff;
+                txpo = bytes[22];
+
+                ByteBuffer bb = ByteBuffer.wrap(bytes, 2, 16);
+
+                long msb = bb.getLong();
+                long lsb = bb.getLong();
+
+                uuid = (new UUID(msb, lsb)).toString();
+
+                name = uuid + " (" + major + "/" + minor + ")";
+                caps = "beacon|applebeacon|fixed|stupid|gpsfine";
+                type = IOTDevice.TYPE_BEACON;
+            }
+        }
+        else
+        {
+            if ((bytes.length > 2) && (result.getDevice().getName() != null))
+            {
+                byte dataType = bytes[ 0 ];
+                byte restSize = bytes[ 1 ];
+
+                if (dataType == 16)
+                {
+                    //
+                    // It could be a mac. Register
+                    // if the mac2name cache gives
+                    // a hit.
+                    //
+
+                    name = result.getDevice().getName();
+                    txpo = -22;
+
+                    if (name != null)
+                    {
+                        uuid = IOTSimple.hmacSha1UUID(macAddr, name);
+                        caps = "beacon|macbeacon|fixed|stupid|gpsfine";
+                        type = IOTDevice.TYPE_BEACON;
+                    }
+                }
+            }
+        }
+
+        if ((uuid == null) || (name == null)) return false;
+
+        if (shouldUpdate(uuid))
+        {
+            Log.d(LOGTAG, "buildApplDev: ALT"
+                    + " rssi=" + rssi
+                    + " txpo=" + txpo
+                    + " addr=" + macAddr
+                    + " vend=" + Simple.padZero(vendor, 4)
+                    + " type=" + type
+                    + " uuid=" + uuid
+                    + " name=" + name
+            );
+
+            JSONObject beacondev = new JSONObject();
+
+            Json.put(beacondev, "uuid", uuid);
+            Json.put(beacondev, "type", IOTDevice.TYPE_BEACON);
+            Json.put(beacondev, "name", name);
+            Json.put(beacondev, "nick", name);
+            Json.put(beacondev, "vendor", IOTProxim.getAdvertiseVendor(vendor));
+            Json.put(beacondev, "macaddr", macAddr);
+            Json.put(beacondev, "driver", "iot");
+            Json.put(beacondev, "location", Simple.getConnectedWifiName());
+
+            Json.put(beacondev, "capabilities", Json.jsonArrayFromSeparatedString(caps, "\\|"));
+
+            IOTDevices.addEntry(new IOTDevice(beacondev), false);
+
+            JSONObject status = new JSONObject();
+
+            Json.put(status, "uuid", uuid);
+            Json.put(status, "rssi", rssi);
+            Json.put(status, "txpower", txpo);
+
+            IOTStatusses.addEntry(new IOTStatus(status), false);
+        }
+
+        return true;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private boolean buildGoogDev(ScanResult result, int vendor, byte[] bytes)
+    {
         return false;
     }
 }
