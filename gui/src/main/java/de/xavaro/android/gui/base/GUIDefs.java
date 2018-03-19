@@ -32,6 +32,7 @@ public class GUIDefs
     public static final Character UTF_RIGHT = 0x25b6;
     public static final Character UTF_UP = 0x25b2;
     public static final Character UTF_DOWN = 0x25bc;
+    public static final Character UTF_OK = 0x2316;
 
     public static final String UTF_REWIND = UTF_LEFT.toString() + UTF_LEFT;
     public static final String UTF_FAST_FORWARD = UTF_RIGHT.toString() + UTF_RIGHT;

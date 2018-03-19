@@ -18,6 +18,9 @@ public class GUIPluginTitle extends GUIPlugin
 {
     private final static String LOGTAG = GUIPluginTitle.class.getSimpleName();
 
+    private GUITextView titleText;
+    private GUIEditText titleEdit;
+
     public GUIPluginTitle(Context context)
     {
         super(context);
@@ -50,15 +53,13 @@ public class GUIPluginTitle extends GUIPlugin
 
         titleFrame.addView(titleCenter);
 
-        GUITextView titleText = new GUITextView(context);
-        titleText.setText("Dezi's Dominator-XL");
+        titleText = new GUITextView(context);
         titleText.setPaddingDip(5);
         titleText.setTextSizeDip(16);
 
         titleCenter.addView(titleText);
 
-        GUIEditText titleEdit = new GUIEditText(context);
-        titleEdit.setHint("Nicknamen hier eintragen");
+        titleEdit = new GUIEditText(context);
         titleEdit.setSizeDip(Simple.MP, Simple.WC);
         titleEdit.setPaddingDip(20, 5, 20, 5);
         titleEdit.setTextSizeDip(16);
@@ -71,5 +72,17 @@ public class GUIPluginTitle extends GUIPlugin
         contentFrame.setSizeDip(Simple.MP, Simple.MP);
 
         splitterFrame.addView(contentFrame);
+    }
+
+    public void setTitleText(String text)
+    {
+        titleText.setText(text);
+    }
+
+    public void setTitleEdit(String text, String hint, String toast)
+    {
+        titleEdit.setText(text);
+        titleEdit.setHint(hint);
+        titleEdit.setToast(toast);
     }
 }

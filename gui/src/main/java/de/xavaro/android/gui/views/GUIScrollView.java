@@ -156,6 +156,7 @@ public class GUIScrollView extends ScrollView implements
 
     //endregion Skills implementation.
 
+    private String toast;
     private boolean hasfocus;
     private boolean focusable;
     private boolean highlight;
@@ -208,6 +209,16 @@ public class GUIScrollView extends ScrollView implements
     public boolean getHasFocus()
     {
         return this.hasfocus;
+    }
+
+    public void setToast(String toast)
+    {
+        this.toast = toast;
+    }
+
+    public String getToast()
+    {
+        return toast;
     }
 
     @Override

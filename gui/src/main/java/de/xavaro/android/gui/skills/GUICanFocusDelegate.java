@@ -5,6 +5,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 
+import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUIEditText;
@@ -17,6 +18,7 @@ public class GUICanFocusDelegate
         public void onFocusChange(View view, boolean hasFocus)
         {
             GUICanFocus gf = view instanceof GUICanFocus ? (GUICanFocus) view : null;
+            if (gf == null) return;
 
             if (hasFocus)
             {
@@ -30,13 +32,15 @@ public class GUICanFocusDelegate
                 // Display focus frame around image.
                 //
 
-                if (gf != null)
+                gf.saveBackground();
+
+                gf.setRoundedCorners(0, gf.getBackgroundColor(), GUIDefs.COLOR_TV_FOCUS);
+
+                gf.setHasFocus(true);
+
+                if (gf.getToast() != null)
                 {
-                    gf.saveBackground();
-
-                    gf.setRoundedCorners(0, gf.getBackgroundColor(), GUIDefs.COLOR_TV_FOCUS);
-
-                    gf.setHasFocus(true);
+                    GUI.instance.desktopActivity.displayToastMessage(gf.getToast(), 10, false);
                 }
             }
             else
@@ -45,20 +49,17 @@ public class GUICanFocusDelegate
                 // Make neutral again.
                 //
 
-                if (gf != null)
+                gf.restoreBackground();
+
+                gf.setHasFocus(false);
+                gf.setHighlight(false);
+
+                if (gf.getHighlightable() && (view instanceof GUIEditText))
                 {
-                    gf.restoreBackground();
+                    GUIEditText et = (GUIEditText) view;
 
-                    gf.setHasFocus(false);
-                    gf.setHighlight(false);
-
-                    if (gf.getHighlightable() && (view instanceof GUIEditText))
-                    {
-                        GUIEditText et = (GUIEditText) view;
-                        
-                        et.setEnabled(false);
-                        et.setInputType(InputType.TYPE_NULL);
-                    }
+                    et.setEnabled(false);
+                    et.setInputType(InputType.TYPE_NULL);
                 }
             }
         }

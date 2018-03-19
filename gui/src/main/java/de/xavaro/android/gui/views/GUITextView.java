@@ -1,5 +1,6 @@
 package de.xavaro.android.gui.views;
 
+import android.graphics.Color;
 import android.support.v7.widget.AppCompatTextView;
 import android.graphics.drawable.Drawable;
 import android.content.Context;
@@ -26,9 +27,10 @@ public class GUITextView extends AppCompatTextView implements
     {
         super(context);
 
-        setFocusable(false);
-
         initSkills();
+
+        setFocusable(false);
+        setTextColor(Color.BLACK);
     }
 
     //region Dip implementation.
@@ -163,6 +165,7 @@ public class GUITextView extends AppCompatTextView implements
         canRC.restoreBackground();
     }
 
+    private String toast;
     private boolean hasfocus;
     private boolean focusable;
     private boolean highlight;
@@ -214,6 +217,16 @@ public class GUITextView extends AppCompatTextView implements
     public boolean getHasFocus()
     {
         return this.hasfocus;
+    }
+
+    public void setToast(String toast)
+    {
+        this.toast = toast;
+    }
+
+    public String getToast()
+    {
+        return toast;
     }
 
     @Override

@@ -64,6 +64,7 @@ public class GUILocationWizzard extends GUIPluginTitle
 
         mainFrame.setSizeDip(Simple.MP, Simple.MP);
         mainFrame.setFocusable(true);
+        mainFrame.setToast("Drücken Sie " + GUIDefs.UTF_OK + " um das TV-Gerät zu positionieren");
 
         contentFrame.addView(mainFrame);
 
@@ -157,6 +158,14 @@ public class GUILocationWizzard extends GUIPluginTitle
     public void setIOTObject(IOTObject iotObject)
     {
         this.iotObject = iotObject;
+
+        if (iotObject instanceof IOTDevice)
+        {
+            setTitleText(((IOTDevice) iotObject).name);
+            setTitleEdit(((IOTDevice) iotObject).nick,
+                    "Bitte Nicknamen hier eintragen",
+                    "Sprechen Sie jetzt die Nicknamen ein");
+        }
     }
 
     private boolean saveIOTObject()

@@ -159,9 +159,9 @@ public class GUIFrameLayout extends FrameLayout implements
 
     //endregion Skills implementation.
 
+    private String toast;
     private boolean hasfocus;
     private boolean focusable;
-
     private boolean highlight;
     private boolean highlightable;
 
@@ -211,6 +211,16 @@ public class GUIFrameLayout extends FrameLayout implements
     public boolean getHasFocus()
     {
         return this.hasfocus;
+    }
+
+    public void setToast(String toast)
+    {
+        this.toast = toast;
+    }
+
+    public String getToast()
+    {
+        return toast;
     }
 
     @Override
