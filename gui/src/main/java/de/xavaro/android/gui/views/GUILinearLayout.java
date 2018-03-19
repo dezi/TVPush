@@ -71,6 +71,7 @@ public class GUILinearLayout extends LinearLayout implements
     {
         super.setBackgroundColor(color);
         canRB.setBackgroundColor(color);
+        canRC.setBackgroundColor(color);
     }
 
     @Override

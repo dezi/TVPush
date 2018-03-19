@@ -73,6 +73,7 @@ public class GUIFrameLayout extends FrameLayout implements
     {
         super.setBackgroundColor(color);
         canRB.setBackgroundColor(color);
+        canRC.setBackgroundColor(color);
     }
 
     @Override

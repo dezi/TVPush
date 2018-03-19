@@ -2,6 +2,8 @@ package de.xavaro.android.gui.skills;
 
 public interface GUICanRoundedCorners
 {
+    void setBackgroundColor(int color);
+
     void setRoundedCorners(int radius, int color);
     void setRoundedCorners(int radius, int innerColor, int strokeColor);
 

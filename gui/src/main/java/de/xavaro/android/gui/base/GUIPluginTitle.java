@@ -25,7 +25,7 @@ public class GUIPluginTitle extends GUIPlugin
 
         splitterFrame = new GUILinearLayout(context);
         splitterFrame.setOrientation(LinearLayout.VERTICAL);
-        splitterFrame.setPaddingDip(20);
+        splitterFrame.setPaddingDip(10, 0, 10, 10);
         splitterFrame.setRoundedCorners(20, 0x88888888, Color.WHITE);
 
         contentFrame.addView(splitterFrame);
@@ -33,7 +33,6 @@ public class GUIPluginTitle extends GUIPlugin
         GUILinearLayout titleFrame = new GUILinearLayout(context);
         titleFrame.setOrientation(LinearLayout.HORIZONTAL);
         titleFrame.setSizeDip(Simple.MP, Simple.WC);
-        titleFrame.setBackgroundColor(Color.WHITE);
 
         splitterFrame.addView(titleFrame);
 
@@ -47,7 +46,7 @@ public class GUIPluginTitle extends GUIPlugin
 
         GUILinearLayout titleCenter = new GUILinearLayout(context);
         titleCenter.setOrientation(LinearLayout.HORIZONTAL);
-        titleCenter.setGravity(Gravity.CENTER_HORIZONTAL + Gravity.CENTER_VERTICAL);
+        titleCenter.setGravity(Gravity.START + Gravity.CENTER_VERTICAL);
         titleCenter.setSizeDip(Simple.MP, Simple.MP);
 
         titleFrame.addView(titleCenter);
@@ -55,6 +54,7 @@ public class GUIPluginTitle extends GUIPlugin
         GUITextView titleText = new GUITextView(context);
         titleText.setText("Dezi's Dominator-XL");
         titleText.setFocusable(true);
+        titleText.setPaddingDip(20, 5, 20, 5);
 
         titleCenter.addView(titleText);
 

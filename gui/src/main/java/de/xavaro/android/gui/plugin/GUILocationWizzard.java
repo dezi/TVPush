@@ -50,11 +50,9 @@ public class GUILocationWizzard extends GUIPluginTitle
         super(context);
 
         contentFrame.setFocusable(true);
-        contentFrame.setBackgroundColor(Color.GREEN);
 
         mapView = new MapView(getContext());
         mapView.setLayoutParams(new FrameLayout.LayoutParams(Simple.MP, Simple.MP));
-        mapView.setBackgroundColor(Color.WHITE);
         mapView.onCreate(null);
 
         contentFrame.addView(mapView);

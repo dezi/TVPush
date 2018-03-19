@@ -70,6 +70,7 @@ public class GUIScrollView extends ScrollView implements
     {
         super.setBackgroundColor(color);
         canRB.setBackgroundColor(color);
+        canRC.setBackgroundColor(color);
     }
 
     @Override

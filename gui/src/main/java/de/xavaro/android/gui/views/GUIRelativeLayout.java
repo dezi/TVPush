@@ -72,6 +72,7 @@ public class GUIRelativeLayout extends RelativeLayout implements
     {
         super.setBackgroundColor(color);
         canRB.setBackgroundColor(color);
+        canRC.setBackgroundColor(color);
     }
 
     @Override

@@ -80,6 +80,7 @@ public class GUITextView extends AppCompatTextView implements
     {
         super.setBackgroundColor(color);
         canRB.setBackgroundColor(color);
+        canRC.setBackgroundColor(color);
     }
 
     @Override

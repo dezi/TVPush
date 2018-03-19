@@ -65,6 +65,7 @@ public class GUIImageView extends AppCompatImageView implements
     {
         super.setBackgroundColor(color);
         canRB.setBackgroundColor(color);
+        canRC.setBackgroundColor(color);
     }
 
     @Override

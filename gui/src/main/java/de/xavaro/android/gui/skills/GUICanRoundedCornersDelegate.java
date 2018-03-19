@@ -24,6 +24,12 @@ public class GUICanRoundedCornersDelegate implements GUICanRoundedCorners
         this.view = view;
     }
 
+    public void setBackgroundColor(int color)
+    {
+        this.innerColor = color;
+        this.strokeColor = color;
+    }
+
     public void setRoundedCorners(int radius, int color)
     {
         setRoundedCorners(radius, color, color);
