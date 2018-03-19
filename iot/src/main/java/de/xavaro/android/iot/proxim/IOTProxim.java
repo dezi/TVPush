@@ -1,10 +1,10 @@
 package de.xavaro.android.iot.proxim;
 
+import android.support.annotation.Nullable;
+
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.AdvertiseSettings;
 import android.location.LocationManager;
-import android.os.Build;
-import android.support.annotation.Nullable;
 
 import android.Manifest;
 import android.content.Context;
@@ -20,7 +20,11 @@ public class IOTProxim
 {
     private static final String LOGTAG = IOTProxim.class.getSimpleName();
 
-    public final static int IOT_MANUFACTURER_ID = 4711;
+    public final static int MANUFACTURER_IOT = 4711;
+    public final static int MANUFACTURER_APPLE = 76;
+    public final static int MANUFACTURER_SAMSUNG = 117;
+    public final static int MANUFACTURER_GOOGLE = 224;
+    public final static int MANUFACTURER_SONY = 301;
 
     public final static byte ADVERTISE_GPS_FINE = 1;
     public final static byte ADVERTISE_GPS_COARSE = 2;
@@ -51,12 +55,11 @@ public class IOTProxim
     {
         switch (vendor)
         {
-            case 76: return "Apple, Inc.";
-            case 117: return "Samsung Electronics Co. Ltd.";
-            case 224: return "Google";
-            case 301: return "Sony Corporation";
-
-            case 4711: return "IOT";
+            case MANUFACTURER_APPLE: return "Apple, Inc.";
+            case MANUFACTURER_SAMSUNG: return "Samsung Electronics Co. Ltd.";
+            case MANUFACTURER_GOOGLE: return "Google";
+            case MANUFACTURER_SONY: return "Sony Corporation";
+            case MANUFACTURER_IOT: return "IOT";
         }
 
         return null;

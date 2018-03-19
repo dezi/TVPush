@@ -1,5 +1,7 @@
 package de.xavaro.android.iot.status;
 
+import android.util.Log;
+
 import org.json.JSONObject;
 
 import de.xavaro.android.iot.base.IOTObject;
@@ -63,10 +65,10 @@ public class IOTStatus extends IOTObject
 
     public void checkAndMergeContent(IOTStatus check, boolean external)
     {
-
         // @formatter:off
 
         changed = false;
+        changedUsr = false;
 
         if (nequals(wifi,       check.wifi      )) wifi       = check.wifi;
         if (nequals(ipaddr,     check.ipaddr    )) ipaddr     = check.ipaddr;

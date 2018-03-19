@@ -123,6 +123,8 @@ public class IOTProximLocation implements LocationListener
             status.positionAltCoarse = location.getAltitude();
 
             IOTStatusses.addEntry(status, false);
+
+            IOT.instance.proximServer.advertiseGPSCoarse();
         }
 
         Log.d(LOGTAG, "onLocationChanged:"

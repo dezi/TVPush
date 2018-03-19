@@ -123,114 +123,155 @@ public class IOTProximServer
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void advertiseGPSCoarse()
+    public void advertiseGPSCoarse()
     {
-        Double lat = null;
-        Double lon = null;
-
-        if (IOT.device != null)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
-            if ((IOT.device.fixedLatCoarse != null) && (IOT.device.fixedLonCoarse != null))
+            if (callbackGPSCoarse != null)
             {
-                lat = IOT.device.fixedLatCoarse;
-                lon = IOT.device.fixedLonCoarse;
+                btLEAdvertiser.stopAdvertising(callbackGPSCoarse);
+                callbackGPSCoarse = null;
             }
-            else
-            {
-                IOTStatus status = new IOTStatus(IOT.device.uuid);
 
-                if ((status.positionLatCoarse != null) && (status.positionLonCoarse != null))
+            Double lat = null;
+            Double lon = null;
+
+            if (IOT.device != null)
+            {
+                if ((IOT.device.fixedLatCoarse != null) && (IOT.device.fixedLonCoarse != null))
                 {
-                    lat = status.positionLatCoarse;
-                    lon = status.positionLonCoarse;
+                    lat = IOT.device.fixedLatCoarse;
+                    lon = IOT.device.fixedLonCoarse;
+                }
+                else
+                {
+                    IOTStatus status = new IOTStatus(IOT.device.uuid);
+
+                    if ((status.positionLatCoarse != null) && (status.positionLonCoarse != null))
+                    {
+                        lat = status.positionLatCoarse;
+                        lon = status.positionLonCoarse;
+                    }
                 }
             }
-        }
 
-        if ((lat != null) && (lon != null))
-        {
-            byte[] bytes = ByteBuffer
-                    .allocate(1 + 1 + 8 + 8)
-                    .put(IOTProxim.ADVERTISE_GPS_COARSE)
-                    .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
-                    .putDouble(lat)
-                    .putDouble(lon)
-                    .array();
+            if ((lat != null) && (lon != null))
+            {
+                byte[] bytes = ByteBuffer
+                        .allocate(1 + 1 + 8 + 8)
+                        .put(IOTProxim.ADVERTISE_GPS_COARSE)
+                        .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
+                        .putDouble(lat)
+                        .putDouble(lon)
+                        .array();
 
-            callbackGPSCoarse = advertiseDat(bytes);
+                callbackGPSCoarse = advertiseDat(bytes);
+
+                Log.d(LOGTAG, "advertiseGPSCoarse: lat=" + lat + " lon=" + lon);
+            }
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void advertiseGPSFine()
+    public void advertiseGPSFine()
     {
-        Double lat = null;
-        Double lon = null;
-
-        if (IOT.device != null)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
-            if ((IOT.device.fixedLatFine != null) && (IOT.device.fixedLonFine != null))
+            if (callbackGPSFine != null)
             {
-                lat = IOT.device.fixedLatFine;
-                lon = IOT.device.fixedLonFine;
+                btLEAdvertiser.stopAdvertising(callbackGPSFine);
+                callbackGPSFine = null;
             }
-            else
-            {
-                IOTStatus status = new IOTStatus(IOT.device.uuid);
 
-                if ((status.positionLatFine != null) && (status.positionLonFine != null))
+            Double lat = null;
+            Double lon = null;
+
+            if (IOT.device != null)
+            {
+                if ((IOT.device.fixedLatFine != null) && (IOT.device.fixedLonFine != null))
                 {
-                    lat = status.positionLatFine;
-                    lon = status.positionLonFine;
+                    lat = IOT.device.fixedLatFine;
+                    lon = IOT.device.fixedLonFine;
+                }
+                else
+                {
+                    IOTStatus status = new IOTStatus(IOT.device.uuid);
+
+                    if ((status.positionLatFine != null) && (status.positionLonFine != null))
+                    {
+                        lat = status.positionLatFine;
+                        lon = status.positionLonFine;
+                    }
                 }
             }
-        }
 
-        if ((lat != null) && (lon != null))
+            if ((lat != null) && (lon != null))
+            {
+                byte[] bytes = ByteBuffer
+                        .allocate(1 + 1 + 8 + 8)
+                        .put(IOTProxim.ADVERTISE_GPS_FINE)
+                        .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
+                        .putDouble(lat)
+                        .putDouble(lon)
+                        .array();
+
+                callbackGPSFine = advertiseDat(bytes);
+
+                Log.d(LOGTAG, "advertiseGPSFine: lat=" + lat + " lon=" + lon);
+            }
+        }
+    }
+
+    public void advertiseIOTHuman()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
+            if (callbackIOTHuman != null)
+            {
+                btLEAdvertiser.stopAdvertising(callbackIOTHuman);
+                callbackIOTHuman = null;
+            }
+
+            if ((IOT.human == null) || (IOT.human.uuid == null)) return;
+
             byte[] bytes = ByteBuffer
                     .allocate(1 + 1 + 8 + 8)
-                    .put(IOTProxim.ADVERTISE_GPS_FINE)
+                    .put(IOTProxim.ADVERTISE_IOT_HUMAN)
                     .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
-                    .putDouble(lat)
-                    .putDouble(lon)
+                    .putLong(UUID.fromString(IOT.human.uuid).getMostSignificantBits())
+                    .putLong(UUID.fromString(IOT.human.uuid).getLeastSignificantBits())
                     .array();
 
-            callbackGPSFine = advertiseDat(bytes);
+            callbackIOTHuman = advertiseDat(bytes);
+
+            Log.d(LOGTAG, "advertiseIOTHuman: uuid=" + IOT.human.uuid);
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void advertiseIOTHuman()
+    public void advertiseIOTDevice()
     {
-        if ((IOT.human == null) || (IOT.human.uuid == null)) return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            if (callbackIOTDevice != null)
+            {
+                btLEAdvertiser.stopAdvertising(callbackIOTDevice);
+                callbackIOTDevice = null;
+            }
 
-        byte[] bytes = ByteBuffer
-                .allocate(1 + 1 + 8 + 8)
-                .put(IOTProxim.ADVERTISE_IOT_HUMAN)
-                .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
-                .putLong(UUID.fromString(IOT.human.uuid).getMostSignificantBits())
-                .putLong(UUID.fromString(IOT.human.uuid).getLeastSignificantBits())
-                .array();
+            if ((IOT.device == null) || (IOT.device.uuid == null)) return;
 
-        callbackIOTHuman = advertiseDat(bytes);
-    }
+            byte[] bytes = ByteBuffer
+                    .allocate(1 + 1 + 8 + 8)
+                    .put(IOTProxim.ADVERTISE_IOT_DEVICE)
+                    .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
+                    .putLong(UUID.fromString(IOT.device.uuid).getMostSignificantBits())
+                    .putLong(UUID.fromString(IOT.device.uuid).getLeastSignificantBits())
+                    .array();
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void advertiseIOTDevice()
-    {
-        if ((IOT.device == null) || (IOT.device.uuid == null)) return;
+            callbackIOTDevice = advertiseDat(bytes);
 
-        byte[] bytes = ByteBuffer
-                .allocate(1 + 1 + 8 + 8)
-                .put(IOTProxim.ADVERTISE_IOT_DEVICE)
-                .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
-                .putLong(UUID.fromString(IOT.device.uuid).getMostSignificantBits())
-                .putLong(UUID.fromString(IOT.device.uuid).getLeastSignificantBits())
-                .array();
-
-        callbackIOTDevice = advertiseDat(bytes);
+            Log.d(LOGTAG, "advertiseIOTDevice: uuid=" + IOT.device.uuid);
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -239,10 +280,10 @@ public class IOTProximServer
         AdvertiseData data = new AdvertiseData.Builder()
                 .setIncludeDeviceName(false)
                 .setIncludeTxPowerLevel(false)
-                .addManufacturerData(IOTProxim.IOT_MANUFACTURER_ID, bytes)
+                .addManufacturerData(IOTProxim.MANUFACTURER_IOT, bytes)
                 .build();
 
-        Log.d(LOGTAG, "advertiseDat: data=" + data.toString());
+        //Log.d(LOGTAG, "advertiseDat: data=" + data.toString());
 
         IOTProximCallback callback = new IOTProximCallback();
 

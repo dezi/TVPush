@@ -82,6 +82,8 @@ public abstract class IOTObject
                         || (ival instanceof Integer)
                         || (ival instanceof Boolean)
                         || (ival instanceof String)
+                        || (ival instanceof Double)
+                        || (ival instanceof Float)
                         || (ival instanceof Byte)
                         || (ival instanceof Long))
                 {
@@ -118,6 +120,10 @@ public abstract class IOTObject
                 if (Json.has(json, name))
                 {
                     Object jval = Json.get(json, name);
+
+                    if (type.equals("java.lang.Long")) jval =  Json.getLong(json, name);
+                    if (type.equals("java.lang.Float")) jval =  Json.getFloat(json, name);
+                    if (type.equals("java.lang.Double")) jval =  Json.getDouble(json, name);
 
                     try
                     {

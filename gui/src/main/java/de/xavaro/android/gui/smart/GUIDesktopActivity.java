@@ -72,8 +72,6 @@ public class GUIDesktopActivity extends GUIActivity
 
         boolean isGranted = (permission == PackageManager.PERMISSION_GRANTED);
 
-        Log.d(LOGTAG, "############ isGranted=" + isGranted);
-
         if (! isGranted)
         {
             Log.d(LOGTAG, "############ isGranted=" + isGranted);

@@ -206,18 +206,14 @@ public class IOTProximScanner
 
         if (eddystone != null)
         {
-            buildEddyDev(result, eddystone);
-
-            return;
+            if (buildEddyDev(result, eddystone)) return;
         }
 
-        byte[] bytes = result.getScanRecord().getManufacturerSpecificData(IOTProxim.IOT_MANUFACTURER_ID);
+        byte[] bytes = result.getScanRecord().getManufacturerSpecificData(IOTProxim.MANUFACTURER_IOT);
 
         if (bytes != null)
         {
-            evalIOTAdver(result, bytes);
-
-            return;
+            if (evalIOTAdver(result, bytes)) return;
         }
 
         //endregion Well known devices.
@@ -308,7 +304,7 @@ public class IOTProximScanner
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void evalIOTAdver(ScanResult result, byte[] bytes)
+    private boolean evalIOTAdver(ScanResult result, byte[] bytes)
     {
         ByteBuffer bb = ByteBuffer.wrap(bytes);
 
@@ -345,18 +341,20 @@ public class IOTProximScanner
                 + " rssi=" + rssi
                 + " txpo=" + txpo
                 + " addr=" + result.getDevice().getAddress()
-                + " vend=" + Simple.padZero(IOTProxim.IOT_MANUFACTURER_ID, 4)
+                + " vend=" + Simple.padZero(IOTProxim.MANUFACTURER_IOT, 4)
                 + " type=" + IOTProxim.getAdvertiseType(type)
                 + " disp=" + display
                 + " self=" + IOT.device.uuid
         );
+
+        return true;
     }
 
     @SuppressWarnings("UnusedAssignment")
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void buildEddyDev(ScanResult result, byte[] eddystone)
+    private boolean buildEddyDev(ScanResult result, byte[] eddystone)
     {
-        if (eddystone[0] != 0x10) return;
+        if (eddystone[0] != 0x10) return false;
 
         //noinspection unused
         int txpo = eddystone[1];
@@ -398,61 +396,64 @@ public class IOTProximScanner
         String macAddr = result.getDevice().getAddress();
         String uuid = IOTSimple.hmacSha1UUID(name, macAddr);
 
-        if (!shouldUpdate(uuid)) return;
-
-        String caps = "beacon|eddystone|fixed|stupid";
-
-        if (name.equalsIgnoreCase("iBKS Plus"))
+        if (shouldUpdate(uuid))
         {
-            //
-            // Super long range Bodomann beacon. Not usefull for
-            // fine location. Usefull for domain area location.
-            //
-            // Elvis has entered/left the building.
-            //
+            String caps = "beacon|eddystone|fixed|stupid";
 
-            caps += "|gpscoarse";
+            if (name.equalsIgnoreCase("iBKS Plus"))
+            {
+                //
+                // Super long range Bodomann beacon. Not usefull for
+                // fine location. Usefull for domain area location.
+                //
+                // Elvis has entered/left the building.
+                //
+
+                caps += "|gpscoarse";
+            }
+            else
+            {
+                caps += "|gpsfine";
+            }
+
+            int rssi = result.getRssi();
+
+            Log.d(LOGTAG, "buildEddyDev: EDY"
+                    + " rssi=" + rssi
+                    + " txpo=" + txpo
+                    + " addr=" + macAddr
+                    + " vend=" + "0000"
+                    + " type=" + IOTDevice.TYPE_BEACON
+                    + " uuid=" + uuid
+                    + " name=" + name
+            );
+
+            JSONObject beacondev = new JSONObject();
+
+            Json.put(beacondev, "uuid", uuid);
+            Json.put(beacondev, "type", IOTDevice.TYPE_BEACON);
+            Json.put(beacondev, "did", url);
+            Json.put(beacondev, "name", url);
+            Json.put(beacondev, "nick", url);
+            Json.put(beacondev, "model", name);
+            Json.put(beacondev, "macaddr", macAddr);
+            Json.put(beacondev, "driver", "iot");
+            Json.put(beacondev, "location", Simple.getConnectedWifiName());
+
+            Json.put(beacondev, "capabilities", Json.jsonArrayFromSeparatedString(caps, "\\|"));
+
+            IOTDevices.addEntry(new IOTDevice(beacondev), false);
+
+            JSONObject status = new JSONObject();
+
+            Json.put(status, "uuid", uuid);
+            Json.put(status, "rssi", rssi);
+            Json.put(status, "txpower", txpo);
+
+            IOTStatusses.addEntry(new IOTStatus(status), false);
         }
-        else
-        {
-            caps += "|gpsfine";
-        }
 
-        int rssi = result.getRssi();
-
-        Log.d(LOGTAG, "buildEddyDev: EDY"
-                + " rssi=" + rssi
-                + " txpo=" + txpo
-                + " addr=" + macAddr
-                + " vend=" + "0000"
-                + " type=" + IOTDevice.TYPE_BEACON
-                + " uuid=" + uuid
-                + " name=" + name
-        );
-
-        JSONObject beacondev = new JSONObject();
-
-        Json.put(beacondev, "uuid", uuid);
-        Json.put(beacondev, "type", IOTDevice.TYPE_BEACON);
-        Json.put(beacondev, "did", url);
-        Json.put(beacondev, "name", url);
-        Json.put(beacondev, "nick", url);
-        Json.put(beacondev, "model", name);
-        Json.put(beacondev, "macaddr", macAddr);
-        Json.put(beacondev, "driver", "iot");
-        Json.put(beacondev, "location", Simple.getConnectedWifiName());
-
-        Json.put(beacondev, "capabilities", Json.jsonArrayFromSeparatedString(caps, "\\|"));
-
-        IOTDevices.addEntry(new IOTDevice(beacondev), false);
-
-        JSONObject status = new JSONObject();
-
-        Json.put(status, "uuid", uuid);
-        Json.put(status, "rssi", rssi);
-        Json.put(status, "txpower", txpo);
-
-        IOTStatusses.addEntry(new IOTStatus(status), false);
+        return true;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
