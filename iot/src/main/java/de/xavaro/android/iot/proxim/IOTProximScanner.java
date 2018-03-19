@@ -318,8 +318,9 @@ public class IOTProximScanner
         {
             double lat = bb.getDouble();
             double lon = bb.getDouble();
+            float alt = bb.getFloat();
 
-            display = lat + " - " + lon;
+            display = lat + " - " + lon + " - " + alt;
         }
 
         if ((type == IOTProxim.ADVERTISE_IOT_HUMAN)
