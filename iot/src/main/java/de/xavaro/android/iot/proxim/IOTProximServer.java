@@ -92,7 +92,7 @@ public class IOTProximServer
             advertiseIOTHuman();
             advertiseIOTDevice();
 
-            advertiseIOTDevname();
+            //advertiseIOTDevname();
         }
     }
 
