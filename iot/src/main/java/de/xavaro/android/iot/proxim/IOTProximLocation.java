@@ -112,7 +112,7 @@ public class IOTProximLocation implements LocationListener
                 IOTDevice device = new IOTDevice(IOT.device.uuid);
                 device.fixedLatCoarse = location.getLatitude();
                 device.fixedLonCoarse = location.getLongitude();
-                device.fixedAltCoarse = location.getAltitude();
+                device.fixedAltCoarse = (float) location.getAltitude();
 
                 IOTDevices.addEntry(device, false);
             }
@@ -120,7 +120,7 @@ public class IOTProximLocation implements LocationListener
             IOTStatus status = new IOTStatus(IOT.device.uuid);
             status.positionLatCoarse = location.getLatitude();
             status.positionLonCoarse = location.getLongitude();
-            status.positionAltCoarse = location.getAltitude();
+            status.positionAltCoarse = (float) location.getAltitude();
 
             IOTStatusses.addEntry(status, false);
 

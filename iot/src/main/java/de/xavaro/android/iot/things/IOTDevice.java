@@ -41,11 +41,11 @@ public class IOTDevice extends IOTObject
 
     public Double fixedLatFine;
     public Double fixedLonFine;
-    public Double fixedAltFine;
+    public Float fixedAltFine;
 
     public Double fixedLatCoarse;
     public Double fixedLonCoarse;
-    public Double fixedAltCoarse;
+    public Float fixedAltCoarse;
 
     public JSONArray capabilities;
 

@@ -135,6 +135,7 @@ public class IOTProximServer
 
             Double lat = null;
             Double lon = null;
+            Float alt = null;
 
             if (IOT.device != null)
             {
@@ -142,6 +143,7 @@ public class IOTProximServer
                 {
                     lat = IOT.device.fixedLatCoarse;
                     lon = IOT.device.fixedLonCoarse;
+                    alt = IOT.device.fixedAltCoarse;
                 }
                 else
                 {
@@ -151,6 +153,7 @@ public class IOTProximServer
                     {
                         lat = status.positionLatCoarse;
                         lon = status.positionLonCoarse;
+                        alt = status.positionAltCoarse;
                     }
                 }
             }
@@ -158,11 +161,12 @@ public class IOTProximServer
             if ((lat != null) && (lon != null))
             {
                 byte[] bytes = ByteBuffer
-                        .allocate(1 + 1 + 8 + 8)
+                        .allocate(1 + 1 + 8 + 8 + 4)
                         .put(IOTProxim.ADVERTISE_GPS_COARSE)
                         .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
                         .putDouble(lat)
                         .putDouble(lon)
+                        .putFloat(alt)
                         .array();
 
                 callbackGPSCoarse = advertiseDat(bytes);
@@ -184,6 +188,7 @@ public class IOTProximServer
 
             Double lat = null;
             Double lon = null;
+            Float alt = null;
 
             if (IOT.device != null)
             {
@@ -191,6 +196,7 @@ public class IOTProximServer
                 {
                     lat = IOT.device.fixedLatFine;
                     lon = IOT.device.fixedLonFine;
+                    alt = IOT.device.fixedAltFine;
                 }
                 else
                 {
@@ -200,6 +206,7 @@ public class IOTProximServer
                     {
                         lat = status.positionLatFine;
                         lon = status.positionLonFine;
+                        alt = status.positionAltFine;
                     }
                 }
             }
@@ -207,11 +214,12 @@ public class IOTProximServer
             if ((lat != null) && (lon != null))
             {
                 byte[] bytes = ByteBuffer
-                        .allocate(1 + 1 + 8 + 8)
+                        .allocate(1 + 1 + 8 + 8 + 4)
                         .put(IOTProxim.ADVERTISE_GPS_FINE)
                         .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
                         .putDouble(lat)
                         .putDouble(lon)
+                        .putFloat(alt)
                         .array();
 
                 callbackGPSFine = advertiseDat(bytes);

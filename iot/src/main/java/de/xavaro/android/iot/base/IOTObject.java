@@ -210,6 +210,16 @@ public abstract class IOTObject
         return false;
     }
 
+    public boolean nequals(Float val1, Float val2)
+    {
+        if (! IOTSimple.equals(val1, val2))
+        {
+            return changed = true;
+        }
+
+        return false;
+    }
+
     public boolean nequals(Double val1, Double val2)
     {
         if (! IOTSimple.equals(val1, val2))

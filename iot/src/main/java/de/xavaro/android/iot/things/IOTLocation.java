@@ -12,7 +12,7 @@ public class IOTLocation extends IOTObject
 
     public Double fixedLatFine;
     public Double fixedLonFine;
-    public Double fixedAltFine;
+    public Float fixedAltFine;
 
     public IOTLocation()
     {

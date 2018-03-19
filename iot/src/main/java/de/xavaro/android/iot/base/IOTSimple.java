@@ -26,6 +26,12 @@ public class IOTSimple
                 || ((val1 != null) && (val2 != null) && val1.equals(val2));
     }
 
+    public static boolean equals(Float val1, Float val2)
+    {
+        return ((val1 == null) && (val2 == null))
+                || ((val1 != null) && (val2 != null) && val1.equals(val2));
+    }
+
     public static boolean equals(Double val1, Double val2)
     {
         return ((val1 == null) && (val2 == null))

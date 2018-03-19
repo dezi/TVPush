@@ -37,11 +37,11 @@ public class IOTStatus extends IOTObject
 
     public Double positionLatCoarse;
     public Double positionLonCoarse;
-    public Double positionAltCoarse;
+    public Float positionAltCoarse;
 
     public Double positionLatFine;
     public Double positionLonFine;
-    public Double positionAltFine;
+    public Float positionAltFine;
 
     public IOTStatus()
     {
