@@ -20,6 +20,7 @@ import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUIPluginTitle;
 import de.xavaro.android.gui.simple.Simple;
 
+import de.xavaro.android.gui.views.GUIFrameLayout;
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
@@ -36,11 +37,14 @@ public class GUILocationWizzard extends GUIPluginTitle
 
     private IOTObject iotObject;
 
+    private GUIFrameLayout mainFrame;
+    private MapView mapView;
     private GoogleMap map;
     private Marker marker;
-    private MapView mapView;
+
     private LatLng coordinates;
     private Float altitude;
+
     private int zoom;
 
     private boolean haveHighlight;
@@ -49,17 +53,28 @@ public class GUILocationWizzard extends GUIPluginTitle
     {
         super(context);
 
-        contentFrame.setFocusable(true);
+        mainFrame = new GUIFrameLayout(context)
+        {
+            @Override
+            public boolean onKeyDown(int keyCode, KeyEvent event)
+            {
+                return onKeyDownDoit(keyCode, event);
+            }
+        };
+
+        mainFrame.setSizeDip(Simple.MP, Simple.MP);
+        mainFrame.setFocusable(true);
+
+        contentFrame.addView(mainFrame);
 
         mapView = new MapView(getContext());
         mapView.setLayoutParams(new FrameLayout.LayoutParams(Simple.MP, Simple.MP));
         mapView.onCreate(null);
 
-        contentFrame.addView(mapView);
+        mainFrame.addView(mapView);
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)
+    private boolean onKeyDownDoit(int keyCode, KeyEvent event)
     {
         Log.d(LOGTAG, "onKeyDown: event=" + event);
 
@@ -100,7 +115,7 @@ public class GUILocationWizzard extends GUIPluginTitle
             }
 
             haveHighlight = !haveHighlight;
-            setHighlight(haveHighlight);
+            mainFrame.setHighlight(haveHighlight);
             usedKey = true;
         }
         else
