@@ -1,6 +1,7 @@
 package de.xavaro.android.gui.plugin;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.widget.FrameLayout;
 import android.view.KeyEvent;
 import android.util.Log;
@@ -16,14 +17,14 @@ import com.google.android.gms.maps.model.Marker;
 
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIDefs;
-import de.xavaro.android.gui.base.GUIPlugin;
+import de.xavaro.android.gui.base.GUIPluginTitle;
 import de.xavaro.android.gui.simple.Simple;
 
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 
-public class GUILocationWizzard extends GUIPlugin
+public class GUILocationWizzard extends GUIPluginTitle
 {
     private final static String LOGTAG = GUILocationWizzard.class.getSimpleName();
 
@@ -49,10 +50,11 @@ public class GUILocationWizzard extends GUIPlugin
         super(context);
 
         contentFrame.setFocusable(true);
+        contentFrame.setBackgroundColor(Color.GREEN);
 
         mapView = new MapView(getContext());
         mapView.setLayoutParams(new FrameLayout.LayoutParams(Simple.MP, Simple.MP));
-        mapView.setBackgroundColor(0xff00ff00);
+        mapView.setBackgroundColor(Color.WHITE);
         mapView.onCreate(null);
 
         contentFrame.addView(mapView);
