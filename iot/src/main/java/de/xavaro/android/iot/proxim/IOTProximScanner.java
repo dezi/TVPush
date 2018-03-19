@@ -52,8 +52,8 @@ public class IOTProximScanner
 
             IOT.instance.proximScanner.startLEScanner();
 
-            IOT.instance.proximScanner.startReceiver();
-            IOT.instance.proximScanner.startDiscovery();
+            //IOT.instance.proximScanner.startReceiver();
+            //IOT.instance.proximScanner.startDiscovery();
         }
     }
 
