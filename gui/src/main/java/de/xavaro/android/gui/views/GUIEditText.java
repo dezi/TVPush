@@ -1,10 +1,9 @@
 package de.xavaro.android.gui.views;
 
-import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.AppCompatEditText;
 import android.graphics.drawable.Drawable;
 import android.content.Context;
 import android.util.TypedValue;
-import android.view.View;
 import android.view.ViewGroup;
 
 import de.xavaro.android.gui.simple.Simple;
@@ -16,17 +15,18 @@ import de.xavaro.android.gui.skills.GUICanRestoreBackgroundDelegate;
 import de.xavaro.android.gui.skills.GUICanRoundedCorners;
 import de.xavaro.android.gui.skills.GUICanRoundedCornersDelegate;
 
-public class GUITextView extends AppCompatTextView implements
+public class GUIEditText extends AppCompatEditText implements
         GUICanDip,
         GUICanFocus,
         GUICanRoundedCorners,
         GUICanRestoreBackground
 {
-    public GUITextView(Context context)
+    public GUIEditText(Context context)
     {
         super(context);
 
         setFocusable(false);
+        setEnabled(false);
 
         initSkills();
     }
@@ -92,13 +92,14 @@ public class GUITextView extends AppCompatTextView implements
     public void setBackground(Drawable drawable)
     {
         super.setBackground(drawable);
-        canRB.setBackground(drawable);
+
+        if (canRB != null) canRB.setBackground(drawable);
     }
 
     @Override
     public Drawable getBackground()
     {
-        return canRB.getBackground();
+        return (canRB == null) ? super.getBackground() : canRB.getBackground();
     }
 
     @Override
@@ -204,7 +205,7 @@ public class GUITextView extends AppCompatTextView implements
     }
 
     @Override
-    public void setOnClickListener(View.OnClickListener onClickListener)
+    public void setOnClickListener(OnClickListener onClickListener)
     {
         super.setOnClickListener(onClickListener);
 

@@ -1,31 +1,28 @@
 package de.xavaro.android.gui.base;
 
+import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
-import de.xavaro.android.gui.R;
-import de.xavaro.android.gui.simple.Simple;
+import de.xavaro.android.gui.views.GUIEditText;
 import de.xavaro.android.gui.views.GUIFrameLayout;
 import de.xavaro.android.gui.views.GUIImageView;
 import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUITextView;
+import de.xavaro.android.gui.simple.Simple;
+import de.xavaro.android.gui.R;
 
 public class GUIPluginTitle extends GUIPlugin
 {
     private final static String LOGTAG = GUIPluginTitle.class.getSimpleName();
 
-    public GUILinearLayout splitterFrame;
-
     public GUIPluginTitle(Context context)
     {
         super(context);
 
-        splitterFrame = new GUILinearLayout(context);
+        GUILinearLayout splitterFrame = new GUILinearLayout(context);
         splitterFrame.setOrientation(LinearLayout.VERTICAL);
         splitterFrame.setPaddingDip(10, 0, 10, 10);
         splitterFrame.setRoundedCorners(20, 0x88888888, Color.WHITE);
@@ -55,10 +52,19 @@ public class GUIPluginTitle extends GUIPlugin
 
         GUITextView titleText = new GUITextView(context);
         titleText.setText("Dezi's Dominator-XL");
-        titleText.setFocusable(true);
-        titleText.setPaddingDip(20, 5, 20, 5);
+        titleText.setPaddingDip(5);
+        titleText.setTextSizeDip(16);
 
         titleCenter.addView(titleText);
+
+        GUIEditText titleEdit = new GUIEditText(context);
+        titleEdit.setHint("Nicknamen hier eintragen");
+        titleEdit.setSizeDip(Simple.MP, Simple.WC);
+        titleEdit.setPaddingDip(20, 5, 20, 5);
+        titleEdit.setTextSizeDip(16);
+        titleEdit.setFocusable(true);
+
+        titleCenter.addView(titleEdit);
 
         contentFrame = new GUIFrameLayout(context);
         contentFrame.setSizeDip(Simple.MP, Simple.MP);
