@@ -25,6 +25,6 @@ public class Systems
 
         sny = new SystemsSNY(application);
 
-        IOTBackup.saveBackup(application);
+        //IOTBackup.saveBackup(application);
     }
 }
