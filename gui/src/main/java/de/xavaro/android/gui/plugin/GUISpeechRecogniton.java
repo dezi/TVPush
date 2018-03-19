@@ -27,6 +27,7 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
 
     private final Handler handler = new Handler();
 
+    private GUIRelativeLayout centerCont;
     private GUIRainbowLayout colorFrame;
     private GUITextView speechText;
 
@@ -41,7 +42,7 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
 
         contentFrame.addView(colorFrame);
 
-        GUIRelativeLayout centerCont = new GUIRelativeLayout(getContext());
+        centerCont = new GUIRelativeLayout(getContext());
         centerCont.setGravity(Gravity.CENTER_VERTICAL + Gravity.CENTER_HORIZONTAL);
 
         colorFrame.addView(centerCont);
@@ -162,8 +163,11 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
         if (seconds > 60) seconds = 60;
 
         toastMessage = message;
+
         speechText.setText(toastMessage);
         speechText.setTextColor(Color.LTGRAY);
+        centerCont.setRoundedCornersDip(GUIDefs.ROUNDED_MEDIUM, GUIDefs.COLOR_NORMAL_TRANSPARENT);
+
         if (emphasis) colorFrame.start(2);
         GUI.instance.desktopActivity.bringToFront();
 
@@ -191,6 +195,7 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
             {
                 speechText.setTextColor(Color.GRAY);
                 speechText.setText("Bitte sprechen Sie jetzt");
+                centerCont.setRoundedCornersDip(GUIDefs.ROUNDED_MEDIUM, GUIDefs.COLOR_LIGHT_TRANSPARENT);
             }
 
             colorFrame.stop();
