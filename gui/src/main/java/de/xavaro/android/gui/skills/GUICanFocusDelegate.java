@@ -51,6 +51,14 @@ public class GUICanFocusDelegate
 
                     gf.setHasFocus(false);
                     gf.setHighlight(false);
+
+                    if (gf.getHighlightable() && (view instanceof GUIEditText))
+                    {
+                        GUIEditText et = (GUIEditText) view;
+                        
+                        et.setEnabled(false);
+                        et.setInputType(InputType.TYPE_NULL);
+                    }
                 }
             }
         }
