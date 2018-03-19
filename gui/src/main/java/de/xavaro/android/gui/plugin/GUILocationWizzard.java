@@ -14,9 +14,12 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
+import de.xavaro.android.gui.base.GUI;
+import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUIPlugin;
 import de.xavaro.android.gui.simple.Simple;
 
+import de.xavaro.android.gui.smart.GUIDesktopActivity;
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
@@ -75,7 +78,34 @@ public class GUILocationWizzard extends GUIPlugin
         {
             if (haveHighlight)
             {
-                saveIOTObject();
+                if (saveIOTObject())
+                {
+                    String mess = "Gespeichert";
+                    GUI.instance.desktopActivity.displayToastMessage(mess, 2, true);
+                }
+                else
+                {
+                    String mess = "Speichern fehlgeschlagen";
+                    GUI.instance.desktopActivity.displayToastMessage(mess, 10, true);
+                }
+            }
+            else
+            {
+                String help = "Bewegen mit"
+                        + " "
+                        + GUIDefs.UTF_LEFT + GUIDefs.UTF_RIGHT
+                        + GUIDefs.UTF_UP + GUIDefs.UTF_DOWN
+                        + " "
+                        + ", zoomen mit"
+                        + " "
+                        + GUIDefs.UTF_REWIND
+                        + " "
+                        + "und"
+                        + " "
+                        + GUIDefs.UTF_FAST_FORWARD
+                        ;
+
+                GUI.instance.desktopActivity.displayToastMessage(help, 10, true);
             }
 
             haveHighlight = !haveHighlight;
@@ -123,7 +153,7 @@ public class GUILocationWizzard extends GUIPlugin
         this.iotObject = iotObject;
     }
 
-    private void saveIOTObject()
+    private boolean saveIOTObject()
     {
         if (iotObject instanceof IOTDevice)
         {
@@ -133,8 +163,10 @@ public class GUILocationWizzard extends GUIPlugin
             saveme.fixedLonFine = coordinates.longitude;
             saveme.fixedAltFine = altitude;
 
-            IOTDevices.addEntry(saveme, true);
+            return IOTDevices.addEntry(saveme, true);
         }
+
+        return false;
     }
 
     private boolean moveMap(int keyCode)

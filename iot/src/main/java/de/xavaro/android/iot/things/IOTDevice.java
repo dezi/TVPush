@@ -126,7 +126,7 @@ public class IOTDevice extends IOTObject
         }
     }
 
-    public void checkAndMergeContent(IOTDevice check, boolean external)
+    public boolean checkAndMergeContent(IOTDevice check, boolean external)
     {
         // @formatter:off
 
@@ -169,6 +169,6 @@ public class IOTDevice extends IOTObject
             // @formatter:on
         }
 
-        saveIfChanged();
+        return saveIfChanged();
     }
 }

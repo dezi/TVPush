@@ -28,5 +28,13 @@ public class GUIDefs
     public static final int COLOR_TV_FOCUS           = 0xffffcc00;
     public static final int COLOR_TV_FOCUS_HIGHLIGHT = 0xffff0000;
 
+    public static final Character UTF_LEFT = 0x25c0;
+    public static final Character UTF_RIGHT = 0x25b6;
+    public static final Character UTF_UP = 0x25b2;
+    public static final Character UTF_DOWN = 0x25bc;
+
+    public static final String UTF_REWIND = UTF_LEFT.toString() + UTF_LEFT;
+    public static final String UTF_FAST_FORWARD = UTF_RIGHT.toString() + UTF_RIGHT;
+
     // @formatter:on
 }

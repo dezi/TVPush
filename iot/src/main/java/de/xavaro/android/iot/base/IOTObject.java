@@ -306,8 +306,10 @@ public abstract class IOTObject
         return false;
     }
 
-    public void saveIfChanged()
+    public boolean saveIfChanged()
     {
+        boolean ok = true;
+
         if (changedSys || (sts == null) || (sts == 0))
         {
             sts = System.currentTimeMillis();
@@ -320,11 +322,13 @@ public abstract class IOTObject
 
         if (changedSys || changedUsr)
         {
-            saveToStorage();
+            ok = saveToStorage();
         }
 
         changed = false;
         changedSys = false;
         changedUsr = false;
+
+        return ok;
     }
 }

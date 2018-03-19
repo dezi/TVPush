@@ -169,10 +169,9 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
         if (seconds <= 0) seconds = 2;
         if (seconds > 60) seconds = 60;
 
-
         toastMessage = message;
         speechText.setText(toastMessage);
-        if (emphasis) colorFrame.start(3);
+        if (emphasis) colorFrame.start(2);
         GUI.instance.desktopActivity.bringToFront();
 
         Simple.getHandler().postDelayed(toastDone, seconds * 1000);
