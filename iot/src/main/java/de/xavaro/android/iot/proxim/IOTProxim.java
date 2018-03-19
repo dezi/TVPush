@@ -1,6 +1,7 @@
 package de.xavaro.android.iot.proxim;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.le.AdvertiseSettings;
 import android.location.LocationManager;
 import android.os.Build;
 import android.support.annotation.Nullable;
@@ -139,5 +140,18 @@ public class IOTProxim
         Log.d(LOGTAG, "checkBTPermissions: LOCATION=" + locman);
         Log.d(LOGTAG, "checkBTPermissions: GPS_PROVIDER=" + locgps);
         Log.d(LOGTAG, "checkBTPermissions: NETWORK_PROVIDER=" + locnet);
+    }
+
+    public static byte getEstimatedTxPowerFromPowerlevel(int powerlevel)
+    {
+        switch (powerlevel)
+        {
+            case AdvertiseSettings.ADVERTISE_TX_POWER_ULTRA_LOW: return -40;
+            case AdvertiseSettings.ADVERTISE_TX_POWER_LOW: return -30;
+            case AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM: return -23;
+            case AdvertiseSettings.ADVERTISE_TX_POWER_HIGH: return -15;
+        }
+
+        return -23;
     }
 }

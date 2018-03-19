@@ -24,7 +24,7 @@ public class IOTProximServer
 {
     private static final String LOGTAG = IOTProximServer.class.getSimpleName();
 
-    private byte powerLevel;
+    private int powerLevel;
     private AdvertiseSettings settings;
     private BluetoothLeAdvertiser btLEAdvertiser;
 
@@ -153,7 +153,7 @@ public class IOTProximServer
             byte[] bytes = ByteBuffer
                     .allocate(1 + 1 + 8 + 8)
                     .put(IOTProxim.ADVERTISE_GPS_COARSE)
-                    .put(powerLevel)
+                    .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
                     .putDouble(lat)
                     .putDouble(lon)
                     .array();
@@ -192,7 +192,7 @@ public class IOTProximServer
             byte[] bytes = ByteBuffer
                     .allocate(1 + 1 + 8 + 8)
                     .put(IOTProxim.ADVERTISE_GPS_FINE)
-                    .put(powerLevel)
+                    .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
                     .putDouble(lat)
                     .putDouble(lon)
                     .array();
@@ -209,7 +209,7 @@ public class IOTProximServer
         byte[] bytes = ByteBuffer
                 .allocate(1 + 1 + 8 + 8)
                 .put(IOTProxim.ADVERTISE_IOT_HUMAN)
-                .put(powerLevel)
+                .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
                 .putLong(UUID.fromString(IOT.human.uuid).getMostSignificantBits())
                 .putLong(UUID.fromString(IOT.human.uuid).getLeastSignificantBits())
                 .array();
@@ -225,7 +225,7 @@ public class IOTProximServer
         byte[] bytes = ByteBuffer
                 .allocate(1 + 1 + 8 + 8)
                 .put(IOTProxim.ADVERTISE_IOT_DEVICE)
-                .put(powerLevel)
+                .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
                 .putLong(UUID.fromString(IOT.device.uuid).getMostSignificantBits())
                 .putLong(UUID.fromString(IOT.device.uuid).getLeastSignificantBits())
                 .array();
