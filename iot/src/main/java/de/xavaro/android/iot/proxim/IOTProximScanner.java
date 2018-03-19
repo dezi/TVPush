@@ -469,7 +469,7 @@ public class IOTProximScanner
     {
         Long lastUpdate = Simple.getMapLong(lastUpdates, uuid);
 
-        if ((System.currentTimeMillis() - lastUpdate) >= 30 * 1000)
+        if ((lastUpdate == null) || ((System.currentTimeMillis() - lastUpdate) >= (30 * 1000)))
         {
             lastUpdates.put(uuid, System.currentTimeMillis());
 
