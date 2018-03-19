@@ -3,7 +3,9 @@ package de.xavaro.android.gui.views;
 import android.support.v7.widget.AppCompatEditText;
 import android.graphics.drawable.Drawable;
 import android.content.Context;
+import android.text.InputType;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.ViewGroup;
 
 import de.xavaro.android.gui.simple.Simple;
@@ -26,7 +28,9 @@ public class GUIEditText extends AppCompatEditText implements
         super(context);
 
         setFocusable(false);
+
         setEnabled(false);
+        setInputType(InputType.TYPE_NULL);
 
         initSkills();
     }
@@ -223,6 +227,11 @@ public class GUIEditText extends AppCompatEditText implements
         super.setOnClickListener(onClickListener);
 
         setFocusable(onClickListener != null);
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        return GUICanFocusDelegate.onKeyDown(this, keyCode, event);
     }
 
     //endregion Skills implementation.

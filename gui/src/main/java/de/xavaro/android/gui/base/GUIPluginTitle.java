@@ -63,6 +63,7 @@ public class GUIPluginTitle extends GUIPlugin
         titleEdit.setPaddingDip(20, 5, 20, 5);
         titleEdit.setTextSizeDip(16);
         titleEdit.setFocusable(true);
+        titleEdit.setHighlightable(true);
 
         titleCenter.addView(titleEdit);
 

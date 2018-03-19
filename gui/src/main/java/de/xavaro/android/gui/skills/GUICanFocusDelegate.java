@@ -1,9 +1,13 @@
 package de.xavaro.android.gui.skills;
 
+import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.EditText;
 
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.simple.Simple;
+import de.xavaro.android.gui.views.GUIEditText;
 
 public class GUICanFocusDelegate
 {
@@ -46,6 +50,7 @@ public class GUICanFocusDelegate
                     gf.restoreBackground();
 
                     gf.setHasFocus(false);
+                    gf.setHighlight(false);
                 }
             }
         }
@@ -95,5 +100,40 @@ public class GUICanFocusDelegate
                 view.setOnFocusChangeListener(null);
             }
         }
+    }
+
+    public static boolean onKeyDown(View view, int keyCode, KeyEvent event)
+    {
+        GUICanFocus gf = view instanceof GUICanFocus ? (GUICanFocus) view : null;
+
+        if ((gf != null)
+                && gf.getHasFocus()
+                && gf.getHighlightable()
+                && (keyCode == KeyEvent.KEYCODE_DPAD_CENTER))
+        {
+            gf.setHighlight(! gf.getHighlight());
+
+            adjustHighlightState(view);
+
+            if (view instanceof GUIEditText)
+            {
+                GUIEditText et = (GUIEditText) view;
+
+                if (gf.getHighlight())
+                {
+                    et.setEnabled(true);
+                    et.setInputType(InputType.TYPE_CLASS_TEXT);
+                }
+                else
+                {
+                    et.setEnabled(false);
+                    et.setInputType(InputType.TYPE_NULL);
+                }
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }
