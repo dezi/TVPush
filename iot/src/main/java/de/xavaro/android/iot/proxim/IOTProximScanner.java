@@ -8,7 +8,6 @@ import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 
-import android.content.pm.PackageManager;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
 import android.content.Context;
@@ -21,6 +20,7 @@ import android.util.Log;
 import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -50,14 +50,10 @@ public class IOTProximScanner
         {
             IOT.instance.proximScanner = new IOTProximScanner(appcontext);
 
-            IOT.instance.proximScanner.startSonyBTStuff();
             IOT.instance.proximScanner.startLEScanner();
 
-            if (Simple.isTV())
-            {
-                IOT.instance.proximScanner.startReceiver();
-                IOT.instance.proximScanner.startDiscovery();
-            }
+            //IOT.instance.proximScanner.startReceiver();
+            //IOT.instance.proximScanner.startDiscovery();
         }
     }
 
@@ -67,11 +63,8 @@ public class IOTProximScanner
         {
             IOT.instance.proximScanner.stopLEScanner();
 
-            if (Simple.isTV())
-            {
-                IOT.instance.proximScanner.stopDiscovery();
-                IOT.instance.proximScanner.stopReceiver();
-            }
+            //IOT.instance.proximScanner.stopDiscovery();
+            //IOT.instance.proximScanner.stopReceiver();
 
             IOT.instance.proximScanner = null;
         }
@@ -82,47 +75,12 @@ public class IOTProximScanner
     private BluetoothAdapter adapter;
     private BluetoothLeScanner scanner;
 
+    private final Map<String, Long> lastUpdates = new HashMap<>();
+
     public IOTProximScanner(Context context)
     {
         this.context = context;
         this.adapter = Simple.getBTAdapter();
-    }
-
-    private void startSonyBTStuff()
-    {
-        try
-        {
-            String packageName = "com.sony.dtv.bleadvertiseservice";
-            String serviceName = "com.sony.dtv.bleadvertiseservice.BleAdvertiseService";
-
-            Simple.getPackageManager().getPackageInfo(packageName, PackageManager.GET_SERVICES);
-
-            Intent intent = new Intent(serviceName);
-            intent.setPackage(packageName);
-            context.startService(intent);
-
-            Log.d(LOGTAG, "startSonyBTStuff: BleAdvertiseService found and startet.");
-        }
-        catch (Exception ignore)
-        {
-        }
-
-        try
-        {
-            String packageName = "com.sony.dtv.braviabluetoothservice";
-            String serviceName = "com.sony.dtv.braviabluetoothservice.service.BraviaBluetoothService";
-
-            Simple.getPackageManager().getPackageInfo(packageName, PackageManager.GET_SERVICES);
-
-            Intent intent = new Intent(serviceName);
-            intent.setPackage(packageName);
-            context.startService(intent);
-
-            Log.d(LOGTAG, "startSonyBTStuff: BraviaBluetoothService found and startet.");
-        }
-        catch (Exception ignore)
-        {
-        }
     }
 
     private void startReceiver()
@@ -265,11 +223,27 @@ public class IOTProximScanner
         {
             for (int inx = 0; inx < manufacturerData.size(); inx++)
             {
+                //
+                // Abuse certain devices as beacons.
+                //
+
                 vendor = manufacturerData.keyAt(inx);
+
+                byte[] manData = manufacturerData.get(vendor);
+
+                if ((vendor == 117)
+                        && (result.getDevice() != null)
+                        && (result.getDevice().getName() != null)
+                        && (result.getDevice().getName().startsWith("[TV]")))
+                {
+                    buildBeacDev(result, vendor, manData);
+
+                    return;
+                }
 
                 if (vendor == 301)
                 {
-                    buildSonyDev(result, vendor, manufacturerData.get(vendor));
+                    buildBeacDev(result, vendor, manData);
 
                     return;
                 }
@@ -393,9 +367,11 @@ public class IOTProximScanner
         url = url.replace(Character.valueOf(x = 0x0c).toString(), ".biz");
         url = url.replace(Character.valueOf(x = 0x0d).toString(), ".gov");
 
-        String name = result.getDevice().getName();
+        String name = result.getDevice().getName() + "@" + url;
         String macAddr = result.getDevice().getAddress();
         String uuid = IOTSimple.hmacSha1UUID(name, macAddr);
+
+        if (! shouldUpdate(uuid)) return;
 
         String caps = "beacon|eddystone|fixed|stupid";
 
@@ -419,8 +395,9 @@ public class IOTProximScanner
                 + " rssi=" + result.getRssi()
                 + " addr=" + macAddr
                 + " vend=" + "0000"
+                + " type=" + IOTDevice.TYPE_BEACON
+                + " uuid=" + uuid
                 + " name=" + name
-                + " url=" + url
         );
 
         JSONObject beacondev = new JSONObject();
@@ -447,20 +424,23 @@ public class IOTProximScanner
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void buildSonyDev(ScanResult result, int vendor, byte[] bytes)
+    private void buildBeacDev(ScanResult result, int vendor, byte[] bytes)
     {
         String name = result.getDevice().getName();
         String macAddr = result.getDevice().getAddress();
         String uuid = IOTSimple.hmacSha1UUID(name, macAddr);
 
+        if (! shouldUpdate(uuid)) return;
+
         String caps = "beacon|sonytv|fixed|stupid|gpsfine";
 
-        Log.d(LOGTAG, "buildSonyDev: ALT"
+        Log.d(LOGTAG, "buildBeacDev: ALT"
                 + " rssi=" + result.getRssi()
                 + " addr=" + macAddr
                 + " vend=" + Simple.padZero(vendor, 4)
-                + " name=" + name
+                + " type=" + IOTDevice.TYPE_BEACON
                 + " uuid=" + uuid
+                + " name=" + name
         );
 
         JSONObject beacondev = new JSONObject();
@@ -469,6 +449,7 @@ public class IOTProximScanner
         Json.put(beacondev, "type", IOTDevice.TYPE_BEACON);
         Json.put(beacondev, "name", name);
         Json.put(beacondev, "nick", name);
+        Json.put(beacondev, "vendor", IOTProxim.getAdvertiseVendor(vendor));
         Json.put(beacondev, "macaddr", macAddr);
         Json.put(beacondev, "driver", "iot");
         Json.put(beacondev, "location", Simple.getConnectedWifiName());
@@ -482,5 +463,19 @@ public class IOTProximScanner
         Json.put(status, "uuid", uuid);
 
         IOTStatusses.addEntry(new IOTStatus(status), false);
+    }
+
+    private boolean shouldUpdate(String uuid)
+    {
+        Long lastUpdate = Simple.getMapLong(lastUpdates, uuid);
+
+        if ((System.currentTimeMillis() - lastUpdate) >= 30 * 1000)
+        {
+            lastUpdates.put(uuid, System.currentTimeMillis());
+
+            return true;
+        }
+
+        return false;
     }
 }

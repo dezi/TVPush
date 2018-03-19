@@ -34,6 +34,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.Map;
 
 public class Simple
 {
@@ -523,5 +524,24 @@ public class Simple
         }
 
         return false;
+    }
+
+    public static Long getMapLong(Map<String, Long> map, String key)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        {
+            return map.getOrDefault(key, null);
+        }
+        else
+        {
+            try
+            {
+                return map.get(key);
+            }
+            catch (Exception ignore)
+            {
+                return null;
+            }
+        }
     }
 }
