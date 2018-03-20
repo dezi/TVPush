@@ -2,14 +2,17 @@ package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Iterator;
 
 import de.xavaro.android.gui.base.GUIPluginTitleList;
 import de.xavaro.android.gui.base.GUISetup;
+import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.views.GUIListEntry;
 import de.xavaro.android.gui.simple.Simple;
+import de.xavaro.android.gui.views.GUISeparatorView;
 import de.xavaro.android.gui.R;
 
 public class GUITodoWizzard extends GUIPluginTitleList
@@ -41,47 +44,41 @@ public class GUITodoWizzard extends GUIPluginTitleList
 
     private void checkPermissions()
     {
-        JSONObject perms = GUISetup.getRequiredPermissions();
+        JSONObject areas = GUISetup.getRequiredPermissions();
 
-        Iterator<String> keys = perms.keys();
+        Iterator<String> keys = areas.keys();
 
         while (keys.hasNext())
         {
             String key = keys.next();
+            JSONArray perms = Json.getArray(areas, key);
+            if (perms == null) continue;
+
+            if (listView.getChildCount() > 0)
+            {
+                listView.addView(new GUISeparatorView(getContext()));
+            }
 
             GUIListEntry entry = new GUIListEntry(getContext());
 
-            entry.headerViev.setText(key + "????");
+            String infos = "";
 
-            if (key.equals("mic"))
+            for (int inx = 0; inx < perms.length(); inx++)
             {
-                entry.iconView.setImageResource(R.drawable.mic_540);
-                entry.headerViev.setText("Berechtigung Mikrofon");
+                String perm = Json.getString(perms, inx);
+
+                if (infos.length() > 0) infos += ", ";
+
+                infos += Simple.getTrans(GUISetup.getTextForPermissionResid(perm));
             }
 
-            if (key.equals("ble"))
-            {
-                entry.iconView.setImageResource(R.drawable.bluetooth_450);
-                entry.headerViev.setText("Berechtigung Bluetooth");
-            }
+            String head = Simple.getTrans(GUISetup.getTextPermissionResid())
+                    + ": "
+                    + Simple.getTrans(GUISetup.getTextForAreaResid(key));
 
-            if (key.equals("loc"))
-            {
-                entry.iconView.setImageResource(R.drawable.gps_530);
-                entry.headerViev.setText("Berechtigung Geoposition");
-            }
-
-            if (key.equals("ext"))
-            {
-                entry.iconView.setImageResource(R.drawable.usb_stick_400);
-                entry.headerViev.setText("Berechtigung Speicher");
-            }
-
-            if (key.equals("cam"))
-            {
-                entry.iconView.setImageResource(R.drawable.camera_shutter_820);
-                entry.headerViev.setText("Berechtigung Kamera");
-            }
+            entry.iconView.setImageResource(GUISetup.getIconForAreaResid(key));
+            entry.headerViev.setText(head);
+            entry.infoView.setText(infos);
 
             listView.addView(entry);
         }

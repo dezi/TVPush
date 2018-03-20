@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">gui</string>
+
+    <string name="setup_permissions_permission">Permission</string>
+
+    <string name="setup_permissions_area_ukn">Unknown</string>
+    <string name="setup_permissions_area_cam">Camera</string>
+    <string name="setup_permissions_area_ext">Storage</string>
+    <string name="setup_permissions_area_mic">Microfone</string>
+    <string name="setup_permissions_area_ble">Bluetooth</string>
+    <string name="setup_permissions_area_loc">Geolocation</string>
+
+    <string name="setup_permissions_perm_unknown">Unknown</string>
+    <string name="setup_permissions_perm_record_audio">Record</string>
+    <string name="setup_permissions_perm_bluetooth">Bluetooth</string>
+    <string name="setup_permissions_perm_bluetooth_admin">Bluetooth Admin</string>
+    <string name="setup_permissions_perm_access_fine_location">GPS-Location</string>
+    <string name="setup_permissions_perm_access_coarse_location">Network-Location</string>
+    <string name="setup_permissions_perm_read_external_storage">Read</string>
+    <string name="setup_permissions_perm_write_external_storage">Write</string>
+    <string name="setup_permissions_perm_camera">Camera-Access</string>
+    <string name="setup_permissions_perm_capture_audio_output">Audio-Recording</string>
+    <string name="setup_permissions_perm_capture_video_output">Video-Recording</string>
+
 </resources>

@@ -66,6 +66,7 @@ public class Simple
     private static float deviceDensity;
 
     private static Handler handler;
+    private static Resources resources;
     private static SharedPreferences prefs;
     private static ContentResolver contentResolver;
 
@@ -77,13 +78,12 @@ public class Simple
 
     public static void initialize(Application app)
     {
-        handler = new Handler();
-
         prefs = PreferenceManager.getDefaultSharedPreferences(app);
-
-        packageManager = app.getPackageManager();
+        handler = new Handler();
+        resources = app.getResources();
         contentResolver = app.getContentResolver();
 
+        packageManager = app.getPackageManager();
         wifiManager = (WifiManager) app.getSystemService(Context.WIFI_SERVICE);
         audioManager = (AudioManager) app.getSystemService(Context.AUDIO_SERVICE);
         windowManager = ((WindowManager) app.getSystemService(Context.WINDOW_SERVICE));
@@ -444,6 +444,11 @@ public class Simple
         {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    public static String getTrans(int resid, Object... args)
+    {
+        return String.format(resources.getString(resid), args);
     }
 
     //endregion Smart helpers.
