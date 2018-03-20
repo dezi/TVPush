@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.util.Iterator;
 
+import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUIPluginTitleList;
 import de.xavaro.android.gui.base.GUISetup;
 import de.xavaro.android.gui.simple.Json;
@@ -40,7 +41,7 @@ public class GUITodoWizzard extends GUIPluginTitleList
             checkServices();
             checkPermissions();
 
-            Simple.getHandler().postDelayed(makeTodoList, 600 * 1000);
+            Simple.getHandler().postDelayed(makeTodoList, 10 * 1000);
         }
     };
 
@@ -70,7 +71,12 @@ public class GUITodoWizzard extends GUIPluginTitleList
 
             entry.iconView.setImageResource(GUISetup.getIconForServiceResid(service));
             entry.headerViev.setText(head);
+
             entry.infoView.setText(GUISetup.getTextForServiceEnabledResid(service, enabled));
+
+            entry.infoView.setTextColor(enabled
+                    ? GUIDefs.TEXT_COLOR_INFOS
+                    : GUIDefs.TEXT_COLOR_ALERTS);
 
             listView.addView(entry);
         }
@@ -84,8 +90,8 @@ public class GUITodoWizzard extends GUIPluginTitleList
 
         while (keys.hasNext())
         {
-            String key = keys.next();
-            JSONArray perms = Json.getArray(areas, key);
+            String area = keys.next();
+            JSONArray perms = Json.getArray(areas, area);
             if (perms == null) continue;
 
             if (listView.getChildCount() > 0)
@@ -95,6 +101,7 @@ public class GUITodoWizzard extends GUIPluginTitleList
 
             GUIListEntry entry = new GUIListEntry(getContext());
 
+            boolean enabled = GUISetup.checkPermissions(getContext(), area);
             String infos = "";
 
             for (int inx = 0; inx < perms.length(); inx++)
@@ -108,11 +115,15 @@ public class GUITodoWizzard extends GUIPluginTitleList
 
             String head = Simple.getTrans(GUISetup.getTextPermissionResid())
                     + ": "
-                    + Simple.getTrans(GUISetup.getTextForAreaResid(key));
+                    + Simple.getTrans(GUISetup.getTextForAreaResid(area));
 
-            entry.iconView.setImageResource(GUISetup.getIconForAreaResid(key));
+            entry.iconView.setImageResource(GUISetup.getIconForAreaResid(area));
             entry.headerViev.setText(head);
             entry.infoView.setText(infos);
+
+            entry.infoView.setTextColor(enabled
+                    ? GUIDefs.TEXT_COLOR_INFOS
+                    : GUIDefs.TEXT_COLOR_ALERTS);
 
             listView.addView(entry);
         }

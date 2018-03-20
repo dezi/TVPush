@@ -236,4 +236,42 @@ public class GUILinearLayout extends LinearLayout implements
     }
 
     //endregion Focus implementation.
+
+    //region Remember focus after clear and rebuild.
+
+    private int focusedIndex = -1;
+
+    @Override
+    public void removeAllViews()
+    {
+        //
+        // Inspect childs and search for focused.
+        //
+
+        focusedIndex = -1;
+
+        for (int inx = 0; inx < getChildCount(); inx++)
+        {
+            if (getChildAt(inx).hasFocus())
+            {
+                focusedIndex = inx;
+                break;
+            }
+        }
+
+        super.removeAllViews();
+    }
+
+    @Override
+    public void addView(View view)
+    {
+        super.addView(view);
+
+        if (focusedIndex == (getChildCount() - 1))
+        {
+            view.requestFocus();
+        }
+    }
+
+    //endregion Remember focus after clear and rebuild.
 }

@@ -28,14 +28,35 @@ public class GUISetup
 
         BluetoothAdapter adapter = Simple.getBTAdapter();
         boolean btAdapter = (adapter != null);
-        boolean btAdapterEnabled = btAdapter && adapter.enable();
+        boolean btAdapterEnabled = btAdapter && adapter.isEnabled();
 
         Json.put(services, "ble", btAdapterEnabled);
 
         LocationManager locationManager = Simple.getLocationManager();
         boolean locmanEnabled = (locationManager != null);
+        boolean locgpsEnabled = false;
+        boolean locnetEnabled = false;
 
-        Json.put(services, "loc", locmanEnabled);
+        if (locmanEnabled)
+        {
+            try
+            {
+                locgpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            }
+            catch (Exception ignore)
+            {
+            }
+
+            try
+            {
+                locnetEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            }
+            catch (Exception ignore)
+            {
+            }
+        }
+
+        Json.put(services, "loc", locgpsEnabled | locnetEnabled);
 
         return services;
     }
