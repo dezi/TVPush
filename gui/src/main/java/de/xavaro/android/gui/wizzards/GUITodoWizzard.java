@@ -1,6 +1,7 @@
 package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
+import android.view.View;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,11 +37,44 @@ public class GUITodoWizzard extends GUIPluginTitleList
         {
             listView.removeAllViews();
 
+            checkServices();
             checkPermissions();
 
             Simple.getHandler().postDelayed(makeTodoList, 600 * 1000);
         }
     };
+
+    private void checkServices()
+    {
+        JSONObject services = GUISetup.getRequiredServices();
+
+        Iterator<String> keys = services.keys();
+
+        while (keys.hasNext())
+        {
+            String service = keys.next();
+            boolean enabled = Json.getBoolean(services, service);
+
+            if (listView.getChildCount() > 0)
+            {
+                listView.addView(new GUISeparatorView(getContext()));
+            }
+
+            GUIListEntry entry = new GUIListEntry(getContext());
+            entry.setOnClickListener(onServiceClickListener);
+            entry.setTag(service);
+
+            String head = Simple.getTrans(GUISetup.getTextServiceResid())
+                    + ": "
+                    + Simple.getTrans(GUISetup.getTextForServiceResid(service));
+
+            entry.iconView.setImageResource(GUISetup.getIconForServiceResid(service));
+            entry.headerViev.setText(head);
+            entry.infoView.setText(GUISetup.getTextForServiceEnabledResid(service, enabled));
+
+            listView.addView(entry);
+        }
+    }
 
     private void checkPermissions()
     {
@@ -83,4 +117,14 @@ public class GUITodoWizzard extends GUIPluginTitleList
             listView.addView(entry);
         }
     }
+
+    private OnClickListener onServiceClickListener = new OnClickListener()
+    {
+        @Override
+        public void onClick(View view)
+        {
+            String service = (String) view.getTag();
+            GUISetup.startIntentForService(view.getContext(), service);
+        }
+    };
 }

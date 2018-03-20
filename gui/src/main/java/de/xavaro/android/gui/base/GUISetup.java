@@ -1,10 +1,14 @@
 package de.xavaro.android.gui.base;
 
 import android.Manifest;
+import android.bluetooth.BluetoothAdapter;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 
 import org.json.JSONArray;
@@ -17,6 +21,24 @@ import de.xavaro.android.gui.R;
 public class GUISetup
 {
     private final static String LOGTAG = GUISetup.class.getSimpleName();
+
+    public static JSONObject getRequiredServices()
+    {
+        JSONObject services = new JSONObject();
+
+        BluetoothAdapter adapter = Simple.getBTAdapter();
+        boolean btAdapter = (adapter != null);
+        boolean btAdapterEnabled = btAdapter && adapter.enable();
+
+        Json.put(services, "ble", btAdapterEnabled);
+
+        LocationManager locationManager = Simple.getLocationManager();
+        boolean locmanEnabled = (locationManager != null);
+
+        Json.put(services, "loc", locmanEnabled);
+
+        return services;
+    }
 
     public static JSONObject getRequiredPermissions()
     {
@@ -101,6 +123,94 @@ public class GUISetup
         return (permission == PackageManager.PERMISSION_GRANTED);
     }
 
+    public static int getTextServiceResid()
+    {
+        return R.string.setup_services_service;
+    }
+
+    public static int getTextForServiceResid(String service)
+    {
+        switch (service)
+        {
+            case "ble": return R.string.setup_services_service_ble;
+            case "loc": return R.string.setup_services_service_loc;
+        }
+
+        return R.string.setup_services_service_ukn;
+    }
+
+    public static int getIconForServiceResid(String service)
+    {
+        switch (service)
+        {
+            case "ble": return R.drawable.bluetooth_450;
+            case "loc": return R.drawable.gps_530;
+        }
+
+        return -1;
+    }
+
+    public static int getTextForServiceEnabledResid(String service, boolean enabled)
+    {
+        if (service.equals("ble"))
+        {
+            return enabled
+                    ? R.string.setup_services_service_ble_active
+                    : R.string.setup_services_service_ble_inactive;
+        }
+
+        if (service.equals("loc"))
+        {
+            return enabled
+                    ? R.string.setup_services_service_loc_active
+                    : R.string.setup_services_service_loc_inactive;
+        }
+
+        return -1;
+    }
+
+    public static boolean startIntentForService(Context context, String service)
+    {
+        try
+        {
+            if (service.equals("loc"))
+            {
+                context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                return true;
+            }
+
+            if (service.equals("ble"))
+            {
+                if (Simple.isSony())
+                {
+                    //
+                    // Fuck dat. Sony engineers fucked it up.
+                    //
+
+                    String pkg = "com.android.tv.settings";
+                    String cls = "com.sony.dtv.settings.networkaccessories.bluetooth.BluetoothActivity";
+
+                    ComponentName cn = new ComponentName(pkg, cls);
+                    Intent intent = new Intent();
+                    intent.setComponent(cn);
+
+                    context.startActivity(intent);
+                }
+                else
+                {
+                    context.startActivity(new Intent(Settings.ACTION_BLUETOOTH_SETTINGS));
+                }
+
+                return true;
+            }
+        }
+        catch (Exception ex)
+        {
+        }
+
+        return false;
+    }
+
     public static int getTextPermissionResid()
     {
         return R.string.setup_permissions_permission;
@@ -125,9 +235,9 @@ public class GUISetup
         switch (area)
         {
             case "mic": return R.drawable.mic_540;
-            case "ext": return R.drawable.bluetooth_450;
+            case "ext": return Simple.isSony() ? R.drawable.usb_stick_400 : R.drawable.ssd_120;
             case "loc": return R.drawable.gps_530;
-            case "ble": return R.drawable.usb_stick_400;
+            case "ble": return R.drawable.bluetooth_450;
             case "cam": return R.drawable.camera_shutter_820;
         }
 

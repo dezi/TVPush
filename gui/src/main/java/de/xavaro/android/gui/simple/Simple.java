@@ -5,6 +5,8 @@ import android.annotation.SuppressLint;
 
 import android.app.Application;
 import android.app.UiModeManager;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,6 +25,7 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.TypedValue;
@@ -78,6 +81,8 @@ public class Simple
     private static PackageManager packageManager;
     private static LocationManager locationManager;
     private static ConnectivityManager connectivityManager;
+    private static BluetoothManager bluetoothManager;
+    private static BluetoothAdapter bluetoothAdapter;
 
     public static void initialize(Application app)
     {
@@ -100,6 +105,16 @@ public class Simple
 
             deviceWidth = size.x;
             deviceHeight = size.y;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+        {
+            bluetoothManager = (BluetoothManager) app.getSystemService(Context.BLUETOOTH_SERVICE);
+
+            if (bluetoothManager != null)
+            {
+                bluetoothAdapter = bluetoothManager.getAdapter();
+            }
         }
 
         deviceDensity = Resources.getSystem().getDisplayMetrics().density;
@@ -239,6 +254,18 @@ public class Simple
     public static LocationManager getLocationManager()
     {
         return locationManager;
+    }
+
+    @Nullable
+    public static BluetoothManager getBTManager()
+    {
+        return bluetoothManager;
+    }
+
+    @Nullable
+    public static BluetoothAdapter getBTAdapter()
+    {
+        return bluetoothAdapter;
     }
 
     public static String getConnectedWifiName()

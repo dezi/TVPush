@@ -1,5 +1,15 @@
 <resources>
-    <string name="app_name">gui</string>
+    <string name="setup_services_service">Dienst</string>
+
+    <string name="setup_services_service_ukn">Unbekannt</string>
+
+    <string name="setup_services_service_ble">Bluetooth</string>
+    <string name="setup_services_service_ble_active">Bluetooth ist aktiv</string>
+    <string name="setup_services_service_ble_inactive">Bluetooth ist nicht aktiviert</string>
+
+    <string name="setup_services_service_loc">Standort</string>
+    <string name="setup_services_service_loc_active">Standortstatus ist aktiv</string>
+    <string name="setup_services_service_loc_inactive">Standortstatus ist aus</string>
 
     <string name="setup_permissions_permission">Berechtigung</string>
 
