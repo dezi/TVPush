@@ -1,4 +1,4 @@
-package de.xavaro.android.gui.plugin;
+package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
 import android.widget.FrameLayout;

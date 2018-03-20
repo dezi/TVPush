@@ -66,14 +66,14 @@ public class Simple
     private static float deviceDensity;
 
     private static Handler handler;
+    private static SharedPreferences prefs;
+    private static ContentResolver contentResolver;
+
     private static WifiManager wifiManager;
     private static AudioManager audioManager;
     private static WindowManager windowManager;
     private static PackageManager packageManager;
     private static ConnectivityManager connectivityManager;
-
-    private static ContentResolver contentResolver;
-    private static SharedPreferences prefs;
 
     public static void initialize(Application app)
     {
@@ -434,12 +434,6 @@ public class Simple
 
             Log.d(LOGTAG, "dumpIntent: key=" + key + " value=" + value);
         }
-    }
-
-    public static boolean havePermission(Context context, String manifestperm)
-    {
-        int permission = ContextCompat.checkSelfPermission(context, manifestperm);
-        return (permission == PackageManager.PERMISSION_GRANTED);
     }
 
     public static void hideSoftKeyBoard(View view)

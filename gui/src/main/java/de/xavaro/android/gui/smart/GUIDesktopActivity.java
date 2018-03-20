@@ -7,19 +7,16 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.Gravity;
-import android.widget.FrameLayout;
 
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIActivity;
-import de.xavaro.android.gui.plugin.GUIChannelWizzard;
-import de.xavaro.android.gui.plugin.GUILocationWizzard;
+import de.xavaro.android.gui.wizzards.GUIChannelWizzard;
+import de.xavaro.android.gui.wizzards.GUILocationWizzard;
 import de.xavaro.android.gui.plugin.GUISpeechRecogniton;
-import de.xavaro.android.gui.plugin.GUITodoWizzard;
+import de.xavaro.android.gui.wizzards.GUITodoWizzard;
 import de.xavaro.android.gui.plugin.GUIVideoSurface;
 import de.xavaro.android.gui.simple.Simple;
 
-import de.xavaro.android.iot.base.IOT;
 import pub.android.interfaces.cam.Camera;
 
 public class GUIDesktopActivity extends GUIActivity
