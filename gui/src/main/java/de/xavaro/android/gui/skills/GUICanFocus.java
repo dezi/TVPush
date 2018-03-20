@@ -20,6 +20,8 @@ public interface GUICanFocus extends GUICanRoundedCorners
     void setToast(String toast);
     String getToast();
 
+    void onHighlightFinished(View view);
+
     View.OnFocusChangeListener getOnFocusChangeListener();
     void setOnFocusChangeListener(View.OnFocusChangeListener onFocusChangeListener);
 }

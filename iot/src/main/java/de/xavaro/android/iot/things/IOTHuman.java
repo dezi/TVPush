@@ -66,7 +66,7 @@ public class IOTHuman extends IOTObject
         }
     }
 
-    public void checkAndMergeContent(IOTHuman check, boolean external)
+    public boolean checkAndMergeContent(IOTHuman check, boolean external)
     {
         changedSys = false;
 
@@ -86,6 +86,6 @@ public class IOTHuman extends IOTObject
             // @formatter:on
         }
 
-        saveIfChanged();
+        return saveIfChanged();
     }
 }

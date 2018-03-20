@@ -36,7 +36,7 @@ public class IOTDomain extends IOTObject
         super(jsonstr, dummy);
     }
 
-    public void checkAndMergeContent(IOTDomain check, boolean external)
+    public boolean checkAndMergeContent(IOTDomain check, boolean external)
     {
         // @formatter:off
 
@@ -70,6 +70,6 @@ public class IOTDomain extends IOTObject
             // @formatter:on
         }
 
-        saveIfChanged();
+        return saveIfChanged();
     }
 }

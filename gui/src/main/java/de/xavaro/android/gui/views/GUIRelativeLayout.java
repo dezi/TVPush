@@ -158,6 +158,8 @@ public class GUIRelativeLayout extends RelativeLayout implements
 
     //endregion Skills implementation.
 
+    //region Focus implementation.
+
     private String toast;
     private boolean hasfocus;
     private boolean focusable;
@@ -229,4 +231,10 @@ public class GUIRelativeLayout extends RelativeLayout implements
 
         setFocusable(onClickListener != null);
     }
+
+    public void onHighlightFinished(View view)
+    {
+    }
+
+    //endregion Focus implementation.
 }

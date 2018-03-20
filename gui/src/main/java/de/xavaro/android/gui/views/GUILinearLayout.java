@@ -157,6 +157,8 @@ public class GUILinearLayout extends LinearLayout implements
 
     //endregion Skills implementation.
 
+    //region Focus implementation.
+
     private String toast;
     private boolean hasfocus;
     private boolean focusable;
@@ -228,4 +230,10 @@ public class GUILinearLayout extends LinearLayout implements
 
         setFocusable(onClickListener != null);
     }
+
+    public void onHighlightFinished(View view)
+    {
+    }
+
+    //endregion Focus implementation.
 }

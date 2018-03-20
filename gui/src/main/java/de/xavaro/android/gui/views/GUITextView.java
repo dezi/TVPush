@@ -165,6 +165,10 @@ public class GUITextView extends AppCompatTextView implements
         canRC.restoreBackground();
     }
 
+    //endregion Skills implementation.
+
+    //region Focus implementation.
+
     private String toast;
     private boolean hasfocus;
     private boolean focusable;
@@ -237,5 +241,9 @@ public class GUITextView extends AppCompatTextView implements
         setFocusable(onClickListener != null);
     }
 
-    //endregion Skills implementation.
+    public void onHighlightFinished(View view)
+    {
+    }
+
+    //endregion Focus implementation.
 }

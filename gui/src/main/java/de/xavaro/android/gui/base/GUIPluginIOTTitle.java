@@ -1,5 +1,6 @@
 package de.xavaro.android.gui.base;
 
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ImageView;
 import android.content.Context;
@@ -14,14 +15,14 @@ import de.xavaro.android.gui.views.GUITextView;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.R;
 
-public class GUIPluginTitle extends GUIPlugin
+public class GUIPluginIOTTitle extends GUIPluginIOT
 {
-    private final static String LOGTAG = GUIPluginTitle.class.getSimpleName();
+    private final static String LOGTAG = GUIPluginIOTTitle.class.getSimpleName();
 
     private GUITextView titleText;
     private GUIEditText titleEdit;
 
-    public GUIPluginTitle(Context context)
+    public GUIPluginIOTTitle(Context context)
     {
         super(context);
 
@@ -59,7 +60,15 @@ public class GUIPluginTitle extends GUIPlugin
 
         titleCenter.addView(titleText);
 
-        titleEdit = new GUIEditText(context);
+        titleEdit = new GUIEditText(context)
+        {
+            @Override
+            public void onHighlightFinished(View view)
+            {
+                onTitleEditFinished(view);
+            }
+        };
+
         titleEdit.setSizeDip(Simple.MP, Simple.WC);
         titleEdit.setPaddingDip(20, 5, 20, 5);
         titleEdit.setTextSizeDip(16);
@@ -93,5 +102,9 @@ public class GUIPluginTitle extends GUIPlugin
         titleEdit.setText(text);
         titleEdit.setHint(hint);
         titleEdit.setToast(toast);
+    }
+
+    public void onTitleEditFinished(View view)
+    {
     }
 }

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.text.InputType;
 import android.util.TypedValue;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.ViewGroup;
 
 import de.xavaro.android.gui.simple.Simple;
@@ -169,6 +170,10 @@ public class GUIEditText extends AppCompatEditText implements
         canRC.restoreBackground();
     }
 
+    //endregion Skills implementation.
+
+    //region Focus implementation.
+
     private String toast;
     private boolean hasfocus;
     private boolean focusable;
@@ -246,5 +251,9 @@ public class GUIEditText extends AppCompatEditText implements
         return GUICanFocusDelegate.onKeyDown(this, keyCode, event);
     }
 
-    //endregion Skills implementation.
+    public void onHighlightFinished(View view)
+    {
+    }
+
+    //endregion Focus implementation.
 }

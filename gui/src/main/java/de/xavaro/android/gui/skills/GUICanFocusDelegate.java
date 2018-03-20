@@ -3,7 +3,6 @@ package de.xavaro.android.gui.skills;
 import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.EditText;
 
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIDefs;
