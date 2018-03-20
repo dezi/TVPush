@@ -10,7 +10,7 @@ public class GUIPlugin extends GUIFrameLayout
 {
     private final static String LOGTAG = GUIPlugin.class.getSimpleName();
 
-    public final static int DEFAULT_LEFT = 100;
+    public final static int DEFAULT_LEFT = 50;
     public final static int DEFAULT_TOP = 100;
 
     public final static int DEFAULT_WIDTH = 500;

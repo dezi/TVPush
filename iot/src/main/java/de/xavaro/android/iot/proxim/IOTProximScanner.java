@@ -39,6 +39,8 @@ public class IOTProximScanner
 {
     private static final String LOGTAG = IOTProximScanner.class.getSimpleName();
 
+    private final boolean debug = false;
+
     //
     // adb shell setprop log.tag.ScanRecord WARN
     // adb shell setprop log.tag.ScanRecord VERBOSE
@@ -52,8 +54,17 @@ public class IOTProximScanner
 
             IOT.instance.proximScanner.startLEScanner();
 
-            //IOT.instance.proximScanner.startReceiver();
-            //IOT.instance.proximScanner.startDiscovery();
+            if (Simple.isSony())
+            {
+                //
+                // Fucked up BLE daemons by Sony.
+                // They tend to work better, if a
+                // legacy scan is also requested.
+                //
+
+                IOT.instance.proximScanner.startReceiver();
+                IOT.instance.proximScanner.startDiscovery();
+            }
         }
     }
 
@@ -76,7 +87,6 @@ public class IOTProximScanner
     private BluetoothLeScanner scanner;
 
     private final Map<String, Long> lastUpdates = new HashMap<>();
-    private final Map<String, String> mac2Name = new HashMap<>();
 
     public IOTProximScanner(Context context)
     {
@@ -171,16 +181,13 @@ public class IOTProximScanner
             {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
+                /*
                 Log.d(LOGTAG, "onReceive: found"
                         + " mac=" + device.getAddress()
                         + " name=" + device.getName()
                         + " intent=" + intent.getExtras()
                 );
-
-                if (device.getName() != null)
-                {
-                    mac2Name.put(device.getAddress(), device.getName());
-                }
+                */
             }
         }
     };
@@ -291,16 +298,19 @@ public class IOTProximScanner
             txpo = result.getScanRecord().getTxPowerLevel();
         }
 
-        Log.d(LOGTAG, "evaluateScan: ALT"
-                + " rssi=" + rssi
-                + " txpo=" + txpo
-                + " addr=" + result.getDevice().getAddress()
-                + " vend=" + Simple.padZero(vendor, 4)
-                + " name=" + result.getDevice().getName()
-                + " uuid=" + serviceUuid
-                + " data=" + serviceDataUuid
-                + " scan=" + result.getScanRecord()
-        );
+        if (debug)
+        {
+            Log.d(LOGTAG, "evaluateScan: ALT"
+                    + " rssi=" + rssi
+                    + " txpo=" + txpo
+                    + " addr=" + result.getDevice().getAddress()
+                    + " vend=" + Simple.padZero(vendor, 4)
+                    + " name=" + result.getDevice().getName()
+                    + " uuid=" + serviceUuid
+                    + " data=" + serviceDataUuid
+                    + " scan=" + result.getScanRecord()
+            );
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -632,12 +642,6 @@ public class IOTProximScanner
 
                 if (dataType == 16)
                 {
-                    //
-                    // It could be a mac. Register
-                    // if the mac2name cache gives
-                    // a hit.
-                    //
-
                     name = result.getDevice().getName();
                     txpo = -22;
 

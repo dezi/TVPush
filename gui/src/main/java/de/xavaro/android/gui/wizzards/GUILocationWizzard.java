@@ -21,6 +21,7 @@ import de.xavaro.android.gui.base.GUI;
 
 import de.xavaro.android.gui.simple.Simple;
 
+import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTDevice;
@@ -43,7 +44,7 @@ public class GUILocationWizzard extends GUIPluginTitleIOT
     {
         super(context);
 
-        setPluginPositionDip(500, DEFAULT_TOP);
+        setPluginPositionDip(400, DEFAULT_TOP);
 
         mapFrame = new GUIFrameLayout(context)
         {
@@ -55,7 +56,9 @@ public class GUILocationWizzard extends GUIPluginTitleIOT
         };
 
         mapFrame.setSizeDip(Simple.MP, Simple.MP);
+        mapFrame.setHighlightable(true);
         mapFrame.setFocusable(true);
+
         mapFrame.setToast("Drücken Sie " + GUIDefs.UTF_OK + " um das TV-Gerät zu positionieren");
 
         contentFrame.addView(mapFrame);
@@ -155,18 +158,51 @@ public class GUILocationWizzard extends GUIPluginTitleIOT
                             device.fixedLatFine,
                             device.fixedLonFine,
                             device.fixedAltFine);
+
+                    return;
                 }
-                else
+
+                if ((device.fixedLatCoarse != null)
+                        && (device.fixedLonCoarse != null)
+                        && (device.fixedAltCoarse != null))
                 {
-                    if ((device.fixedLatCoarse != null)
-                            && (device.fixedLonCoarse != null)
-                            && (device.fixedAltCoarse != null))
-                    {
-                        setCoordinates(
-                                device.fixedLatCoarse,
-                                device.fixedLonCoarse,
-                                device.fixedAltCoarse);
-                    }
+                    setCoordinates(
+                            device.fixedLatCoarse,
+                            device.fixedLonCoarse,
+                            device.fixedAltCoarse);
+
+                    return;
+                }
+            }
+
+            //
+            // Fallback to running device.
+            //
+
+            if ((IOT.device != null) && IOT.device.hasCapability("fixed"))
+            {
+                if ((IOT.device.fixedLatFine != null)
+                        && (IOT.device.fixedLonFine != null)
+                        && (IOT.device.fixedAltFine != null))
+                {
+                    setCoordinates(
+                            IOT.device.fixedLatFine,
+                            IOT.device.fixedLonFine,
+                            IOT.device.fixedAltFine);
+
+                    return;
+                }
+
+                if ((IOT.device.fixedLatCoarse != null)
+                        && (IOT.device.fixedLonCoarse != null)
+                        && (IOT.device.fixedAltCoarse != null))
+                {
+                    setCoordinates(
+                            IOT.device.fixedLatCoarse,
+                            IOT.device.fixedLonCoarse,
+                            IOT.device.fixedAltCoarse);
+
+                    return;
                 }
             }
         }

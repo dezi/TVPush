@@ -51,6 +51,7 @@ public class Simple
 
     private static boolean istv;
     private static boolean isgps;
+    private static boolean issony;
     private static boolean istouch;
     private static boolean istablet;
     private static boolean iswidescreen;
@@ -111,6 +112,7 @@ public class Simple
         UiModeManager uiModeManager = (UiModeManager) app.getSystemService(Context.UI_MODE_SERVICE);
         istv = (uiModeManager != null) && (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION);
 
+        issony = istv && getDeviceModelName().startsWith("BRAVIA");
         iscamera = packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA);
         istouch = packageManager.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN);
         isgps = packageManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS);
@@ -129,6 +131,11 @@ public class Simple
     public static boolean isTV()
     {
         return istv;
+    }
+
+    public static boolean isSony()
+    {
+        return issony;
     }
 
     public static boolean isGps()
