@@ -59,7 +59,7 @@ public class GUILocationWizzard extends GUIPluginTitleIOT
             @Override
             public boolean onKeyDown(int keyCode, KeyEvent event)
             {
-                return onKeyDownDoit(keyCode, event);
+                return onKeyDownDoit(keyCode, event) || super.onKeyDown(keyCode, event);
             }
 
             @Override
@@ -105,8 +105,9 @@ public class GUILocationWizzard extends GUIPluginTitleIOT
 
     public void setCoordinates(Double lat, Double lon, Float alt)
     {
-        altitude = alt;
         coordinates = new LatLng(lat, lon);
+        altitude = alt;
+
         zoom = GUIDefs.MAP_INITIAL_ZOOM;
 
         mapView.getMapAsync(new OnMapReadyCallback()
@@ -118,11 +119,17 @@ public class GUILocationWizzard extends GUIPluginTitleIOT
 
                 map = googleMap;
 
-                marker = googleMap.addMarker(new MarkerOptions()
-                        .position(coordinates)
-                        .title("Marker"));
+                if (marker == null)
+                {
+                    marker = map.addMarker(new MarkerOptions().position(coordinates));
+                }
+                else
+                {
+                    marker.setPosition(coordinates);
+                }
 
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, zoom));
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinates, zoom));
+
                 mapView.onResume();
             }
         });
