@@ -1,7 +1,10 @@
 package de.xavaro.android.gui.base;
 
 import android.content.Context;
+import android.view.View;
 
+import de.xavaro.android.gui.R;
+import de.xavaro.android.gui.views.GUIEditText;
 import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTDevice;
@@ -13,13 +16,13 @@ import de.xavaro.android.iot.things.IOTHumans;
 import de.xavaro.android.iot.things.IOTLocation;
 import de.xavaro.android.iot.things.IOTLocations;
 
-public class GUIPluginIOT extends GUIPlugin
+public class GUIPluginTitleIOT extends GUIPluginTitle
 {
-    private final static String LOGTAG = GUIPluginIOT.class.getSimpleName();
+    private final static String LOGTAG = GUIPluginTitleIOT.class.getSimpleName();
 
     public IOTObject iotObject;
 
-    public GUIPluginIOT(Context context)
+    public GUIPluginTitleIOT(Context context)
     {
         super(context);
     }
@@ -27,6 +30,20 @@ public class GUIPluginIOT extends GUIPlugin
     public void setIOTObject(IOTObject iotObject)
     {
         this.iotObject = iotObject;
+
+        if (iotObject instanceof IOTDevice)
+        {
+            String hint = "Bitte Nicknamen hier eintragen";
+
+            String toast = "Sprechen Sie jetzt die Nicknamen ein"
+                    + " oder drücken Sie "
+                    + GUIDefs.UTF_OK
+                    + " zum Bearbeiten";
+
+            setTitleIcon(R.drawable.device_tv_100);
+            setTitleText(((IOTDevice) iotObject).name);
+            setTitleEdit(((IOTDevice) iotObject).nick, hint, toast);
+        }
     }
 
     public int saveIOTObject(IOTObject iotObjectChanged)
@@ -70,5 +87,25 @@ public class GUIPluginIOT extends GUIPlugin
         }
 
         return saved;
+    }
+
+    private int saveNick(String newNick)
+    {
+        if (iotObject instanceof IOTDevice)
+        {
+            IOTDevice saveme = new IOTDevice(iotObject.uuid);
+
+            saveme.nick = newNick;
+
+            return saveIOTObject(saveme);
+        }
+
+        return IOTDefs.IOT_SAVE_FAILED;
+    }
+
+    @Override
+    public void onTitleEditFinished(View view)
+    {
+        saveNick(((GUIEditText) view).getText().toString());
     }
 }

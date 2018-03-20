@@ -1,5 +1,6 @@
 package de.xavaro.android.gui.base;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ImageView;
@@ -13,19 +14,16 @@ import de.xavaro.android.gui.views.GUIImageView;
 import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUITextView;
 import de.xavaro.android.gui.simple.Simple;
-import de.xavaro.android.gui.R;
-import de.xavaro.android.iot.base.IOTDefs;
-import de.xavaro.android.iot.base.IOTObject;
-import de.xavaro.android.iot.things.IOTDevice;
 
-public class GUIPluginIOTTitle extends GUIPluginIOT
+public class GUIPluginTitle extends GUIPlugin
 {
-    private final static String LOGTAG = GUIPluginIOTTitle.class.getSimpleName();
+    private final static String LOGTAG = GUIPluginTitle.class.getSimpleName();
 
     private GUITextView titleText;
     private GUIEditText titleEdit;
+    private GUIImageView titleIcon;
 
-    public GUIPluginIOTTitle(Context context)
+    public GUIPluginTitle(Context context)
     {
         super(context);
 
@@ -42,8 +40,7 @@ public class GUIPluginIOTTitle extends GUIPluginIOT
 
         splitterFrame.addView(titleFrame);
 
-        GUIImageView titleIcon = new GUIImageView(context);
-        titleIcon.setImageResource(R.drawable.device_tv_100);
+        titleIcon = new GUIImageView(context);
         titleIcon.setScaleType(ImageView.ScaleType.FIT_XY);
         titleIcon.setSizeDip(50, 50);
         titleIcon.setPaddingDip(GUIDefs.PADDING_SMALL);
@@ -75,8 +72,9 @@ public class GUIPluginIOTTitle extends GUIPluginIOT
         titleEdit.setSizeDip(Simple.MP, Simple.WC);
         titleEdit.setPaddingDip(GUIDefs.PADDING_SMALL);
         titleEdit.setTextSizeDip(GUIDefs.FONTSIZE_HEADERS);
-        titleEdit.setFocusable(true);
-        titleEdit.setHighlightable(true);
+        titleEdit.setHighlightable(false);
+        titleEdit.setFocusable(false);
+        titleEdit.setVisibility(GONE);
 
         titleCenter.addView(titleEdit);
 
@@ -86,23 +84,9 @@ public class GUIPluginIOTTitle extends GUIPluginIOT
         splitterFrame.addView(contentFrame);
     }
 
-    @Override
-    public void setIOTObject(IOTObject iotObject)
+    public void setTitleIcon(int resid)
     {
-        super.setIOTObject(iotObject);
-
-        if (iotObject instanceof IOTDevice)
-        {
-            String hint = "Bitte Nicknamen hier eintragen";
-
-            String toast = "Sprechen Sie jetzt die Nicknamen ein"
-                    + " oder drücken Sie "
-                    + GUIDefs.UTF_OK
-                    + " zum Bearbeiten";
-
-            setTitleText(((IOTDevice) iotObject).name);
-            setTitleEdit(((IOTDevice) iotObject).nick, hint, toast);
-        }
+        titleIcon.setImageResource(resid);
     }
 
     public void setTitleText(String text)
@@ -124,24 +108,13 @@ public class GUIPluginIOTTitle extends GUIPluginIOT
         titleEdit.setText(text);
         titleEdit.setHint(hint);
         titleEdit.setToast(toast);
-    }
-
-    private int saveNick(String newNick)
-    {
-        if (iotObject instanceof IOTDevice)
-        {
-            IOTDevice saveme = new IOTDevice(iotObject.uuid);
-
-            saveme.nick = newNick;
-
-            return saveIOTObject(saveme);
-        }
-
-        return IOTDefs.IOT_SAVE_FAILED;
+        titleEdit.setFocusable(true);
+        titleEdit.setHighlightable(true);
+        titleEdit.setVisibility(VISIBLE);
     }
 
     public void onTitleEditFinished(View view)
     {
-        saveNick(((GUIEditText) view).getText().toString());
+        Log.d(LOGTAG, "onTitleEditFinished: STUB!");
     }
 }

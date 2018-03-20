@@ -1,6 +1,5 @@
 package de.xavaro.android.gui.base;
 
-import android.widget.FrameLayout;
 import android.content.Context;
 
 import de.xavaro.android.gui.simple.Simple;
@@ -9,6 +8,9 @@ import de.xavaro.android.gui.views.GUIFrameLayout;
 public class GUIPlugin extends GUIFrameLayout
 {
     private final static String LOGTAG = GUIPlugin.class.getSimpleName();
+
+    public final static int DEFAULT_LEFT = 100;
+    public final static int DEFAULT_TOP = 100;
 
     public final static int DEFAULT_WIDTH = 500;
     public final static int DEFAULT_HEIGTH = 300;
@@ -19,8 +21,10 @@ public class GUIPlugin extends GUIFrameLayout
     {
         super(context);
 
+        this.setPluginSizeDip(DEFAULT_WIDTH, DEFAULT_HEIGTH);
+        this.setPluginPositionDip(DEFAULT_LEFT, DEFAULT_TOP);
+
         contentFrame = this;
-        contentFrame.setSizeDip(DEFAULT_WIDTH, DEFAULT_HEIGTH);
     }
 
     public void onStart()

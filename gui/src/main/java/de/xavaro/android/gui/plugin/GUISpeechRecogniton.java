@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.FrameLayout;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -95,6 +96,11 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
         }
 
         GUI.instance.speechListener.setCallback(this);
+    }
+
+    public FrameLayout.LayoutParams getPreferredLayout()
+    {
+        return new FrameLayout.LayoutParams(Simple.MP, Simple.WC, Gravity.BOTTOM);
     }
 
     @Override

@@ -15,6 +15,7 @@ import de.xavaro.android.gui.base.GUIActivity;
 import de.xavaro.android.gui.plugin.GUIChannelWizzard;
 import de.xavaro.android.gui.plugin.GUILocationWizzard;
 import de.xavaro.android.gui.plugin.GUISpeechRecogniton;
+import de.xavaro.android.gui.plugin.GUITodoWizzard;
 import de.xavaro.android.gui.plugin.GUIVideoSurface;
 import de.xavaro.android.gui.simple.Simple;
 
@@ -26,8 +27,9 @@ public class GUIDesktopActivity extends GUIActivity
     private final static String LOGTAG = GUIDesktopActivity.class.getSimpleName();
 
     public GUISpeechRecogniton speechRecognition;
-    public GUIChannelWizzard channelWizzard;
     public GUILocationWizzard locationWizzard;
+    public GUIChannelWizzard channelWizzard;
+    public GUITodoWizzard todoWizzard;
 
     private GUIVideoSurface videoSurface1;
     private GUIVideoSurface videoSurface2;
@@ -43,24 +45,23 @@ public class GUIDesktopActivity extends GUIActivity
 
         speechRecognition = new GUISpeechRecogniton(this);
 
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(Simple.MP, Simple.WC, Gravity.BOTTOM);
-        topframe.addView(speechRecognition, lp);
+        topframe.addView(speechRecognition, speechRecognition.getPreferredLayout());
 
         locationWizzard = new GUILocationWizzard(this);
 
-        locationWizzard.setPluginPositionDip(100,100);
-        locationWizzard.setPluginSizeDip(GUILocationWizzard.DEFAULT_WIDTH, GUILocationWizzard.DEFAULT_HEIGTH);
-
+        /*
         if ((IOT.device != null) && IOT.device.hasCapability("fixed"))
         {
             locationWizzard.setIOTObject(IOT.device);
             topframe.addView(locationWizzard);
         }
+        */
 
         channelWizzard = new GUIChannelWizzard(this);
-        channelWizzard.setPluginPositionDip(50,100);
-        channelWizzard.setSizeDip(GUIChannelWizzard.WIDTH, GUIChannelWizzard.HEIGTH);
         //topframe.addView(channelWizzard);
+
+        todoWizzard = new GUITodoWizzard(this);
+        topframe.addView(todoWizzard);
 
         checkWindowSize();
 

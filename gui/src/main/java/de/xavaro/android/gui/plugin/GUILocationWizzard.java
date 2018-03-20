@@ -15,16 +15,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 import de.xavaro.android.gui.views.GUIFrameLayout;
-import de.xavaro.android.gui.base.GUIPluginIOTTitle;
-import de.xavaro.android.gui.base.GUI;
+import de.xavaro.android.gui.base.GUIPluginTitleIOT;
 import de.xavaro.android.gui.base.GUIDefs;
+import de.xavaro.android.gui.base.GUI;
+
 import de.xavaro.android.gui.simple.Simple;
 
 import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTDevice;
 
-public class GUILocationWizzard extends GUIPluginIOTTitle
+public class GUILocationWizzard extends GUIPluginTitleIOT
 {
     private final static String LOGTAG = GUILocationWizzard.class.getSimpleName();
 
