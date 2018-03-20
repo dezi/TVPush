@@ -13,6 +13,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.Context;
 import android.graphics.Point;
+import android.location.LocationManager;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -54,6 +55,7 @@ public class Simple
     //region Device features.
 
     private static boolean istv;
+    private static boolean issony;
     private static boolean istouch;
     private static boolean istablet;
     private static boolean iswidescreen;
@@ -74,6 +76,7 @@ public class Simple
     private static AudioManager audioManager;
     private static WindowManager windowManager;
     private static PackageManager packageManager;
+    private static LocationManager locationManager;
     private static ConnectivityManager connectivityManager;
 
     public static void initialize(Application app)
@@ -87,6 +90,7 @@ public class Simple
         wifiManager = (WifiManager) app.getSystemService(Context.WIFI_SERVICE);
         audioManager = (AudioManager) app.getSystemService(Context.AUDIO_SERVICE);
         windowManager = ((WindowManager) app.getSystemService(Context.WINDOW_SERVICE));
+        locationManager = (LocationManager) app.getSystemService(Context.LOCATION_SERVICE);
         connectivityManager = (ConnectivityManager) app.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         if (windowManager != null)
@@ -103,6 +107,7 @@ public class Simple
         UiModeManager uiModeManager = (UiModeManager) app.getSystemService(Context.UI_MODE_SERVICE);
         istv = (uiModeManager != null) && (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION);
 
+        issony = istv && getDeviceModelName().startsWith("BRAVIA");
         iscamera = packageManager.hasSystemFeature("android.hardware.camera");
         istouch = packageManager.hasSystemFeature("android.hardware.touchscreen");
 
@@ -120,6 +125,11 @@ public class Simple
     public static boolean isTV()
     {
         return istv;
+    }
+
+    public static boolean isSony()
+    {
+        return issony;
     }
 
     public static boolean isTouch()
@@ -224,6 +234,11 @@ public class Simple
     public static Handler getHandler()
     {
         return handler;
+    }
+
+    public static LocationManager getLocationManager()
+    {
+        return locationManager;
     }
 
     public static String getConnectedWifiName()

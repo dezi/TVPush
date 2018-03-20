@@ -3,6 +3,8 @@ package de.xavaro.android.gui.base;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
+import android.os.Build;
 import android.support.v4.content.ContextCompat;
 
 import org.json.JSONArray;
@@ -18,33 +20,55 @@ public class GUISetup
 
     public static JSONObject getRequiredPermissions()
     {
+        LocationManager locationManager = Simple.getLocationManager();
+
+        boolean gpsIsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean netIsEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
         JSONObject perms = new JSONObject();
 
         JSONArray mic = new JSONArray();
         Json.put(mic, Manifest.permission.RECORD_AUDIO);
+        Json.put(perms, "mic", mic);
 
         JSONArray ble = new JSONArray();
         Json.put(ble, Manifest.permission.BLUETOOTH);
         Json.put(ble, Manifest.permission.BLUETOOTH_ADMIN);
+        Json.put(perms, "ble", ble);
 
-        JSONArray loc = new JSONArray();
-        Json.put(loc, Manifest.permission.ACCESS_FINE_LOCATION);
-        Json.put(loc, Manifest.permission.ACCESS_COARSE_LOCATION);
+        if (netIsEnabled || gpsIsEnabled)
+        {
+            JSONArray loc = new JSONArray();
+
+            if (netIsEnabled)
+            {
+                Json.put(loc, Manifest.permission.ACCESS_COARSE_LOCATION);
+            }
+
+            if (gpsIsEnabled)
+            {
+                Json.put(loc, Manifest.permission.ACCESS_FINE_LOCATION);
+            }
+
+            Json.put(perms, "loc", loc);
+        }
 
         JSONArray ext = new JSONArray();
         Json.put(ext, Manifest.permission.READ_EXTERNAL_STORAGE);
         Json.put(ext, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        JSONArray cam = new JSONArray();
-        Json.put(cam, Manifest.permission.CAMERA);
-        Json.put(cam, Manifest.permission.CAPTURE_AUDIO_OUTPUT);
-        Json.put(cam, Manifest.permission.CAPTURE_VIDEO_OUTPUT);
-
-        Json.put(perms, "mic", mic);
-        Json.put(perms, "ble", ble);
-        Json.put(perms, "loc", loc);
         Json.put(perms, "ext", ext);
-        Json.put(perms, "cam", cam);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+        {
+            if (Simple.isIscamera())
+            {
+                JSONArray cam = new JSONArray();
+                Json.put(cam, Manifest.permission.CAMERA);
+                Json.put(cam, Manifest.permission.CAPTURE_AUDIO_OUTPUT);
+                Json.put(cam, Manifest.permission.CAPTURE_VIDEO_OUTPUT);
+                Json.put(perms, "cam", cam);
+            }
+        }
 
         return perms;
     }
