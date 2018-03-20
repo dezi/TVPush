@@ -495,7 +495,20 @@ public class Simple
         return String.format(resources.getString(resid), args);
     }
 
-    public static String getRounded(double val)
+    public static String getRounded3(double val)
+    {
+        DecimalFormat df = new DecimalFormat("#.###");
+        df.setRoundingMode(RoundingMode.CEILING);
+
+        return df.format(val);
+    }
+
+    public static String getRounded3(float val)
+    {
+        return getRounded3((double) val);
+    }
+
+    public static String getRounded6(double val)
     {
         DecimalFormat df = new DecimalFormat("#.######");
         df.setRoundingMode(RoundingMode.CEILING);
@@ -503,12 +516,9 @@ public class Simple
         return df.format(val);
     }
 
-    public static String getRounded(float val)
+    public static String getRounded6(float val)
     {
-        DecimalFormat df = new DecimalFormat("#.######");
-        df.setRoundingMode(RoundingMode.CEILING);
-
-        return df.format(val);
+        return getRounded6((double) val);
     }
 
     //endregion Smart helpers.

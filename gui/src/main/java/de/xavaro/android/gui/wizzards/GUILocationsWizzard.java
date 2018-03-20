@@ -25,7 +25,9 @@ public class GUILocationsWizzard extends GUIPluginTitleList
     {
         super(context);
 
-        setTitleIcon(R.drawable.todo_list_512);
+        setPluginSizeDip(300, DEFAULT_HEIGTH);
+
+        setTitleIcon(R.drawable.position_560);
         setTitleText("Verortung der Dinge");
 
         Simple.getHandler().post(makeEntryList);
@@ -77,11 +79,11 @@ public class GUILocationsWizzard extends GUIPluginTitleList
             if (isnice)
             {
                 info = ""
-                        + Simple.getRounded(device.fixedLatFine)
+                        + Simple.getRounded3(device.fixedLatFine)
                         + " "
-                        + Simple.getRounded(device.fixedLonFine)
+                        + Simple.getRounded3(device.fixedLonFine)
                         + " "
-                        + Simple.getRounded(device.fixedAltFine)
+                        + Simple.getRounded3(device.fixedAltFine)
                         + " m";
             }
 

@@ -60,7 +60,7 @@ public class GUIDesktopActivity extends GUIActivity
         //topframe.addView(permissionsWizzard);
 
         locationsWizzard = new GUILocationsWizzard(this);
-        topframe.addView(todoWizzard);
+        topframe.addView(locationsWizzard);
 
         checkWindowSize();
    }
