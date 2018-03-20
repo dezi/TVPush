@@ -30,7 +30,7 @@ public class GUILocationsWizzard extends GUIPluginTitleList
         setPluginSizeDip(300, DEFAULT_HEIGTH);
 
         setTitleIcon(R.drawable.position_560);
-        setTitleText("Verortung der Dinge");
+        setTitleText("Geo-Positionen");
 
         Simple.getHandler().post(makeEntryList);
     }
