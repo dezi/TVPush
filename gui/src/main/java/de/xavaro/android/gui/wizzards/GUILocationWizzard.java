@@ -43,6 +43,8 @@ public class GUILocationWizzard extends GUIPluginTitleIOT
     {
         super(context);
 
+        setPluginPositionDip(500, DEFAULT_TOP);
+
         mapFrame = new GUIFrameLayout(context)
         {
             @Override

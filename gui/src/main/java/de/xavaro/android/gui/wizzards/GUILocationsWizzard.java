@@ -6,6 +6,7 @@ import android.view.View;
 import org.json.JSONArray;
 
 import de.xavaro.android.gui.R;
+import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUIIcons;
 import de.xavaro.android.gui.base.GUIPluginTitleList;
@@ -14,6 +15,7 @@ import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUIListEntry;
 import de.xavaro.android.gui.views.GUISeparatorView;
+import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 
@@ -72,7 +74,7 @@ public class GUILocationsWizzard extends GUIPluginTitleList
 
             GUIListEntry entry = new GUIListEntry(listView.getContext());
             entry.setOnClickListener(onLocationSetClickListener);
-            entry.setTag(uuid);
+            entry.setTag(device);
 
             String info = "Keine Position";
 
@@ -104,6 +106,10 @@ public class GUILocationsWizzard extends GUIPluginTitleList
         @Override
         public void onClick(View view)
         {
+            IOTObject iotobject = (IOTObject) view.getTag();
+
+            GUI.instance.desktopActivity.locationWizzard.setIOTObject(iotobject);
+            GUI.instance.desktopActivity.displayLocationWizzard(true);
         }
     };
 }
