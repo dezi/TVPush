@@ -14,6 +14,8 @@ import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUITextView;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.R;
+import de.xavaro.android.iot.base.IOTObject;
+import de.xavaro.android.iot.things.IOTDevice;
 
 public class GUIPluginIOTTitle extends GUIPluginIOT
 {
@@ -81,6 +83,25 @@ public class GUIPluginIOTTitle extends GUIPluginIOT
         contentFrame.setSizeDip(Simple.MP, Simple.MP);
 
         splitterFrame.addView(contentFrame);
+    }
+
+    @Override
+    public void setIOTObject(IOTObject iotObject)
+    {
+        super.setIOTObject(iotObject);
+
+        if (iotObject instanceof IOTDevice)
+        {
+            String hint = "Bitte Nicknamen hier eintragen";
+
+            String toast = "Sprechen Sie jetzt die Nicknamen ein"
+                    + " oder drücken Sie "
+                    + GUIDefs.UTF_OK
+                    + " zum Bearbeiten";
+
+            setTitleText(((IOTDevice) iotObject).name);
+            setTitleEdit(((IOTDevice) iotObject).nick, hint, toast);
+        }
     }
 
     public void setTitleText(String text)

@@ -14,15 +14,14 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
+import de.xavaro.android.gui.views.GUIFrameLayout;
+import de.xavaro.android.gui.base.GUIPluginIOTTitle;
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIDefs;
-import de.xavaro.android.gui.base.GUIPluginIOTTitle;
 import de.xavaro.android.gui.simple.Simple;
 
-import de.xavaro.android.gui.views.GUIFrameLayout;
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTDevice;
-import de.xavaro.android.iot.things.IOTDevices;
 
 public class GUILocationWizzard extends GUIPluginIOTTitle
 {
@@ -143,21 +142,39 @@ public class GUILocationWizzard extends GUIPluginIOTTitle
         });
     }
 
+    @Override
     public void setIOTObject(IOTObject iotObject)
     {
-        this.iotObject = iotObject;
+        super.setIOTObject(iotObject);
 
         if (iotObject instanceof IOTDevice)
         {
-            String hint = "Bitte Nicknamen hier eintragen";
+            IOTDevice device = (IOTDevice) iotObject;
 
-            String toast = "Sprechen Sie jetzt die Nicknamen ein"
-                    + " oder drücken Sie "
-                    + GUIDefs.UTF_OK
-                    + " zum Bearbeiten";
-
-            setTitleText(((IOTDevice) iotObject).name);
-            setTitleEdit(((IOTDevice) iotObject).nick, hint, toast);
+            if (device.hasCapability("fixed"))
+            {
+                if ((device.fixedLatFine != null)
+                        && (device.fixedLonFine != null)
+                        && (device.fixedAltFine != null))
+                {
+                    setCoordinates(
+                            device.fixedLatFine,
+                            device.fixedLonFine,
+                            device.fixedAltFine);
+                }
+                else
+                {
+                    if ((device.fixedLatCoarse != null)
+                            && (device.fixedLonCoarse != null)
+                            && (device.fixedAltCoarse != null))
+                    {
+                        setCoordinates(
+                                device.fixedLatCoarse,
+                                device.fixedLonCoarse,
+                                device.fixedAltCoarse);
+                    }
+                }
+            }
         }
     }
 

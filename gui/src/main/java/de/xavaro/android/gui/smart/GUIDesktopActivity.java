@@ -51,35 +51,10 @@ public class GUIDesktopActivity extends GUIActivity
         locationWizzard.setPluginPositionDip(100,100);
         locationWizzard.setPluginSizeDip(GUILocationWizzard.DEFAULT_WIDTH, GUILocationWizzard.DEFAULT_HEIGTH);
 
-        topframe.addView(locationWizzard);
-
         if ((IOT.device != null) && IOT.device.hasCapability("fixed"))
         {
-            if ((IOT.device.fixedLatFine != null)
-                    && (IOT.device.fixedLonFine != null)
-                    && (IOT.device.fixedAltFine != null))
-            {
-                locationWizzard.setIOTObject(IOT.device);
-
-                locationWizzard.setCoordinates(
-                        IOT.device.fixedLatFine,
-                        IOT.device.fixedLonFine,
-                        IOT.device.fixedAltFine);
-            }
-            else
-            {
-                if ((IOT.device.fixedLatCoarse != null)
-                        && (IOT.device.fixedLonCoarse != null)
-                        && (IOT.device.fixedAltCoarse != null))
-                {
-                    locationWizzard.setIOTObject(IOT.device);
-
-                    locationWizzard.setCoordinates(
-                            IOT.device.fixedLatCoarse,
-                            IOT.device.fixedLonCoarse,
-                            IOT.device.fixedAltCoarse);
-                }
-            }
+            locationWizzard.setIOTObject(IOT.device);
+            topframe.addView(locationWizzard);
         }
 
         channelWizzard = new GUIChannelWizzard(this);
