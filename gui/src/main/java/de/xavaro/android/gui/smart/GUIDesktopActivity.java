@@ -61,29 +61,6 @@ public class GUIDesktopActivity extends GUIActivity
         topframe.addView(todoWizzard);
 
         checkWindowSize();
-
-        //Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        //startActivityForResult(enableIntent, 1234);
-
-        /*
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.BLUETOOTH_ADMIN},
-                4711);
-        */
-
-        int permission = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        boolean isGranted = (permission == PackageManager.PERMISSION_GRANTED);
-
-        if (! isGranted)
-        {
-            Log.d(LOGTAG, "############ isGranted=" + isGranted);
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    4711);
-        }
     }
 
     @Override
