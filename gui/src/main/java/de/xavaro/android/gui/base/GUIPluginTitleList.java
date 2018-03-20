@@ -10,8 +10,8 @@ public class GUIPluginTitleList extends GUIPluginTitle
 {
     private final static String LOGTAG = GUIPluginTitleList.class.getSimpleName();
 
-    private GUIScrollView scrollView;
-    private GUILinearLayout listView;
+    public GUIScrollView scrollView;
+    public GUILinearLayout listView;
 
     public GUIPluginTitleList(Context context)
     {

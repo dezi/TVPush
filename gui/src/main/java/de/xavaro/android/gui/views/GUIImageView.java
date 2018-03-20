@@ -1,9 +1,14 @@
 package de.xavaro.android.gui.views;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.AppCompatImageView;
 import android.graphics.drawable.Drawable;
 import android.content.Context;
+import android.util.Log;
 import android.view.ViewGroup;
+
+import java.io.InputStream;
 
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.skills.GUICanDip;
@@ -17,6 +22,8 @@ public class GUIImageView extends AppCompatImageView implements
         GUICanRoundedCorners,
         GUICanRestoreBackground
 {
+    private final static String LOGTAG = GUIImageView.class.getSimpleName();
+
     public GUIImageView(Context context)
     {
         super(context);
@@ -150,4 +157,28 @@ public class GUIImageView extends AppCompatImageView implements
     }
 
     //endregion Skills implementation.
+
+    @Override
+    public void setImageResource(int resid)
+    {
+        //
+        // Fuck dat. Fucking ImageView takes some
+        // wrong resolution. Looks like shit.
+        //
+        // Fuck dat "+" + resid makes it read from
+        // R.drawable. Otherwise nagging shit.
+        //
+
+        InputStream is = getResources().openRawResource(+resid);
+        Bitmap bitmap = BitmapFactory.decodeStream(is);
+
+        /*
+        Log.d(LOGTAG, "setImageResource:"
+                + " width=" + bitmap.getWidth()
+                + " height=" + bitmap.getHeight()
+        );
+        */
+
+        setImageBitmap(bitmap);
+    }
 }

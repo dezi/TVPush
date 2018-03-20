@@ -29,6 +29,7 @@ public class GUIDefs
     public final static int FONTSIZE_LARGE   = Simple.isTablet() ? 36 : 30;
     public final static int FONTSIZE_SPEECH  = Simple.isTablet() ? 24 : 30;
     public final static int FONTSIZE_HEADERS = Simple.isTablet() ? 16 : 16;
+    public final static int FONTSIZE_INFOS   = Simple.isTablet() ? 14 : 12;
 
     public final static int COLOR_LIGHT_TRANSPARENT  = 0x22000000;
     public final static int COLOR_MEDIUM_TRANSPARENT = 0x44000000;
@@ -37,6 +38,9 @@ public class GUIDefs
 
     public static final int COLOR_TV_FOCUS           = 0xffffcc00;
     public static final int COLOR_TV_FOCUS_HIGHLIGHT = 0xffff0000;
+
+    public static final int ICON_SIZE = Simple.isTablet() ? 50 : 50;
+    public static final int ICON_PADD = PADDING_SMALL;
 
     //
     // Nice characters.

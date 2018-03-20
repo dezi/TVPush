@@ -8,17 +8,13 @@ import java.util.Iterator;
 
 import de.xavaro.android.gui.base.GUIPluginTitleList;
 import de.xavaro.android.gui.base.GUISetup;
-import de.xavaro.android.gui.views.GUILinearLayout;
-import de.xavaro.android.gui.views.GUIScrollView;
+import de.xavaro.android.gui.views.GUIListEntry;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.R;
 
 public class GUITodoWizzard extends GUIPluginTitleList
 {
     private final static String LOGTAG = GUITodoWizzard.class.getSimpleName();
-
-    private GUIScrollView scrollView;
-    private GUILinearLayout listView;
 
     public GUITodoWizzard(Context context)
     {
@@ -35,6 +31,8 @@ public class GUITodoWizzard extends GUIPluginTitleList
         @Override
         public void run()
         {
+            listView.removeAllViews();
+
             checkPermissions();
 
             Simple.getHandler().postDelayed(makeTodoList, 600 * 1000);
@@ -51,6 +49,41 @@ public class GUITodoWizzard extends GUIPluginTitleList
         {
             String key = keys.next();
 
+            GUIListEntry entry = new GUIListEntry(getContext());
+
+            entry.headerViev.setText(key + "????");
+
+            if (key.equals("mic"))
+            {
+                entry.iconView.setImageResource(R.drawable.mic_540);
+                entry.headerViev.setText("Berechtigung Mikrofon");
+            }
+
+            if (key.equals("ble"))
+            {
+                entry.iconView.setImageResource(R.drawable.bluetooth_450);
+                entry.headerViev.setText("Berechtigung Bluetooth");
+            }
+
+            if (key.equals("loc"))
+            {
+                entry.iconView.setImageResource(R.drawable.gps_530);
+                entry.headerViev.setText("Berechtigung Geoposition");
+            }
+
+            if (key.equals("ext"))
+            {
+                entry.iconView.setImageResource(R.drawable.usb_stick_400);
+                entry.headerViev.setText("Berechtigung Speicher");
+            }
+
+            if (key.equals("cam"))
+            {
+                entry.iconView.setImageResource(R.drawable.camera_shutter_820);
+                entry.headerViev.setText("Berechtigung Kamera");
+            }
+
+            listView.addView(entry);
         }
     }
 }

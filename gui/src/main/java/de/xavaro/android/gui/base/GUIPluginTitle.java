@@ -10,6 +10,7 @@ import android.view.Gravity;
 
 import de.xavaro.android.gui.views.GUIEditText;
 import de.xavaro.android.gui.views.GUIFrameLayout;
+import de.xavaro.android.gui.views.GUIIconView;
 import de.xavaro.android.gui.views.GUIImageView;
 import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUITextView;
@@ -21,7 +22,7 @@ public class GUIPluginTitle extends GUIPlugin
 
     private GUITextView titleText;
     private GUIEditText titleEdit;
-    private GUIImageView titleIcon;
+    private GUIIconView titleIcon;
 
     public GUIPluginTitle(Context context)
     {
@@ -40,11 +41,7 @@ public class GUIPluginTitle extends GUIPlugin
 
         splitterFrame.addView(titleFrame);
 
-        titleIcon = new GUIImageView(context);
-        titleIcon.setScaleType(ImageView.ScaleType.FIT_XY);
-        titleIcon.setSizeDip(50, 50);
-        titleIcon.setPaddingDip(GUIDefs.PADDING_SMALL);
-
+        titleIcon = new GUIIconView(context);
         titleFrame.addView(titleIcon);
 
         GUILinearLayout titleCenter = new GUILinearLayout(context);

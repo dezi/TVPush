@@ -39,10 +39,10 @@ public class GUISetup
         Json.put(cam, Manifest.permission.CAPTURE_VIDEO_OUTPUT);
 
         Json.put(perms, "mic", mic);
-        Json.put(perms, "ble", mic);
-        Json.put(perms, "loc", mic);
-        Json.put(perms, "ext", mic);
-        Json.put(perms, "cam", mic);
+        Json.put(perms, "ble", ble);
+        Json.put(perms, "loc", loc);
+        Json.put(perms, "ext", ext);
+        Json.put(perms, "cam", cam);
 
         return perms;
     }
