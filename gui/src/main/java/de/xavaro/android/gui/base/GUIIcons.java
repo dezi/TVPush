@@ -7,7 +7,7 @@ import de.xavaro.android.iot.things.IOTHuman;
 import de.xavaro.android.iot.things.IOTLocation;
 import de.xavaro.android.gui.R;
 
-public class GUIIcon
+public class GUIIcons
 {
     public static int getImageResid(IOTObject iotobject)
     {

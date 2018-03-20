@@ -38,6 +38,8 @@ import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -491,6 +493,22 @@ public class Simple
     public static String getTrans(int resid, Object... args)
     {
         return String.format(resources.getString(resid), args);
+    }
+
+    public static String getRounded(double val)
+    {
+        DecimalFormat df = new DecimalFormat("#.######");
+        df.setRoundingMode(RoundingMode.CEILING);
+
+        return df.format(val);
+    }
+
+    public static String getRounded(float val)
+    {
+        DecimalFormat df = new DecimalFormat("#.######");
+        df.setRoundingMode(RoundingMode.CEILING);
+
+        return df.format(val);
     }
 
     //endregion Smart helpers.

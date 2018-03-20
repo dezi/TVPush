@@ -14,6 +14,7 @@ import de.xavaro.android.gui.wizzards.GUIChannelWizzard;
 import de.xavaro.android.gui.wizzards.GUILocationWizzard;
 import de.xavaro.android.gui.plugin.GUISpeechRecogniton;
 import de.xavaro.android.gui.wizzards.GUILocationsWizzard;
+import de.xavaro.android.gui.wizzards.GUIPermissionWizzard;
 import de.xavaro.android.gui.wizzards.GUITodoWizzard;
 import de.xavaro.android.gui.plugin.GUIVideoSurface;
 import de.xavaro.android.gui.simple.Simple;
@@ -25,9 +26,10 @@ public class GUIDesktopActivity extends GUIActivity
     private final static String LOGTAG = GUIDesktopActivity.class.getSimpleName();
 
     public GUISpeechRecogniton speechRecognition;
-    public GUILocationsWizzard locationsWizzard;
     public GUILocationWizzard locationWizzard;
     public GUIChannelWizzard channelWizzard;
+    public GUIPermissionWizzard permissionsWizzard;
+    public GUILocationsWizzard locationsWizzard;
     public GUITodoWizzard todoWizzard;
 
     private GUIVideoSurface videoSurface1;
@@ -46,15 +48,7 @@ public class GUIDesktopActivity extends GUIActivity
 
         topframe.addView(speechRecognition, speechRecognition.getPreferredLayout());
 
-
-        /*
         locationWizzard = new GUILocationWizzard(this);
-        if ((IOT.device != null) && IOT.device.hasCapability("fixed"))
-        {
-            locationWizzard.setIOTObject(IOT.device);
-            topframe.addView(locationWizzard);
-        }
-        */
 
         channelWizzard = new GUIChannelWizzard(this);
         //topframe.addView(channelWizzard);
@@ -62,11 +56,14 @@ public class GUIDesktopActivity extends GUIActivity
         todoWizzard = new GUITodoWizzard(this);
         //topframe.addView(todoWizzard);
 
+        permissionsWizzard = new GUIPermissionWizzard(this);
+        //topframe.addView(permissionsWizzard);
+
         locationsWizzard = new GUILocationsWizzard(this);
-        topframe.addView(locationsWizzard);
+        topframe.addView(todoWizzard);
 
         checkWindowSize();
-    }
+   }
 
     @Override
     public void onBackPressed()
@@ -144,6 +141,28 @@ public class GUIDesktopActivity extends GUIActivity
             if (channelWizzard.getParent() != null)
             {
                 topframe.removeView(channelWizzard);
+            }
+        }
+
+        checkWindowSize();
+    }
+
+    public void displayLocationWizzard(boolean show)
+    {
+        if (show)
+        {
+            bringToFront();
+
+            if (locationWizzard.getParent() == null)
+            {
+                topframe.addView(locationWizzard);
+            }
+        }
+        else
+        {
+            if (locationWizzard.getParent() != null)
+            {
+                topframe.removeView(locationWizzard);
             }
         }
 

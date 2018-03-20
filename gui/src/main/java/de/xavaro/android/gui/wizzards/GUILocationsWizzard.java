@@ -1,21 +1,14 @@
 package de.xavaro.android.gui.wizzards;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.util.Log;
 import android.view.View;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.Iterator;
 
 import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.base.GUIDefs;
-import de.xavaro.android.gui.base.GUIIcon;
+import de.xavaro.android.gui.base.GUIIcons;
 import de.xavaro.android.gui.base.GUIPluginTitleList;
-import de.xavaro.android.gui.base.GUISetup;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUILinearLayout;
@@ -83,10 +76,16 @@ public class GUILocationsWizzard extends GUIPluginTitleList
 
             if (isnice)
             {
-                info = device.fixedLatFine + " " + device.fixedLonFine + " " + device.fixedAltFine;
+                info = ""
+                        + Simple.getRounded(device.fixedLatFine)
+                        + " "
+                        + Simple.getRounded(device.fixedLonFine)
+                        + " "
+                        + Simple.getRounded(device.fixedAltFine)
+                        + " m";
             }
 
-            entry.iconView.setImageResource(GUIIcon.getImageResid(device));
+            entry.iconView.setImageResource(GUIIcons.getImageResid(device));
             entry.headerViev.setText(device.name);
             entry.infoView.setText(info);
 
