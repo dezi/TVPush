@@ -22,10 +22,10 @@ public class GUITodoWizzard extends GUIPluginTitleList
         setTitleIcon(R.drawable.todo_list_512);
         setTitleText("Todo-Liste");
 
-        Simple.getHandler().post(makeTodoList);
+        Simple.getHandler().post(makeEntryList);
     }
 
-    private final Runnable makeTodoList = new Runnable()
+    private final Runnable makeEntryList = new Runnable()
     {
         @Override
         public void run()
@@ -34,7 +34,7 @@ public class GUITodoWizzard extends GUIPluginTitleList
 
             GUIPermissionWizzard.collectEntriesTodo(listView);
 
-            Simple.getHandler().postDelayed(makeTodoList, 10 * 1000);
+            Simple.getHandler().postDelayed(makeEntryList, 10 * 1000);
         }
     };
 
@@ -67,8 +67,8 @@ public class GUITodoWizzard extends GUIPluginTitleList
             {
                 Log.d(LOGTAG, "onRequestPermissionsResult: yep=" + permissions[ 0 ]);
 
-                Simple.getHandler().removeCallbacks(makeTodoList);
-                Simple.getHandler().post(makeTodoList);
+                Simple.getHandler().removeCallbacks(makeEntryList);
+                Simple.getHandler().post(makeEntryList);
             }
             else
             {

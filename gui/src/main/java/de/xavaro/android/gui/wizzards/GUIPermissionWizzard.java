@@ -148,7 +148,7 @@ public class GUIPermissionWizzard extends GUIPluginTitleList
         }
     }
 
-    private static OnClickListener onServiceStartClickListener = new OnClickListener()
+    private static final OnClickListener onServiceStartClickListener = new OnClickListener()
     {
         @Override
         public void onClick(View view)
@@ -158,7 +158,7 @@ public class GUIPermissionWizzard extends GUIPluginTitleList
         }
     };
 
-    private static OnClickListener onAreaPermissionClickListener = new OnClickListener()
+    private static final OnClickListener onAreaPermissionClickListener = new OnClickListener()
     {
         @Override
         public void onClick(View view)
