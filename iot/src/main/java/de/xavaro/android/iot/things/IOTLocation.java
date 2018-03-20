@@ -34,7 +34,7 @@ public class IOTLocation extends IOTObject
         super(jsonstr, dummy);
     }
 
-    public boolean checkAndMergeContent(IOTLocation check, boolean external)
+    public int checkAndMergeContent(IOTLocation check, boolean external)
     {
         changedSys = false;
 

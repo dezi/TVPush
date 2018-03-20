@@ -306,29 +306,31 @@ public abstract class IOTObject
         return false;
     }
 
-    public boolean saveIfChanged()
+    public int saveIfChanged()
     {
-        boolean ok = true;
+        int state = IOTDefs.IOT_SAVE_UNCHANGED;
 
         if (changedSys || (sts == null) || (sts == 0))
         {
             sts = System.currentTimeMillis();
+            state |= IOTDefs.IOT_SAVE_SYSCHANGED;
         }
 
         if (changedUsr || (uts == null) || (uts == 0))
         {
             uts = System.currentTimeMillis();
+            state |= IOTDefs.IOT_SAVE_USRCHANGED;
         }
 
         if (changedSys || changedUsr)
         {
-            ok = saveToStorage();
+            if (! saveToStorage()) state = IOTDefs.IOT_SAVE_FAILED;
         }
 
         changed = false;
         changedSys = false;
         changedUsr = false;
 
-        return ok;
+        return state;
     }
 }

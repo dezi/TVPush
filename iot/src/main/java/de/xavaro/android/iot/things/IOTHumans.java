@@ -2,6 +2,7 @@ package de.xavaro.android.iot.things;
 
 import android.util.Log;
 
+import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.base.IOTList;
 import de.xavaro.android.iot.base.IOTObject;
 
@@ -32,7 +33,7 @@ public class IOTHumans extends IOTList
         return (IOTHuman) instance.list.get(uuid);
     }
 
-    public static boolean addEntry(IOTHuman newHuman, boolean external)
+    public static int addEntry(IOTHuman newHuman, boolean external)
     {
         IOTHuman oldHuman = getEntry(newHuman.uuid);
 
@@ -40,7 +41,9 @@ public class IOTHumans extends IOTList
         {
             Log.d(LOGTAG, "addEntry: new uuid=" + newHuman.uuid);
 
-            return newHuman.saveToStorage();
+            return newHuman.saveToStorage()
+                    ? IOTDefs.IOT_SAVE_ALLCHANGED
+                    : IOTDefs.IOT_SAVE_FAILED;
         }
         else
         {

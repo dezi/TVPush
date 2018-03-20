@@ -66,7 +66,7 @@ public class IOTHuman extends IOTObject
         }
     }
 
-    public boolean checkAndMergeContent(IOTHuman check, boolean external)
+    public int checkAndMergeContent(IOTHuman check, boolean external)
     {
         changedSys = false;
 

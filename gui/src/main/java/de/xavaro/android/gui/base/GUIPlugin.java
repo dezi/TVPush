@@ -10,6 +10,9 @@ public class GUIPlugin extends GUIFrameLayout
 {
     private final static String LOGTAG = GUIPlugin.class.getSimpleName();
 
+    public final static int DEFAULT_WIDTH = 500;
+    public final static int DEFAULT_HEIGTH = 300;
+
     public GUIFrameLayout contentFrame;
 
     public GUIPlugin(Context context)
@@ -17,6 +20,7 @@ public class GUIPlugin extends GUIFrameLayout
         super(context);
 
         contentFrame = this;
+        contentFrame.setSizeDip(DEFAULT_WIDTH, DEFAULT_HEIGTH);
     }
 
     public void onStart()

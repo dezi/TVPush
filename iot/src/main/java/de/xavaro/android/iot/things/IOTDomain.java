@@ -36,7 +36,7 @@ public class IOTDomain extends IOTObject
         super(jsonstr, dummy);
     }
 
-    public boolean checkAndMergeContent(IOTDomain check, boolean external)
+    public int checkAndMergeContent(IOTDomain check, boolean external)
     {
         // @formatter:off
 

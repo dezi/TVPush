@@ -2,6 +2,7 @@ package de.xavaro.android.iot.things;
 
 import android.util.Log;
 
+import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.base.IOTList;
 import de.xavaro.android.iot.base.IOTObject;
 
@@ -32,7 +33,7 @@ public class IOTDomains extends IOTList
         return (IOTDomain) instance.list.get(uuid);
     }
 
-    public static boolean addEntry(IOTDomain newDomain, boolean external)
+    public static int addEntry(IOTDomain newDomain, boolean external)
     {
         IOTDomain oldDomain = getEntry(newDomain.uuid);
 
@@ -40,7 +41,9 @@ public class IOTDomains extends IOTList
         {
             Log.d(LOGTAG, "addEntry: new uuid=" + newDomain.uuid);
 
-            return newDomain.saveToStorage();
+            return newDomain.saveToStorage()
+                    ? IOTDefs.IOT_SAVE_ALLCHANGED
+                    : IOTDefs.IOT_SAVE_FAILED;
         }
         else
         {

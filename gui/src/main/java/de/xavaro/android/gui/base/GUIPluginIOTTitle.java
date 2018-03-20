@@ -14,6 +14,7 @@ import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUITextView;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.R;
+import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTDevice;
 
@@ -30,8 +31,8 @@ public class GUIPluginIOTTitle extends GUIPluginIOT
 
         GUILinearLayout splitterFrame = new GUILinearLayout(context);
         splitterFrame.setOrientation(LinearLayout.VERTICAL);
-        splitterFrame.setPaddingDip(10, 0, 10, 10);
         splitterFrame.setRoundedCorners(20, 0x88888888, Color.WHITE);
+        splitterFrame.setPaddingDip(GUIDefs.PADDING_SMALL, GUIDefs.PADDING_ZERO, GUIDefs.PADDING_SMALL, GUIDefs.PADDING_SMALL);
 
         contentFrame.addView(splitterFrame);
 
@@ -45,7 +46,7 @@ public class GUIPluginIOTTitle extends GUIPluginIOT
         titleIcon.setImageResource(R.drawable.device_tv_100);
         titleIcon.setScaleType(ImageView.ScaleType.FIT_XY);
         titleIcon.setSizeDip(50, 50);
-        titleIcon.setPaddingDip(10);
+        titleIcon.setPaddingDip(GUIDefs.PADDING_SMALL);
 
         titleFrame.addView(titleIcon);
 
@@ -57,8 +58,8 @@ public class GUIPluginIOTTitle extends GUIPluginIOT
         titleFrame.addView(titleCenter);
 
         titleText = new GUITextView(context);
-        titleText.setPaddingDip(5);
-        titleText.setTextSizeDip(16);
+        titleText.setPaddingDip(GUIDefs.PADDING_SMALL);
+        titleText.setTextSizeDip(GUIDefs.FONTSIZE_HEADERS);
 
         titleCenter.addView(titleText);
 
@@ -72,8 +73,8 @@ public class GUIPluginIOTTitle extends GUIPluginIOT
         };
 
         titleEdit.setSizeDip(Simple.MP, Simple.WC);
-        titleEdit.setPaddingDip(20, 5, 20, 5);
-        titleEdit.setTextSizeDip(16);
+        titleEdit.setPaddingDip(GUIDefs.PADDING_SMALL);
+        titleEdit.setTextSizeDip(GUIDefs.FONTSIZE_HEADERS);
         titleEdit.setFocusable(true);
         titleEdit.setHighlightable(true);
 
@@ -125,7 +126,22 @@ public class GUIPluginIOTTitle extends GUIPluginIOT
         titleEdit.setToast(toast);
     }
 
+    private int saveNick(String newNick)
+    {
+        if (iotObject instanceof IOTDevice)
+        {
+            IOTDevice saveme = new IOTDevice(iotObject.uuid);
+
+            saveme.nick = newNick;
+
+            return saveIOTObject(saveme);
+        }
+
+        return IOTDefs.IOT_SAVE_FAILED;
+    }
+
     public void onTitleEditFinished(View view)
     {
+        saveNick(((GUIEditText) view).getText().toString());
     }
 }

@@ -2,6 +2,7 @@ package de.xavaro.android.gui.base;
 
 import android.content.Context;
 
+import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
@@ -28,9 +29,9 @@ public class GUIPluginIOT extends GUIPlugin
         this.iotObject = iotObject;
     }
 
-    public boolean saveIOTObject(IOTObject iotObjectChanged)
+    public int saveIOTObject(IOTObject iotObjectChanged)
     {
-        boolean saved = false;
+        int saved = IOTDefs.IOT_SAVE_UNCHANGED;
 
         if (iotObjectChanged instanceof IOTHuman)
         {
@@ -52,17 +53,20 @@ public class GUIPluginIOT extends GUIPlugin
             saved = IOTLocations.addEntry((IOTLocation) iotObjectChanged, true);
         }
 
-        if (saved)
+        if (saved != IOTDefs.IOT_SAVE_UNCHANGED)
         {
-            String mess = "Gespeichert";
+            if (saved < 0)
+            {
+                String mess = "Speichern fehlgeschlagen";
 
-            GUI.instance.desktopActivity.displayToastMessage(mess, 3, true);
-        }
-        else
-        {
-            String mess = "Speichern fehlgeschlagen";
+                GUI.instance.desktopActivity.displayToastMessage(mess, 10, true);
+            }
+            else
+            {
+                String mess = "Gespeichert";
 
-            GUI.instance.desktopActivity.displayToastMessage(mess, 10, true);
+                GUI.instance.desktopActivity.displayToastMessage(mess, 3, true);
+            }
         }
 
         return saved;

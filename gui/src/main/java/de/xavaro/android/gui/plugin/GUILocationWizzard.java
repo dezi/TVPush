@@ -20,6 +20,7 @@ import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.simple.Simple;
 
+import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTDevice;
 
@@ -27,13 +28,7 @@ public class GUILocationWizzard extends GUIPluginIOTTitle
 {
     private final static String LOGTAG = GUILocationWizzard.class.getSimpleName();
 
-    public final static int DEFAULT_WIDTH = 500;
-    public final static int DEFAULT_HEIGTH = 300;
-
-    public final static int INITIAL_ZOOM = 20;
-    public final static double MOVE_STEP = 0.000002;
-
-    private GUIFrameLayout mainFrame;
+    private GUIFrameLayout mapFrame;
     private MapView mapView;
     private GoogleMap map;
     private Marker marker;
@@ -43,13 +38,11 @@ public class GUILocationWizzard extends GUIPluginIOTTitle
 
     private int zoom;
 
-    private boolean haveHighlight;
-
     public GUILocationWizzard(Context context)
     {
         super(context);
 
-        mainFrame = new GUIFrameLayout(context)
+        mapFrame = new GUIFrameLayout(context)
         {
             @Override
             public boolean onKeyDown(int keyCode, KeyEvent event)
@@ -58,17 +51,17 @@ public class GUILocationWizzard extends GUIPluginIOTTitle
             }
         };
 
-        mainFrame.setSizeDip(Simple.MP, Simple.MP);
-        mainFrame.setFocusable(true);
-        mainFrame.setToast("Drücken Sie " + GUIDefs.UTF_OK + " um das TV-Gerät zu positionieren");
+        mapFrame.setSizeDip(Simple.MP, Simple.MP);
+        mapFrame.setFocusable(true);
+        mapFrame.setToast("Drücken Sie " + GUIDefs.UTF_OK + " um das TV-Gerät zu positionieren");
 
-        contentFrame.addView(mainFrame);
+        contentFrame.addView(mapFrame);
 
         mapView = new MapView(getContext());
         mapView.setLayoutParams(new FrameLayout.LayoutParams(Simple.MP, Simple.MP));
         mapView.onCreate(null);
 
-        mainFrame.addView(mapView);
+        mapFrame.addView(mapView);
     }
 
     private boolean onKeyDownDoit(int keyCode, KeyEvent event)
@@ -79,7 +72,7 @@ public class GUILocationWizzard extends GUIPluginIOTTitle
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER)
         {
-            if (haveHighlight)
+            if (mapFrame.getHighlight())
             {
                 saveLocation();
             }
@@ -87,28 +80,26 @@ public class GUILocationWizzard extends GUIPluginIOTTitle
             {
                 String help = "Bewegen mit"
                         + " "
-                        + GUIDefs.UTF_LEFT + GUIDefs.UTF_RIGHT
-                        + GUIDefs.UTF_UP + GUIDefs.UTF_DOWN
+                        + GUIDefs.UTF_MOVE
                         + " "
                         + ", zoomen mit"
                         + " "
-                        + GUIDefs.UTF_REWIND
+                        + GUIDefs.UTF_ZOOMIN
                         + " "
                         + "und"
                         + " "
-                        + GUIDefs.UTF_FAST_FORWARD
+                        + GUIDefs.UTF_ZOOMOUT
                         ;
 
                 GUI.instance.desktopActivity.displayToastMessage(help, 10, true);
             }
 
-            haveHighlight = !haveHighlight;
-            mainFrame.setHighlight(haveHighlight);
+            mapFrame.setHighlight(false);
             usedKey = true;
         }
         else
         {
-            if (haveHighlight)
+            if (mapFrame.getHighlight())
             {
                 usedKey = moveMap(keyCode);
             }
@@ -121,7 +112,7 @@ public class GUILocationWizzard extends GUIPluginIOTTitle
     {
         altitude = alt;
         coordinates = new LatLng(lat, lon);
-        zoom = INITIAL_ZOOM;
+        zoom = GUIDefs.MAP_INITIAL_ZOOM;
 
         mapView.getMapAsync(new OnMapReadyCallback()
         {
@@ -178,7 +169,7 @@ public class GUILocationWizzard extends GUIPluginIOTTitle
         }
     }
 
-    private boolean saveLocation()
+    private int saveLocation()
     {
         if (iotObject instanceof IOTDevice)
         {
@@ -191,21 +182,7 @@ public class GUILocationWizzard extends GUIPluginIOTTitle
             return saveIOTObject(saveme);
         }
 
-        return false;
-    }
-
-    private boolean saveNick(String newNick)
-    {
-        if (iotObject instanceof IOTDevice)
-        {
-            IOTDevice saveme = new IOTDevice(iotObject.uuid);
-
-            saveme.nick = newNick;
-
-            return saveIOTObject(saveme);
-        }
-
-        return false;
+        return IOTDefs.IOT_SAVE_FAILED;
     }
 
     private boolean moveMap(int keyCode)
@@ -219,25 +196,25 @@ public class GUILocationWizzard extends GUIPluginIOTTitle
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT)
         {
-            lon -= MOVE_STEP;
+            lon -= GUIDefs.MAP_MOVE_STEP;
             usedkey = true;
         }
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_UP)
         {
-            lat += MOVE_STEP;
+            lat += GUIDefs.MAP_MOVE_STEP;
             usedkey = true;
         }
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)
         {
-            lon += MOVE_STEP;
+            lon += GUIDefs.MAP_MOVE_STEP;
             usedkey = true;
         }
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN)
         {
-            lat -= MOVE_STEP;
+            lat -= GUIDefs.MAP_MOVE_STEP;
             usedkey = true;
         }
 

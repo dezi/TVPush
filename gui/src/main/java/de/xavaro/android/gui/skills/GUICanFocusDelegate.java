@@ -59,6 +59,8 @@ public class GUICanFocusDelegate
 
                     et.setEnabled(false);
                     et.setInputType(InputType.TYPE_NULL);
+
+                    et.onHighlightFinished(view);
                 }
             }
         }

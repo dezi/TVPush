@@ -126,7 +126,7 @@ public class IOTDevice extends IOTObject
         }
     }
 
-    public boolean checkAndMergeContent(IOTDevice check, boolean external)
+    public int checkAndMergeContent(IOTDevice check, boolean external)
     {
         // @formatter:off
 
