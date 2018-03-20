@@ -1,6 +1,9 @@
 package de.xavaro.android.gui.wizzards;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.util.Log;
 import android.view.View;
 
 import org.json.JSONArray;
@@ -62,7 +65,7 @@ public class GUITodoWizzard extends GUIPluginTitleList
             }
 
             GUIListEntry entry = new GUIListEntry(getContext());
-            entry.setOnClickListener(onServiceClickListener);
+            entry.setOnClickListener(onServiceStartClickListener);
             entry.setTag(service);
 
             String head = Simple.getTrans(GUISetup.getTextServiceResid())
@@ -100,6 +103,8 @@ public class GUITodoWizzard extends GUIPluginTitleList
             }
 
             GUIListEntry entry = new GUIListEntry(getContext());
+            entry.setOnClickListener(onAreaPermissionClickListener);
+            entry.setTag(area);
 
             boolean enabled = GUISetup.checkPermissions(getContext(), area);
             String infos = "";
@@ -129,7 +134,7 @@ public class GUITodoWizzard extends GUIPluginTitleList
         }
     }
 
-    private OnClickListener onServiceClickListener = new OnClickListener()
+    private OnClickListener onServiceStartClickListener = new OnClickListener()
     {
         @Override
         public void onClick(View view)
@@ -138,4 +143,33 @@ public class GUITodoWizzard extends GUIPluginTitleList
             GUISetup.startIntentForService(view.getContext(), service);
         }
     };
+
+    private OnClickListener onAreaPermissionClickListener = new OnClickListener()
+    {
+        @Override
+        public void onClick(View view)
+        {
+            String area = (String) view.getTag();
+            GUISetup.requestPermission((Activity) view.getContext(), area, 4711);
+        }
+    };
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
+    {
+        if ((requestCode == 4711) && (permissions.length > 0) && (grantResults.length > 0))
+        {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                Log.d(LOGTAG, "onRequestPermissionsResult: yep=" + permissions[ 0 ]);
+
+                Simple.getHandler().removeCallbacks(makeTodoList);
+                Simple.getHandler().post(makeTodoList);
+            }
+            else
+            {
+                Log.d(LOGTAG, "onRequestPermissionsResult: boo=" + permissions[ 0 ]);
+            }
+        }
+    }
 }

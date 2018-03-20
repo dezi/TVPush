@@ -112,14 +112,6 @@ public class GUIActivity extends AppCompatActivity
         setUiFlags();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
-    {
-        boolean granted = (grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED);
-
-        Log.d(LOGTAG, "onRequestPermissionsResult: rc=" + requestCode + " granted=" + granted);
-    }
-
     public void setWindowHeightDip(int heightDip)
     {
         if (Simple.isPhone())
@@ -284,6 +276,21 @@ public class GUIActivity extends AppCompatActivity
         }
 
         super.onBackPressed();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
+    {
+        Log.d(LOGTAG, "onRequestPermissionsResult:");
+
+        for (int inx = 0; inx < topframe.getChildCount(); inx++)
+        {
+            if (topframe.getChildAt(inx) instanceof GUIPlugin)
+            {
+                ((GUIPlugin) topframe.getChildAt(inx)).onRequestPermissionsResult(
+                        requestCode, permissions, grantResults);
+            }
+        }
     }
 
     @Override

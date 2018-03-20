@@ -1,6 +1,7 @@
 package de.xavaro.android.gui.base;
 
 import android.Manifest;
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.Context;
@@ -9,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
 import org.json.JSONArray;
@@ -114,6 +116,26 @@ public class GUISetup
         }
 
         return perms;
+    }
+
+    public static boolean requestPermission(Activity activity, String area, int requestCode)
+    {
+        String which = null;
+
+        if (area.equals("mic")) which = Manifest.permission.RECORD_AUDIO;
+        if (area.equals("loc")) which = Manifest.permission.ACCESS_FINE_LOCATION;
+        if (area.equals("ble")) which = Manifest.permission.BLUETOOTH_ADMIN;
+        if (area.equals("ext")) which = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        if (area.equals("cam")) which = Manifest.permission.CAPTURE_VIDEO_OUTPUT;
+
+        if (which != null)
+        {
+            ActivityCompat.requestPermissions(activity, new String[]{which}, requestCode);
+
+            return true;
+        }
+
+        return false;
     }
 
     public static boolean checkPermissions(Context context, String area)

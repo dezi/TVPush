@@ -1,6 +1,7 @@
 package de.xavaro.android.gui.base;
 
 import android.content.Context;
+import android.util.Log;
 
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUIFrameLayout;
@@ -45,6 +46,11 @@ public class GUIPlugin extends GUIFrameLayout
 
     public void onBackPressed()
     {
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
+    {
+        Log.d(LOGTAG, "onRequestPermissionsResult: STUB!");
     }
 
     public void setPluginSizeDip(int width, int height)
