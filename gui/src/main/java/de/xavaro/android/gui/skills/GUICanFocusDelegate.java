@@ -1,6 +1,7 @@
 package de.xavaro.android.gui.skills;
 
 import android.text.InputType;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -8,9 +9,12 @@ import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUIEditText;
+import de.xavaro.android.gui.wizzards.GUILocationWizzard;
 
 public class GUICanFocusDelegate
 {
+    private final static String LOGTAG = GUICanFocusDelegate.class.getSimpleName();
+
     public final static View.OnFocusChangeListener genericOnFocusChangeListener = new View.OnFocusChangeListener()
     {
         @Override
@@ -59,8 +63,6 @@ public class GUICanFocusDelegate
 
                     et.setEnabled(false);
                     et.setInputType(InputType.TYPE_NULL);
-
-                    et.onHighlightFinished(view);
                 }
             }
         }
@@ -70,15 +72,21 @@ public class GUICanFocusDelegate
     {
         GUICanFocus gf = view instanceof GUICanFocus ? (GUICanFocus) view : null;
 
-        if ((gf != null) && gf.getHasFocus())
+        if ((gf != null)
+                && gf.getHasFocus()
+                && gf.getHighlightable())
         {
             if (gf.getHighlight())
             {
                 gf.setRoundedCorners(0, gf.getBackgroundColor(), GUIDefs.COLOR_TV_FOCUS_HIGHLIGHT);
+
+                gf.onHighlightStarted(view);
             }
             else
             {
                 gf.setRoundedCorners(0, gf.getBackgroundColor(), GUIDefs.COLOR_TV_FOCUS);
+
+                gf.onHighlightFinished(view);
             }
         }
     }
@@ -123,7 +131,7 @@ public class GUICanFocusDelegate
         {
             gf.setHighlight(! gf.getHighlight());
 
-            adjustHighlightState(view);
+            Log.d(LOGTAG, "onKeyDown: highlight=" + gf.getHighlight());
 
             if (view instanceof GUIEditText)
             {

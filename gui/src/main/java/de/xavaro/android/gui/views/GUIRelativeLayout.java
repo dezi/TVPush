@@ -1,6 +1,7 @@
 package de.xavaro.android.gui.views;
 
 import android.graphics.drawable.Drawable;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.content.Context;
@@ -232,8 +233,18 @@ public class GUIRelativeLayout extends RelativeLayout implements
         setFocusable(onClickListener != null);
     }
 
+    public void onHighlightStarted(View view)
+    {
+    }
+
     public void onHighlightFinished(View view)
     {
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        return GUICanFocusDelegate.onKeyDown(this, keyCode, event) || super.onKeyDown(keyCode, event);
     }
 
     //endregion Focus implementation.

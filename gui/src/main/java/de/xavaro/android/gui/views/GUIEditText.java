@@ -245,14 +245,19 @@ public class GUIEditText extends AppCompatEditText implements
 
         setFocusable(onClickListener != null);
     }
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)
+
+    public void onHighlightStarted(View view)
     {
-        return GUICanFocusDelegate.onKeyDown(this, keyCode, event);
     }
 
     public void onHighlightFinished(View view)
     {
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        return GUICanFocusDelegate.onKeyDown(this, keyCode, event) || super.onKeyDown(keyCode, event);
     }
 
     //endregion Focus implementation.

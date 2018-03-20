@@ -1,6 +1,7 @@
 package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.view.KeyEvent;
 import android.util.Log;
@@ -46,6 +47,13 @@ public class GUILocationWizzard extends GUIPluginTitleIOT
 
         setPluginPositionDip(400, DEFAULT_TOP);
 
+        final String toast1 = "Drücken Sie " + GUIDefs.UTF_OK + " um das TV-Gerät zu positionieren";
+
+        final String toast2 = "Bewegen mit" + " " + GUIDefs.UTF_MOVE + " "
+                + ", zoomen mit" + " " + GUIDefs.UTF_ZOOMIN
+                + " " + "und" + " " + GUIDefs.UTF_ZOOMOUT;
+
+
         mapFrame = new GUIFrameLayout(context)
         {
             @Override
@@ -53,13 +61,24 @@ public class GUILocationWizzard extends GUIPluginTitleIOT
             {
                 return onKeyDownDoit(keyCode, event);
             }
+
+            @Override
+            public void onHighlightStarted(View view)
+            {
+                GUI.instance.desktopActivity.displayToastMessage(toast2, 10, false);
+            }
+
+            @Override
+            public void onHighlightFinished(View view)
+            {
+                saveLocation();
+            }
         };
 
         mapFrame.setSizeDip(Simple.MP, Simple.MP);
         mapFrame.setHighlightable(true);
         mapFrame.setFocusable(true);
-
-        mapFrame.setToast("Drücken Sie " + GUIDefs.UTF_OK + " um das TV-Gerät zu positionieren");
+        mapFrame.setToast(toast1);
 
         contentFrame.addView(mapFrame);
 
@@ -76,39 +95,9 @@ public class GUILocationWizzard extends GUIPluginTitleIOT
 
         boolean usedKey = false;
 
-        if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER)
+        if (mapFrame.getHighlight())
         {
-            if (mapFrame.getHighlight())
-            {
-                saveLocation();
-            }
-            else
-            {
-                String help = "Bewegen mit"
-                        + " "
-                        + GUIDefs.UTF_MOVE
-                        + " "
-                        + ", zoomen mit"
-                        + " "
-                        + GUIDefs.UTF_ZOOMIN
-                        + " "
-                        + "und"
-                        + " "
-                        + GUIDefs.UTF_ZOOMOUT
-                        ;
-
-                GUI.instance.desktopActivity.displayToastMessage(help, 10, true);
-            }
-
-            mapFrame.setHighlight(false);
-            usedKey = true;
-        }
-        else
-        {
-            if (mapFrame.getHighlight())
-            {
-                usedKey = moveMap(keyCode);
-            }
+            usedKey = moveMap(keyCode);
         }
 
         return usedKey;

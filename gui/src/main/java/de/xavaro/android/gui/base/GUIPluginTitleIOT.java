@@ -40,7 +40,7 @@ public class GUIPluginTitleIOT extends GUIPluginTitle
                     + GUIDefs.UTF_OK
                     + " zum Bearbeiten";
 
-            setTitleIcon(R.drawable.device_tv_100);
+            setTitleIcon(GUIIcons.getImageResid(iotObject));
             setTitleText(((IOTDevice) iotObject).name);
             setTitleEdit(((IOTDevice) iotObject).nick, hint, toast);
         }

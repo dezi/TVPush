@@ -1,5 +1,6 @@
 package de.xavaro.android.gui.skills;
 
+import android.view.KeyEvent;
 import android.view.View;
 
 public interface GUICanFocus extends GUICanRoundedCorners
@@ -20,6 +21,7 @@ public interface GUICanFocus extends GUICanRoundedCorners
     void setToast(String toast);
     String getToast();
 
+    void onHighlightStarted(View view);
     void onHighlightFinished(View view);
 
     View.OnFocusChangeListener getOnFocusChangeListener();

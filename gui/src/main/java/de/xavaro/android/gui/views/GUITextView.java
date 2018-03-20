@@ -5,6 +5,7 @@ import android.support.v7.widget.AppCompatTextView;
 import android.graphics.drawable.Drawable;
 import android.content.Context;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -241,8 +242,18 @@ public class GUITextView extends AppCompatTextView implements
         setFocusable(onClickListener != null);
     }
 
+    public void onHighlightStarted(View view)
+    {
+    }
+
     public void onHighlightFinished(View view)
     {
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        return GUICanFocusDelegate.onKeyDown(this, keyCode, event) || super.onKeyDown(keyCode, event);
     }
 
     //endregion Focus implementation.
