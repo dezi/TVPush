@@ -29,7 +29,7 @@ public class GUIPermissionWizzard extends GUIPluginTitleList
     {
         super(context);
 
-        setTitleIcon(R.drawable.todo_list_512);
+        setTitleIcon(R.drawable.permissions_240);
         setTitleText("Services and Permissions");
 
         Simple.getHandler().post(makeEntryList);
