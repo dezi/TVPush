@@ -190,7 +190,7 @@ public class TPLHandlerSysInfo extends TPLHandler
 
     private static String getDeviceType(String type)
     {
-        if ( "IOT.SMARTBULB".equals(type)) return "smartbuld";
+        if ( "IOT.SMARTBULB".equals(type)) return "smartbulb";
 
         if ( "IOT.SMARTPLUGSWITCH".equals(type)) return "smartplug";
 

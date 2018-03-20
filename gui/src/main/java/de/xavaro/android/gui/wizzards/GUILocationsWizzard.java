@@ -61,7 +61,7 @@ public class GUILocationsWizzard extends GUIPluginTitleList
             IOTDevice device = IOTDevices.getEntry(uuid);
 
             if (device == null) continue;
-            
+
             if (! device.hasCapability("fixed")) continue;
 
             boolean isnice = (device.fixedLatFine != null)
