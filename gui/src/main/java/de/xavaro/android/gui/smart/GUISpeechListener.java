@@ -72,6 +72,7 @@ public class GUISpeechListener implements RecognitionListener
         {
             lockStart = true;
 
+            Log.d(LOGTAG, "startListening: real.");
             recognizer.startListening(recognizerIntent);
         }
 

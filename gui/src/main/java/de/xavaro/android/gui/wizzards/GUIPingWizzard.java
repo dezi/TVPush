@@ -104,10 +104,12 @@ public class GUIPingWizzard extends GUIPluginTitleList
                     && (status.saturation != null)
                     && (status.brightness != null))
             {
+                /*
                 Log.d(LOGTAG, "collectEntries: smartbulb:"
                         + " hue=" + status.hue
                         + " saturation=" + status.saturation
                         + " brightness=" + status.brightness);
+                */
 
                 int color = Simple.colorRGB(status.hue, status.saturation, 100);
                 color = Simple.setRGBAlpha(color, status.brightness + 155);
