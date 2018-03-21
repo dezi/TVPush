@@ -26,6 +26,8 @@ public class GUIPluginTitle extends GUIPlugin
     {
         super(context);
 
+        this.setPaddingDip(GUIDefs.PADDING_SMALL, GUIDefs.PADDING_ZERO, GUIDefs.PADDING_SMALL, GUIDefs.PADDING_SMALL);
+
         GUILinearLayout splitterFrame = new GUILinearLayout(context);
         splitterFrame.setOrientation(LinearLayout.VERTICAL);
 

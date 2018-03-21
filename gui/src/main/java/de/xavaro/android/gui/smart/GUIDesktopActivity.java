@@ -11,12 +11,11 @@ import de.xavaro.android.gui.base.GUIActivity;
 import de.xavaro.android.gui.base.GUIPlugin;
 import de.xavaro.android.gui.wizzards.GUIChannelWizzard;
 import de.xavaro.android.gui.wizzards.GUIGeomapWizzard;
-import de.xavaro.android.gui.plugin.GUISpeechRecogniton;
+import de.xavaro.android.gui.plugin.GUIToastBar;
 import de.xavaro.android.gui.wizzards.GUILocationsWizzard;
 import de.xavaro.android.gui.wizzards.GUIPermissionWizzard;
 import de.xavaro.android.gui.wizzards.GUITodoWizzard;
 import de.xavaro.android.gui.plugin.GUIVideoSurface;
-import de.xavaro.android.gui.simple.Simple;
 
 import de.xavaro.android.iot.base.IOTObject;
 import pub.android.interfaces.cam.Camera;
@@ -25,7 +24,7 @@ public class GUIDesktopActivity extends GUIActivity
 {
     private final static String LOGTAG = GUIDesktopActivity.class.getSimpleName();
 
-    public GUISpeechRecogniton speechRecognition;
+    public GUIToastBar speechRecognition;
 
     public GUITodoWizzard todoWizzard;
     public GUILocationsWizzard locationsWizzard;
@@ -47,13 +46,12 @@ public class GUIDesktopActivity extends GUIActivity
 
         GUI.instance.desktopActivity = this;
 
-        speechRecognition = new GUISpeechRecogniton(this);
+        speechRecognition = new GUIToastBar(this);
         topframe.addView(speechRecognition, speechRecognition.getPreferredLayout());
 
-        channelWizzard = new GUIChannelWizzard(this);
-        //topframe.addView(channelWizzard);
 
         todoWizzard = new GUITodoWizzard(this);
+        channelWizzard = new GUIChannelWizzard(this);
         locationsWizzard = new GUILocationsWizzard(this);
         permissionsWizzard = new GUIPermissionWizzard(this);
 
@@ -145,26 +143,14 @@ public class GUIDesktopActivity extends GUIActivity
         checkWindowSize();
     }
 
-    public void displayChannelWizzard(boolean show)
+    public void hideChannelWizzard()
     {
-        if (show)
-        {
-            bringToFront();
+        hidePlugin(channelWizzard);
+    }
 
-            if (channelWizzard.getParent() == null)
-            {
-                topframe.addView(channelWizzard);
-            }
-        }
-        else
-        {
-            if (channelWizzard.getParent() != null)
-            {
-                topframe.removeView(channelWizzard);
-            }
-        }
-
-        checkWindowSize();
+    public void displayChannelWizzard()
+    {
+        showPlugin(channelWizzard);
     }
 
     public void hideGeomapWizzard()
@@ -231,6 +217,7 @@ public class GUIDesktopActivity extends GUIActivity
     {
         hidePlugin(todoWizzard);
         hidePlugin(geomapWizzard);
+        hidePlugin(channelWizzard);
         hidePlugin(locationsWizzard);
         hidePlugin(permissionsWizzard);
     }
@@ -300,7 +287,7 @@ public class GUIDesktopActivity extends GUIActivity
         if (keyCode == KeyEvent.KEYCODE_PROG_RED) wizzard = todoWizzard;
         if (keyCode == KeyEvent.KEYCODE_PROG_GREEN) wizzard = locationsWizzard;
         if (keyCode == KeyEvent.KEYCODE_PROG_YELLOW) wizzard = permissionsWizzard;
-        if (keyCode == KeyEvent.KEYCODE_PROG_BLUE) wizzard = permissionsWizzard;
+        if (keyCode == KeyEvent.KEYCODE_PROG_BLUE) wizzard = channelWizzard;
 
         if (wizzard != null)
         {

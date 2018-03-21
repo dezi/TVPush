@@ -29,7 +29,7 @@ public class GUIPlugin extends GUIFrameLayout
 
         this.setPluginSizeDip(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.setPluginPositionDip(DEFAULT_LEFT, DEFAULT_TOP);
-        this.setPaddingDip(GUIDefs.PADDING_SMALL, GUIDefs.PADDING_ZERO, GUIDefs.PADDING_SMALL, GUIDefs.PADDING_SMALL);
+        this.setPaddingDip(GUIDefs.PADDING_SMALL);
 
         onHighlightFrame(false);
     }
@@ -93,19 +93,29 @@ public class GUIPlugin extends GUIFrameLayout
         return params.width;
     }
 
-    public int getPluginWidthDip()
-    {
-        return Simple.pxToDip(params.width);
-    }
-
     public int getPluginHeight()
     {
         return params.height;
     }
 
+    public int getPluginWidthDip()
+    {
+        return Simple.pxToDip(params.width);
+    }
+
     public int getPluginHeightDip()
     {
         return Simple.pxToDip(params.height);
+    }
+
+    public int getPluginNettoWidth()
+    {
+        return params.width - (getPaddingLeft() + getPaddingRight());
+    }
+
+    public int getPluginNettoHeight()
+    {
+        return params.height - (getPaddingTop() + getPaddingBottom());
     }
 
     public void onHighlightFrame(boolean highlight)

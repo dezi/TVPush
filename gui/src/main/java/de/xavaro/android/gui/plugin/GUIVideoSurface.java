@@ -2,7 +2,6 @@ package de.xavaro.android.gui.plugin;
 
 import android.content.Context;
 import android.view.Gravity;
-import android.util.Log;
 
 import de.xavaro.android.gui.base.GUIPlugin;
 
@@ -12,7 +11,7 @@ import zz.top.gls.GLSVideoView;
 
 public class GUIVideoSurface extends GUIPlugin
 {
-    private final static String LOGTAG = GUISpeechRecogniton.class.getSimpleName();
+    private final static String LOGTAG = GUIToastBar.class.getSimpleName();
 
     private Camera camera;
     private GLSVideoView glsVideoView;

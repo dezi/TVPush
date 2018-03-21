@@ -22,9 +22,9 @@ import de.xavaro.android.gui.views.GUITextView;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
 
-public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
+public class GUIToastBar extends GUIPlugin implements GUISpeechCallback
 {
-    private final static String LOGTAG = GUISpeechRecogniton.class.getSimpleName();
+    private final static String LOGTAG = GUIToastBar.class.getSimpleName();
 
     private final Handler handler = new Handler();
 
@@ -35,7 +35,7 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
     private String toastMessage;
     private boolean hadResult;
 
-    public GUISpeechRecogniton(Context context)
+    public GUIToastBar(Context context)
     {
         super(context);
 
@@ -147,10 +147,10 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
 
         Log.d(LOGTAG, "onSpeechResults: conf=" + conf + " text=" + text);
 
+        toastMessage = null;
+
         speechText.setTextColor(Color.WHITE);
         speechText.setText(text);
-
-        toastMessage = null;
         colorFrame.start();
 
         hadResult = true;
@@ -174,10 +174,18 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
         speechText.setTextColor(Color.LTGRAY);
         centerCont.setRoundedCornersDip(GUIDefs.ROUNDED_MEDIUM, GUIDefs.COLOR_DARK_TRANSPARENT);
 
-        if (emphasis) colorFrame.start(2);
+        if (emphasis)
+        {
+            colorFrame.start(2);
+        }
+        else
+        {
+            colorFrame.stop();
+        }
+
         GUI.instance.desktopActivity.bringToFront();
 
-        Simple.getHandler().postDelayed(toastDone, seconds * 1000);
+        makePost(toastDone, seconds * 1000);
     }
 
     private final Runnable toastDone = new Runnable()
@@ -185,10 +193,10 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
         @Override
         public void run()
         {
-            toastMessage = null;
-            pleaseSpeekNow.run();
-
             colorFrame.stop();
+            toastMessage = null;
+
+            pleaseSpeekNow.run();
         }
     };
 
@@ -199,13 +207,24 @@ public class GUISpeechRecogniton extends GUIPlugin implements GUISpeechCallback
         {
             if (toastMessage == null)
             {
+                colorFrame.stop();
                 speechText.setTextColor(Color.GRAY);
                 speechText.setText("Bitte sprechen Sie jetzt");
                 centerCont.setRoundedCornersDip(GUIDefs.ROUNDED_MEDIUM, GUIDefs.COLOR_LIGHT_TRANSPARENT);
             }
-
-            colorFrame.stop();
+            else
+            {
+                makePost(pleaseSpeekNow, 1000);
+            }
         }
     };
+
+    private void makePost(Runnable runnable, int delay)
+    {
+        Simple.getHandler().removeCallbacks(toastDone);
+        Simple.getHandler().removeCallbacks(pleaseSpeekNow);
+
+        Simple.getHandler().postDelayed(runnable,delay);
+    }
 }
 
