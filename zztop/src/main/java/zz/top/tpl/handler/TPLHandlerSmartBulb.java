@@ -158,11 +158,18 @@ public class TPLHandlerSmartBulb extends TPLHandler
         JSONObject light_state = Json.getObject(service, "transition_light_state");
         JSONObject origin = Json.getObject(message, "origin");
 
+        String ipaddr = Json.getString(origin, "ipaddr");
+        int ipport = Json.getInt(origin, "ipport");
+
+        String uuid = TPLHandlerSysInfo.resolveUUID(ipaddr);
+        String wifi = Simple.getConnectedWifiName();
+
         JSONObject status = new JSONObject();
 
-        Json.put(status, "wifi", Simple.getConnectedWifiName());
-        Json.put(status, "ipaddr", Json.getString(origin, "ipaddr"));
-        Json.put(status, "ipport", Json.getInt(origin, "ipport"));
+        Json.put(status, "uuid", uuid);
+        Json.put(status, "wifi", wifi);
+        Json.put(status, "ipaddr", ipaddr);
+        Json.put(status, "ipport", ipport);
 
         if (light_state != null)
         {

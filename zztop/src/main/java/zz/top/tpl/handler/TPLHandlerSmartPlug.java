@@ -71,6 +71,5 @@ public class TPLHandlerSmartPlug extends TPLHandler
         //
 
         TPLHandlerSysInfo.sendGetSysinfo(ipaddr);
-
     }
 }

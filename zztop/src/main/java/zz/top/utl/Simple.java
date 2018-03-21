@@ -1,6 +1,7 @@
 package zz.top.utl;
 
 import android.content.ContentResolver;
+import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.text.format.Formatter;
 
 import java.nio.ByteBuffer;
 import java.security.Key;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.crypto.Mac;
@@ -85,4 +87,24 @@ public class Simple
     {
         return Settings.Secure.getString(contentResolver, "bluetooth_name");
     }
+
+    public static String getMapString(Map<String, String> map, String key)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        {
+            return map.getOrDefault(key, null);
+        }
+        else
+        {
+            try
+            {
+                return map.get(key);
+            }
+            catch (Exception ignore)
+            {
+                return null;
+            }
+        }
+    }
+
 }

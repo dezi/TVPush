@@ -1,8 +1,12 @@
 package zz.top.tpl.handler;
 
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import zz.top.tpl.base.TPL;
 
@@ -12,6 +16,14 @@ import zz.top.utl.Simple;
 public class TPLHandlerSysInfo extends TPLHandler
 {
     private static final String LOGTAG = TPLHandlerSysInfo.class.getSimpleName();
+
+    private static final Map<String, String> ip2uuid = new HashMap<>();
+
+    @Nullable
+    public static String resolveUUID(String ipaddr)
+    {
+        return Simple.getMapString(ip2uuid, ipaddr);
+    }
 
     public static void sendAllGetSysinfo()
     {
@@ -105,6 +117,8 @@ public class TPLHandlerSysInfo extends TPLHandler
                 + " uuid=" + uuid
                 + " model=" + model
                 + " name=" + name);
+
+        ip2uuid.put(ipaddr, uuid);
 
         JSONObject tplinkdev = new JSONObject();
 
