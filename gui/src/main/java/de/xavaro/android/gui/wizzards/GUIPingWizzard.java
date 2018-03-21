@@ -1,6 +1,7 @@
 package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 
@@ -96,6 +97,19 @@ public class GUIPingWizzard extends GUIPluginTitleList
                 entry.setStatusColor(pingt ? GUIDefs.STATUS_COLOR_GREEN : GUIDefs.STATUS_COLOR_RED);
             }
 
+            if (device.type.equals("smartbulb")
+                    && (status.hue != null)
+                    && (status.saturation != null)
+                    && (status.brightness != null))
+            {
+                Log.d(LOGTAG, "collectEntries: smartbulb:"
+                        + " hue=" + status.hue
+                        + " saturation=" + status.saturation
+                        + " brightness=" + status.brightness);
+
+                entry.iconView.setBackgroundColor(colorRGB(status.hue, status.saturation, status.brightness));
+            }
+
             listView.addView(entry);
         }
     }
@@ -117,6 +131,29 @@ public class GUIPingWizzard extends GUIPluginTitleList
 
         GUIListEntry entry = (GUIListEntry) listView.getChildAt(inx);
         entry.setStatusColor(pingt ? GUIDefs.STATUS_COLOR_GREEN : GUIDefs.STATUS_COLOR_RED);
+    }
+
+    private static int colorRGB(int hue, int saturation, int brightness)
+    {
+        float[] hsv = new float[3];
+
+        hsv[ 0 ] = hue;
+        hsv[ 1 ] = saturation / 100f;
+        hsv[ 2 ] = brightness / 100f;
+
+        return Color.HSVToColor(hsv);
+    }
+
+    private static void colorHSV(String color)
+    {
+        int rgbcolor = Integer.parseInt(color, 16);
+
+        float[] hsv = new float[3];
+        Color.colorToHSV(rgbcolor, hsv);
+
+        int hue = Math.round(hsv[0]);
+        int saturation = Math.round(hsv[1] * 100);
+        int brightness = Math.round(hsv[2] * 100);
     }
 
     private final Runnable pingerRunner = new Runnable()
