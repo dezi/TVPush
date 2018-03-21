@@ -1,7 +1,6 @@
 package de.xavaro.android.gui.base;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 
 import de.xavaro.android.gui.simple.Simple;
@@ -15,11 +14,12 @@ public class GUIPlugin extends GUIFrameLayout
     public final static int DEFAULT_TOP = 100;
 
     public final static int DEFAULT_WIDTH = 500;
-    public final static int DEFAULT_HEIGTH = 300;
+    public final static int DEFAULT_HEIGHT = 300;
 
     public GUIFrameLayout contentFrame;
 
     private boolean isActive;
+    private boolean isAttached;
 
     public GUIPlugin(Context context)
     {
@@ -27,11 +27,27 @@ public class GUIPlugin extends GUIFrameLayout
 
         contentFrame = this;
 
-        this.setPluginSizeDip(DEFAULT_WIDTH, DEFAULT_HEIGTH);
+        this.setPluginSizeDip(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.setPluginPositionDip(DEFAULT_LEFT, DEFAULT_TOP);
         this.setPaddingDip(GUIDefs.PADDING_SMALL, GUIDefs.PADDING_ZERO, GUIDefs.PADDING_SMALL, GUIDefs.PADDING_SMALL);
 
         onHighlightFrame(false);
+    }
+
+    @Override
+    public void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+
+        isAttached = true;
+    }
+
+    @Override
+    public void onDetachedFromWindow()
+    {
+        super.onDetachedFromWindow();
+
+        isAttached = false;
     }
 
     public void onStart()
@@ -113,5 +129,10 @@ public class GUIPlugin extends GUIFrameLayout
     public boolean isActive()
     {
         return isActive;
+    }
+
+    public boolean isAttached()
+    {
+        return isAttached;
     }
 }

@@ -7,9 +7,9 @@ import android.util.Log;
 import android.view.View;
 
 import de.xavaro.android.gui.base.GUIPluginTitleList;
-import de.xavaro.android.gui.base.GUISetup;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.R;
+import de.xavaro.android.gui.views.GUIListView;
 
 public class GUITodoWizzard extends GUIPluginTitleList
 {
@@ -21,59 +21,12 @@ public class GUITodoWizzard extends GUIPluginTitleList
 
         setTitleIcon(R.drawable.todo_list_512);
         setTitleText("Todo-Liste");
-
-        Simple.getHandler().post(makeEntryList);
     }
 
-    private final Runnable makeEntryList = new Runnable()
-    {
-        @Override
-        public void run()
-        {
-            listView.removeAllViews();
-
-            GUIPermissionWizzard.collectEntriesTodo(listView);
-
-            Simple.getHandler().postDelayed(makeEntryList, 10 * 1000);
-        }
-    };
-
-    private OnClickListener onServiceStartClickListener = new OnClickListener()
-    {
-        @Override
-        public void onClick(View view)
-        {
-            String service = (String) view.getTag();
-            GUISetup.startIntentForService(view.getContext(), service);
-        }
-    };
-
-    private OnClickListener onAreaPermissionClickListener = new OnClickListener()
-    {
-        @Override
-        public void onClick(View view)
-        {
-            String area = (String) view.getTag();
-            GUISetup.requestPermission((Activity) view.getContext(), area, 4711);
-        }
-    };
-
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
+    public void onCollectEntries(GUIListView listView, boolean todo)
     {
-        if ((requestCode == 4711) && (permissions.length > 0) && (grantResults.length > 0))
-        {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            {
-                Log.d(LOGTAG, "onRequestPermissionsResult: yep=" + permissions[ 0 ]);
-
-                Simple.getHandler().removeCallbacks(makeEntryList);
-                Simple.getHandler().post(makeEntryList);
-            }
-            else
-            {
-                Log.d(LOGTAG, "onRequestPermissionsResult: boo=" + permissions[ 0 ]);
-            }
-        }
+        GUIPermissionWizzard.collectEntries(listView, true);
+        GUILocationsWizzard.collectEntries(listView, true);
     }
 }

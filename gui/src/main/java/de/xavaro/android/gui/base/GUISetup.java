@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
@@ -128,12 +129,24 @@ public class GUISetup
         if (area.equals("ext")) which = Manifest.permission.WRITE_EXTERNAL_STORAGE;
         if (area.equals("cam")) which = Manifest.permission.CAPTURE_VIDEO_OUTPUT;
 
-        if (which != null)
+        if ((which != null) && ! havePermission(activity, which))
         {
             ActivityCompat.requestPermissions(activity, new String[]{which}, requestCode);
 
             return true;
         }
+
+        //
+        // Open the complete permissions
+        // setup page for current app.
+        //
+
+        Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
+
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(uri);
+        activity.startActivity(intent);
 
         return false;
     }

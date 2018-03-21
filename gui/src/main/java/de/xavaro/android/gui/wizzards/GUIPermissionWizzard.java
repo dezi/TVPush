@@ -19,6 +19,7 @@ import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUIListEntry;
+import de.xavaro.android.gui.views.GUIListView;
 
 public class GUIPermissionWizzard extends GUIPluginTitleList
 {
@@ -30,33 +31,19 @@ public class GUIPermissionWizzard extends GUIPluginTitleList
 
         setTitleIcon(R.drawable.permissions_240);
         setTitleText("Services and Permissions");
-
-        Simple.getHandler().post(makeEntryList);
     }
 
-    public static void collectEntriesTodo(GUILinearLayout listView)
+    @Override
+    public void onCollectEntries(GUIListView listView, boolean todo)
     {
-        collectEntries(listView, true);
+        collectEntries(listView, todo);
     }
 
-    private static void collectEntries(GUILinearLayout listView, boolean todo)
+    public static void collectEntries(GUILinearLayout listView, boolean todo)
     {
         collectServices(listView, todo);
         collectPermissions(listView, todo);
     }
-
-    private final Runnable makeEntryList = new Runnable()
-    {
-        @Override
-        public void run()
-        {
-            listView.removeAllViews();
-
-            collectEntries(listView, false);
-
-            Simple.getHandler().postDelayed(makeEntryList, 10 * 1000);
-        }
-    };
 
     private static void collectServices(GUILinearLayout listView, boolean todo)
     {
@@ -156,23 +143,4 @@ public class GUIPermissionWizzard extends GUIPluginTitleList
             GUISetup.requestPermission((Activity) view.getContext(), area, 4711);
         }
     };
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
-    {
-        if ((requestCode == 4711) && (permissions.length > 0) && (grantResults.length > 0))
-        {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            {
-                Log.d(LOGTAG, "onRequestPermissionsResult: yep=" + permissions[ 0 ]);
-
-                Simple.getHandler().removeCallbacks(makeEntryList);
-                Simple.getHandler().post(makeEntryList);
-            }
-            else
-            {
-                Log.d(LOGTAG, "onRequestPermissionsResult: boo=" + permissions[ 0 ]);
-            }
-        }
-    }
 }

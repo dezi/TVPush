@@ -10,7 +10,7 @@ public class GUIListView extends  GUILinearLayout
         super(context);
     }
 
-    private int focusedIndex = -1;
+    private int focusedIndex = 0;
 
     @Override
     public void removeAllViews()

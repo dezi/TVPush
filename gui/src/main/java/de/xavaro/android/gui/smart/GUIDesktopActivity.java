@@ -3,6 +3,7 @@ package de.xavaro.android.gui.smart;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 
 import de.xavaro.android.gui.base.GUI;
@@ -25,12 +26,14 @@ public class GUIDesktopActivity extends GUIActivity
     private final static String LOGTAG = GUIDesktopActivity.class.getSimpleName();
 
     public GUISpeechRecogniton speechRecognition;
+
+    public GUITodoWizzard todoWizzard;
     public GUILocationsWizzard locationsWizzard;
+    public GUIPermissionWizzard permissionsWizzard;
+
     public GUIGeomapWizzard geomapWizzard;
 
     public GUIChannelWizzard channelWizzard;
-    public GUIPermissionWizzard permissionsWizzard;
-    public GUITodoWizzard todoWizzard;
 
     private GUIVideoSurface videoSurface1;
     private GUIVideoSurface videoSurface2;
@@ -45,22 +48,16 @@ public class GUIDesktopActivity extends GUIActivity
         GUI.instance.desktopActivity = this;
 
         speechRecognition = new GUISpeechRecogniton(this);
-
         topframe.addView(speechRecognition, speechRecognition.getPreferredLayout());
-
-        geomapWizzard = new GUIGeomapWizzard(this);
 
         channelWizzard = new GUIChannelWizzard(this);
         //topframe.addView(channelWizzard);
 
         todoWizzard = new GUITodoWizzard(this);
-        //topframe.addView(todoWizzard);
-
-        permissionsWizzard = new GUIPermissionWizzard(this);
-        //topframe.addView(permissionsWizzard);
-
         locationsWizzard = new GUILocationsWizzard(this);
-        topframe.addView(locationsWizzard);
+        permissionsWizzard = new GUIPermissionWizzard(this);
+
+        geomapWizzard = new GUIGeomapWizzard(this);
 
         checkWindowSize();
    }
@@ -78,7 +75,16 @@ public class GUIDesktopActivity extends GUIActivity
 
             if ((plugin instanceof GUIPlugin) && ((GUIPlugin) plugin).isActive())
             {
-                topframe.removeView(plugin);
+                if (plugin == locationsWizzard)
+                {
+                    hideLocationsWizzard();
+                }
+
+                if (plugin == geomapWizzard)
+                {
+                    hideGeomapWizzard();
+                }
+
                 didwas = true;
                 break;
             }
@@ -163,29 +169,70 @@ public class GUIDesktopActivity extends GUIActivity
 
     public void hideGeomapWizzard()
     {
-        if ((geomapWizzard != null) && (geomapWizzard.getParent() != null))
-        {
-            topframe.removeView(geomapWizzard);
-        }
-
-        geomapWizzard = null;
+        hidePlugin(geomapWizzard);
     }
 
     public void displayGeomapWizzard(IOTObject iotobject)
     {
-        if (geomapWizzard == null)
-        {
-            geomapWizzard = new GUIGeomapWizzard(this);
-        }
+        showPlugin(geomapWizzard);
+    }
 
-        if (geomapWizzard.getParent() == null)
-        {
-            topframe.addView(geomapWizzard);
-        }
+    public void hideLocationsWizzard()
+    {
+        hidePlugin(geomapWizzard);
+        hidePlugin(locationsWizzard);
+    }
 
-        geomapWizzard.setIOTObject(iotobject);
+    public void displayLocationsWizzard()
+    {
+        showPlugin(locationsWizzard);
+    }
+
+    public void hideTodoWizzard()
+    {
+        hidePlugin(geomapWizzard);
+        hidePlugin(todoWizzard);
+    }
+
+    public void displayTodoWizzard()
+    {
+        showPlugin(todoWizzard);
+    }
+
+    public void hidePermissionsWizzard()
+    {
+        hidePlugin(permissionsWizzard);
+    }
+
+    public void displayPermissionsWizzard()
+    {
+        showPlugin(permissionsWizzard);
+    }
+
+    private void showPlugin(GUIPlugin plugin)
+    {
+        if (plugin.getParent() == null)
+        {
+            topframe.addView(plugin);
+        }
 
         checkWindowSize();
+    }
+
+    private void hidePlugin(GUIPlugin plugin)
+    {
+        if ((plugin != null) && (plugin.getParent() != null))
+        {
+            topframe.removeView(plugin);
+        }
+    }
+
+    private void hideAllWizzards()
+    {
+        hidePlugin(todoWizzard);
+        hidePlugin(geomapWizzard);
+        hidePlugin(locationsWizzard);
+        hidePlugin(permissionsWizzard);
     }
 
     public void displaySpeechRecognition(boolean show)
@@ -241,5 +288,33 @@ public class GUIDesktopActivity extends GUIActivity
         {
             startActivity(new Intent(this, getClass()));
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        GUIPlugin wizzard = null;
+
+        if (keyCode == KeyEvent.KEYCODE_PROG_RED) wizzard = todoWizzard;
+        if (keyCode == KeyEvent.KEYCODE_PROG_GREEN) wizzard = locationsWizzard;
+        if (keyCode == KeyEvent.KEYCODE_PROG_YELLOW) wizzard = permissionsWizzard;
+        if (keyCode == KeyEvent.KEYCODE_PROG_BLUE) wizzard = permissionsWizzard;
+
+        if (wizzard != null)
+        {
+            if (wizzard.isAttached())
+            {
+                hideAllWizzards();
+            }
+            else
+            {
+                hideAllWizzards();
+                showPlugin(wizzard);
+            }
+        }
+
+        Log.d(LOGTAG, "onKeyDown: event=" + event);
+
+        return super.onKeyDown(keyCode, event);
     }
 }
