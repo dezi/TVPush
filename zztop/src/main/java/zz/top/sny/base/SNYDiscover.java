@@ -192,7 +192,7 @@ public class SNYDiscover
 
         SNY.instance.onDeviceStatus(status);
 
-        //if (ipAddr.equals(Simple.getConnectedWifiIPAddress()))
+        if (ipAddr.equals(Simple.getConnectedWifiIPAddress()))
         {
             SNYPrograms.importSDB(UDN);
         }

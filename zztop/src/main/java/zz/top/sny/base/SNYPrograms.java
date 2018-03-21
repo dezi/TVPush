@@ -45,7 +45,6 @@ public class SNYPrograms
                 Log.d(LOGTAG, "importSDB: sub=" + sub.getAbsolutePath());
 
                 sdbXML = new File(sub, "sdb.xml");
-                sdbJSON = new File(sub, "sdb.json");
 
                 if (sdbXML.exists())
                 {
@@ -63,6 +62,21 @@ public class SNYPrograms
                 + " sdbXML=" + sdbXML.getAbsolutePath()
                 + " exists=" + sdbXML.exists()
         );
+
+        Log.d(LOGTAG, "importSDB:"
+                + " sdbJSON=" + sdbJSON.getAbsolutePath()
+                + " exists=" + sdbJSON.exists()
+        );
+
+        if (sdbXML.exists() && sdbJSON.exists())
+        {
+            if (sdbXML.lastModified() < sdbJSON.lastModified())
+            {
+                Log.d(LOGTAG, "importSDB: sdbXML older than sdbJSON, skip import.");
+
+                return;
+            }
+        }
 
         String sdbxml = readTextFile(sdbXML);
         if (sdbxml == null) return;
@@ -398,9 +412,6 @@ public class SNYPrograms
             outputStream.close();
 
             return true;
-        }
-        catch (FileNotFoundException ignore)
-        {
         }
         catch (Exception ex)
         {

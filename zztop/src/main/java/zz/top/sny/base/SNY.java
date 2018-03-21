@@ -1,6 +1,5 @@
 package zz.top.sny.base;
 
-import android.support.annotation.Nullable;
 import android.app.Application;
 import android.util.Log;
 
@@ -10,8 +9,8 @@ import pub.android.interfaces.iot.GetDeviceCredentials;
 import pub.android.interfaces.iot.OnBackgroundRequest;
 import pub.android.interfaces.iot.OnDeviceHandler;
 import pub.android.interfaces.iot.DoSomethingHandler;
-
 import pub.android.interfaces.iot.OnPincodeRequest;
+
 import zz.top.utl.Json;
 import zz.top.utl.Simple;
 
