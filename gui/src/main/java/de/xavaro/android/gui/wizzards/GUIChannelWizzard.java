@@ -68,7 +68,7 @@ public class GUIChannelWizzard extends GUIPluginTitle
         Log.d(LOGTAG, "GUIChannelWizzard: width=" + getPluginWidth() + " height=" + getPluginHeight());
         Log.d(LOGTAG, "GUIChannelWizzard: width=" + getPluginNettoWidth() + " height=" + getPluginNettoHeight());
 
-        CHANNEL_WIDTH = getPluginNettoWidth() / CHANNEL_COLS;
+        CHANNEL_WIDTH = (getPluginNettoWidth() - scrollView.getScrollBarSize()) / CHANNEL_COLS;
         CHANNEL_HEIGHT = Simple.dipToPx(40);
     }
 
@@ -301,6 +301,8 @@ public class GUIChannelWizzard extends GUIPluginTitle
         channelPosi.add(container);
 
         containerText.put(container, text);
+
+        if (posi == 0) container.requestFocus();
     }
 
     private void createChannelView()
