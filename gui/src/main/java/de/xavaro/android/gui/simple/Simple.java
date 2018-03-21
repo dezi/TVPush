@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.location.LocationManager;
 import android.media.AudioManager;
@@ -439,6 +440,33 @@ public class Simple
     {
         return (color & 0x00ffffff) | (alpha << 24);
     }
+
+    public static int colorRGB(int hue, int saturation, int brightness)
+    {
+        float[] hsv = new float[3];
+
+        hsv[ 0 ] = hue;
+        hsv[ 1 ] = saturation / 100f;
+        hsv[ 2 ] = brightness / 100f;
+
+        return Color.HSVToColor(hsv);
+    }
+
+    public static void colorHSV(String color)
+    {
+        int rgbcolor = Integer.parseInt(color, 16);
+    }
+
+    public static void colorHSV(int rgbcolor)
+    {
+        float[] hsv = new float[3];
+        Color.colorToHSV(rgbcolor, hsv);
+
+        int hue = Math.round(hsv[0]);
+        int saturation = Math.round(hsv[1] * 100);
+        int brightness = Math.round(hsv[2] * 100);
+    }
+
 
     public static void turnBeepOnOff(boolean on)
     {
