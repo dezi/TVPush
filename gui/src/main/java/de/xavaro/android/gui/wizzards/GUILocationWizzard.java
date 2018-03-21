@@ -47,13 +47,6 @@ public class GUILocationWizzard extends GUIPluginTitleIOT
 
         setPluginPositionDip(400, DEFAULT_TOP);
 
-        final String toast1 = "Drücken Sie " + GUIDefs.UTF_OK + " um das TV-Gerät zu positionieren";
-
-        final String toast2 = "Bewegen mit" + " " + GUIDefs.UTF_MOVE + " "
-                + ", zoomen mit" + " " + GUIDefs.UTF_ZOOMIN
-                + " " + "und" + " " + GUIDefs.UTF_ZOOMOUT;
-
-
         mapFrame = new GUIFrameLayout(context)
         {
             @Override
@@ -63,22 +56,30 @@ public class GUILocationWizzard extends GUIPluginTitleIOT
             }
 
             @Override
-            public void onHighlightStarted(View view)
+            public void onHighlightChanged(View view, boolean highlight)
             {
-                GUI.instance.desktopActivity.displayToastMessage(toast2, 10, false);
-            }
-
-            @Override
-            public void onHighlightFinished(View view)
-            {
-                saveLocation();
+                if (! highlight)
+                {
+                    saveLocation();
+                }
             }
         };
+
+        final String toastFocus = ""
+                + "Drücken Sie "
+                + GUIDefs.UTF_OK
+                + " um das Gerät zu positionieren";
+
+        final String toastHighlight = ""
+                + "Bewegen mit" + " " + GUIDefs.UTF_MOVE + " "
+                + ", zoomen mit" + " " + GUIDefs.UTF_ZOOMIN
+                + " und" + " " + GUIDefs.UTF_ZOOMOUT;
 
         mapFrame.setSizeDip(Simple.MP, Simple.MP);
         mapFrame.setHighlightable(true);
         mapFrame.setFocusable(true);
-        mapFrame.setToast(toast1);
+        mapFrame.setToastFocus(toastFocus);
+        mapFrame.setToastHighlight(toastHighlight);
 
         contentFrame.addView(mapFrame);
 

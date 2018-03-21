@@ -2,17 +2,15 @@ package de.xavaro.android.gui.base;
 
 import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.ImageView;
+import android.widget.LinearLayout;import android.widget.ImageView;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.Gravity;
 
-import de.xavaro.android.gui.views.GUIEditText;
-import de.xavaro.android.gui.views.GUIFrameLayout;
-import de.xavaro.android.gui.views.GUIIconView;
-import de.xavaro.android.gui.views.GUIImageView;
 import de.xavaro.android.gui.views.GUILinearLayout;
+import de.xavaro.android.gui.views.GUIFrameLayout;
+import de.xavaro.android.gui.views.GUIEditText;
+import de.xavaro.android.gui.views.GUIIconView;
 import de.xavaro.android.gui.views.GUITextView;
 import de.xavaro.android.gui.simple.Simple;
 
@@ -60,9 +58,9 @@ public class GUIPluginTitle extends GUIPlugin
         titleEdit = new GUIEditText(context)
         {
             @Override
-            public void onHighlightFinished(View view)
+            public void onHighlightChanged(View view, boolean highlight)
             {
-                onTitleEditFinished(view);
+                if (! highlight) onTitleEditFinished(view);
             }
         };
 
@@ -104,8 +102,8 @@ public class GUIPluginTitle extends GUIPlugin
 
         titleEdit.setText(text);
         titleEdit.setHint(hint);
-        titleEdit.setToast(toast);
         titleEdit.setFocusable(true);
+        titleEdit.setToastFocus(toast);
         titleEdit.setHighlightable(true);
         titleEdit.setVisibility(VISIBLE);
     }

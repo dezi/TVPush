@@ -17,10 +17,12 @@ import de.xavaro.android.gui.skills.GUICanRestoreBackground;
 import de.xavaro.android.gui.skills.GUICanRestoreBackgroundDelegate;
 import de.xavaro.android.gui.skills.GUICanRoundedCorners;
 import de.xavaro.android.gui.skills.GUICanRoundedCornersDelegate;
+import de.xavaro.android.gui.skills.GUICanToast;
 
 public class GUITextView extends AppCompatTextView implements
         GUICanDip,
         GUICanFocus,
+        GUICanToast,
         GUICanRoundedCorners,
         GUICanRestoreBackground
 {
@@ -34,7 +36,7 @@ public class GUITextView extends AppCompatTextView implements
         setTextColor(Color.BLACK);
     }
 
-    //region Dip implementation.
+    //region CanDip implementation.
 
     public void setSizeDip(int width, int height)
     {
@@ -64,7 +66,7 @@ public class GUITextView extends AppCompatTextView implements
         setTextSize(TypedValue.COMPLEX_UNIT_DIP, real);
     }
 
-    //endregion Dip implementation.
+    //endregion CanDip implementation.
 
     //region Skills implementation.
 
@@ -168,22 +170,18 @@ public class GUITextView extends AppCompatTextView implements
 
     //endregion Skills implementation.
 
-    //region Focus implementation.
+    //region CanFocus implementation.
 
-    private String toast;
-    private boolean hasfocus;
-    private boolean focusable;
+    private boolean focus;
     private boolean highlight;
     private boolean highlightable;
 
     @Override
     public void setFocusable(boolean focusable)
     {
-        this.focusable = focusable;
-
         super.setFocusable(focusable);
 
-        GUICanFocusDelegate.setupFocusChange(this, focusable);
+        GUICanFocusDelegate.setupOnFocusChangeListener(this, focusable);
     }
 
     @Override
@@ -215,23 +213,13 @@ public class GUITextView extends AppCompatTextView implements
     @Override
     public void setHasFocus(boolean hasfocus)
     {
-        this.hasfocus = hasfocus;
+        this.focus = hasfocus;
     }
 
     @Override
     public boolean getHasFocus()
     {
-        return this.hasfocus;
-    }
-
-    public void setToast(String toast)
-    {
-        this.toast = toast;
-    }
-
-    public String getToast()
-    {
-        return toast;
+        return this.focus;
     }
 
     @Override
@@ -242,11 +230,7 @@ public class GUITextView extends AppCompatTextView implements
         setFocusable(onClickListener != null);
     }
 
-    public void onHighlightStarted(View view)
-    {
-    }
-
-    public void onHighlightFinished(View view)
+    public void onHighlightChanged(View view, boolean highlight)
     {
     }
 
@@ -256,5 +240,36 @@ public class GUITextView extends AppCompatTextView implements
         return GUICanFocusDelegate.onKeyDown(this, keyCode, event) || super.onKeyDown(keyCode, event);
     }
 
-    //endregion Focus implementation.
+    //endregion CanFocus implementation.
+
+    //region CanToast implementation.
+
+    private String toastFocus;
+    private String toastHighlight;
+
+    @Override
+    public void setToastFocus(String toast)
+    {
+        this.toastFocus = toast;
+    }
+
+    @Override
+    public String getToastFocus()
+    {
+        return toastFocus;
+    }
+
+    @Override
+    public void setToastHighlight(String toast)
+    {
+        this.toastHighlight = toast;
+    }
+
+    @Override
+    public String getToastHighlight()
+    {
+        return toastHighlight;
+    }
+
+    //endregion CanToast implementation
 }

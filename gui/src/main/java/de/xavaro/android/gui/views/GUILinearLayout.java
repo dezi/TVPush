@@ -1,15 +1,16 @@
 package de.xavaro.android.gui.views;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.widget.LinearLayout;
+import android.content.Context;
+import android.view.ViewGroup;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.skills.GUICanDip;
 import de.xavaro.android.gui.skills.GUICanFocus;
+import de.xavaro.android.gui.skills.GUICanToast;
 import de.xavaro.android.gui.skills.GUICanFocusDelegate;
 import de.xavaro.android.gui.skills.GUICanRestoreBackground;
 import de.xavaro.android.gui.skills.GUICanRestoreBackgroundDelegate;
@@ -19,6 +20,7 @@ import de.xavaro.android.gui.skills.GUICanRoundedCornersDelegate;
 public class GUILinearLayout extends LinearLayout implements
         GUICanDip,
         GUICanFocus,
+        GUICanToast,
         GUICanRoundedCorners,
         GUICanRestoreBackground
 {
@@ -31,13 +33,13 @@ public class GUILinearLayout extends LinearLayout implements
         initSkills();
     }
 
-    //region Dip implementation.
+    //region CanDip implementation.
 
     public void setSizeDip(int width, int height)
     {
         if (getLayoutParams() == null)
         {
-            setLayoutParams(new MarginLayoutParams(Simple.WC, Simple.WC));
+            setLayoutParams(new ViewGroup.MarginLayoutParams(Simple.WC, Simple.WC));
         }
 
         getLayoutParams().width = width > 0 ? Simple.dipToPx(width) : width;
@@ -54,7 +56,7 @@ public class GUILinearLayout extends LinearLayout implements
         setPadding(Simple.dipToPx(left), Simple.dipToPx(top), Simple.dipToPx(right), Simple.dipToPx(bottom));
     }
 
-    //endregion Dip implementation.
+    //endregion CanDip implementation.
 
     //region Skills implementation.
 
@@ -158,22 +160,18 @@ public class GUILinearLayout extends LinearLayout implements
 
     //endregion Skills implementation.
 
-    //region Focus implementation.
+    //region CanFocus implementation.
 
-    private String toast;
-    private boolean hasfocus;
-    private boolean focusable;
+    private boolean focus;
     private boolean highlight;
     private boolean highlightable;
 
     @Override
     public void setFocusable(boolean focusable)
     {
-        this.focusable = focusable;
-
         super.setFocusable(focusable);
 
-        GUICanFocusDelegate.setupFocusChange(this, focusable);
+        GUICanFocusDelegate.setupOnFocusChangeListener(this, focusable);
     }
 
     @Override
@@ -205,23 +203,13 @@ public class GUILinearLayout extends LinearLayout implements
     @Override
     public void setHasFocus(boolean hasfocus)
     {
-        this.hasfocus = hasfocus;
+        this.focus = hasfocus;
     }
 
     @Override
     public boolean getHasFocus()
     {
-        return this.hasfocus;
-    }
-
-    public void setToast(String toast)
-    {
-        this.toast = toast;
-    }
-
-    public String getToast()
-    {
-        return toast;
+        return this.focus;
     }
 
     @Override
@@ -232,11 +220,7 @@ public class GUILinearLayout extends LinearLayout implements
         setFocusable(onClickListener != null);
     }
 
-    public void onHighlightStarted(View view)
-    {
-    }
-
-    public void onHighlightFinished(View view)
+    public void onHighlightChanged(View view, boolean highlight)
     {
     }
 
@@ -246,43 +230,36 @@ public class GUILinearLayout extends LinearLayout implements
         return GUICanFocusDelegate.onKeyDown(this, keyCode, event) || super.onKeyDown(keyCode, event);
     }
 
-    //endregion Focus implementation.
+    //endregion CanFocus implementation.
 
-    //region Remember focus after clear and rebuild.
+    //region CanToast implementation.
 
-    private int focusedIndex = -1;
+    private String toastFocus;
+    private String toastHighlight;
 
     @Override
-    public void removeAllViews()
+    public void setToastFocus(String toast)
     {
-        //
-        // Inspect childs and search for focused.
-        //
-
-        focusedIndex = -1;
-
-        for (int inx = 0; inx < getChildCount(); inx++)
-        {
-            if (getChildAt(inx).hasFocus())
-            {
-                focusedIndex = inx;
-                break;
-            }
-        }
-
-        super.removeAllViews();
+        this.toastFocus = toast;
     }
 
     @Override
-    public void addView(View view)
+    public String getToastFocus()
     {
-        super.addView(view);
-
-        if (focusedIndex == (getChildCount() - 1))
-        {
-            view.requestFocus();
-        }
+        return toastFocus;
     }
 
-    //endregion Remember focus after clear and rebuild.
+    @Override
+    public void setToastHighlight(String toast)
+    {
+        this.toastHighlight = toast;
+    }
+
+    @Override
+    public String getToastHighlight()
+    {
+        return toastHighlight;
+    }
+
+    //endregion CanToast implementation
 }

@@ -21,14 +21,12 @@ public class GUICanFocusDelegate
         public void onFocusChange(View view, boolean hasFocus)
         {
             GUICanFocus gf = view instanceof GUICanFocus ? (GUICanFocus) view : null;
+            GUICanToast gt = view instanceof GUICanToast ? (GUICanToast) view : null;
+
             if (gf == null) return;
 
             if (hasFocus)
             {
-                //
-                // Dismiss any keyboard.
-                //
-
                 Simple.hideSoftKeyBoard(view);
 
                 //
@@ -41,9 +39,9 @@ public class GUICanFocusDelegate
 
                 gf.setHasFocus(true);
 
-                if (gf.getToast() != null)
+                if (gt != null)
                 {
-                    GUI.instance.desktopActivity.displayToastMessage(gf.getToast(), 10, false);
+                    GUICanToastDelegate.displayToast(gt.getToastFocus());
                 }
             }
             else
@@ -55,14 +53,21 @@ public class GUICanFocusDelegate
                 gf.restoreBackground();
 
                 gf.setHasFocus(false);
-                gf.setHighlight(false);
 
-                if (gf.getHighlightable() && (view instanceof GUIEditText))
+                if (gf.getHighlightable())
                 {
-                    GUIEditText et = (GUIEditText) view;
+                    if (gf.getHighlight())
+                    {
+                        gf.setHighlight(false);
+                    }
 
-                    et.setEnabled(false);
-                    et.setInputType(InputType.TYPE_NULL);
+                    if (view instanceof GUIEditText)
+                    {
+                        GUIEditText et = (GUIEditText) view;
+
+                        et.setEnabled(false);
+                        et.setInputType(InputType.TYPE_NULL);
+                    }
                 }
             }
         }
@@ -71,27 +76,39 @@ public class GUICanFocusDelegate
     public static void adjustHighlightState(View view)
     {
         GUICanFocus gf = view instanceof GUICanFocus ? (GUICanFocus) view : null;
+        GUICanToast gt = view instanceof GUICanToast ? (GUICanToast) view : null;
 
-        if ((gf != null)
-                && gf.getHasFocus()
-                && gf.getHighlightable())
+        if ((gf != null) && gf.getHighlightable())
         {
             if (gf.getHighlight())
             {
-                gf.setRoundedCorners(0, gf.getBackgroundColor(), GUIDefs.COLOR_TV_FOCUS_HIGHLIGHT);
+                if (gf.getHasFocus())
+                {
+                    gf.setRoundedCorners(0, gf.getBackgroundColor(), GUIDefs.COLOR_TV_FOCUS_HIGHLIGHT);
+                }
 
-                gf.onHighlightStarted(view);
+                if (gt != null)
+                {
+                    GUICanToastDelegate.displayToast(gt.getToastHiglight());
+                }
+
+                Log.d(LOGTAG, "adjustHighlightState: onHighlightStarted.");
             }
             else
             {
-                gf.setRoundedCorners(0, gf.getBackgroundColor(), GUIDefs.COLOR_TV_FOCUS);
+                if (gf.getHasFocus())
+                {
+                    gf.setRoundedCorners(0, gf.getBackgroundColor(), GUIDefs.COLOR_TV_FOCUS);
+                }
 
-                gf.onHighlightFinished(view);
+                Log.d(LOGTAG, "adjustHighlightState: onHighlightFinished.");
             }
+
+            gf.onHighlightChanged(view, gf.getHighlight());
         }
     }
 
-    public static void setupFocusChange(View view, boolean focusable)
+    public static void setupOnFocusChangeListener(View view, boolean focusable)
     {
         if (Simple.isTV() && (view instanceof GUICanFocus))
         {
@@ -130,8 +147,6 @@ public class GUICanFocusDelegate
                 && (keyCode == KeyEvent.KEYCODE_DPAD_CENTER))
         {
             gf.setHighlight(! gf.getHighlight());
-
-            Log.d(LOGTAG, "onKeyDown: highlight=" + gf.getHighlight());
 
             if (view instanceof GUIEditText)
             {

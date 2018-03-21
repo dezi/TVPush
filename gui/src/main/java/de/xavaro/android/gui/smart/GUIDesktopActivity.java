@@ -196,6 +196,11 @@ public class GUIDesktopActivity extends GUIActivity
         speechRecognition.displayPinCodeMessage(timeout);
     }
 
+    public void displayToastMessage(String message)
+    {
+        speechRecognition.displayToastMessage(message, 10, false);
+    }
+
     public void displayToastMessage(String message, int seconds, boolean emphasis)
     {
         speechRecognition.displayToastMessage(message, seconds, emphasis);

@@ -3,8 +3,8 @@ package de.xavaro.android.gui.base;
 import android.content.Context;
 import android.view.View;
 
-import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.views.GUIEditText;
+
 import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTDevice;

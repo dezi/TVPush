@@ -7,22 +7,18 @@ public interface GUICanFocus extends GUICanRoundedCorners
 {
     void setFocusable(boolean focusable);
 
+    void setHasFocus(boolean hasfocus);
+    boolean getHasFocus();
+
     void setHighlight(boolean highlight);
     boolean getHighlight();
 
     void setHighlightable(boolean highlighttable);
     boolean getHighlightable();
 
-    void setHasFocus(boolean hasfocus);
-    boolean getHasFocus();
-
     int getBackgroundColor();
 
-    void setToast(String toast);
-    String getToast();
-
-    void onHighlightStarted(View view);
-    void onHighlightFinished(View view);
+    void onHighlightChanged(View view, boolean hashighlight);
 
     View.OnFocusChangeListener getOnFocusChangeListener();
     void setOnFocusChangeListener(View.OnFocusChangeListener onFocusChangeListener);
