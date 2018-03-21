@@ -46,6 +46,17 @@ public class GUILinearLayout extends LinearLayout implements
         getLayoutParams().height = height > 0 ? Simple.dipToPx(height) : height;
     }
 
+    public void setSizeDip(int width, int height, float weight)
+    {
+        if (getLayoutParams() == null)
+        {
+            setLayoutParams(new LinearLayout.LayoutParams(Simple.WC, Simple.WC, weight));
+        }
+
+        getLayoutParams().width = width > 0 ? Simple.dipToPx(width) : width;
+        getLayoutParams().height = height > 0 ? Simple.dipToPx(height) : height;
+    }
+
     public void setPaddingDip(int pad)
     {
         setPadding(Simple.dipToPx(pad), Simple.dipToPx(pad), Simple.dipToPx(pad), Simple.dipToPx(pad));

@@ -22,24 +22,12 @@ public class GUIListEntry extends GUILinearLayout
         setPaddingDip(GUIDefs.PADDING_TINY);
         setBackgroundColor(GUIDefs.COLOR_LIGHT_TRANSPARENT);
 
-        GUIRelativeLayout statusBox = new GUIRelativeLayout(context);
-        statusBox.setGravity(Gravity.CENTER);
-        statusBox.setSizeDip(Simple.WC, Simple.MP);
-        statusBox.setPaddingDip(GUIDefs.PADDING_TINY);
-
-        addView(statusBox);
-
-        bulletView = new GUIRelativeLayout(context);
-        bulletView.setSizeDip(GUIDefs.PADDING_MEDIUM,GUIDefs.PADDING_MEDIUM);
-
-        statusBox.addView(bulletView);
-
         iconView = new GUIIconView(context);
         addView(iconView);
 
-        GUIRelativeLayout entryCenter = new GUIRelativeLayout(context);
+        GUILinearLayout entryCenter = new GUILinearLayout(context);
         entryCenter.setGravity(Gravity.START + Gravity.CENTER_VERTICAL);
-        entryCenter.setSizeDip(Simple.MP, Simple.MP);
+        entryCenter.setSizeDip(Simple.MP, Simple.MP, 1.0f);
 
         addView(entryCenter);
 
@@ -58,6 +46,18 @@ public class GUIListEntry extends GUILinearLayout
         infoView.setTextSizeDip(GUIDefs.FONTSIZE_INFOS);
 
         entryBox.addView(infoView);
+
+        GUIRelativeLayout statusBox = new GUIRelativeLayout(context);
+        statusBox.setGravity(Gravity.CENTER);
+        statusBox.setSizeDip(Simple.WC, Simple.MP);
+        statusBox.setPaddingDip(GUIDefs.PADDING_TINY);
+
+        addView(statusBox);
+
+        bulletView = new GUIRelativeLayout(context);
+        bulletView.setSizeDip(GUIDefs.PADDING_MEDIUM,GUIDefs.PADDING_MEDIUM);
+
+        statusBox.addView(bulletView);
     }
 
     public void setStatusColor(int color)
