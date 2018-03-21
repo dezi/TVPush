@@ -108,7 +108,6 @@ public class GUIPingWizzard extends GUIPluginTitleList
                         + " saturation=" + status.saturation
                         + " brightness=" + status.brightness);
 
-
                 int color = Simple.colorRGB(status.hue, status.saturation, 100);
                 color = Simple.setRGBAlpha(color, status.brightness + 155);
 
