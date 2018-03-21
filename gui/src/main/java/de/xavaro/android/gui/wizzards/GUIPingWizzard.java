@@ -2,6 +2,7 @@ package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
 
@@ -107,10 +108,12 @@ public class GUIPingWizzard extends GUIPluginTitleList
                         + " saturation=" + status.saturation
                         + " brightness=" + status.brightness);
 
+
                 int color = Simple.colorRGB(status.hue, status.saturation, 100);
                 color = Simple.setRGBAlpha(color, status.brightness + 155);
 
-                entry.iconView.setBackgroundColor(color);
+                Drawable bulb = Simple.getResources().getDrawable(R.drawable.bulb_bunt_440);
+                entry.iconView.setImageDrawable(bulb, color);
             }
 
             listView.addView(entry);

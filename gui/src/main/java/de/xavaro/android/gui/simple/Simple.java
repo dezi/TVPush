@@ -266,6 +266,11 @@ public class Simple
         return handler;
     }
 
+    public static Resources getResources()
+    {
+        return resources;
+    }
+
     public static LocationManager getLocationManager()
     {
         return locationManager;

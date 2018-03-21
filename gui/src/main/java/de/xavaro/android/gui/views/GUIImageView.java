@@ -2,6 +2,8 @@ package de.xavaro.android.gui.views;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.support.v7.widget.AppCompatImageView;
 import android.graphics.drawable.Drawable;
 import android.content.Context;
@@ -180,5 +182,12 @@ public class GUIImageView extends AppCompatImageView implements
         */
 
         setImageBitmap(bitmap);
+    }
+
+    public void setImageDrawable(Drawable drawable, int color)
+    {
+        drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
+
+        setImageDrawable(drawable);
     }
 }
