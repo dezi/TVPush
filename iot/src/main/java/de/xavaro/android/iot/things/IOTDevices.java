@@ -35,21 +35,29 @@ public class IOTDevices extends IOTList
 
     public static int addEntry(IOTDevice newDevice, boolean external)
     {
+        int result;
+
         IOTDevice oldDevice = getEntry(newDevice.uuid);
 
         if (oldDevice == null)
         {
             Log.d(LOGTAG, "addEntry: new uuid=" + newDevice.uuid);
 
-            return newDevice.saveToStorage()
+            result = newDevice.saveToStorage()
                     ? IOTDefs.IOT_SAVE_ALLCHANGED
                     : IOTDefs.IOT_SAVE_FAILED;
+
+            if (result > 0) instance.putEntry(newDevice);
         }
         else
         {
             Log.d(LOGTAG, "addEntry: old uuid=" + oldDevice.uuid);
 
-            return oldDevice.checkAndMergeContent(newDevice, external);
+            result = oldDevice.checkAndMergeContent(newDevice, external);
+
+            if (result > 0) instance.putEntry(oldDevice);
         }
+
+        return result;
     }
 }

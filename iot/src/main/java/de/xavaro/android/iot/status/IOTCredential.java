@@ -32,7 +32,7 @@ public class IOTCredential extends IOTObject
         super(jsonstr, dummy);
     }
 
-    public void checkAndMergeContent(IOTCredential check, boolean external)
+    public int checkAndMergeContent(IOTCredential check, boolean external)
     {
         changed = false;
         changedUsr = false;
@@ -41,6 +41,6 @@ public class IOTCredential extends IOTObject
 
         changedSys = changed;
 
-        saveIfChanged();
+        return saveIfChanged();
     }
 }

@@ -35,22 +35,29 @@ public class IOTLocations extends IOTList
     
     public static int addEntry(IOTLocation newLocation, boolean external)
     {
+        int result;
+
         IOTLocation oldLocation = getEntry(newLocation.uuid);
 
         if (oldLocation == null)
         {
             Log.d(LOGTAG, "addEntry: new uuid=" + newLocation.uuid);
 
-            return newLocation.saveToStorage()
+            result = newLocation.saveToStorage()
                     ? IOTDefs.IOT_SAVE_ALLCHANGED
                     : IOTDefs.IOT_SAVE_FAILED;
+
+            if (result > 0) instance.putEntry(newLocation);
         }
         else
         {
             Log.d(LOGTAG, "addEntry: old uuid=" + oldLocation.uuid);
 
-            return oldLocation.checkAndMergeContent(newLocation, external);
-        }
-    }
+            result = oldLocation.checkAndMergeContent(newLocation, external);
 
+            if (result > 0) instance.putEntry(oldLocation);
+        }
+
+        return result;
+    }
 }

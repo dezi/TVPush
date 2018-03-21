@@ -35,21 +35,29 @@ public class IOTHumans extends IOTList
 
     public static int addEntry(IOTHuman newHuman, boolean external)
     {
+        int result;
+
         IOTHuman oldHuman = getEntry(newHuman.uuid);
 
         if (oldHuman == null)
         {
             Log.d(LOGTAG, "addEntry: new uuid=" + newHuman.uuid);
 
-            return newHuman.saveToStorage()
+            result =  newHuman.saveToStorage()
                     ? IOTDefs.IOT_SAVE_ALLCHANGED
                     : IOTDefs.IOT_SAVE_FAILED;
+
+            if (result > 0) instance.putEntry(newHuman);
         }
         else
         {
             Log.d(LOGTAG, "addEntry: old uuid=" + oldHuman.uuid);
 
-            return oldHuman.checkAndMergeContent(newHuman, external);
+            result = oldHuman.checkAndMergeContent(newHuman, external);
+
+            if (result > 0) instance.putEntry(oldHuman);
         }
+
+        return result;
     }
 }

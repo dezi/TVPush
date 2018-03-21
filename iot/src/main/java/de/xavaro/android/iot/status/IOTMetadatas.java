@@ -40,13 +40,19 @@ public class IOTMetadatas extends IOTList
         {
             Log.d(LOGTAG, "addEntry: new uuid=" + newMetadata.uuid);
 
-            newMetadata.saveToStorage();
+            if (newMetadata.saveToStorage())
+            {
+                instance.putEntry(newMetadata);
+            }
         }
         else
         {
             Log.d(LOGTAG, "addEntry: old uuid=" + oldStatus.uuid);
 
-            oldStatus.checkAndMergeContent(newMetadata, external);
+            if (oldStatus.checkAndMergeContent(newMetadata, external) > 0)
+            {
+                instance.putEntry(oldStatus);
+            }
         }
     }
 }

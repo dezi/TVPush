@@ -35,21 +35,29 @@ public class IOTDomains extends IOTList
 
     public static int addEntry(IOTDomain newDomain, boolean external)
     {
+        int result;
+
         IOTDomain oldDomain = getEntry(newDomain.uuid);
 
         if (oldDomain == null)
         {
             Log.d(LOGTAG, "addEntry: new uuid=" + newDomain.uuid);
 
-            return newDomain.saveToStorage()
+            result = newDomain.saveToStorage()
                     ? IOTDefs.IOT_SAVE_ALLCHANGED
                     : IOTDefs.IOT_SAVE_FAILED;
+
+            if (result > 0) instance.putEntry(newDomain);
         }
         else
         {
             Log.d(LOGTAG, "addEntry: old uuid=" + oldDomain.uuid);
 
-            return oldDomain.checkAndMergeContent(newDomain, external);
+            result = oldDomain.checkAndMergeContent(newDomain, external);
+
+            if (result > 0) instance.putEntry(oldDomain);
         }
+
+        return result;
     }
 }

@@ -2,12 +2,18 @@ package de.xavaro.android.gui.views;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.AppCompatImageView;
 import android.graphics.drawable.Drawable;
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 
 import java.io.InputStream;
@@ -163,6 +169,11 @@ public class GUIImageView extends AppCompatImageView implements
     @Override
     public void setImageResource(int resid)
     {
+        setImageResource(resid, Color.TRANSPARENT);
+    }
+
+    public void setImageResource(int resid, int color)
+    {
         //
         // Fuck dat. Fucking ImageView takes some
         // wrong resolution. Looks like shit.
@@ -174,20 +185,40 @@ public class GUIImageView extends AppCompatImageView implements
         InputStream is = getResources().openRawResource(+resid);
         Bitmap bitmap = BitmapFactory.decodeStream(is);
 
-        /*
-        Log.d(LOGTAG, "setImageResource:"
-                + " width=" + bitmap.getWidth()
-                + " height=" + bitmap.getHeight()
-        );
-        */
+        int targetWidth = getLayoutParams().width * 2;
+        int targetHeight = getLayoutParams().height * 2;
 
-        setImageBitmap(bitmap);
+        if ((targetWidth > 0) && (targetHeight > 0))
+        {
+            Bitmap geil = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(geil);
+
+            Paint paint = new Paint();
+            paint.setAntiAlias(true);
+            paint.setFilterBitmap(true);
+
+            Rect srcrect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+            Rect dstrect = new Rect(0, 0, targetWidth, targetHeight);
+
+            canvas.drawColor(color, PorterDuff.Mode.MULTIPLY);
+            canvas.drawBitmap(bitmap, srcrect, dstrect, paint);
+
+            bitmap.recycle();
+
+            setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            setImageBitmap(geil);
+        }
+        else
+        {
+            Drawable drawable = new BitmapDrawable(getResources(), bitmap);
+            drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
+
+            setImageDrawable(drawable);
+        }
     }
+
 
     public void setImageDrawable(Drawable drawable, int color)
     {
-        drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
-
-        setImageDrawable(drawable);
     }
 }

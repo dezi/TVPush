@@ -40,13 +40,19 @@ public class IOTStatusses extends IOTList
         {
             Log.d(LOGTAG, "addEntry: new uuid=" + newStatus.uuid);
 
-            newStatus.saveToStorage();
+            if (newStatus.saveToStorage())
+            {
+                instance.putEntry(newStatus);
+            }
         }
         else
         {
             Log.d(LOGTAG, "addEntry: old uuid=" + oldStatus.uuid);
 
-            oldStatus.checkAndMergeContent(newStatus, external);
+            if (oldStatus.checkAndMergeContent(newStatus, external) > 0)
+            {
+                instance.putEntry(oldStatus);
+            }
         }
     }
 }

@@ -114,8 +114,7 @@ public class GUIPingWizzard extends GUIPluginTitleList
                 int color = Simple.colorRGB(status.hue, status.saturation, 100);
                 color = Simple.setRGBAlpha(color, status.brightness + 155);
 
-                Drawable bulb = Simple.getResources().getDrawable(R.drawable.bulb_bunt_440);
-                entry.iconView.setImageDrawable(bulb, color);
+                entry.iconView.setImageResource(R.drawable.bulb_bunt_440, color);
             }
 
             listView.addView(entry);

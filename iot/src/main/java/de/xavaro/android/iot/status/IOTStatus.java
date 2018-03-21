@@ -63,7 +63,7 @@ public class IOTStatus extends IOTObject
         super(jsonstr, dummy);
     }
 
-    public void checkAndMergeContent(IOTStatus check, boolean external)
+    public int checkAndMergeContent(IOTStatus check, boolean external)
     {
         // @formatter:off
 
@@ -100,6 +100,6 @@ public class IOTStatus extends IOTObject
 
         // @formatter:on
 
-        saveIfChanged();
+        return saveIfChanged();
     }
 }

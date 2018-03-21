@@ -32,7 +32,7 @@ public class IOTMetadata extends IOTObject
         super(jsonstr, dummy);
     }
 
-    public void checkAndMergeContent(IOTMetadata check, boolean external)
+    public int checkAndMergeContent(IOTMetadata check, boolean external)
     {
         changed = false;
         changedUsr = false;
@@ -41,6 +41,6 @@ public class IOTMetadata extends IOTObject
 
         changedSys = changed;
 
-        saveIfChanged();
+        return saveIfChanged();
     }
 }

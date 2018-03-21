@@ -34,19 +34,25 @@ public class IOTCredentials extends IOTList
 
     public static void addEntry(IOTCredential newCredential, boolean external)
     {
-        IOTCredential oldStatus = getEntry(newCredential.uuid);
+        IOTCredential oldCredential = getEntry(newCredential.uuid);
 
-        if (oldStatus == null)
+        if (oldCredential == null)
         {
             Log.d(LOGTAG, "addEntry: new uuid=" + newCredential.uuid);
 
-            newCredential.saveToStorage();
+            if (newCredential.saveToStorage())
+            {
+                instance.putEntry(newCredential);
+            }
         }
         else
         {
-            Log.d(LOGTAG, "addEntry: old uuid=" + oldStatus.uuid);
+            Log.d(LOGTAG, "addEntry: old uuid=" + oldCredential.uuid);
 
-            oldStatus.checkAndMergeContent(newCredential, external);
+            if (oldCredential.checkAndMergeContent(newCredential, external) > 0)
+            {
+                instance.putEntry(oldCredential);
+            }
         }
     }
 }
