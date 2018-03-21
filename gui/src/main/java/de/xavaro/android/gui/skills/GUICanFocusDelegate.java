@@ -89,7 +89,7 @@ public class GUICanFocusDelegate
 
                 if (gt != null)
                 {
-                    GUICanToastDelegate.displayToast(gt.getToastHiglight());
+                    GUICanToastDelegate.displayToast(gt.getToastHighlight());
                 }
 
                 Log.d(LOGTAG, "adjustHighlightState: onHighlightStarted.");
