@@ -108,8 +108,7 @@ public class GUILocationsWizzard extends GUIPluginTitleList
         {
             IOTObject iotobject = (IOTObject) view.getTag();
 
-            GUI.instance.desktopActivity.locationWizzard.setIOTObject(iotobject);
-            GUI.instance.desktopActivity.displayLocationWizzard(true);
+            GUI.instance.desktopActivity.displayGeomapWizzard(iotobject);
         }
     };
 }

@@ -25,7 +25,7 @@ public class GUIDefs
 
     public static final int ROUNDED_SMALL    = Simple.isTablet() ?  8 :  4;
     public static final int ROUNDED_MEDIUM   = Simple.isTablet() ? 16 : 12;
-    public static final int ROUNDED_NORMAL   = Simple.isTablet() ? 24 : 18;
+    public static final int ROUNDED_NORMAL   = Simple.isTablet() ? 20 : 18;
     public static final int ROUNDED_XLARGE   = Simple.isTablet() ? 40 : 30;
 
     public final static int FONTSIZE_LARGE   = Simple.isTablet() ? 36 : 30;
@@ -38,12 +38,16 @@ public class GUIDefs
     public final static int COLOR_NORMAL_TRANSPARENT = 0x66000000;
     public final static int COLOR_DARK_TRANSPARENT   = 0x88000000;
 
-    public final static int TEXT_COLOR_HEADERS = Color.BLACK;
-    public final static int TEXT_COLOR_INFOS   = Color.BLACK;
-    public final static int TEXT_COLOR_ALERTS  = Color.RED;
+    public final static int COLOR_PLUGIN_INNER_TRANSPARENT = 0x88888888;
+    public final static int COLOR_PLUGIN_FRAME_NORMAL      = 0xffffffff;
+    public final static int COLOR_PLUGIN_FRAME_HIGHLIGHT   = 0xffffffaa;
 
     public static final int COLOR_TV_FOCUS           = 0xffffcc00;
     public static final int COLOR_TV_FOCUS_HIGHLIGHT = 0xffff0000;
+
+    public final static int TEXT_COLOR_HEADERS = Color.BLACK;
+    public final static int TEXT_COLOR_INFOS   = Color.BLACK;
+    public final static int TEXT_COLOR_ALERTS  = Color.RED;
 
     public static final int ICON_SIZE = Simple.isTablet() ? 50 : 50;
     public static final int ICON_PADD = PADDING_SMALL;

@@ -18,7 +18,6 @@ import com.google.android.gms.maps.model.Marker;
 import de.xavaro.android.gui.views.GUIFrameLayout;
 import de.xavaro.android.gui.base.GUIPluginTitleIOT;
 import de.xavaro.android.gui.base.GUIDefs;
-import de.xavaro.android.gui.base.GUI;
 
 import de.xavaro.android.gui.simple.Simple;
 
@@ -27,9 +26,9 @@ import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTDevice;
 
-public class GUILocationWizzard extends GUIPluginTitleIOT
+public class GUIGeomapWizzard extends GUIPluginTitleIOT
 {
-    private final static String LOGTAG = GUILocationWizzard.class.getSimpleName();
+    private final static String LOGTAG = GUIGeomapWizzard.class.getSimpleName();
 
     private GUIFrameLayout mapFrame;
     private MapView mapView;
@@ -41,7 +40,7 @@ public class GUILocationWizzard extends GUIPluginTitleIOT
 
     private int zoom;
 
-    public GUILocationWizzard(Context context)
+    public GUIGeomapWizzard(Context context)
     {
         super(context);
 

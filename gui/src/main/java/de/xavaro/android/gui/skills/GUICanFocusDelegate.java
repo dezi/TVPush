@@ -1,15 +1,15 @@
 package de.xavaro.android.gui.skills;
 
+import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
-import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIDefs;
+import de.xavaro.android.gui.base.GUIPlugin;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUIEditText;
-import de.xavaro.android.gui.wizzards.GUILocationWizzard;
 
 public class GUICanFocusDelegate
 {
@@ -22,6 +22,8 @@ public class GUICanFocusDelegate
         {
             GUICanFocus gf = view instanceof GUICanFocus ? (GUICanFocus) view : null;
             GUICanToast gt = view instanceof GUICanToast ? (GUICanToast) view : null;
+
+            GUIPlugin pi = findPlugin(view);
 
             if (gf == null) return;
 
@@ -43,6 +45,8 @@ public class GUICanFocusDelegate
                 {
                     GUICanToastDelegate.displayToast(gt.getToastFocus());
                 }
+
+                if (pi != null) pi.onHighlightFrame(true);
             }
             else
             {
@@ -69,6 +73,8 @@ public class GUICanFocusDelegate
                         et.setInputType(InputType.TYPE_NULL);
                     }
                 }
+
+                if (pi != null) pi.onHighlightFrame(false);
             }
         }
     };
@@ -168,5 +174,16 @@ public class GUICanFocusDelegate
         }
 
         return false;
+    }
+
+    @Nullable
+    private static GUIPlugin findPlugin(View view)
+    {
+        while ((view != null) && !(view instanceof GUIPlugin))
+        {
+            view = (View) view.getParent();
+        }
+
+        return (GUIPlugin) view;
     }
 }

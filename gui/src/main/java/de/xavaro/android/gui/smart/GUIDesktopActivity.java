@@ -1,17 +1,15 @@
 package de.xavaro.android.gui.smart;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.View;
 
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIActivity;
+import de.xavaro.android.gui.base.GUIPlugin;
 import de.xavaro.android.gui.wizzards.GUIChannelWizzard;
-import de.xavaro.android.gui.wizzards.GUILocationWizzard;
+import de.xavaro.android.gui.wizzards.GUIGeomapWizzard;
 import de.xavaro.android.gui.plugin.GUISpeechRecogniton;
 import de.xavaro.android.gui.wizzards.GUILocationsWizzard;
 import de.xavaro.android.gui.wizzards.GUIPermissionWizzard;
@@ -19,6 +17,7 @@ import de.xavaro.android.gui.wizzards.GUITodoWizzard;
 import de.xavaro.android.gui.plugin.GUIVideoSurface;
 import de.xavaro.android.gui.simple.Simple;
 
+import de.xavaro.android.iot.base.IOTObject;
 import pub.android.interfaces.cam.Camera;
 
 public class GUIDesktopActivity extends GUIActivity
@@ -26,10 +25,11 @@ public class GUIDesktopActivity extends GUIActivity
     private final static String LOGTAG = GUIDesktopActivity.class.getSimpleName();
 
     public GUISpeechRecogniton speechRecognition;
-    public GUILocationWizzard locationWizzard;
+    public GUILocationsWizzard locationsWizzard;
+    public GUIGeomapWizzard geomapWizzard;
+
     public GUIChannelWizzard channelWizzard;
     public GUIPermissionWizzard permissionsWizzard;
-    public GUILocationsWizzard locationsWizzard;
     public GUITodoWizzard todoWizzard;
 
     private GUIVideoSurface videoSurface1;
@@ -48,7 +48,7 @@ public class GUIDesktopActivity extends GUIActivity
 
         topframe.addView(speechRecognition, speechRecognition.getPreferredLayout());
 
-        locationWizzard = new GUILocationWizzard(this);
+        geomapWizzard = new GUIGeomapWizzard(this);
 
         channelWizzard = new GUIChannelWizzard(this);
         //topframe.addView(channelWizzard);
@@ -70,7 +70,21 @@ public class GUIDesktopActivity extends GUIActivity
     {
         Log.d(LOGTAG, "onBackPressed:");
 
-        super.onBackPressed();
+        boolean didwas = false;
+
+        for (int inx = 0; inx < topframe.getChildCount(); inx++)
+        {
+            View plugin = topframe.getChildAt(inx);
+
+            if ((plugin instanceof GUIPlugin) && ((GUIPlugin) plugin).isActive())
+            {
+                topframe.removeView(plugin);
+                didwas = true;
+                break;
+            }
+        }
+
+        if (! didwas) super.onBackPressed();
     }
 
     public void displayCamera(boolean show, String uuid)
@@ -147,24 +161,29 @@ public class GUIDesktopActivity extends GUIActivity
         checkWindowSize();
     }
 
-    public void displayLocationWizzard(boolean show)
+    public void hideGeomapWizzard()
     {
-        if (show)
+        if ((geomapWizzard != null) && (geomapWizzard.getParent() != null))
         {
-            bringToFront();
+            topframe.removeView(geomapWizzard);
+        }
 
-            if (locationWizzard.getParent() == null)
-            {
-                topframe.addView(locationWizzard);
-            }
-        }
-        else
+        geomapWizzard = null;
+    }
+
+    public void displayGeomapWizzard(IOTObject iotobject)
+    {
+        if (geomapWizzard == null)
         {
-            if (locationWizzard.getParent() != null)
-            {
-                topframe.removeView(locationWizzard);
-            }
+            geomapWizzard = new GUIGeomapWizzard(this);
         }
+
+        if (geomapWizzard.getParent() == null)
+        {
+            topframe.addView(geomapWizzard);
+        }
+
+        geomapWizzard.setIOTObject(iotobject);
 
         checkWindowSize();
     }

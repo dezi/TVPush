@@ -19,6 +19,8 @@ public class GUIPlugin extends GUIFrameLayout
 
     public GUIFrameLayout contentFrame;
 
+    private boolean isActive;
+
     public GUIPlugin(Context context)
     {
         super(context);
@@ -27,8 +29,9 @@ public class GUIPlugin extends GUIFrameLayout
 
         this.setPluginSizeDip(DEFAULT_WIDTH, DEFAULT_HEIGTH);
         this.setPluginPositionDip(DEFAULT_LEFT, DEFAULT_TOP);
-        this.setRoundedCorners(20, 0x88888888, Color.WHITE);
         this.setPaddingDip(GUIDefs.PADDING_SMALL, GUIDefs.PADDING_ZERO, GUIDefs.PADDING_SMALL, GUIDefs.PADDING_SMALL);
+
+        onHighlightFrame(false);
     }
 
     public void onStart()
@@ -87,5 +90,28 @@ public class GUIPlugin extends GUIFrameLayout
     public int getPluginHeightDip()
     {
         return Simple.pxToDip(params.height);
+    }
+
+    public void onHighlightFrame(boolean highlight)
+    {
+        isActive = highlight;
+
+        if (highlight)
+        {
+            this.setRoundedCorners(GUIDefs.ROUNDED_NORMAL,
+                    GUIDefs.COLOR_PLUGIN_INNER_TRANSPARENT,
+                    GUIDefs.COLOR_PLUGIN_FRAME_HIGHLIGHT);
+        }
+        else
+        {
+            this.setRoundedCorners(GUIDefs.ROUNDED_NORMAL,
+                    GUIDefs.COLOR_PLUGIN_INNER_TRANSPARENT,
+                    GUIDefs.COLOR_PLUGIN_FRAME_NORMAL);
+        }
+    }
+
+    public boolean isActive()
+    {
+        return isActive;
     }
 }
