@@ -1,6 +1,7 @@
 package de.xavaro.android.gui.base;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 
 import de.xavaro.android.gui.simple.Simple;
@@ -22,10 +23,12 @@ public class GUIPlugin extends GUIFrameLayout
     {
         super(context);
 
+        contentFrame = this;
+
         this.setPluginSizeDip(DEFAULT_WIDTH, DEFAULT_HEIGTH);
         this.setPluginPositionDip(DEFAULT_LEFT, DEFAULT_TOP);
-
-        contentFrame = this;
+        this.setRoundedCorners(20, 0x88888888, Color.WHITE);
+        this.setPaddingDip(GUIDefs.PADDING_SMALL, GUIDefs.PADDING_ZERO, GUIDefs.PADDING_SMALL, GUIDefs.PADDING_SMALL);
     }
 
     public void onStart()

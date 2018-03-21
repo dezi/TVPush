@@ -35,7 +35,8 @@ public class GUIPluginTitleIOT extends GUIPluginTitle
         {
             String hint = "Bitte Nicknamen hier eintragen";
 
-            String toast = "Sprechen Sie jetzt die Nicknamen ein"
+            String toast = ""
+                    + "Sprechen Sie jetzt die Nicknamen ein"
                     + " oder drücken Sie "
                     + GUIDefs.UTF_OK
                     + " zum Bearbeiten";

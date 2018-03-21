@@ -28,8 +28,6 @@ public class GUIPluginTitle extends GUIPlugin
 
         GUILinearLayout splitterFrame = new GUILinearLayout(context);
         splitterFrame.setOrientation(LinearLayout.VERTICAL);
-        splitterFrame.setRoundedCorners(20, 0x88888888, Color.WHITE);
-        splitterFrame.setPaddingDip(GUIDefs.PADDING_SMALL, GUIDefs.PADDING_ZERO, GUIDefs.PADDING_SMALL, GUIDefs.PADDING_SMALL);
 
         contentFrame.addView(splitterFrame);
 

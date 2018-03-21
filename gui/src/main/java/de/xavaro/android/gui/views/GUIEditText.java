@@ -100,7 +100,7 @@ public class GUIEditText extends AppCompatEditText implements
     public void setBackground(Drawable drawable)
     {
         super.setBackground(drawable);
-        canRB.setBackground(drawable);
+        if (canRB != null) canRB.setBackground(drawable);
     }
 
     @Override
