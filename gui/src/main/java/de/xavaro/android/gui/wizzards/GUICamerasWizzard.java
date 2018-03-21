@@ -16,6 +16,7 @@ import de.xavaro.android.gui.views.GUIListView;
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
+import pub.android.interfaces.cam.Camera;
 
 public class GUICamerasWizzard extends GUIPluginTitleList
 {
@@ -67,9 +68,12 @@ public class GUICamerasWizzard extends GUIPluginTitleList
         @Override
         public void onClick(View view)
         {
-            IOTObject iotobject = (IOTObject) view.getTag();
+            IOTDevice device = (IOTDevice) view.getTag();
 
-            GUI.instance.desktopActivity.displayCamera(true, iotobject.uuid);
+            Camera camera = GUI.instance.onRequestCameraByUUID(device.uuid);
+            if (camera == null) return;
+
+            //GUI.instance.desktopActivity.displayCamera(true, iotobject.uuid);
         }
     };
 }

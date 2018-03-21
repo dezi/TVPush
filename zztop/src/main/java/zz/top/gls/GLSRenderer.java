@@ -22,6 +22,7 @@ public class GLSRenderer implements GLSurfaceView.Renderer
 {
     private final static String LOGTAG = GLSRenderer.class.getSimpleName();
 
+    private final static boolean debug = false;
     private final static int IFRAME_LAG_FUCK = 8;
 
     private GLSShaderRGB2SUR rgbShader;
@@ -324,15 +325,18 @@ public class GLSRenderer implements GLSurfaceView.Renderer
 
             if (diffmillis >= 1000)
             {
-                Log.d(LOGTAG, "onDrawFrame:"
-                        + " fps=" + lastframes
-                        + " back=" + frameQueue.size()
-                        + " width=" + sourceWidth
-                        + " height=" + sourceHeight
-                        + " fno=" + avFrame.getFrameNo()
-                        + " dec=" + framesDecoded
-                        + " bad=" + framesCorrupt
-                );
+                if (debug)
+                {
+                    Log.d(LOGTAG, "onDrawFrame:"
+                            + " fps=" + lastframes
+                            + " back=" + frameQueue.size()
+                            + " width=" + sourceWidth
+                            + " height=" + sourceHeight
+                            + " fno=" + avFrame.getFrameNo()
+                            + " dec=" + framesDecoded
+                            + " bad=" + framesCorrupt
+                    );
+                }
 
                 lastframes = 0;
                 lasttimems = System.currentTimeMillis();
