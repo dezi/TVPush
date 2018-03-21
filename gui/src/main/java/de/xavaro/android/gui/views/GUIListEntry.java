@@ -62,7 +62,7 @@ public class GUIListEntry extends GUILinearLayout
 
     public void setStatusColor(int color)
     {
-        bulletView.setRoundedCorners(GUIDefs.PADDING_MEDIUM / 2, color);
+        bulletView.setRoundedCornersDip(GUIDefs.PADDING_MEDIUM / 2, color);
     }
 }
 

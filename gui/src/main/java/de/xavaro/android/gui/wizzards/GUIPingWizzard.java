@@ -21,6 +21,7 @@ import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUIListEntry;
 import de.xavaro.android.gui.views.GUIListView;
 import de.xavaro.android.iot.status.IOTStatus;
+import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 
@@ -80,8 +81,8 @@ public class GUIPingWizzard extends GUIPluginTitleList
             if (device == null) continue;
             if (todo) continue;
 
-            IOTStatus status = new IOTStatus(device.uuid);
-            if (status.ipaddr == null) continue;
+            IOTStatus status = IOTStatusses.getEntry(device.uuid);
+            if ((status == null) || (status.ipaddr == null)) continue;
 
             Boolean pingt = Simple.getMapBoolean(pingerStatusse, status.uuid);
 
@@ -135,7 +136,11 @@ public class GUIPingWizzard extends GUIPluginTitleList
         pingerStatusse.put(uuid, pingt);
 
         GUIListEntry entry = (GUIListEntry) listView.getChildAt(inx);
-        entry.setStatusColor(pingt ? GUIDefs.STATUS_COLOR_GREEN : GUIDefs.STATUS_COLOR_RED);
+
+        if (entry != null)
+        {
+            entry.setStatusColor(pingt ? GUIDefs.STATUS_COLOR_GREEN : GUIDefs.STATUS_COLOR_RED);
+        }
     }
 
     private final Runnable pingerRunner = new Runnable()
@@ -157,7 +162,7 @@ public class GUIPingWizzard extends GUIPluginTitleList
 
                     try
                     {
-                        Process p1 = Runtime.getRuntime().exec("ping -c 1 -W 1 " + status.ipaddr);
+                        Process p1 = Runtime.getRuntime().exec("ping -c 1 -W 2 " + status.ipaddr);
                         reachable = (p1.waitFor() == 0);
                     }
                     catch (Exception ignore)
