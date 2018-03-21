@@ -1,6 +1,7 @@
 package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 
 import org.json.JSONArray;
@@ -122,8 +123,6 @@ public class GUIPingWizzard extends GUIPluginTitleList
         @Override
         public void run()
         {
-            int startintervall = 100;
-
             while (pinger != null)
             {
                 for (int inx = 0; inx < listView.getChildCount(); inx++)
@@ -134,12 +133,20 @@ public class GUIPingWizzard extends GUIPluginTitleList
                     IOTStatus status = (IOTStatus) child.getTag();
                     if (status == null) continue;
 
+                    boolean reachable = false;
+
+                    try
+                    {
+                        Process p1 = Runtime.getRuntime().exec("ping -c 1 -W 1 " + status.ipaddr);
+                        reachable = (p1.waitFor() == 0);
+                    }
+                    catch (Exception ignore)
+                    {
+                    }
+
                     final int cbinx = inx;
                     final String cbuuid = status.uuid;
-
-                    final boolean cbpingt = Simple.getInetPing(Simple.getInetAddress(status.ipaddr),startintervall);
-
-                    if ((startintervall < 500) && ! cbpingt) continue;
+                    final boolean cbpingt = reachable;
 
                     Simple.getHandler().post(new Runnable()
                     {
@@ -151,7 +158,7 @@ public class GUIPingWizzard extends GUIPluginTitleList
                     });
                 }
 
-                if (startintervall < 3000) startintervall += 100;
+                Simple.sleep(2 * 1000);
             }
         }
     };
