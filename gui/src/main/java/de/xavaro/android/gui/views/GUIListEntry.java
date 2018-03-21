@@ -11,6 +11,7 @@ public class GUIListEntry extends GUILinearLayout
     public GUIIconView iconView;
     public GUITextView headerViev;
     public GUITextView infoView;
+    public GUIRelativeLayout bulletView;
 
     public GUIListEntry(Context context)
     {
@@ -21,8 +22,19 @@ public class GUIListEntry extends GUILinearLayout
         setPaddingDip(GUIDefs.PADDING_TINY);
         setBackgroundColor(GUIDefs.COLOR_LIGHT_TRANSPARENT);
 
-        iconView = new GUIIconView(context);
+        GUIRelativeLayout statusBox = new GUIRelativeLayout(context);
+        statusBox.setGravity(Gravity.CENTER);
+        statusBox.setSizeDip(Simple.WC, Simple.MP);
+        statusBox.setPaddingDip(GUIDefs.PADDING_TINY);
 
+        addView(statusBox);
+
+        bulletView = new GUIRelativeLayout(context);
+        bulletView.setSizeDip(GUIDefs.PADDING_MEDIUM,GUIDefs.PADDING_MEDIUM);
+
+        statusBox.addView(bulletView);
+
+        iconView = new GUIIconView(context);
         addView(iconView);
 
         GUIRelativeLayout entryCenter = new GUIRelativeLayout(context);
@@ -46,6 +58,11 @@ public class GUIListEntry extends GUILinearLayout
         infoView.setTextSizeDip(GUIDefs.FONTSIZE_INFOS);
 
         entryBox.addView(infoView);
+    }
+
+    public void setStatusColor(int color)
+    {
+        bulletView.setRoundedCorners(GUIDefs.PADDING_MEDIUM / 2, color);
     }
 }
 

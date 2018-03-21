@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.xavaro.android.gui.R;
+import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUIIcons;
 import de.xavaro.android.gui.base.GUIPluginTitleList;
 import de.xavaro.android.gui.simple.Json;
@@ -92,7 +93,7 @@ public class GUIPingWizzard extends GUIPluginTitleList
 
             if (pingt != null)
             {
-                entry.iconView.setBackgroundColor(pingt ? 0x88008800 : 0x88880000);
+                entry.setStatusColor(pingt ? GUIDefs.STATUS_COLOR_GREEN : GUIDefs.STATUS_COLOR_RED);
             }
 
             listView.addView(entry);
@@ -115,7 +116,7 @@ public class GUIPingWizzard extends GUIPluginTitleList
         pingerStatusse.put(uuid, pingt);
 
         GUIListEntry entry = (GUIListEntry) listView.getChildAt(inx);
-        entry.iconView.setBackgroundColor(pingt ? 0x88008800 : 0x88880000);
+        entry.setStatusColor(pingt ? GUIDefs.STATUS_COLOR_GREEN : GUIDefs.STATUS_COLOR_RED);
     }
 
     private final Runnable pingerRunner = new Runnable()
