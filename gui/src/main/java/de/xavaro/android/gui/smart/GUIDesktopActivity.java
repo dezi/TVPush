@@ -274,6 +274,7 @@ public class GUIDesktopActivity extends GUIActivity
 
     private void checkWindowSize()
     {
+        /*
         if ((topframe.getChildCount() == 0)
                 || (speechRecognition.getParent() != null) && (topframe.getChildCount() == 1))
         {
@@ -283,6 +284,7 @@ public class GUIDesktopActivity extends GUIActivity
         {
             setWindowHeightDip(Simple.MP);
         }
+        */
 
         if (! isActive())
         {

@@ -10,7 +10,7 @@ public class GUIListView extends  GUILinearLayout
         super(context);
     }
 
-    private int focusedIndex = 0;
+    private int focusedIndex;
 
     @Override
     public void removeAllViews()
@@ -19,7 +19,7 @@ public class GUIListView extends  GUILinearLayout
         // Inspect childs and search for focused.
         //
 
-        focusedIndex = -1;
+        focusedIndex = 0;
 
         for (int inx = 0; inx < getChildCount(); inx++)
         {

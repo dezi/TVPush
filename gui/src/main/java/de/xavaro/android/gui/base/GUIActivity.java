@@ -83,7 +83,7 @@ public class GUIActivity extends AppCompatActivity
         }
         else
         {
-            minHeight = height = Simple.dipToPx(80);
+            //minHeight = height = Simple.dipToPx(80);
 
             windowParams.width = width;
             windowParams.height = height;
