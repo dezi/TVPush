@@ -14,7 +14,6 @@ import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUIListEntry;
-import de.xavaro.android.gui.views.GUISeparatorView;
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
@@ -67,16 +66,11 @@ public class GUILocationsWizzard extends GUIPluginTitleList
 
             if (todo && isnice) continue;
 
-            if (listView.getChildCount() > 0)
-            {
-                listView.addView(new GUISeparatorView(listView.getContext()));
-            }
-
             GUIListEntry entry = new GUIListEntry(listView.getContext());
             entry.setOnClickListener(onLocationSetClickListener);
             entry.setTag(device);
 
-            String info = "Keine Position";
+            String info = "Keine Geo-Position";
 
             if (isnice)
             {

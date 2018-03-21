@@ -19,7 +19,6 @@ import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUIListEntry;
-import de.xavaro.android.gui.views.GUISeparatorView;
 
 public class GUIPermissionWizzard extends GUIPluginTitleList
 {
@@ -71,11 +70,6 @@ public class GUIPermissionWizzard extends GUIPluginTitleList
             boolean enabled = Json.getBoolean(services, service);
             if (todo && enabled) continue;
 
-            if (listView.getChildCount() > 0)
-            {
-                listView.addView(new GUISeparatorView(listView.getContext()));
-            }
-
             GUIListEntry entry = new GUIListEntry(listView.getContext());
             entry.setOnClickListener(onServiceStartClickListener);
             entry.setTag(service);
@@ -111,11 +105,6 @@ public class GUIPermissionWizzard extends GUIPluginTitleList
 
             JSONArray perms = Json.getArray(areas, area);
             if (perms == null) continue;
-
-            if (listView.getChildCount() > 0)
-            {
-                listView.addView(new GUISeparatorView(listView.getContext()));
-            }
 
             GUIListEntry entry = new GUIListEntry(listView.getContext());
             entry.setOnClickListener(onAreaPermissionClickListener);

@@ -5,9 +5,9 @@ import android.content.Context;
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.simple.Simple;
 
-public class GUISeparatorView extends GUIRelativeLayout
+public class GUIListSpacerView extends GUIRelativeLayout
 {
-    public GUISeparatorView (Context context)
+    public GUIListSpacerView(Context context)
     {
         super(context);
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.LinearLayout;
 
 import de.xavaro.android.gui.views.GUILinearLayout;
+import de.xavaro.android.gui.views.GUIListView;
 import de.xavaro.android.gui.views.GUIScrollView;
 
 public class GUIPluginTitleList extends GUIPluginTitle
@@ -11,7 +12,7 @@ public class GUIPluginTitleList extends GUIPluginTitle
     private final static String LOGTAG = GUIPluginTitleList.class.getSimpleName();
 
     public GUIScrollView scrollView;
-    public GUILinearLayout listView;
+    public GUIListView listView;
 
     public GUIPluginTitleList(Context context)
     {
@@ -23,7 +24,7 @@ public class GUIPluginTitleList extends GUIPluginTitle
 
         contentFrame.addView(scrollView);
 
-        listView = new GUILinearLayout(context);
+        listView = new GUIListView(context);
         listView.setOrientation(LinearLayout.VERTICAL);
 
         scrollView.addView(listView);
