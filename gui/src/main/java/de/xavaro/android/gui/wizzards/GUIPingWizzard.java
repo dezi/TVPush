@@ -115,6 +115,17 @@ public class GUIPingWizzard extends GUIPluginTitleList
                 entry.iconView.setImageResource(R.drawable.bulb_bunt_440, color);
             }
 
+            if (device.type.equals("camera")
+                    && (status.ledstate != null))
+            {
+                Log.d(LOGTAG, "collectEntries: camera:"
+                        + " ledstate=" + status.ledstate);
+
+                int color = (status.ledstate == 0) ? Color.BLACK : Color.BLUE;
+
+                entry.iconView.setImageResource(R.drawable.domcam_bunt_500, color);
+            }
+
             listView.addView(entry);
         }
     }
