@@ -51,6 +51,7 @@ public class GUIDefs
 
     public final static int STATUS_COLOR_RED   = 0xaaaa0000;
     public final static int STATUS_COLOR_GREEN = 0xaa00aa00;
+    public final static int STATUS_COLOR_INACT = 0x88888888;
 
 
     public static final int ICON_SIZE = Simple.isTablet() ? 50 : 50;
