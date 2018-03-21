@@ -1,6 +1,7 @@
 package de.xavaro.android.gui.base;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 
 import de.xavaro.android.gui.simple.Simple;
@@ -13,7 +14,7 @@ public class GUIPlugin extends GUIFrameLayout
     public final static int DEFAULT_LEFT = 50;
     public final static int DEFAULT_TOP = 100;
 
-    public final static int DEFAULT_WIDTH = 500;
+    public final static int DEFAULT_WIDTH = 300;
     public final static int DEFAULT_HEIGHT = 300;
 
     public GUIFrameLayout contentFrame;
@@ -27,8 +28,9 @@ public class GUIPlugin extends GUIFrameLayout
 
         contentFrame = this;
 
-        this.setPluginSizeDip(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.setPluginPositionDip(DEFAULT_LEFT, DEFAULT_TOP);
+        this.setPluginSizeDip(DEFAULT_WIDTH, Simple.getDeviceHeightDip() - DEFAULT_TOP * 2);
+
         this.setPaddingDip(GUIDefs.PADDING_SMALL);
 
         onHighlightFrame(false);
@@ -122,17 +124,35 @@ public class GUIPlugin extends GUIFrameLayout
     {
         isActive = highlight;
 
-        if (highlight)
+        if (Simple.isTV())
         {
-            this.setRoundedCorners(GUIDefs.ROUNDED_NORMAL,
-                    GUIDefs.COLOR_PLUGIN_INNER_TRANSPARENT,
-                    GUIDefs.COLOR_PLUGIN_FRAME_HIGHLIGHT);
+            if (highlight)
+            {
+                this.setRoundedCorners(GUIDefs.ROUNDED_NORMAL,
+                        GUIDefs.COLOR_PLUGIN_INNER_TRANSPARENT,
+                        GUIDefs.COLOR_PLUGIN_FRAME_HIGHLIGHT);
+            }
+            else
+            {
+                this.setRoundedCorners(GUIDefs.ROUNDED_NORMAL,
+                        GUIDefs.COLOR_PLUGIN_INNER_TRANSPARENT,
+                        GUIDefs.COLOR_PLUGIN_FRAME_NORMAL);
+            }
         }
         else
         {
-            this.setRoundedCorners(GUIDefs.ROUNDED_NORMAL,
-                    GUIDefs.COLOR_PLUGIN_INNER_TRANSPARENT,
-                    GUIDefs.COLOR_PLUGIN_FRAME_NORMAL);
+            if (highlight)
+            {
+                this.setRoundedCorners(GUIDefs.ROUNDED_NORMAL,
+                        Color.WHITE,
+                        GUIDefs.COLOR_PLUGIN_FRAME_HIGHLIGHT);
+            }
+            else
+            {
+                this.setRoundedCorners(GUIDefs.ROUNDED_NORMAL,
+                        Color.WHITE,
+                        GUIDefs.COLOR_PLUGIN_FRAME_NORMAL);
+            }
         }
     }
 

@@ -15,6 +15,7 @@ import de.xavaro.android.gui.wizzards.GUIGeomapWizzard;
 import de.xavaro.android.gui.plugin.GUIToastBar;
 import de.xavaro.android.gui.wizzards.GUILocationsWizzard;
 import de.xavaro.android.gui.wizzards.GUIPermissionWizzard;
+import de.xavaro.android.gui.wizzards.GUIPingWizzard;
 import de.xavaro.android.gui.wizzards.GUITodoWizzard;
 import de.xavaro.android.gui.plugin.GUIVideoSurface;
 
@@ -27,6 +28,7 @@ public class GUIDesktopActivity extends GUIActivity
 
     public GUIToastBar speechRecognition;
 
+    public GUIPingWizzard pingWizzard;
     public GUITodoWizzard todoWizzard;
     public GUICamerasWizzard cameraWizzard;
     public GUIChannelWizzard channelWizzard;
@@ -50,7 +52,7 @@ public class GUIDesktopActivity extends GUIActivity
         speechRecognition = new GUIToastBar(this);
         topframe.addView(speechRecognition, speechRecognition.getPreferredLayout());
 
-
+        pingWizzard = new GUIPingWizzard(this);
         todoWizzard = new GUITodoWizzard(this);
         cameraWizzard = new GUICamerasWizzard(this);
         channelWizzard = new GUIChannelWizzard(this);
@@ -58,6 +60,8 @@ public class GUIDesktopActivity extends GUIActivity
         permissionsWizzard = new GUIPermissionWizzard(this);
 
         geomapWizzard = new GUIGeomapWizzard(this);
+
+        displayPingWizzard();
 
         checkWindowSize();
    }
@@ -168,6 +172,8 @@ public class GUIDesktopActivity extends GUIActivity
 
     public void displayGeomapWizzard(IOTObject iotobject)
     {
+        geomapWizzard.setIOTObject(iotobject);
+
         showPlugin(geomapWizzard);
     }
 
@@ -180,6 +186,16 @@ public class GUIDesktopActivity extends GUIActivity
     public void displayLocationsWizzard()
     {
         showPlugin(locationsWizzard);
+    }
+
+    public void hidePingWizzard()
+    {
+        hidePlugin(pingWizzard);
+    }
+
+    public void displayPingWizzard()
+    {
+        showPlugin(pingWizzard);
     }
 
     public void hideTodoWizzard()
@@ -234,6 +250,7 @@ public class GUIDesktopActivity extends GUIActivity
     private void hideAllWizzards()
     {
         hidePlugin(todoWizzard);
+        hidePlugin(pingWizzard);
         hidePlugin(cameraWizzard);
         hidePlugin(geomapWizzard);
         hidePlugin(channelWizzard);
@@ -304,8 +321,8 @@ public class GUIDesktopActivity extends GUIActivity
         GUIPlugin wizzard = null;
 
         if (keyCode == KeyEvent.KEYCODE_PROG_RED) wizzard = cameraWizzard;
-        if (keyCode == KeyEvent.KEYCODE_PROG_GREEN) wizzard = locationsWizzard;
-        if (keyCode == KeyEvent.KEYCODE_PROG_YELLOW) wizzard = permissionsWizzard;
+        if (keyCode == KeyEvent.KEYCODE_PROG_GREEN) wizzard = pingWizzard;
+        if (keyCode == KeyEvent.KEYCODE_PROG_YELLOW) wizzard = locationsWizzard;
         if (keyCode == KeyEvent.KEYCODE_PROG_BLUE) wizzard = channelWizzard;
 
         if (wizzard != null)

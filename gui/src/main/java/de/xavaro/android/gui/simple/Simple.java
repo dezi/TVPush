@@ -39,6 +39,7 @@ import android.widget.TextView;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.math.RoundingMode;
+import java.net.InetAddress;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -237,6 +238,16 @@ public class Simple
         {
             return Math.min(deviceWidth, deviceHeight);
         }
+    }
+
+    public static int getDeviceWidthDip()
+    {
+        return pxToDip(getDeviceWidth());
+    }
+
+    public static int getDeviceHeightDip()
+    {
+        return pxToDip(getDeviceHeight());
     }
 
     public static float getDeviceDensity()
@@ -519,6 +530,33 @@ public class Simple
     public static String getRounded6(float val)
     {
         return getRounded6((double) val);
+    }
+
+    @Nullable
+    public static InetAddress getInetAddress(String host)
+    {
+        try
+        {
+            return InetAddress.getByName(host);
+        }
+        catch (Exception ignore)
+        {
+        }
+
+        return null;
+    }
+
+    public static boolean getInetPing(InetAddress inetAddress, int timeout)
+    {
+        try
+        {
+            return inetAddress.isReachable(timeout);
+        }
+        catch (Exception ignore)
+        {
+        }
+
+        return false;
     }
 
     //endregion Smart helpers.

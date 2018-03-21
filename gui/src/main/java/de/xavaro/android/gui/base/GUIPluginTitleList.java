@@ -20,8 +20,6 @@ public class GUIPluginTitleList extends GUIPluginTitle
     {
         super(context);
 
-        setPluginSizeDip(300, DEFAULT_HEIGHT);
-
         scrollView = new GUIScrollView(context);
         scrollView.setRoundedCorners(GUIDefs.ROUNDED_MEDIUM,GUIDefs.COLOR_LIGHT_TRANSPARENT);
         scrollView.setPaddingDip(GUIDefs.PADDING_SMALL);
