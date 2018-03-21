@@ -52,7 +52,7 @@ public class IOTProximScanner
         {
             IOT.instance.proximScanner = new IOTProximScanner(appcontext);
 
-            IOT.instance.proximScanner.startLEScanner();
+            //IOT.instance.proximScanner.startLEScanner();
 
             if (Simple.isSony())
             {
@@ -62,8 +62,8 @@ public class IOTProximScanner
                 // legacy scan is also requested.
                 //
 
-                IOT.instance.proximScanner.startReceiver();
-                IOT.instance.proximScanner.startDiscovery();
+                //IOT.instance.proximScanner.startReceiver();
+                //IOT.instance.proximScanner.startDiscovery();
             }
         }
     }

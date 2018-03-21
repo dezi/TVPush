@@ -9,6 +9,7 @@ import android.view.View;
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIActivity;
 import de.xavaro.android.gui.base.GUIPlugin;
+import de.xavaro.android.gui.wizzards.GUICamerasWizzard;
 import de.xavaro.android.gui.wizzards.GUIChannelWizzard;
 import de.xavaro.android.gui.wizzards.GUIGeomapWizzard;
 import de.xavaro.android.gui.plugin.GUIToastBar;
@@ -27,12 +28,12 @@ public class GUIDesktopActivity extends GUIActivity
     public GUIToastBar speechRecognition;
 
     public GUITodoWizzard todoWizzard;
+    public GUICamerasWizzard cameraWizzard;
+    public GUIChannelWizzard channelWizzard;
     public GUILocationsWizzard locationsWizzard;
     public GUIPermissionWizzard permissionsWizzard;
 
     public GUIGeomapWizzard geomapWizzard;
-
-    public GUIChannelWizzard channelWizzard;
 
     private GUIVideoSurface videoSurface1;
     private GUIVideoSurface videoSurface2;
@@ -51,6 +52,7 @@ public class GUIDesktopActivity extends GUIActivity
 
 
         todoWizzard = new GUITodoWizzard(this);
+        cameraWizzard = new GUICamerasWizzard(this);
         channelWizzard = new GUIChannelWizzard(this);
         locationsWizzard = new GUILocationsWizzard(this);
         permissionsWizzard = new GUIPermissionWizzard(this);
@@ -103,7 +105,8 @@ public class GUIDesktopActivity extends GUIActivity
             GUIVideoSurface videoSurface = null;
 
             int index = -1;
-            int margin = 40;
+            int left = 400;
+            int top = 100;
 
             if ((videoSurface == null) && (videoSurface1 == null))
             {
@@ -115,6 +118,8 @@ public class GUIDesktopActivity extends GUIActivity
             {
                 index = 1;
                 videoSurface = videoSurface2 = new GUIVideoSurface(this);
+
+                left += 200;
             }
 
             if ((videoSurface == null) && (videoSurface3 == null))
@@ -127,11 +132,14 @@ public class GUIDesktopActivity extends GUIActivity
             {
                 index = 3;
                 videoSurface = videoSurface4 = new GUIVideoSurface(this);
+
+                top += 200;
+                left += 200;
             }
 
             if (index < 0) return;
 
-            videoSurface.setPluginPositionDip(margin, margin + index * (videoSurface.getPluginHeight() + margin));
+            videoSurface.setPluginPositionDip(left, top);
             topframe.addView(videoSurface);
 
             camera.connectCamera();
@@ -185,6 +193,16 @@ public class GUIDesktopActivity extends GUIActivity
         showPlugin(todoWizzard);
     }
 
+    public void hideCameraWizzard()
+    {
+        hidePlugin(cameraWizzard);
+    }
+
+    public void displayCameraWizzard()
+    {
+        showPlugin(cameraWizzard);
+    }
+
     public void hidePermissionsWizzard()
     {
         hidePlugin(permissionsWizzard);
@@ -216,6 +234,7 @@ public class GUIDesktopActivity extends GUIActivity
     private void hideAllWizzards()
     {
         hidePlugin(todoWizzard);
+        hidePlugin(cameraWizzard);
         hidePlugin(geomapWizzard);
         hidePlugin(channelWizzard);
         hidePlugin(locationsWizzard);
@@ -284,7 +303,7 @@ public class GUIDesktopActivity extends GUIActivity
     {
         GUIPlugin wizzard = null;
 
-        if (keyCode == KeyEvent.KEYCODE_PROG_RED) wizzard = todoWizzard;
+        if (keyCode == KeyEvent.KEYCODE_PROG_RED) wizzard = cameraWizzard;
         if (keyCode == KeyEvent.KEYCODE_PROG_GREEN) wizzard = locationsWizzard;
         if (keyCode == KeyEvent.KEYCODE_PROG_YELLOW) wizzard = permissionsWizzard;
         if (keyCode == KeyEvent.KEYCODE_PROG_BLUE) wizzard = channelWizzard;
