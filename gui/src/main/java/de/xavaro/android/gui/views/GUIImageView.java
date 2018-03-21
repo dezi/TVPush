@@ -1,29 +1,29 @@
 package de.xavaro.android.gui.views;
 
-import android.graphics.Bitmap;
+import android.support.v7.widget.AppCompatImageView;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.PorterDuff;
 import android.graphics.BitmapFactory;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.support.v7.widget.AppCompatImageView;
-import android.graphics.drawable.Drawable;
 import android.content.Context;
-import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
+import android.view.View;
 
 import java.io.InputStream;
 
-import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.skills.GUICanDip;
 import de.xavaro.android.gui.skills.GUICanRestoreBackground;
 import de.xavaro.android.gui.skills.GUICanRestoreBackgroundDelegate;
 import de.xavaro.android.gui.skills.GUICanRoundedCorners;
 import de.xavaro.android.gui.skills.GUICanRoundedCornersDelegate;
+
+import de.xavaro.android.gui.simple.Simple;
 
 public class GUIImageView extends AppCompatImageView implements
         GUICanDip,
