@@ -102,34 +102,25 @@ public class GUIPingWizzard extends GUIPluginTitleList
             if (device.type.equals("smartbulb")
                     && (status.hue != null)
                     && (status.saturation != null)
-                    && (status.brightness != null))
+                    && (status.brightness != null)
+                    && (status.bulbstate != null))
             {
-                /*
-                Log.d(LOGTAG, "collectEntries: smartbulb:"
-                        + " hue=" + status.hue
-                        + " saturation=" + status.saturation
-                        + " brightness=" + status.brightness);
-                */
-
                 int color = Simple.colorRGB(status.hue, status.saturation, 100);
                 color = Simple.setRGBAlpha(color, status.brightness + 155);
+                if (status.bulbstate == 0) color = GUIDefs.STATUS_COLOR_INACT;
 
                 entry.iconView.setImageResource(R.drawable.bulb_bunt_440, color);
             }
 
             if (device.type.equals("camera") && (status.ledstate != null))
             {
-                //Log.d(LOGTAG, "collectEntries: camera:" + " ledstate=" + status.ledstate);
-
-                int color = (status.ledstate == 0) ? Color.BLACK : Color.BLUE;
+                int color = (status.ledstate == 0) ? GUIDefs.STATUS_COLOR_INACT : GUIDefs.STATUS_COLOR_BLUE;
 
                 entry.iconView.setImageResource(R.drawable.domcam_bunt_500, color);
             }
 
             if (device.type.equals("smartplug") && (status.plugstate != null))
             {
-                Log.d(LOGTAG, "collectEntries: smartplug:" + " plugstate=" + status.plugstate);
-
                 int color = (status.plugstate == 0) ? GUIDefs.STATUS_COLOR_INACT : GUIDefs.STATUS_COLOR_GREEN;
 
                 entry.iconView.setImageResource(R.drawable.plug_bunt_400, color);
