@@ -5,7 +5,8 @@ import android.view.View;
 
 import org.json.JSONArray;
 
-import java.net.InetAddress;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.base.GUIIcons;
@@ -23,12 +24,38 @@ public class GUIPingWizzard extends GUIPluginTitleList
 {
     private final static String LOGTAG = GUIPingWizzard.class.getSimpleName();
 
+    private Thread pinger;
+
     public GUIPingWizzard(Context context)
     {
         super(context);
 
         setTitleIcon(R.drawable.beacon_220);
         setTitleText("Ping Wizzard");
+    }
+
+    @Override
+    public void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+
+        if (pinger == null)
+        {
+            pinger = new Thread(pingerRunner);
+            pinger.start();
+        }
+    }
+
+    @Override
+    public void onDetachedFromWindow()
+    {
+        super.onDetachedFromWindow();
+
+        if (pinger != null)
+        {
+            pinger.interrupt();
+            pinger = null;
+        }
     }
 
     @Override
@@ -52,20 +79,20 @@ public class GUIPingWizzard extends GUIPluginTitleList
             IOTStatus status = new IOTStatus(device.uuid);
             if (status.ipaddr == null) continue;
 
-            InetAddress inetAddress = Simple.getInetAddress(status.ipaddr);
-            if (inetAddress == null) continue;
-
-            boolean pingt = Simple.getInetPing(inetAddress,500);
+            Boolean pingt = Simple.getMapBoolean(pingerStatusse, status.uuid);
 
             GUIListEntry entry = new GUIListEntry(listView.getContext());
             entry.setOnClickListener(onClickListener);
-            entry.setTag(device);
+            entry.setTag(status);
 
             entry.iconView.setImageResource(GUIIcons.getImageResid(device));
             entry.headerViev.setText(device.name);
             entry.infoView.setText(status.ipaddr);
 
-            entry.infoView.setBackgroundColor(pingt ? 0x88008800 : 0x88880000);
+            if (pingt != null)
+            {
+                entry.iconView.setBackgroundColor(pingt ? 0x88008800 : 0x88880000);
+            }
 
             listView.addView(entry);
         }
@@ -76,8 +103,56 @@ public class GUIPingWizzard extends GUIPluginTitleList
         @Override
         public void onClick(View view)
         {
-            IOTDevice device = (IOTDevice) view.getTag();
 
+        }
+    };
+
+    private static Map<String, Boolean> pingerStatusse = new HashMap<>();
+
+    private void pingerStatus(String uuid, int inx, boolean pingt)
+    {
+        pingerStatusse.put(uuid, pingt);
+
+        GUIListEntry entry = (GUIListEntry) listView.getChildAt(inx);
+        entry.iconView.setBackgroundColor(pingt ? 0x88008800 : 0x88880000);
+    }
+
+    private final Runnable pingerRunner = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            int startintervall = 100;
+
+            while (pinger != null)
+            {
+                for (int inx = 0; inx < listView.getChildCount(); inx++)
+                {
+                    View child = listView.getChildAt(inx);
+                    if (child == null) continue;
+
+                    IOTStatus status = (IOTStatus) child.getTag();
+                    if (status == null) continue;
+
+                    final int cbinx = inx;
+                    final String cbuuid = status.uuid;
+
+                    final boolean cbpingt = Simple.getInetPing(Simple.getInetAddress(status.ipaddr),startintervall);
+
+                    if ((startintervall < 500) && ! cbpingt) continue;
+
+                    Simple.getHandler().post(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            pingerStatus(cbuuid, cbinx, cbpingt);
+                        }
+                    });
+                }
+
+                if (startintervall < 3000) startintervall += 100;
+            }
         }
     };
 }

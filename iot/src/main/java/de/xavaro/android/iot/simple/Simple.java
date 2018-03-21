@@ -533,6 +533,25 @@ public class Simple
         return false;
     }
 
+    public static Boolean getMapBoolean(Map<String, Boolean> map, String key)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        {
+            return map.getOrDefault(key, null);
+        }
+        else
+        {
+            try
+            {
+                return map.get(key);
+            }
+            catch (Exception ignore)
+            {
+                return null;
+            }
+        }
+    }
+
     public static Long getMapLong(Map<String, Long> map, String key)
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)

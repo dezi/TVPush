@@ -44,6 +44,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Map;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
@@ -557,6 +558,66 @@ public class Simple
         }
 
         return false;
+    }
+
+    @Nullable
+    public static Boolean getMapBoolean(Map<String, Boolean> map, String key)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        {
+            return map.getOrDefault(key, null);
+        }
+        else
+        {
+            try
+            {
+                return map.get(key);
+            }
+            catch (Exception ignore)
+            {
+                return null;
+            }
+        }
+    }
+
+    @Nullable
+    public static Long getMapLong(Map<String, Long> map, String key)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        {
+            return map.getOrDefault(key, null);
+        }
+        else
+        {
+            try
+            {
+                return map.get(key);
+            }
+            catch (Exception ignore)
+            {
+                return null;
+            }
+        }
+    }
+
+    @Nullable
+    public static String getMapString(Map<String, String> map, String key)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        {
+            return map.getOrDefault(key, null);
+        }
+        else
+        {
+            try
+            {
+                return map.get(key);
+            }
+            catch (Exception ignore)
+            {
+                return null;
+            }
+        }
     }
 
     //endregion Smart helpers.
