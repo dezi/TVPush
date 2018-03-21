@@ -169,7 +169,7 @@ public class GUIImageView extends AppCompatImageView implements
     @Override
     public void setImageResource(int resid)
     {
-        setImageResource(resid, Color.TRANSPARENT);
+        setImageResource(resid, Color.WHITE);
     }
 
     public void setImageResource(int resid, int color)
@@ -196,11 +196,11 @@ public class GUIImageView extends AppCompatImageView implements
             Paint paint = new Paint();
             paint.setAntiAlias(true);
             paint.setFilterBitmap(true);
+            paint.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
 
             Rect srcrect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
             Rect dstrect = new Rect(0, 0, targetWidth, targetHeight);
 
-            canvas.drawColor(color, PorterDuff.Mode.MULTIPLY);
             canvas.drawBitmap(bitmap, srcrect, dstrect, paint);
 
             bitmap.recycle();
@@ -215,10 +215,5 @@ public class GUIImageView extends AppCompatImageView implements
 
             setImageDrawable(drawable);
         }
-    }
-
-
-    public void setImageDrawable(Drawable drawable, int color)
-    {
     }
 }
