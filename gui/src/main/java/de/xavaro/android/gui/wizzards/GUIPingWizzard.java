@@ -1,15 +1,9 @@
 package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.View;
 
 import org.json.JSONArray;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.base.GUIDefs;
@@ -75,7 +69,7 @@ public class GUIPingWizzard extends GUIPluginTitleList
 
             entry.iconView.setImageResource(residplain);
             entry.headerViev.setText(device.name);
-            entry.infoView.setText(status.ipaddr);
+            entry.infoView.setText(connect);
 
             if (lastPing != null)
             {
