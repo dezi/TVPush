@@ -20,7 +20,7 @@ public class IOTAlive
     private final static String LOGTAG = IOTAlive.class.getSimpleName();
 
     private final static Map<String, Long> alivesStatus = new HashMap<>();
-    private final static Map<String, Long> alivesNetwork = new HashMap<>();
+    private final static Map<String, Long> alivesRequest = new HashMap<>();
 
     private static Thread worker;
 
@@ -42,41 +42,41 @@ public class IOTAlive
         }
     }
 
-    public static void setAliveStatus(String uuid)
+    public static void setAlive(String tag)
     {
-        Log.d(LOGTAG, "setAliveStatus: uuid=" + uuid);
+        Log.d(LOGTAG, "setAliveStatus: tag=" + tag);
 
         synchronized (alivesStatus)
         {
-            alivesStatus.put(uuid, System.currentTimeMillis());
+            alivesStatus.put(tag, System.currentTimeMillis());
         }
     }
 
     @Nullable
-    public static Long getLastStatus(String uuid)
+    public static Long getAlive(String tag)
     {
         synchronized (alivesStatus)
         {
-            return Simple.getMapLong(alivesStatus, uuid);
+            return Simple.getMapLong(alivesStatus, tag);
         }
     }
 
-    public static void setAliveNetwork(String addr)
+    public static void setRequested(String tag)
     {
-        Log.d(LOGTAG, "setAliveNetwork: addr=" + addr);
+        Log.d(LOGTAG, "setRequested: tag=" + tag);
 
-        synchronized (alivesNetwork)
+        synchronized (alivesRequest)
         {
-            alivesNetwork.put(addr, System.currentTimeMillis());
+            alivesRequest.put(tag, System.currentTimeMillis());
         }
     }
 
     @Nullable
-    public static Long getLastPing(String addr)
+    public static Long getRequested(String tag)
     {
-        synchronized (alivesNetwork)
+        synchronized (alivesRequest)
         {
-            return Simple.getMapLong(alivesNetwork, addr);
+            return Simple.getMapLong(alivesRequest, tag);
         }
     }
 
@@ -106,10 +106,7 @@ public class IOTAlive
                 IOTStatus status = IOTStatusses.getEntry(uuid);
                 if (status == null) continue;
 
-                if (status.ipaddr != null)
-                {
-                    performPing(uuid, status);
-                }
+                if (status.ipaddr != null) performPing(status.ipaddr);
 
                 performStatus(uuid);
             }
@@ -118,21 +115,21 @@ public class IOTAlive
         }
     };
 
-    private static void performPing(String uuid, IOTStatus status)
+    private static void performPing(String ipaddr)
     {
-        String ipaddr = status.ipaddr;
+        Long lastRequest = getRequested(ipaddr);
 
-        Long lastPing = getLastPing(ipaddr);
-
-        if ((lastPing != null) && ((System.currentTimeMillis() - lastPing) < (10 * 1000)))
+        if ((lastRequest != null) && ((System.currentTimeMillis() - lastRequest) < (10 * 1000)))
         {
             return;
         }
 
+        setRequested(ipaddr);
+
         try
         {
             Process ping = Runtime.getRuntime().exec("ping -c 1 -W 2 " + ipaddr);
-            if ((ping.waitFor() == 0)) setAliveNetwork(ipaddr);
+            if ((ping.waitFor() == 0)) setAlive(ipaddr);
         }
         catch (Exception ignore)
         {
@@ -141,14 +138,14 @@ public class IOTAlive
 
     private static void performStatus(String uuid)
     {
-        Long lastStat = getLastStatus(uuid);
+        Long lastRequest = getRequested(uuid);
 
-        if ((lastStat != null) && ((System.currentTimeMillis() - lastStat) < (10 * 1000)))
+        if ((lastRequest != null) && ((System.currentTimeMillis() - lastRequest) < (10 * 1000)))
         {
             return;
         }
 
-        setAliveStatus(uuid);
+        setRequested(uuid);
 
         IOTDevice device = IOTDevices.getEntry(uuid);
         if (device == null) return;

@@ -516,7 +516,7 @@ public class IOTProximScanner
             IOTStatusses.addEntry(new IOTStatus(status), false);
         }
 
-        IOTAlive.setAliveNetwork(macAddr);
+        IOTAlive.setAlive(macAddr);
 
         return true;
     }
@@ -586,7 +586,7 @@ public class IOTProximScanner
             IOTStatusses.addEntry(new IOTStatus(status), false);
         }
 
-        IOTAlive.setAliveNetwork(macAddr);
+        IOTAlive.setAlive(macAddr);
 
         return true;
     }
@@ -704,7 +704,7 @@ public class IOTProximScanner
             IOTStatusses.addEntry(new IOTStatus(status), false);
         }
 
-        IOTAlive.setAliveNetwork(macAddr);
+        IOTAlive.setAlive(macAddr);
 
         return true;
     }
