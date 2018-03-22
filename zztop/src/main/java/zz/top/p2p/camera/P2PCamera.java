@@ -77,7 +77,7 @@ public class P2PCamera implements Camera
     }
 
     @Override
-    public boolean isOnline(String deviceUUID, JSONObject device, JSONObject credentials)
+    public boolean isOnline(JSONObject device, JSONObject credentials)
     {
         if (device != null)
         {
@@ -90,14 +90,15 @@ public class P2PCamera implements Camera
     }
 
     @Override
-    public boolean attachCamera(String deviceUUID, JSONObject device, JSONObject credentials)
+    public boolean attachCamera(JSONObject device, JSONObject credentials)
     {
+        String uuid = Json.getString(device, "uuid");
         String p2p_id = Json.getString(credentials, "p2p_id");
         String p2p_pw = Json.getString(credentials, "p2p_pw");
 
         if ((p2p_id != null) && (p2p_pw != null))
         {
-            session.attachCamera(deviceUUID, p2p_id, p2p_pw);
+            session.attachCamera(uuid, p2p_id, p2p_pw);
 
             return true;
         }

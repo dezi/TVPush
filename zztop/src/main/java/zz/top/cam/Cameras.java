@@ -155,7 +155,7 @@ public class Cameras
 
         if (newcamera != null)
         {
-            newcamera.attachCamera(uuid, device, credentials);
+            newcamera.attachCamera(device, credentials);
         }
 
         return newcamera;
