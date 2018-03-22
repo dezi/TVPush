@@ -11,15 +11,16 @@ public class GUIPlugin extends GUIFrameLayout
 {
     private final static String LOGTAG = GUIPlugin.class.getSimpleName();
 
-    public final static int DEFAULT_LEFT = 50;
-    public final static int DEFAULT_TOP = 100;
+    public final static int DEFAULT_HORZ_MARGIN = 50;
+    public final static int DEFAULT_VERT_MARGIN = 100;
 
     public final static int DEFAULT_WIDTH = 300;
-    public final static int DEFAULT_HEIGHT = 300;
 
     public GUIFrameLayout contentFrame;
 
+    private boolean isHelper;
     private boolean isActive;
+    private boolean isWizzard;
     private boolean isAttached;
 
     public GUIPlugin(Context context)
@@ -28,12 +29,37 @@ public class GUIPlugin extends GUIFrameLayout
 
         contentFrame = this;
 
-        this.setPluginPositionDip(DEFAULT_LEFT, DEFAULT_TOP);
-        this.setPluginSizeDip(DEFAULT_WIDTH, Simple.getDeviceHeightDip() - DEFAULT_TOP * 2);
+        this.setPluginPositionDip(DEFAULT_HORZ_MARGIN, DEFAULT_VERT_MARGIN);
+
+        this.setPluginSizeDip(DEFAULT_WIDTH,
+                Simple.getDeviceHeightDip() - 2 * DEFAULT_VERT_MARGIN);
 
         this.setPaddingDip(GUIDefs.PADDING_SMALL);
 
         onHighlightFrame(false);
+    }
+
+    public void setIsWizzard(boolean helper)
+    {
+        isWizzard = true;
+        isHelper = helper;
+
+        this.setPluginPositionDip(DEFAULT_WIDTH + 2 * DEFAULT_HORZ_MARGIN, DEFAULT_VERT_MARGIN);
+
+        int width = Simple.getDeviceWidthDip() - DEFAULT_WIDTH - 3 * DEFAULT_HORZ_MARGIN;
+        int height = Simple.getDeviceHeightDip() - 2 * DEFAULT_VERT_MARGIN;
+
+        this.setPluginSizeDip(width, height);
+    }
+
+    public boolean isWizzard()
+    {
+        return isWizzard;
+    }
+
+    public boolean isHelper()
+    {
+        return isHelper;
     }
 
     @Override

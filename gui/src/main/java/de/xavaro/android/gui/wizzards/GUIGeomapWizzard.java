@@ -44,7 +44,7 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
     {
         super(context);
 
-        setPluginPositionDip(400, DEFAULT_TOP);
+        setIsHelper(true);
 
         mapFrame = new GUIFrameLayout(context)
         {
