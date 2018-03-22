@@ -66,8 +66,10 @@ public class IOTHandleMeme extends IOTHandle
                 //
                 // Reply with own identity.
                 //
+                // Nope.
+                //
 
-                IOTHandleMeme.sendMEME(origin);
+                //IOTHandleMeme.sendMEME(origin);
             }
         }
     }
