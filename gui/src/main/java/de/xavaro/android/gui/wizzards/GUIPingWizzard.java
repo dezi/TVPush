@@ -20,6 +20,7 @@ import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUIListEntry;
 import de.xavaro.android.gui.views.GUIListView;
+import de.xavaro.android.iot.base.IOTAlive;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
@@ -29,8 +30,6 @@ public class GUIPingWizzard extends GUIPluginTitleList
 {
     private final static String LOGTAG = GUIPingWizzard.class.getSimpleName();
 
-    private Thread pinger;
-
     public GUIPingWizzard(Context context)
     {
         super(context);
@@ -39,30 +38,6 @@ public class GUIPingWizzard extends GUIPluginTitleList
 
         setTitleIcon(R.drawable.ping_440);
         setTitleText("Ping Wizzard");
-    }
-
-    @Override
-    public void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-
-        if (pinger == null)
-        {
-            pinger = new Thread(pingerRunner);
-            pinger.start();
-        }
-    }
-
-    @Override
-    public void onDetachedFromWindow()
-    {
-        super.onDetachedFromWindow();
-
-        if (pinger != null)
-        {
-            pinger.interrupt();
-            pinger = null;
-        }
     }
 
     @Override
@@ -84,9 +59,12 @@ public class GUIPingWizzard extends GUIPluginTitleList
             if (todo) continue;
 
             IOTStatus status = IOTStatusses.getEntry(device.uuid);
-            if ((status == null) || (status.ipaddr == null)) continue;
+            if (status == null)continue;
 
-            Boolean pingt = Simple.getMapBoolean(pingerStatusse, status.uuid);
+            String connect = (status.ipaddr != null) ? status.ipaddr : status.macaddr;
+            if (connect == null) continue;
+
+            Long lastPing = IOTAlive.getLastPing(connect);
 
             GUIListEntry entry = new GUIListEntry(listView.getContext());
             entry.setOnClickListener(onClickListener);
@@ -99,8 +77,10 @@ public class GUIPingWizzard extends GUIPluginTitleList
             entry.headerViev.setText(device.name);
             entry.infoView.setText(status.ipaddr);
 
-            if (pingt != null)
+            if (lastPing != null)
             {
+                boolean pingt = (System.currentTimeMillis() - lastPing) < (20 * 1000);
+
                 entry.setStatusColor(pingt ? GUIDefs.STATUS_COLOR_GREEN : GUIDefs.STATUS_COLOR_RED);
             }
 
@@ -141,65 +121,6 @@ public class GUIPingWizzard extends GUIPluginTitleList
         public void onClick(View view)
         {
 
-        }
-    };
-
-    private static Map<String, Boolean> pingerStatusse = new HashMap<>();
-
-    private void pingerStatus(String uuid, int inx, boolean pingt)
-    {
-        pingerStatusse.put(uuid, pingt);
-
-        GUIListEntry entry = (GUIListEntry) listView.getChildAt(inx);
-
-        if (entry != null)
-        {
-            entry.setStatusColor(pingt ? GUIDefs.STATUS_COLOR_GREEN : GUIDefs.STATUS_COLOR_RED);
-        }
-    }
-
-    private final Runnable pingerRunner = new Runnable()
-    {
-        @Override
-        public void run()
-        {
-            while (pinger != null)
-            {
-                for (int inx = 0; inx < listView.getChildCount(); inx++)
-                {
-                    View child = listView.getChildAt(inx);
-                    if (child == null) continue;
-
-                    IOTStatus status = (IOTStatus) child.getTag();
-                    if (status == null) continue;
-
-                    boolean reachable = false;
-
-                    try
-                    {
-                        Process p1 = Runtime.getRuntime().exec("ping -c 1 -W 2 " + status.ipaddr);
-                        reachable = (p1.waitFor() == 0);
-                    }
-                    catch (Exception ignore)
-                    {
-                    }
-
-                    final int cbinx = inx;
-                    final String cbuuid = status.uuid;
-                    final boolean cbpingt = reachable;
-
-                    Simple.getHandler().post(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            pingerStatus(cbuuid, cbinx, cbpingt);
-                        }
-                    });
-                }
-
-                Simple.sleep(2 * 1000);
-            }
         }
     };
 }

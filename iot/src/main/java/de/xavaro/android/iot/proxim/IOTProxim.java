@@ -6,12 +6,11 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.AdvertiseSettings;
 import android.location.LocationManager;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-
 import android.bluetooth.le.AdvertiseCallback;
 import android.support.v4.content.ContextCompat;
+import android.Manifest;
 import android.util.Log;
 
 import de.xavaro.android.iot.simple.Simple;

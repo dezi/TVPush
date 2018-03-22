@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import de.xavaro.android.iot.base.IOT;
+import de.xavaro.android.iot.base.IOTAlive;
 import de.xavaro.android.iot.base.IOTSimple;
 import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Simple;
@@ -52,7 +53,7 @@ public class IOTProximScanner
         {
             IOT.instance.proximScanner = new IOTProximScanner(appcontext);
 
-            //IOT.instance.proximScanner.startLEScanner();
+            IOT.instance.proximScanner.startLEScanner();
 
             if (Simple.isSony())
             {
@@ -455,6 +456,7 @@ public class IOTProximScanner
         String name = url;
         String macAddr = result.getDevice().getAddress();
         String uuid = IOTSimple.hmacSha1UUID(name, macAddr);
+        int rssi = result.getRssi();
 
         if (shouldUpdate(uuid))
         {
@@ -475,8 +477,6 @@ public class IOTProximScanner
             {
                 caps += "|gpsfine";
             }
-
-            int rssi = result.getRssi();
 
             Log.d(LOGTAG, "buildEddyDev: EDY"
                     + " rssi=" + rssi
@@ -512,6 +512,8 @@ public class IOTProximScanner
 
             IOTStatusses.addEntry(new IOTStatus(status), false);
         }
+
+        IOTAlive.setAlive(macAddr);
 
         return true;
     }
@@ -574,6 +576,7 @@ public class IOTProximScanner
             Json.put(status, "uuid", uuid);
             Json.put(status, "rssi", rssi);
             Json.put(status, "txpower", txpo);
+            Json.put(status, "macaddr", macAddr);
 
             IOTStatusses.addEntry(new IOTStatus(status), false);
         }

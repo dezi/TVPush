@@ -23,6 +23,7 @@ public class IOTStatus extends IOTObject
 
     public Integer rssi;
     public Integer txpower;
+    public String macaddr;
 
     public Integer camblind;
 
@@ -76,6 +77,7 @@ public class IOTStatus extends IOTObject
 
         if (nequals(rssi,       check.rssi      )) rssi       = check.rssi;
         if (nequals(txpower,    check.txpower   )) txpower    = check.txpower;
+        if (nequals(macaddr,    check.macaddr   )) macaddr    = check.macaddr;
 
         if (nequals(camblind,   check.camblind  )) camblind   = check.camblind;
 
