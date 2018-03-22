@@ -8,6 +8,7 @@ import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.util.Log;
 
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.skills.GUICanDip;
@@ -18,6 +19,11 @@ import de.xavaro.android.gui.skills.GUICanRestoreBackgroundDelegate;
 import de.xavaro.android.gui.skills.GUICanRoundedCorners;
 import de.xavaro.android.gui.skills.GUICanRoundedCornersDelegate;
 import de.xavaro.android.gui.skills.GUICanToast;
+
+//
+// adb shell setprop log.tag.TextView WARN
+// adb shell setprop log.tag.TextView VERBOSE
+//
 
 public class GUITextView extends AppCompatTextView implements
         GUICanDip,
