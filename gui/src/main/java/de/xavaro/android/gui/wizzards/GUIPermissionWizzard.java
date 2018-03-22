@@ -1,9 +1,7 @@
 package de.xavaro.android.gui.wizzards;
 
-import android.content.pm.PackageManager;
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 
 import org.json.JSONArray;
@@ -12,16 +10,16 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 import de.xavaro.android.gui.R;
-import de.xavaro.android.gui.base.GUIDefs;
-import de.xavaro.android.gui.base.GUIPluginTitleList;
-import de.xavaro.android.gui.base.GUISetup;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
+import de.xavaro.android.gui.base.GUIDefs;
+import de.xavaro.android.gui.base.GUIPluginTitleListIOT;
+import de.xavaro.android.gui.base.GUISetup;
 import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUIListEntry;
 import de.xavaro.android.gui.views.GUIListView;
 
-public class GUIPermissionWizzard extends GUIPluginTitleList
+public class GUIPermissionWizzard extends GUIPluginTitleListIOT
 {
     private final static String LOGTAG = GUIPermissionWizzard.class.getSimpleName();
 
