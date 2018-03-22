@@ -122,12 +122,7 @@ public class IOTAlive
     {
         String ipaddr = status.ipaddr;
 
-        Long lastPing = null;
-
-        synchronized (alivesNetwork)
-        {
-            lastPing = Simple.getMapLong(alivesNetwork, ipaddr);
-        }
+        Long lastPing = getLastPing(ipaddr);
 
         if ((lastPing != null) && ((System.currentTimeMillis() - lastPing) < (10 * 1000)))
         {
@@ -146,17 +141,14 @@ public class IOTAlive
 
     private static void performStatus(String uuid)
     {
-        Long lastStat = null;
-
-        synchronized (alivesStatus)
-        {
-            lastStat = Simple.getMapLong(alivesStatus, uuid);
-        }
+        Long lastStat = getLastStatus(uuid);
 
         if ((lastStat != null) && ((System.currentTimeMillis() - lastStat) < (10 * 1000)))
         {
             return;
         }
+
+        setAliveStatus(uuid);
 
         IOTDevice device = IOTDevices.getEntry(uuid);
         if (device == null) return;
@@ -164,6 +156,5 @@ public class IOTAlive
         if (! device.driver.equals("tpl")) return;
 
         IOT.instance.onDeviceStatusRequest(device.toJson());
-
     }
 }

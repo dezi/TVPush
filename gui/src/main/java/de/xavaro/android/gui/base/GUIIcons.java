@@ -39,7 +39,7 @@ public class GUIIcons
             {
                 if (device.type.equals("phone")) return R.drawable.phone_225;
                 if (device.type.equals("tablet")) return R.drawable.tablet_530;
-                if (device.type.equals("remote")) return R.drawable.remote_550;
+                if (device.type.equals("tvremote")) return R.drawable.remote_550;
 
                 if (device.type.equals("tv"))
                 {

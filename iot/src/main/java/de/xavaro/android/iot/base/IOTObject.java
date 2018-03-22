@@ -230,8 +230,11 @@ public abstract class IOTObject
 
         boolean ok = fromJsonString(json);
 
-        Log.d(LOGTAG, "loadFromStorage: key=" + key + " ok=" + ok + " json=" + ((json == null) ? "null" : "ok"));
-        //if (json != null) Log.d(LOGTAG, json);
+        if (! ok)
+        {
+            Log.d(LOGTAG, "loadFromStorage: key=" + key + " ok=" + ok + " json=" + ((json == null) ? "null" : "ok"));
+            if (json != null) Log.d(LOGTAG, json);
+        }
 
         return ok;
     }

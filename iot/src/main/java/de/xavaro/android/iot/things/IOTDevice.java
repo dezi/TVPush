@@ -21,10 +21,10 @@ public class IOTDevice extends IOTObject
     public final static String TYPE_TABLET = "tablet";
     public final static String TYPE_LAPTOP = "laptop";
     public final static String TYPE_CAMERA = "camera";
-    public final static String TYPE_TVREMOTE = "tvremote";
-    public final static String TYPE_SMARTBULB = "bulb";
-    public final static String TYPE_SMARTPLUG = "plug";
     public final static String TYPE_BEACON = "beacon";
+    public final static String TYPE_TVREMOTE = "tvremote";
+    public final static String TYPE_SMARTBULB = "smartbulb";
+    public final static String TYPE_SMARTPLUG = "smartplug";
 
     public String did;
     public String nick;
