@@ -9,5 +9,5 @@ import pub.android.interfaces.drv.SmartPlug;
 public interface OnSmartPlugHandlerRequest
 {
     @Nullable
-    SmartPlug onSmartPlugHandlerRequest(JSONObject iotDevice, JSONObject status, JSONObject credentials);
+    SmartPlug onSmartPlugHandlerRequest(JSONObject device, JSONObject status, JSONObject credentials);
 }

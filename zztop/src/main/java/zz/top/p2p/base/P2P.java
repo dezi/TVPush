@@ -5,6 +5,8 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
+import pub.android.interfaces.drv.Camera;
+import pub.android.interfaces.ext.GetCameraHandler;
 import pub.android.interfaces.ext.OnDeviceHandler;
 import pub.android.interfaces.all.DoSomethingHandler;
 
@@ -15,7 +17,10 @@ import zz.top.p2p.commands.LEDOnOffSend;
 import zz.top.utl.Json;
 import zz.top.utl.Simple;
 
-public class P2P implements OnDeviceHandler, DoSomethingHandler
+public class P2P implements
+        OnDeviceHandler,
+        DoSomethingHandler,
+        GetCameraHandler
 {
     private static final String LOGTAG = P2P.class.getSimpleName();
 
@@ -59,6 +64,12 @@ public class P2P implements OnDeviceHandler, DoSomethingHandler
     public void onDeviceCredentials(JSONObject credentials)
     {
         Log.d(LOGTAG, "onDeviceCredentials: STUB!");
+    }
+
+    @Override
+    public Camera getCameraHandler(JSONObject device, JSONObject status, JSONObject credentials)
+    {
+        return null;
     }
 
     @Override

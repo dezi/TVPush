@@ -9,5 +9,5 @@ import pub.android.interfaces.drv.SmartBulb;
 public interface OnSmartBulbHandlerRequest
 {
     @Nullable
-    SmartBulb onSmartBulbHandlerRequest(JSONObject iotDevice, JSONObject status, JSONObject credentials);
+    SmartBulb onSmartBulbHandlerRequest(JSONObject device, JSONObject status, JSONObject credentials);
 }

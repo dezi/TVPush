@@ -1,6 +1,7 @@
 package de.xavaro.android.gui.base;
 
 import android.app.Application;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.json.JSONObject;
@@ -12,11 +13,13 @@ import pub.android.interfaces.drv.Camera;
 import pub.android.interfaces.drv.SmartBulb;
 import pub.android.interfaces.drv.SmartPlug;
 import pub.android.interfaces.gui.DesktopHandler;
+import pub.android.interfaces.gui.OnCameraHandlerRequest;
 import pub.android.interfaces.gui.OnSmartBulbHandlerRequest;
 import pub.android.interfaces.gui.OnSmartPlugHandlerRequest;
 
 public class GUI implements
         DesktopHandler,
+        OnCameraHandlerRequest,
         OnSmartPlugHandlerRequest,
         OnSmartBulbHandlerRequest
 {
@@ -62,7 +65,15 @@ public class GUI implements
     }
 
     @Override
-    public SmartPlug onSmartPlugHandlerRequest(JSONObject iotDevice, JSONObject status, JSONObject credentials)
+    public Camera onCameraHandlerRequest(JSONObject device, JSONObject status, JSONObject credentials)
+    {
+        Log.d(LOGTAG, "onCameraHandlerRequest: STUB!");
+
+        return null;
+    }
+
+    @Override
+    public SmartPlug onSmartPlugHandlerRequest(JSONObject device, JSONObject status, JSONObject credentials)
     {
         Log.d(LOGTAG, "OnSmartPlugHandlerRequest: STUB!");
 
@@ -70,7 +81,7 @@ public class GUI implements
     }
 
     @Override
-    public SmartBulb onSmartBulbHandlerRequest(JSONObject iotDevice, JSONObject status, JSONObject credentials)
+    public SmartBulb onSmartBulbHandlerRequest(JSONObject device, JSONObject status, JSONObject credentials)
     {
         Log.d(LOGTAG, "onSmartBulbHandlerRequest: STUB!");
 

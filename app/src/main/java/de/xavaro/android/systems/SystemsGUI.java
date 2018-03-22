@@ -40,10 +40,28 @@ public class SystemsGUI extends GUI
     }
 
     @Override
-    public SmartPlug onSmartPlugHandlerRequest(JSONObject iotDevice, JSONObject status, JSONObject credentials)
+    public Camera onCameraHandlerRequest(JSONObject device, JSONObject status, JSONObject credentials)
     {
-        String uuid = Json.getString(iotDevice, "uuid");
-        String driver = Json.getString(iotDevice, "driver");
+        String uuid = Json.getString(device, "uuid");
+        String driver = Json.getString(device, "driver");
+
+        Log.d(LOGTAG, "onCameraHandlerRequest: uuid=" + uuid + " driver=" + driver);
+
+        if ((uuid == null) || (driver == null)) return null;
+
+        if (driver.equals("p2p"))
+        {
+            return SystemsP2P.instance.getCameraHandler(device, status, credentials);
+        }
+
+        return null;
+    }
+
+    @Override
+    public SmartPlug onSmartPlugHandlerRequest(JSONObject device, JSONObject status, JSONObject credentials)
+    {
+        String uuid = Json.getString(device, "uuid");
+        String driver = Json.getString(device, "driver");
 
         Log.d(LOGTAG, "OnSmartPlugHandlerRequest: uuid=" + uuid + " driver=" + driver);
 
@@ -51,17 +69,17 @@ public class SystemsGUI extends GUI
 
         if (driver.equals("tpl"))
         {
-            return SystemsTPL.instance.getSmartPlugHandler(iotDevice, status, credentials);
+            return SystemsTPL.instance.getSmartPlugHandler(device, status, credentials);
         }
 
         return null;
     }
 
     @Override
-    public SmartBulb onSmartBulbHandlerRequest(JSONObject iotDevice, JSONObject status, JSONObject credentials)
+    public SmartBulb onSmartBulbHandlerRequest(JSONObject device, JSONObject status, JSONObject credentials)
     {
-        String uuid = Json.getString(iotDevice, "uuid");
-        String driver = Json.getString(iotDevice, "driver");
+        String uuid = Json.getString(device, "uuid");
+        String driver = Json.getString(device, "driver");
 
         Log.d(LOGTAG, "onSmartBulbHandlerRequest: uuid=" + uuid + " driver=" + driver);
 
@@ -69,7 +87,7 @@ public class SystemsGUI extends GUI
 
         if (driver.equals("tpl"))
         {
-            return SystemsTPL.instance.getSmartBulbHandler(iotDevice, status, credentials);
+            return SystemsTPL.instance.getSmartBulbHandler(device, status, credentials);
         }
 
         return null;
