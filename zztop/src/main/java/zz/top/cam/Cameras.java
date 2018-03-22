@@ -129,6 +129,7 @@ public class Cameras
         JSONObject camera = Cameras.getCameraDevice(uuid);
 
         JSONObject device = Json.getObject(camera, "device");
+        JSONObject credentials = Json.getObject(camera, "credentials");
 
         String deviceUUID = Json.getString(device, "uuid");
         String deviceName = Json.getString(device, "name");
@@ -154,7 +155,7 @@ public class Cameras
 
         if (newcamera != null)
         {
-            newcamera.attachCamera(uuid);
+            newcamera.attachCamera(uuid, device, credentials);
         }
 
         return newcamera;

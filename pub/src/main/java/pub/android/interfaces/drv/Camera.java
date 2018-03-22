@@ -3,6 +3,8 @@ package pub.android.interfaces.drv;
 import android.content.Context;
 import android.widget.FrameLayout;
 
+import org.json.JSONObject;
+
 @SuppressWarnings("unused")
 public interface Camera
 {
@@ -20,8 +22,8 @@ public interface Camera
      void registerSurface(FrameLayout surface);
      void releaseSurface();
 
-     boolean isOnline(String uuid);
-     boolean attachCamera(String uuid);
+     boolean isOnline(String uuid, JSONObject device, JSONObject credentials);
+     boolean attachCamera(String uuid, JSONObject device, JSONObject credentials);
 
      boolean connectCamera();
      boolean disconnectCamera();
