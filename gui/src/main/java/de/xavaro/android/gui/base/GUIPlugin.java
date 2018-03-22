@@ -18,6 +18,7 @@ public class GUIPlugin extends GUIFrameLayout
 
     public GUIFrameLayout contentFrame;
 
+    private boolean isLarge;
     private boolean isHelper;
     private boolean isActive;
     private boolean isWizzard;
@@ -39,17 +40,31 @@ public class GUIPlugin extends GUIFrameLayout
         onHighlightFrame(false);
     }
 
-    public void setIsWizzard(boolean helper)
+    public void setIsWizzard(boolean wizzard, boolean helper, boolean islarge)
     {
-        isWizzard = true;
+        isWizzard = wizzard;
         isHelper = helper;
+        isLarge = islarge;
 
-        this.setPluginPositionDip(DEFAULT_WIDTH + 2 * DEFAULT_HORZ_MARGIN, DEFAULT_VERT_MARGIN);
+        if (isLarge)
+        {
+            int width = Simple.getDeviceWidthDip() - 2 * DEFAULT_HORZ_MARGIN;
+            int height = Simple.getDeviceHeightDip() - 2 * DEFAULT_VERT_MARGIN;
 
-        int width = Simple.getDeviceWidthDip() - DEFAULT_WIDTH - 3 * DEFAULT_HORZ_MARGIN;
-        int height = Simple.getDeviceHeightDip() - 2 * DEFAULT_VERT_MARGIN;
+            this.setPluginSizeDip(width, height);
+        }
+        else
+        {
+            if (isHelper)
+            {
+                this.setPluginPositionDip(DEFAULT_WIDTH + 2 * DEFAULT_HORZ_MARGIN, DEFAULT_VERT_MARGIN);
 
-        this.setPluginSizeDip(width, height);
+                int width = Simple.getDeviceWidthDip() - DEFAULT_WIDTH - 3 * DEFAULT_HORZ_MARGIN;
+                int height = Simple.getDeviceHeightDip() - 2 * DEFAULT_VERT_MARGIN;
+
+                this.setPluginSizeDip(width, height);
+            }
+        }
     }
 
     public boolean isWizzard()

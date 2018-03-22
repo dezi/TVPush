@@ -66,6 +66,8 @@ public class IOT implements GetDevices
             IOTProximScanner.startService(appcontext);
 
             IOTProximLocation.startLocationListener(appcontext);
+
+            IOTAlive.startService();
         }
         else
         {

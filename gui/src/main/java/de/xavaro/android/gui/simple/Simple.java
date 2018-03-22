@@ -663,5 +663,6 @@ public class Simple
         {
         }
     }
+
     //endregion Smart helpers.
 }
