@@ -13,10 +13,9 @@ import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUIListEntry;
 import de.xavaro.android.gui.views.GUIListView;
-import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
-import pub.android.interfaces.cam.Camera;
+import pub.android.interfaces.drv.Camera;
 
 public class GUICamerasWizzard extends GUIPluginTitleList
 {

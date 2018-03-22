@@ -6,7 +6,7 @@ import android.widget.FrameLayout;
 
 import org.json.JSONObject;
 
-import pub.android.interfaces.cam.Camera;
+import pub.android.interfaces.drv.Camera;
 
 import zz.top.p2p.commands.CloseCameraSend;
 import zz.top.p2p.commands.DayNightSend;

@@ -2,7 +2,7 @@ package pub.android.interfaces.gui;
 
 import org.json.JSONObject;
 
-import pub.android.interfaces.cam.Camera;
+import pub.android.interfaces.drv.Camera;
 
 public interface DesktopHandler
 {

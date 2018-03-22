@@ -8,10 +8,14 @@ import org.json.JSONObject;
 import de.xavaro.android.gui.smart.GUIDesktopActivity;
 import de.xavaro.android.gui.smart.GUISpeechListener;
 
-import pub.android.interfaces.cam.Camera;
+import pub.android.interfaces.drv.Camera;
+import pub.android.interfaces.drv.SmartPlug;
 import pub.android.interfaces.gui.DesktopHandler;
+import pub.android.interfaces.gui.OnSmartPlugHandlerRequest;
 
-public class GUI implements DesktopHandler
+public class GUI implements
+        DesktopHandler,
+        OnSmartPlugHandlerRequest
 {
     private static final String LOGTAG = GUI.class.getSimpleName();
 
@@ -50,6 +54,14 @@ public class GUI implements DesktopHandler
     public Camera onRequestCameraByUUID(String uuid)
     {
         Log.d(LOGTAG, "onRequestCameraByUUID: STUB! uuid=" + uuid);
+
+        return null;
+    }
+
+    @Override
+    public SmartPlug onSmartPlugHandlerRequest(JSONObject iotDevice, JSONObject status, JSONObject credentials)
+    {
+        Log.d(LOGTAG, "OnSmartPlugHandlerRequest: STUB!");
 
         return null;
     }

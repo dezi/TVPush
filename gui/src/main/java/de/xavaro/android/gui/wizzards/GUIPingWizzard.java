@@ -7,6 +7,7 @@ import android.view.View;
 import org.json.JSONArray;
 
 import de.xavaro.android.gui.R;
+import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUIIcons;
 import de.xavaro.android.gui.base.GUIPluginTitleList;
@@ -14,12 +15,15 @@ import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUIListEntry;
+import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.views.GUIListView;
 import de.xavaro.android.iot.base.IOTAlive;
+import de.xavaro.android.iot.status.IOTCredential;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
+import pub.android.interfaces.drv.SmartPlug;
 
 public class GUIPingWizzard extends GUIPluginTitleList
 {
@@ -61,9 +65,13 @@ public class GUIPingWizzard extends GUIPluginTitleList
 
             Long lastPing = IOTAlive.getAlive(connect);
 
-            GUIListEntry entry = new GUIListEntry(listView.getContext());
+            GUIListEntryIOT entry = new GUIListEntryIOT(listView.getContext());
+
+            entry.uuid = uuid;
+            entry.device = device;
+            entry.status = status;
+
             entry.setOnClickListener(onClickListener);
-            entry.setTag(status);
 
             int residplain = GUIIcons.getImageResid(device, false);
             int residcolor = GUIIcons.getImageResid(device, true);
@@ -115,7 +123,18 @@ public class GUIPingWizzard extends GUIPluginTitleList
         @Override
         public void onClick(View view)
         {
+            GUIListEntryIOT entry = (GUIListEntryIOT) view;
 
+            entry.credential = new IOTCredential(entry.uuid);
+
+            SmartPlug handler = GUI.instance.onSmartPlugHandlerRequest(
+                    entry.device.toJson(),
+                    entry.status.toJson(),
+                    entry.credential.toJson());
+
+            if (handler == null) return;
+
+            handler.setPlugState((entry.status.plugstate == 0) ? 1 : 0);
         }
     };
 }

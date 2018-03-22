@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import pub.android.interfaces.cam.Camera;
+import pub.android.interfaces.drv.Camera;
 import zz.top.p2p.camera.P2PCamera;
 import zz.top.utl.Json;
 

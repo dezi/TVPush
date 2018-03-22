@@ -5,7 +5,7 @@ import android.view.Gravity;
 
 import de.xavaro.android.gui.base.GUIPlugin;
 
-import pub.android.interfaces.cam.Camera;
+import pub.android.interfaces.drv.Camera;
 
 import zz.top.gls.GLSVideoView;
 
