@@ -127,6 +127,8 @@ public class P2PCamera implements Camera
     @Override
     public boolean connectCamera()
     {
+        Simple.getHandler().removeCallbacks(disconnector);
+
         boolean isConnected = session.connect();
 
         Log.d(LOGTAG, "initialize: connect=" + isConnected);
@@ -137,8 +139,24 @@ public class P2PCamera implements Camera
     @Override
     public boolean disconnectCamera()
     {
-        return session.disconnect();
+        //
+        // Yield time for commands to finish.
+        //
+
+        Simple.getHandler().removeCallbacks(disconnector);
+        Simple.getHandler().postDelayed(disconnector, 500);
+
+        return true;
     }
+
+    private final Runnable disconnector = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            session.disconnect();
+        }
+    };
 
     @Override
     public boolean startRealtimeVideo()
