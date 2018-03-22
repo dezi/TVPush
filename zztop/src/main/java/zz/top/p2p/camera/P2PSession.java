@@ -98,7 +98,7 @@ public class P2PSession
         p2pAVFrameDecrypt = new P2PAVFrameDecrypt(targetPw + "0");
     }
 
-    public boolean connect(boolean comandOnly)
+    public boolean connect()
     {
         if (! isConnected)
         {
@@ -166,32 +166,60 @@ public class P2PSession
             isConnected = true;
             isCorrupted = false;
 
-            isCommdOnly = comandOnly;
-
             sessionInfo = new P2PApiSession();
 
             t0 = new P2PReaderThreadContl(this);
             t0.start();
 
-            if (! isCommdOnly)
-            {
-                t1 = new P2PReaderThreadAudio(this, (byte) 1);
-                t2 = new P2PReaderThreadVideo(this, (byte) 2);
-                t3 = new P2PReaderThreadVideo(this, (byte) 3);
-                t4 = new P2PReaderThreadVideo(this, (byte) 4);
-                t5 = new P2PReaderThreadVideo(this, (byte) 5);
-
-                t1.start();
-                t2.start();
-                t3.start();
-                t4.start();
-                t5.start();
-            }
-
-            if (! isCommdOnly) onConnectStateChanged(isConnected);
+            onConnectStateChanged(isConnected);
         }
 
         return isConnected;
+    }
+
+    public void startAudioThreads()
+    {
+        if (t1 == null)
+        {
+            t1 = new P2PReaderThreadAudio(this, (byte) 1);
+            t1.start();
+        }
+    }
+
+    public void stopAudioThreads()
+    {
+        if (t1 != null) t1.interrupt();
+
+        t1 = null;
+    }
+
+    public void startVideoThreads()
+    {
+        if (t2 == null)
+        {
+            t2 = new P2PReaderThreadVideo(this, (byte) 2);
+            t3 = new P2PReaderThreadVideo(this, (byte) 3);
+            t4 = new P2PReaderThreadVideo(this, (byte) 4);
+            t5 = new P2PReaderThreadVideo(this, (byte) 5);
+
+            t2.start();
+            t3.start();
+            t4.start();
+            t5.start();
+        }
+    }
+
+    public void stopVideoThreads()
+    {
+        if (t2 != null) t2.interrupt();
+        if (t3 != null) t3.interrupt();
+        if (t4 != null) t4.interrupt();
+        if (t5 != null) t5.interrupt();
+
+        t2 = null;
+        t3 = null;
+        t4 = null;
+        t5 = null;
     }
 
     public boolean disconnect()
@@ -200,16 +228,19 @@ public class P2PSession
         {
             if (isConnected)
             {
-                t0.interrupt();
+                if (t0 != null) t0.interrupt();
+                if (t1 != null) t1.interrupt();
+                if (t2 != null) t2.interrupt();
+                if (t3 != null) t3.interrupt();
+                if (t4 != null) t4.interrupt();
+                if (t5 != null) t5.interrupt();
 
-                if (! isCommdOnly)
-                {
-                    t1.interrupt();
-                    t2.interrupt();
-                    t3.interrupt();
-                    t4.interrupt();
-                    t5.interrupt();
-                }
+                t0 = null;
+                t1 = null;
+                t2 = null;
+                t3 = null;
+                t4 = null;
+                t5 = null;
 
                 int resClose = P2PApiNative.Close(session);
                 Log.d(LOGTAG, "disconnect: P2PAPI.Close=" + resClose);
@@ -218,7 +249,7 @@ public class P2PSession
                 {
                     isConnected = false;
 
-                    if (! isCommdOnly) onConnectStateChanged(false);
+                    onConnectStateChanged(false);
                 }
             }
         }
@@ -232,16 +263,19 @@ public class P2PSession
         {
             if (isConnected)
             {
-                t0.interrupt();
+                if (t0 != null) t0.interrupt();
+                if (t1 != null) t1.interrupt();
+                if (t2 != null) t2.interrupt();
+                if (t3 != null) t3.interrupt();
+                if (t4 != null) t4.interrupt();
+                if (t5 != null) t5.interrupt();
 
-                if (! isCommdOnly)
-                {
-                    t1.interrupt();
-                    t2.interrupt();
-                    t3.interrupt();
-                    t4.interrupt();
-                    t5.interrupt();
-                }
+                t0 = null;
+                t1 = null;
+                t2 = null;
+                t3 = null;
+                t4 = null;
+                t5 = null;
 
                 int resClose = P2PApiNative.ForceClose(session);
                 Log.d(LOGTAG, "forceDisconnect: P2PAPI.ForceClose=" + resClose);
@@ -250,7 +284,7 @@ public class P2PSession
                 {
                     isConnected = false;
 
-                    if (! isCommdOnly) onConnectStateChanged(false);
+                    onConnectStateChanged(false);
                 }
             }
         }

@@ -27,6 +27,7 @@ import zz.top.gls.GLSVideoView;
 
 import zz.top.cam.Cameras;
 import zz.top.utl.Json;
+import zz.top.utl.Simple;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class P2PCamera implements Camera
@@ -109,7 +110,7 @@ public class P2PCamera implements Camera
     @Override
     public boolean connectCamera()
     {
-        boolean isConnected = session.connect(false);
+        boolean isConnected = session.connect();
 
         Log.d(LOGTAG, "initialize: connect=" + isConnected);
 
@@ -125,24 +126,46 @@ public class P2PCamera implements Camera
     @Override
     public boolean startRealtimeVideo()
     {
+        session.startVideoThreads();
+
         return (new StartVideoSend(session, (byte) 2, (byte) resolution, (byte) 1)).send();
     }
 
     @Override
     public boolean stopRealtimeVideo()
     {
+        Simple.getHandler().post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                session.stopVideoThreads();
+            }
+        });
+
         return (new StopVideoSend(session)).send();
     }
 
     @Override
     public boolean startRealtimeAudio()
     {
+        session.startAudioThreads();
+
         return (new StartAudioSend(session)).send();
     }
 
     @Override
     public boolean stopRealtimeAudio()
     {
+        Simple.getHandler().post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                session.stopAudioThreads();
+            }
+        });
+
         return (new StopAudioSend(session)).send();
     }
 

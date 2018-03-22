@@ -10,6 +10,7 @@ import pub.android.interfaces.ext.GetCameraHandler;
 import pub.android.interfaces.ext.OnDeviceHandler;
 import pub.android.interfaces.all.DoSomethingHandler;
 
+import zz.top.p2p.camera.P2PCamera;
 import zz.top.p2p.camera.P2PCloud;
 import zz.top.p2p.camera.P2PSession;
 import zz.top.p2p.commands.CloseCameraSend;
@@ -69,7 +70,10 @@ public class P2P implements
     @Override
     public Camera getCameraHandler(JSONObject device, JSONObject status, JSONObject credentials)
     {
-        return null;
+        Camera camera = new P2PCamera();
+        camera.attachCamera(device, credentials);
+
+        return camera;
     }
 
     @Override
@@ -97,7 +101,7 @@ public class P2P implements
                 P2PSession session = new P2PSession();
                 session.attachCamera(uuid, p2p_id, p2p_pw);
 
-                if (session.connect(true))
+                if (session.connect())
                 {
                     (new LEDOnOffSend(session, ! close)).send();
                     (new CloseCameraSend(session, close)).send();
@@ -115,7 +119,7 @@ public class P2P implements
                 P2PSession session = new P2PSession();
                 session.attachCamera(uuid, p2p_id, p2p_pw);
 
-                if (session.connect(true))
+                if (session.connect())
                 {
                     (new LEDOnOffSend(session, onoff)).send();
 
