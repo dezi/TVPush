@@ -59,8 +59,6 @@ public class GUIPingWizzard extends GUIPluginTitleList
             String connect = (status.ipaddr != null) ? status.ipaddr : status.macaddr;
             if (connect == null) continue;
 
-            Log.d(LOGTAG, "############ name=" + device.name + " connect=" + connect + " model=" + device.model);
-
             Long lastPing = IOTAlive.getLastPing(connect);
 
             GUIListEntry entry = new GUIListEntry(listView.getContext());

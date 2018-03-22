@@ -5,8 +5,8 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
-import pub.android.interfaces.iot.OnDeviceHandler;
-import pub.android.interfaces.iot.DoSomethingHandler;
+import pub.android.interfaces.ext.OnDeviceHandler;
+import pub.android.interfaces.all.DoSomethingHandler;
 
 import zz.top.p2p.camera.P2PCloud;
 import zz.top.p2p.camera.P2PSession;

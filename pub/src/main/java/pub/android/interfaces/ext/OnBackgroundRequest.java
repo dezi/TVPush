@@ -1,4 +1,4 @@
-package pub.android.interfaces.iot;
+package pub.android.interfaces.ext;
 
 public interface OnBackgroundRequest
 {

@@ -20,8 +20,11 @@ import de.xavaro.android.iot.things.IOTHuman;
 import de.xavaro.android.iot.simple.Simple;
 
 import pub.android.interfaces.iot.GetDevices;
+import pub.android.interfaces.iot.OnStatusRequest;
 
-public class IOT implements GetDevices
+public class IOT implements
+        GetDevices,
+        OnStatusRequest
 {
     private static final String LOGTAG = IOT.class.getSimpleName();
 
@@ -73,6 +76,14 @@ public class IOT implements GetDevices
         {
             throw new RuntimeException("IOT system already initialized.");
         }
+    }
+
+    @Override
+    public boolean onDeviceStatusRequest(JSONObject iotDevice)
+    {
+        Log.d(LOGTAG, "onDeviceStatusRequest: STUB!");
+
+        return false;
     }
 
     public boolean doSomething(JSONObject action, JSONObject device, JSONObject status, JSONObject credentials)

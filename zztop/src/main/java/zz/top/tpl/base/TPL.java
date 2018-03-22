@@ -15,10 +15,14 @@ import zz.top.tpl.handler.TPLHandlerSysInfo;
 import zz.top.utl.Simple;
 import zz.top.utl.Json;
 
-import pub.android.interfaces.iot.OnDeviceHandler;
-import pub.android.interfaces.iot.DoSomethingHandler;
+import pub.android.interfaces.ext.OnDeviceHandler;
+import pub.android.interfaces.ext.PutStatusRequest;
+import pub.android.interfaces.all.DoSomethingHandler;
 
-public class TPL implements OnDeviceHandler, DoSomethingHandler
+public class TPL implements
+        OnDeviceHandler,
+        PutStatusRequest,
+        DoSomethingHandler
 {
     private static final String LOGTAG = TPL.class.getSimpleName();
 
@@ -67,6 +71,24 @@ public class TPL implements OnDeviceHandler, DoSomethingHandler
     public void onDeviceCredentials(JSONObject credentials)
     {
         Log.d(LOGTAG, "onDeviceCredentials: STUB!");
+    }
+
+    @Override
+    public boolean putDeviceStatusRequest(JSONObject iotDevice)
+    {
+        String ipaddr = Json.getString(iotDevice, "ipaddr");
+        String type = Json.getString(iotDevice, "type");
+
+        if ((ipaddr == null) || (type == null)) return false;
+
+        if (type.equals("smartbulb") || type.equals("smartplug"))
+        {
+            TPLHandlerSysInfo.sendGetSysinfo(ipaddr);
+
+            return true;
+        }
+
+        return false;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package pub.android.interfaces.iot;
+package pub.android.interfaces.ext;
 
 import org.json.JSONObject;
 

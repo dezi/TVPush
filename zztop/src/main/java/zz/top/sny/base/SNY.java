@@ -5,11 +5,11 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
-import pub.android.interfaces.iot.GetDeviceCredentials;
-import pub.android.interfaces.iot.OnBackgroundRequest;
-import pub.android.interfaces.iot.OnDeviceHandler;
-import pub.android.interfaces.iot.DoSomethingHandler;
-import pub.android.interfaces.iot.OnPincodeRequest;
+import pub.android.interfaces.ext.GetDeviceCredentials;
+import pub.android.interfaces.ext.OnBackgroundRequest;
+import pub.android.interfaces.ext.OnDeviceHandler;
+import pub.android.interfaces.all.DoSomethingHandler;
+import pub.android.interfaces.ext.OnPincodeRequest;
 
 import zz.top.utl.Json;
 import zz.top.utl.Simple;

@@ -12,13 +12,15 @@ import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Simple;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.status.IOTStatusses;
+import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 
 public class IOTAlive
 {
     private final static String LOGTAG = IOTAlive.class.getSimpleName();
 
-    private final static Map<String, Long> alives = new HashMap<>();
+    private final static Map<String, Long> alivesStatus = new HashMap<>();
+    private final static Map<String, Long> alivesNetwork = new HashMap<>();
 
     private static Thread worker;
 
@@ -40,22 +42,41 @@ public class IOTAlive
         }
     }
 
-    public static void setAlive(String addr)
+    public static void setAliveStatus(String uuid)
     {
-        Log.d(LOGTAG, "setAlive: addr=" + addr);
+        Log.d(LOGTAG, "setAliveStatus: uuid=" + uuid);
 
-        synchronized (alives)
+        synchronized (alivesStatus)
         {
-            alives.put(addr, System.currentTimeMillis());
+            alivesStatus.put(uuid, System.currentTimeMillis());
+        }
+    }
+
+    @Nullable
+    public static Long getLastStatus(String uuid)
+    {
+        synchronized (alivesStatus)
+        {
+            return Simple.getMapLong(alivesStatus, uuid);
+        }
+    }
+
+    public static void setAliveNetwork(String addr)
+    {
+        Log.d(LOGTAG, "setAliveNetwork: addr=" + addr);
+
+        synchronized (alivesNetwork)
+        {
+            alivesNetwork.put(addr, System.currentTimeMillis());
         }
     }
 
     @Nullable
     public static Long getLastPing(String addr)
     {
-        synchronized (alives)
+        synchronized (alivesNetwork)
         {
-            return Simple.getMapLong(alives, addr);
+            return Simple.getMapLong(alivesNetwork, addr);
         }
     }
 
@@ -83,32 +104,66 @@ public class IOTAlive
                 if (uuid == null) continue;
 
                 IOTStatus status = IOTStatusses.getEntry(uuid);
-                if ((status == null) || (status.ipaddr == null)) continue;
-                String ipaddr = status.ipaddr;
+                if (status == null) continue;
 
-                Long lastPing = null;
-
-                synchronized (alives)
+                if (status.ipaddr != null)
                 {
-                    lastPing = Simple.getMapLong(alives, ipaddr);
+                    performPing(uuid, status);
                 }
 
-                if ((lastPing != null) && ((System.currentTimeMillis() - lastPing) < (10 * 1000)))
-                {
-                    continue;
-                }
-
-                try
-                {
-                    Process ping = Runtime.getRuntime().exec("ping -c 1 -W 2 " + ipaddr);
-                    if ((ping.waitFor() == 0)) setAlive(ipaddr);
-                }
-                catch (Exception ignore)
-                {
-                }
+                performStatus(uuid);
             }
 
             Log.d(LOGTAG, "runner: finished.");
         }
     };
+
+    private static void performPing(String uuid, IOTStatus status)
+    {
+        String ipaddr = status.ipaddr;
+
+        Long lastPing = null;
+
+        synchronized (alivesNetwork)
+        {
+            lastPing = Simple.getMapLong(alivesNetwork, ipaddr);
+        }
+
+        if ((lastPing != null) && ((System.currentTimeMillis() - lastPing) < (10 * 1000)))
+        {
+            return;
+        }
+
+        try
+        {
+            Process ping = Runtime.getRuntime().exec("ping -c 1 -W 2 " + ipaddr);
+            if ((ping.waitFor() == 0)) setAliveNetwork(ipaddr);
+        }
+        catch (Exception ignore)
+        {
+        }
+    }
+
+    private static void performStatus(String uuid)
+    {
+        Long lastStat = null;
+
+        synchronized (alivesStatus)
+        {
+            lastStat = Simple.getMapLong(alivesStatus, uuid);
+        }
+
+        if ((lastStat != null) && ((System.currentTimeMillis() - lastStat) < (10 * 1000)))
+        {
+            return;
+        }
+
+        IOTDevice device = IOTDevices.getEntry(uuid);
+        if (device == null) return;
+
+        if (! device.driver.equals("tpl")) return;
+
+        IOT.instance.onDeviceStatusRequest(device.toJson());
+
+    }
 }
