@@ -13,6 +13,7 @@ import de.xavaro.android.iot.status.IOTCredential;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
+import pub.android.interfaces.drv.Camera;
 import pub.android.interfaces.drv.SmartBulb;
 import pub.android.interfaces.drv.SmartPlug;
 
@@ -85,11 +86,15 @@ public class GUIListEntryIOT extends GUIListEntry
             setOnClickListener(onSmartPlugClickListener);
         }
 
-        if (device.type.equals("camera") && (status.ledstate != null))
+        if (device.type.equals("camera"))
         {
-            int color = (status.ledstate == 0) ? GUIDefs.STATUS_COLOR_INACT : GUIDefs.STATUS_COLOR_BLUE;
+            int color = ((status.ledstate == null) || (status.ledstate == 0))
+                    ? GUIDefs.STATUS_COLOR_INACT
+                    : GUIDefs.STATUS_COLOR_BLUE;
 
             iconView.setImageResource(residcolor, color);
+
+            setOnClickListener(onCameraClickListener);
         }
 
         String connect = (status.ipaddr != null) ? status.ipaddr : status.macaddr;
@@ -135,7 +140,8 @@ public class GUIListEntryIOT extends GUIListEntry
 
             if (handler == null) return;
 
-            handler.setPlugState((entry.status.plugstate == 0) ? 1 : 0);
+            boolean off = (entry.status.plugstate == null) || (entry.status.plugstate == 0);
+            handler.setPlugState(off ? 1 : 0);
         }
     };
 
@@ -155,7 +161,33 @@ public class GUIListEntryIOT extends GUIListEntry
 
             if (handler == null) return;
 
-            handler.setBulbState((entry.status.bulbstate == 0) ? 1 : 0);
+            boolean off = (entry.status.bulbstate == null) || (entry.status.bulbstate == 0);
+            handler.setBulbState(off ? 1 : 0);
         }
     };
+
+    private static final OnClickListener onCameraClickListener = new OnClickListener()
+    {
+        @Override
+        public void onClick(View view)
+        {
+            GUIListEntryIOT entry = (GUIListEntryIOT) view;
+
+            entry.credential = new IOTCredential(entry.uuid);
+
+            Camera handler = GUI.instance.onCameraHandlerRequest(
+                    entry.device.toJson(),
+                    entry.status.toJson(),
+                    entry.credential.toJson());
+
+            if (handler == null) return;
+
+            boolean off = (entry.status.ledstate == null) || (entry.status.ledstate == 0);
+
+            handler.connectCamera();
+            handler.setLEDOnOff(off);
+            handler.disconnectCamera();
+        }
+    };
+
 }

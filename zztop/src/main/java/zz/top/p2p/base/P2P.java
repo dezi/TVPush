@@ -70,10 +70,7 @@ public class P2P implements
     @Override
     public Camera getCameraHandler(JSONObject device, JSONObject status, JSONObject credentials)
     {
-        Camera camera = new P2PCamera();
-        camera.attachCamera(device, credentials);
-
-        return camera;
+        return new P2PCamera(device, credentials);
     }
 
     @Override

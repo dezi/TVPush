@@ -149,13 +149,8 @@ public class Cameras
             {
                 Log.d(LOGTAG, "createCameraByUUID: found=" + deviceDriver);
 
-                newcamera = new P2PCamera();
+                newcamera = new P2PCamera(device, credentials);
             }
-        }
-
-        if (newcamera != null)
-        {
-            newcamera.attachCamera(device, credentials);
         }
 
         return newcamera;

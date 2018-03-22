@@ -49,12 +49,18 @@ public class P2PCamera implements Camera
     public final static byte PTZ_DIRECTION_RIGHT = 4;
 
     private final P2PSession session;
+    private final JSONObject device;
+    private final JSONObject credentials;
 
     private int resolution = RESOLUTION_AUTO;
 
-    public P2PCamera()
+    public P2PCamera(JSONObject device, JSONObject credentials)
     {
-        session = new P2PSession();
+        this.device = device;
+        this.credentials = credentials;
+        this.session = new P2PSession();
+
+        attachCamera();
     }
 
     //region Interface.
@@ -77,8 +83,7 @@ public class P2PCamera implements Camera
         session.setVideoView(null);
     }
 
-    @Override
-    public boolean isOnline(JSONObject device, JSONObject credentials)
+    public boolean isOnline()
     {
         if (device != null)
         {
@@ -90,12 +95,24 @@ public class P2PCamera implements Camera
         return false;
     }
 
-    @Override
-    public boolean attachCamera(JSONObject device, JSONObject credentials)
+    public boolean attachCamera()
     {
         String uuid = Json.getString(device, "uuid");
+
         String p2p_id = Json.getString(credentials, "p2p_id");
         String p2p_pw = Json.getString(credentials, "p2p_pw");
+
+        if ((p2p_id == null) && (p2p_pw == null) && Json.has(credentials, "credentials"))
+        {
+            //
+            // Not a bug, only IOT style.
+            //
+
+            JSONObject subdir = Json.getObject(credentials, "credentials");
+
+            p2p_id = Json.getString(subdir, "p2p_id");
+            p2p_pw = Json.getString(subdir, "p2p_pw");
+        }
 
         if ((p2p_id != null) && (p2p_pw != null))
         {

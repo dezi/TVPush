@@ -22,8 +22,7 @@ public interface Camera
      void registerSurface(FrameLayout surface);
      void releaseSurface();
 
-     boolean isOnline(JSONObject device, JSONObject credentials);
-     boolean attachCamera(JSONObject device, JSONObject credentials);
+     boolean isOnline();
 
      boolean connectCamera();
      boolean disconnectCamera();
