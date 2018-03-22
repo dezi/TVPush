@@ -1,6 +1,7 @@
 package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 
 import org.json.JSONArray;
@@ -52,11 +53,13 @@ public class GUIPingWizzard extends GUIPluginTitleList
             if (device == null) continue;
             if (todo) continue;
 
-            IOTStatus status = IOTStatusses.getEntry(device.uuid);
-            if (status == null)continue;
+            IOTStatus status = new IOTStatus(device.uuid);//IOTStatusses.getEntry(device.uuid);
+            if (status == null) continue;
 
             String connect = (status.ipaddr != null) ? status.ipaddr : status.macaddr;
             if (connect == null) continue;
+
+            Log.d(LOGTAG, "############ name=" + device.name + " connect=" + connect + " model=" + device.model);
 
             Long lastPing = IOTAlive.getLastPing(connect);
 
@@ -73,7 +76,7 @@ public class GUIPingWizzard extends GUIPluginTitleList
 
             if (lastPing != null)
             {
-                boolean pingt = (System.currentTimeMillis() - lastPing) < (20 * 1000);
+                boolean pingt = (System.currentTimeMillis() - lastPing) < (60 * 1000);
 
                 entry.setStatusColor(pingt ? GUIDefs.STATUS_COLOR_GREEN : GUIDefs.STATUS_COLOR_RED);
             }

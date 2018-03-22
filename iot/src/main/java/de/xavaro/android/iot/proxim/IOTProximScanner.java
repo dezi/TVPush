@@ -453,9 +453,10 @@ public class IOTProximScanner
         url = url.replace(Character.valueOf(x = 0x0c).toString(), ".biz");
         url = url.replace(Character.valueOf(x = 0x0d).toString(), ".gov");
 
-        String name = url;
+        String name = result.getDevice().getName();
         String macAddr = result.getDevice().getAddress();
-        String uuid = IOTSimple.hmacSha1UUID(name, macAddr);
+        String uuid = IOTSimple.hmacSha1UUID(url, macAddr);
+
         int rssi = result.getRssi();
 
         if (shouldUpdate(uuid))
@@ -486,6 +487,7 @@ public class IOTProximScanner
                     + " type=" + IOTDevice.TYPE_BEACON
                     + " uuid=" + uuid
                     + " name=" + name
+                    + " url=" + url
             );
 
             JSONObject beacondev = new JSONObject();
@@ -509,6 +511,7 @@ public class IOTProximScanner
             Json.put(status, "uuid", uuid);
             Json.put(status, "rssi", rssi);
             Json.put(status, "txpower", txpo);
+            Json.put(status, "macaddr", macAddr);
 
             IOTStatusses.addEntry(new IOTStatus(status), false);
         }
@@ -526,9 +529,11 @@ public class IOTProximScanner
         if (name == null)
         {
             //301 => D8:0F:99:31:37:5C
-            Log.d(LOGTAG, "#########" + result.getScanRecord());
+            //Log.d(LOGTAG, "#########" + result.getScanRecord());
 
+            return false;
         }
+
         String macAddr = result.getDevice().getAddress();
         String uuid = IOTSimple.hmacSha1UUID(name, macAddr);
 
@@ -580,6 +585,8 @@ public class IOTProximScanner
 
             IOTStatusses.addEntry(new IOTStatus(status), false);
         }
+
+        IOTAlive.setAlive(macAddr);
 
         return true;
     }
@@ -692,9 +699,12 @@ public class IOTProximScanner
             Json.put(status, "uuid", uuid);
             Json.put(status, "rssi", rssi);
             Json.put(status, "txpower", txpo);
+            Json.put(status, "macaddr", macAddr);
 
             IOTStatusses.addEntry(new IOTStatus(status), false);
         }
+
+        IOTAlive.setAlive(macAddr);
 
         return true;
     }
