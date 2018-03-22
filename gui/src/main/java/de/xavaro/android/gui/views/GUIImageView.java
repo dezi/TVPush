@@ -1,5 +1,6 @@
 package de.xavaro.android.gui.views;
 
+import android.graphics.PorterDuffXfermode;
 import android.support.v7.widget.AppCompatImageView;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -12,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.content.Context;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.view.View;
 
@@ -169,7 +171,7 @@ public class GUIImageView extends AppCompatImageView implements
     @Override
     public void setImageResource(int resid)
     {
-        setImageResource(resid, Color.WHITE);
+        setImageResource(resid, 0);
     }
 
     public void setImageResource(int resid, int color)
@@ -185,8 +187,11 @@ public class GUIImageView extends AppCompatImageView implements
         InputStream is = getResources().openRawResource(+resid);
         Bitmap bitmap = BitmapFactory.decodeStream(is);
 
-        int targetWidth = getLayoutParams().width * 2;
-        int targetHeight = getLayoutParams().height * 2;
+        int nettoWidth = getLayoutParams().width - getPaddingLeft() - getPaddingRight();
+        int nettoHeight = getLayoutParams().height - getPaddingTop() - getPaddingBottom();
+
+        int targetWidth = nettoWidth * 2;
+        int targetHeight = nettoHeight * 2;
 
         if ((targetWidth > 0) && (targetHeight > 0))
         {
@@ -196,22 +201,38 @@ public class GUIImageView extends AppCompatImageView implements
             Paint paint = new Paint();
             paint.setAntiAlias(true);
             paint.setFilterBitmap(true);
-            paint.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
 
             Rect srcrect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
             Rect dstrect = new Rect(0, 0, targetWidth, targetHeight);
 
             canvas.drawBitmap(bitmap, srcrect, dstrect, paint);
 
+            if (color != 0)
+            {
+                //
+                // Second draw. Changes every pixel which is white
+                // in the canvas to the desired color while
+                // black stayes black.
+                //
+
+                paint.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
+
+                canvas.drawBitmap(bitmap, srcrect, dstrect, paint);
+            }
+
             bitmap.recycle();
 
-            setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
             setImageBitmap(geil);
         }
         else
         {
             Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-            drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
+
+            if (color != 0)
+            {
+                drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
+            }
 
             setImageDrawable(drawable);
         }
