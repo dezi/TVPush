@@ -11,10 +11,10 @@ public class GUIPlugin extends GUIFrameLayout
 {
     private final static String LOGTAG = GUIPlugin.class.getSimpleName();
 
-    public final static int DEFAULT_HORZ_MARGIN = 50;
-    public final static int DEFAULT_VERT_MARGIN = 100;
+    public static int DEFAULT_HORZ_MARGIN = 50;
+    public static int DEFAULT_VERT_MARGIN = 100;
 
-    public final static int DEFAULT_WIDTH = 300;
+    public static int DEFAULT_WIDTH = 300;
 
     public GUIFrameLayout contentFrame;
 
