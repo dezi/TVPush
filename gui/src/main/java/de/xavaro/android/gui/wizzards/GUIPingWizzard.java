@@ -90,7 +90,10 @@ public class GUIPingWizzard extends GUIPluginTitleList
             entry.setOnClickListener(onClickListener);
             entry.setTag(status);
 
-            entry.iconView.setImageResource(GUIIcons.getImageResid(device));
+            int residplain = GUIIcons.getImageResid(device, false);
+            int residcolor = GUIIcons.getImageResid(device, true);
+
+            entry.iconView.setImageResource(residplain);
             entry.headerViev.setText(device.name);
             entry.infoView.setText(status.ipaddr);
 
@@ -109,21 +112,21 @@ public class GUIPingWizzard extends GUIPluginTitleList
                 color = Simple.setRGBAlpha(color, status.brightness + 155);
                 if (status.bulbstate == 0) color = GUIDefs.STATUS_COLOR_INACT;
 
-                entry.iconView.setImageResource(R.drawable.bulb_bunt_440, color);
+                entry.iconView.setImageResource(residcolor, color);
             }
 
             if (device.type.equals("camera") && (status.ledstate != null))
             {
                 int color = (status.ledstate == 0) ? GUIDefs.STATUS_COLOR_INACT : GUIDefs.STATUS_COLOR_BLUE;
 
-                entry.iconView.setImageResource(R.drawable.domcam_bunt_500, color);
+                entry.iconView.setImageResource(residcolor, color);
             }
 
             if (device.type.equals("smartplug") && (status.plugstate != null))
             {
                 int color = (status.plugstate == 0) ? GUIDefs.STATUS_COLOR_INACT : GUIDefs.STATUS_COLOR_GREEN;
 
-                entry.iconView.setImageResource(R.drawable.plug_bunt_400, color);
+                entry.iconView.setImageResource(residcolor, color);
             }
 
             listView.addView(entry);
