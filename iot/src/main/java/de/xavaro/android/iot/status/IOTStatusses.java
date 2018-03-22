@@ -2,9 +2,14 @@ package de.xavaro.android.iot.status;
 
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.base.IOTList;
 import de.xavaro.android.iot.base.IOTObject;
+import de.xavaro.android.iot.simple.Simple;
 
 public class IOTStatusses extends IOTList
 {
@@ -23,9 +28,66 @@ public class IOTStatusses extends IOTList
         return new IOTStatus(json, true);
     }
 
-    public static int getCount()
+    private final Map<String, ArrayList<Runnable>> subscriber = new HashMap<>();
+
+    public void subscribe(String uuid, Runnable runnable)
     {
-        return instance.getListSize();
+        if (uuid != null)
+        {
+            synchronized (subscriber)
+            {
+                ArrayList<Runnable> runners = Simple.getMapRunnables(subscriber, uuid);
+
+                if (runners == null)
+                {
+                    runners = new ArrayList<>();
+                    subscriber.put(uuid, runners);
+                }
+
+                if (!runners.contains(runnable))
+                {
+                    runners.add(runnable);
+                }
+            }
+        }
+    }
+
+    public void unsubscribe(String uuid, Runnable runnable)
+    {
+        if (uuid != null)
+        {
+            synchronized (subscriber)
+            {
+                ArrayList<Runnable> runners = Simple.getMapRunnables(subscriber, uuid);
+
+                if (runners != null)
+                {
+                    if (runners.contains(runnable))
+                    {
+                        runners.remove(runnable);
+                    }
+
+                    if (runners.size() == 0)
+                    {
+                        subscriber.remove(uuid);
+                    }
+                }
+            }
+        }
+    }
+
+    public void broadcast(String uuid)
+    {
+        synchronized (subscriber)
+        {
+            ArrayList<Runnable> runners = Simple.getMapRunnables(subscriber, uuid);
+            if (runners == null) return;
+
+            for (Runnable runner : runners)
+            {
+                Simple.getHandler().post(runner);
+            }
+        }
     }
 
     public static IOTStatus getEntry(String uuid)
@@ -57,6 +119,8 @@ public class IOTStatusses extends IOTList
 
             if (result > 0) instance.putEntry(oldStatus);
         }
+
+        if (result > 0) IOTStatusses.instance.broadcast(newStatus.uuid);
 
         return result;
     }

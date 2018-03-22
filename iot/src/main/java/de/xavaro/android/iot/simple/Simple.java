@@ -34,6 +34,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class Simple
@@ -572,6 +573,25 @@ public class Simple
     }
 
     public static String getMapString(Map<String, String> map, String key)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        {
+            return map.getOrDefault(key, null);
+        }
+        else
+        {
+            try
+            {
+                return map.get(key);
+            }
+            catch (Exception ignore)
+            {
+                return null;
+            }
+        }
+    }
+
+    public static ArrayList<Runnable> getMapRunnables(Map<String, ArrayList<Runnable>> map, String key)
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
         {

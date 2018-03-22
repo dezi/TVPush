@@ -63,8 +63,6 @@ public class GUIPingWizzard extends GUIPluginTitleList
             String connect = (status.ipaddr != null) ? status.ipaddr : status.macaddr;
             if (connect == null) continue;
 
-            Long lastPing = IOTAlive.getAlive(connect);
-
             GUIListEntryIOT entry = new GUIListEntryIOT(listView.getContext());
 
             entry.uuid = uuid;
@@ -73,46 +71,7 @@ public class GUIPingWizzard extends GUIPluginTitleList
 
             entry.setOnClickListener(onClickListener);
 
-            int residplain = GUIIcons.getImageResid(device, false);
-            int residcolor = GUIIcons.getImageResid(device, true);
-
-            entry.iconView.setImageResource(residplain);
-            entry.headerViev.setText(device.name);
-            entry.infoView.setText(connect);
-
-            if (lastPing != null)
-            {
-                boolean pingt = (System.currentTimeMillis() - lastPing) < (60 * 1000);
-
-                entry.setStatusColor(pingt ? GUIDefs.STATUS_COLOR_GREEN : GUIDefs.STATUS_COLOR_RED);
-            }
-
-            if (device.type.equals("smartbulb")
-                    && (status.hue != null)
-                    && (status.saturation != null)
-                    && (status.brightness != null)
-                    && (status.bulbstate != null))
-            {
-                int color = Simple.colorRGB(status.hue, status.saturation, 100);
-                color = Simple.setRGBAlpha(color, status.brightness + 155);
-                if (status.bulbstate == 0) color = GUIDefs.STATUS_COLOR_INACT;
-
-                entry.iconView.setImageResource(residcolor, color);
-            }
-
-            if (device.type.equals("camera") && (status.ledstate != null))
-            {
-                int color = (status.ledstate == 0) ? GUIDefs.STATUS_COLOR_INACT : GUIDefs.STATUS_COLOR_BLUE;
-
-                entry.iconView.setImageResource(residcolor, color);
-            }
-
-            if (device.type.equals("smartplug") && (status.plugstate != null))
-            {
-                int color = (status.plugstate == 0) ? GUIDefs.STATUS_COLOR_INACT : GUIDefs.STATUS_COLOR_GREEN;
-
-                entry.iconView.setImageResource(residcolor, color);
-            }
+            entry.updateContent();
 
             listView.addView(entry);
         }

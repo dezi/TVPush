@@ -20,6 +20,7 @@ public class IOTAlive
     private final static String LOGTAG = IOTAlive.class.getSimpleName();
 
     private final static Map<String, Long> alivesStatus = new HashMap<>();
+    private final static Map<String, Long> alivesNetwork = new HashMap<>();
     private final static Map<String, Long> alivesRequest = new HashMap<>();
 
     private static Thread worker;
@@ -42,20 +43,37 @@ public class IOTAlive
         }
     }
 
-    public static void setAlive(String tag)
+    public static void setAliveStatus(String uuid)
     {
         synchronized (alivesStatus)
         {
-            alivesStatus.put(tag, System.currentTimeMillis());
+            alivesStatus.put(uuid, System.currentTimeMillis());
         }
     }
 
     @Nullable
-    public static Long getAlive(String tag)
+    public static Long getAliveStatus(String uuid)
     {
         synchronized (alivesStatus)
         {
-            return Simple.getMapLong(alivesStatus, tag);
+            return Simple.getMapLong(alivesStatus, uuid);
+        }
+    }
+
+    public static void setAliveNetwork(String uuid)
+    {
+        synchronized (alivesNetwork)
+        {
+            alivesNetwork.put(uuid, System.currentTimeMillis());
+        }
+    }
+
+    @Nullable
+    public static Long getAliveNetwork(String uuid)
+    {
+        synchronized (alivesNetwork)
+        {
+            return Simple.getMapLong(alivesNetwork, uuid);
         }
     }
 
@@ -102,7 +120,7 @@ public class IOTAlive
                 IOTStatus status = IOTStatusses.getEntry(uuid);
                 if (status == null) continue;
 
-                if (status.ipaddr != null) performPing(status.ipaddr);
+                if (status.ipaddr != null) performPing(uuid, status.ipaddr);
 
                 performStatus(uuid);
             }
@@ -111,7 +129,7 @@ public class IOTAlive
         }
     };
 
-    private static void performPing(String ipaddr)
+    private static void performPing(String uuid, String ipaddr)
     {
         Long lastRequest = getRequested(ipaddr);
 
@@ -125,7 +143,7 @@ public class IOTAlive
         try
         {
             Process ping = Runtime.getRuntime().exec("ping -c 1 -W 2 " + ipaddr);
-            if ((ping.waitFor() == 0)) setAlive(ipaddr);
+            if ((ping.waitFor() == 0)) setAliveNetwork(uuid);
         }
         catch (Exception ignore)
         {

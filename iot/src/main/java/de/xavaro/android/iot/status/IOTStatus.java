@@ -103,7 +103,7 @@ public class IOTStatus extends IOTObject
 
         // @formatter:on
 
-        IOTAlive.setAlive(uuid);
+        IOTAlive.setAliveStatus(uuid);
 
         return saveIfChanged();
     }
