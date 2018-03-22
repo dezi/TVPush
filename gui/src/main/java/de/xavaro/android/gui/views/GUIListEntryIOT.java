@@ -2,7 +2,9 @@ package de.xavaro.android.gui.views;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 
+import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUIIcons;
 import de.xavaro.android.gui.simple.Simple;
@@ -11,6 +13,8 @@ import de.xavaro.android.iot.status.IOTCredential;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
+import pub.android.interfaces.drv.SmartBulb;
+import pub.android.interfaces.drv.SmartPlug;
 
 public class GUIListEntryIOT extends GUIListEntry
 {
@@ -49,29 +53,41 @@ public class GUIListEntryIOT extends GUIListEntry
 
         iconView.setImageResource(residplain);
 
-        if (device.type.equals("smartbulb")
-                && (status.hue != null)
-                && (status.saturation != null)
-                && (status.brightness != null)
-                && (status.bulbstate != null))
+        if (device.type.equals("smartbulb"))
         {
-            int color = Simple.colorRGB(status.hue, status.saturation, 100);
-            color = Simple.setRGBAlpha(color, status.brightness + 155);
-            if (status.bulbstate == 0) color = GUIDefs.STATUS_COLOR_INACT;
+            int color = GUIDefs.STATUS_COLOR_INACT;
+
+            if ((status.hue != null)
+                    && (status.saturation != null)
+                    && (status.brightness != null)
+                    && (status.bulbstate != null))
+            {
+                if (status.bulbstate != 0)
+                {
+                    color = Simple.colorRGB(status.hue, status.saturation, 100);
+                    color = Simple.setRGBAlpha(color, status.brightness + 155);
+                }
+            }
 
             iconView.setImageResource(residcolor, color);
+
+            setOnClickListener(onSmartBulbClickListener);
+        }
+
+        if (device.type.equals("smartplug"))
+        {
+            int color = ((status.plugstate == null) || (status.plugstate == 0))
+                    ? GUIDefs.STATUS_COLOR_INACT
+                    : GUIDefs.STATUS_COLOR_GREEN;
+
+            iconView.setImageResource(residcolor, color);
+
+            setOnClickListener(onSmartPlugClickListener);
         }
 
         if (device.type.equals("camera") && (status.ledstate != null))
         {
             int color = (status.ledstate == 0) ? GUIDefs.STATUS_COLOR_INACT : GUIDefs.STATUS_COLOR_BLUE;
-
-            iconView.setImageResource(residcolor, color);
-        }
-
-        if (device.type.equals("smartplug") && (status.plugstate != null))
-        {
-            int color = (status.plugstate == 0) ? GUIDefs.STATUS_COLOR_INACT : GUIDefs.STATUS_COLOR_GREEN;
 
             iconView.setImageResource(residcolor, color);
         }
@@ -100,6 +116,46 @@ public class GUIListEntryIOT extends GUIListEntry
             status = IOTStatusses.getEntry(uuid);
 
             updateContent();
+        }
+    };
+
+    private static final OnClickListener onSmartPlugClickListener = new OnClickListener()
+    {
+        @Override
+        public void onClick(View view)
+        {
+            GUIListEntryIOT entry = (GUIListEntryIOT) view;
+
+            entry.credential = new IOTCredential(entry.uuid);
+
+            SmartPlug handler = GUI.instance.onSmartPlugHandlerRequest(
+                    entry.device.toJson(),
+                    entry.status.toJson(),
+                    entry.credential.toJson());
+
+            if (handler == null) return;
+
+            handler.setPlugState((entry.status.plugstate == 0) ? 1 : 0);
+        }
+    };
+
+    private static final OnClickListener onSmartBulbClickListener = new OnClickListener()
+    {
+        @Override
+        public void onClick(View view)
+        {
+            GUIListEntryIOT entry = (GUIListEntryIOT) view;
+
+            entry.credential = new IOTCredential(entry.uuid);
+
+            SmartBulb handler = GUI.instance.onSmartBulbHandlerRequest(
+                    entry.device.toJson(),
+                    entry.status.toJson(),
+                    entry.credential.toJson());
+
+            if (handler == null) return;
+
+            handler.setBulbState((entry.status.bulbstate == 0) ? 1 : 0);
         }
     };
 }

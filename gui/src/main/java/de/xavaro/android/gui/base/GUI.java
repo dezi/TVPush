@@ -9,13 +9,16 @@ import de.xavaro.android.gui.smart.GUIDesktopActivity;
 import de.xavaro.android.gui.smart.GUISpeechListener;
 
 import pub.android.interfaces.drv.Camera;
+import pub.android.interfaces.drv.SmartBulb;
 import pub.android.interfaces.drv.SmartPlug;
 import pub.android.interfaces.gui.DesktopHandler;
+import pub.android.interfaces.gui.OnSmartBulbHandlerRequest;
 import pub.android.interfaces.gui.OnSmartPlugHandlerRequest;
 
 public class GUI implements
         DesktopHandler,
-        OnSmartPlugHandlerRequest
+        OnSmartPlugHandlerRequest,
+        OnSmartBulbHandlerRequest
 {
     private static final String LOGTAG = GUI.class.getSimpleName();
 
@@ -62,6 +65,14 @@ public class GUI implements
     public SmartPlug onSmartPlugHandlerRequest(JSONObject iotDevice, JSONObject status, JSONObject credentials)
     {
         Log.d(LOGTAG, "OnSmartPlugHandlerRequest: STUB!");
+
+        return null;
+    }
+
+    @Override
+    public SmartBulb onSmartBulbHandlerRequest(JSONObject iotDevice, JSONObject status, JSONObject credentials)
+    {
+        Log.d(LOGTAG, "onSmartBulbHandlerRequest: STUB!");
 
         return null;
     }

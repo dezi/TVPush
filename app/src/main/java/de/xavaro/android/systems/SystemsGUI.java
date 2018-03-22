@@ -9,6 +9,7 @@ import de.xavaro.android.gui.base.GUI;
 
 import de.xavaro.android.iam.base.IAM;
 import pub.android.interfaces.drv.Camera;
+import pub.android.interfaces.drv.SmartBulb;
 import pub.android.interfaces.drv.SmartPlug;
 import zz.top.cam.Cameras;
 import zz.top.utl.Json;
@@ -51,6 +52,24 @@ public class SystemsGUI extends GUI
         if (driver.equals("tpl"))
         {
             return SystemsTPL.instance.getSmartPlugHandler(iotDevice, status, credentials);
+        }
+
+        return null;
+    }
+
+    @Override
+    public SmartBulb onSmartBulbHandlerRequest(JSONObject iotDevice, JSONObject status, JSONObject credentials)
+    {
+        String uuid = Json.getString(iotDevice, "uuid");
+        String driver = Json.getString(iotDevice, "driver");
+
+        Log.d(LOGTAG, "onSmartBulbHandlerRequest: uuid=" + uuid + " driver=" + driver);
+
+        if ((uuid == null) || (driver == null)) return null;
+
+        if (driver.equals("tpl"))
+        {
+            return SystemsTPL.instance.getSmartBulbHandler(iotDevice, status, credentials);
         }
 
         return null;

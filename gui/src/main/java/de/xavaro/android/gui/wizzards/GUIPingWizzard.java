@@ -69,31 +69,9 @@ public class GUIPingWizzard extends GUIPluginTitleList
             entry.device = device;
             entry.status = status;
 
-            entry.setOnClickListener(onClickListener);
-
             entry.updateContent();
 
             listView.addView(entry);
         }
     }
-
-    private static final OnClickListener onClickListener = new OnClickListener()
-    {
-        @Override
-        public void onClick(View view)
-        {
-            GUIListEntryIOT entry = (GUIListEntryIOT) view;
-
-            entry.credential = new IOTCredential(entry.uuid);
-
-            SmartPlug handler = GUI.instance.onSmartPlugHandlerRequest(
-                    entry.device.toJson(),
-                    entry.status.toJson(),
-                    entry.credential.toJson());
-
-            if (handler == null) return;
-
-            handler.setPlugState((entry.status.plugstate == 0) ? 1 : 0);
-        }
-    };
 }
