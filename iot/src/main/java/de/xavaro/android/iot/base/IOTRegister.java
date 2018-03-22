@@ -36,9 +36,7 @@ public class IOTRegister
         String model = Json.getString(device, "model");
         String caps = Json.getString(device, "capabilities");
 
-        Log.d(LOGTAG, "registerDevice: uuid=" + uuid);
-        Log.d(LOGTAG, "registerDevice: name=" + name);
-        Log.d(LOGTAG, "registerDevice: model=" + model);
+        Log.d(LOGTAG, "registerDevice: uuid=" + uuid + " name=" + name + " model=" + model);
         Log.d(LOGTAG, "registerDevice: capabilities=" + caps);
 
         if (Json.has(credentials, "p2p_id"))
