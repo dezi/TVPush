@@ -49,18 +49,6 @@ public class IOTUDP
             Log.d(LOGTAG, "startService: socket: already started.");
         }
 
-        if (sender == null)
-        {
-            Log.d(LOGTAG, "startService: sender: starting.");
-
-            sender = new IOTUDPSender();
-            sender.start();
-        }
-        else
-        {
-            Log.d(LOGTAG, "startService: sender: already started.");
-        }
-
         if (receiver == null)
         {
             Log.d(LOGTAG, "startService: receiver: starting.");
@@ -71,6 +59,18 @@ public class IOTUDP
         else
         {
             Log.d(LOGTAG, "startService: receiver: already started.");
+        }
+
+        if (sender == null)
+        {
+            Log.d(LOGTAG, "startService: sender: starting.");
+
+            sender = new IOTUDPSender();
+            sender.start();
+        }
+        else
+        {
+            Log.d(LOGTAG, "startService: sender: already started.");
         }
     }
 

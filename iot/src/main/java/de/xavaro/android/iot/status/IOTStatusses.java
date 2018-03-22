@@ -2,6 +2,7 @@ package de.xavaro.android.iot.status;
 
 import android.util.Log;
 
+import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.base.IOTList;
 import de.xavaro.android.iot.base.IOTObject;
 
@@ -32,27 +33,31 @@ public class IOTStatusses extends IOTList
         return (IOTStatus) instance.list.get(uuid);
     }
 
-    public static void addEntry(IOTStatus newStatus, boolean external)
+    public static int addEntry(IOTStatus newStatus, boolean external)
     {
+        int result;
+
         IOTStatus oldStatus = getEntry(newStatus.uuid);
 
         if (oldStatus == null)
         {
             Log.d(LOGTAG, "addEntry: new uuid=" + newStatus.uuid);
 
-            if (newStatus.saveToStorage())
-            {
-                instance.putEntry(newStatus);
-            }
+            result = newStatus.saveToStorage()
+                    ? IOTDefs.IOT_SAVE_ALLCHANGED
+                    : IOTDefs.IOT_SAVE_FAILED;
+
+            if (result > 0) instance.putEntry(newStatus);
         }
         else
         {
             Log.d(LOGTAG, "addEntry: old uuid=" + oldStatus.uuid);
 
-            if (oldStatus.checkAndMergeContent(newStatus, external) > 0)
-            {
-                instance.putEntry(oldStatus);
-            }
+            result = oldStatus.checkAndMergeContent(newStatus, external);
+
+            if (result > 0) instance.putEntry(oldStatus);
         }
+
+        return result;
     }
 }

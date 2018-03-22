@@ -1,10 +1,12 @@
 package de.xavaro.android.iot.things;
 
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.base.IOTSimple;
 import de.xavaro.android.iot.simple.Json;
@@ -103,27 +105,6 @@ public class IOTDevice extends IOTObject
         local.capabilities = Json.jsonArrayFromSeparatedString(Simple.getDeviceCapabilities(), "\\|");
 
         return local;
-    }
-
-    public static void checkAndMergeContent(JSONObject check, boolean external)
-    {
-        if (check == null) return;
-
-        String deviceUUID = Json.getString(check, "uuid");
-        if (deviceUUID == null) return;
-
-        IOTDevice oldDevice = IOTDevices.getEntry(deviceUUID);
-
-        if (oldDevice == null)
-        {
-            oldDevice = new IOTDevice(check);
-            oldDevice.saveToStorage();
-        }
-        else
-        {
-            IOTDevice newdevice = new IOTDevice(check);
-            oldDevice.checkAndMergeContent(newdevice, external);
-        }
     }
 
     public int checkAndMergeContent(IOTDevice check, boolean external)

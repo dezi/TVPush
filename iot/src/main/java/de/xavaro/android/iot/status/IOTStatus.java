@@ -4,6 +4,7 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.iot.base.IOTAlive;
 import de.xavaro.android.iot.base.IOTObject;
 
 @SuppressWarnings("WeakerAccess")
@@ -101,6 +102,8 @@ public class IOTStatus extends IOTObject
         changedSys = changed;
 
         // @formatter:on
+
+        IOTAlive.setAlive(uuid);
 
         return saveIfChanged();
     }

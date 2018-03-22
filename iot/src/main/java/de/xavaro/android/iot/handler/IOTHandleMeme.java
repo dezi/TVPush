@@ -4,9 +4,11 @@ import org.json.JSONObject;
 
 import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.base.IOTSimple;
+import de.xavaro.android.iot.status.IOTStatus;
+import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
-import de.xavaro.android.iot.things.IOTHuman;
 import de.xavaro.android.iot.simple.Json;
+import de.xavaro.android.iot.things.IOTDevices;
 
 public class IOTHandleMeme extends IOTHandle
 {
@@ -17,11 +19,6 @@ public class IOTHandleMeme extends IOTHandle
         Json.put(message, "type", "MEME");
         Json.put(message, "device", IOT.device.toJson());
 
-        if (IOT.human != null)
-        {
-            Json.put(message, "human", IOT.human.toJson());
-        }
-
         Json.put(message, "destination", destination);
 
         IOT.message.sendMessage(message);
@@ -30,8 +27,8 @@ public class IOTHandleMeme extends IOTHandle
     @Override
     public void onMessageReived(JSONObject message)
     {
-        JSONObject human = Json.getObject(message, "human");
         JSONObject device = Json.getObject(message, "device");
+        JSONObject origin = Json.getObject(message, "origin");
 
         //
         // Check if message comes from ourself via
@@ -41,17 +38,37 @@ public class IOTHandleMeme extends IOTHandle
         if (IOTSimple.equals(Json.getString(device, "uuid"), IOT.device.uuid))
         {
             //
-            // HELO from our identity, ignore.
+            // MEME from our identity, ignore.
             //
 
             return;
         }
 
         //
-        // Collect external device and human.
+        // Collect external device.
         //
 
-        IOTHuman.checkAndMergeContent(human, true);
-        IOTDevice.checkAndMergeContent(device, true);
+        IOTDevice newDevice = new IOTDevice(device);
+
+        if (IOTDevices.addEntry(newDevice, true) >= 0)
+        {
+            //
+            // Collect status.
+            //
+
+            IOTStatus newStatus = new IOTStatus(newDevice.uuid);
+
+            newStatus.ipaddr = Json.getString(origin, "ipaddr");
+            newStatus.ipport = Json.getInt(origin, "ipport");
+
+            if (IOTStatusses.addEntry(newStatus, false) >= 0)
+            {
+                //
+                // Reply with own identity.
+                //
+
+                IOTHandleMeme.sendMEME(origin);
+            }
+        }
     }
 }

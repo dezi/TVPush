@@ -5,7 +5,10 @@ import org.json.JSONObject;
 import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.base.IOTSimple;
 import de.xavaro.android.iot.simple.Json;
+import de.xavaro.android.iot.status.IOTStatus;
+import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
+import de.xavaro.android.iot.things.IOTDevices;
 import de.xavaro.android.iot.things.IOTHuman;
 
 public class IOTHandleHelo extends IOTHandle
@@ -19,11 +22,6 @@ public class IOTHandleHelo extends IOTHandle
             Json.put(message, "type", "HELO");
             Json.put(message, "device", IOT.device.toJson());
 
-            if (IOT.human != null)
-            {
-                Json.put(message, "human", IOT.human.toJson());
-            }
-
             IOT.message.sendMessage(message);
         }
     }
@@ -32,7 +30,6 @@ public class IOTHandleHelo extends IOTHandle
     public void onMessageReived(JSONObject message)
     {
         JSONObject device = Json.getObject(message, "device");
-        JSONObject human = Json.getObject(message, "human");
         JSONObject origin = Json.getObject(message, "origin");
 
         //
@@ -50,16 +47,30 @@ public class IOTHandleHelo extends IOTHandle
         }
 
         //
-        // Collect external device and human.
+        // Collect external device.
         //
 
-        IOTHuman.checkAndMergeContent(human, true);
-        IOTDevice.checkAndMergeContent(device, true);
+        IOTDevice newDevice = new IOTDevice(device);
 
-        //
-        // Reply with own identity.
-        //
+        if (IOTDevices.addEntry(newDevice, true) >= 0)
+        {
+            //
+            // Collect status.
+            //
 
-        IOTHandleMeme.sendMEME(origin);
+            IOTStatus newStatus = new IOTStatus(newDevice.uuid);
+
+            newStatus.ipaddr = Json.getString(origin, "ipaddr");
+            newStatus.ipport = Json.getInt(origin, "ipport");
+
+            if (IOTStatusses.addEntry(newStatus, false) >= 0)
+            {
+                //
+                // Reply with own identity.
+                //
+
+                IOTHandleMeme.sendMEME(origin);
+            }
+        }
     }
 }

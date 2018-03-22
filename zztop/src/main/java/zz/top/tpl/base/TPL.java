@@ -91,8 +91,6 @@ public class TPL implements
         @Override
         public void run()
         {
-            Log.d(LOGTAG, "putDeviceStatusRequestRunner: jawoll");
-
             TPLHandlerSysInfo.sendAllGetSysinfo();
         }
     };
