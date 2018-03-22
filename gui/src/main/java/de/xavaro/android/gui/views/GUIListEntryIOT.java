@@ -98,7 +98,7 @@ public class GUIListEntryIOT extends GUIListEntry
             Log.d(LOGTAG, "onStatusUpdated: name=" + device.name);
 
             status = IOTStatusses.getEntry(uuid);
-            
+
             updateContent();
         }
     };
