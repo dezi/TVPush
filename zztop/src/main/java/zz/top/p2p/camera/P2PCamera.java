@@ -144,7 +144,7 @@ public class P2PCamera implements Camera
         //
 
         Simple.getHandler().removeCallbacks(disconnector);
-        Simple.getHandler().postDelayed(disconnector, 500);
+        Simple.getHandler().postDelayed(disconnector, 5000);
 
         return true;
     }
