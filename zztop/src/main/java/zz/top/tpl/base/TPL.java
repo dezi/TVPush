@@ -76,20 +76,26 @@ public class TPL implements
     @Override
     public boolean putDeviceStatusRequest(JSONObject iotDevice)
     {
-        String ipaddr = Json.getString(iotDevice, "ipaddr");
-        String type = Json.getString(iotDevice, "type");
+        //
+        // Collect some requests and then make broadcast.
+        //
 
-        if ((ipaddr == null) || (type == null)) return false;
+        Simple.getHandler().removeCallbacks(putDeviceStatusRequestRunner);
+        Simple.getHandler().postDelayed(putDeviceStatusRequestRunner, 2000);
 
-        if (type.equals("smartbulb") || type.equals("smartplug"))
-        {
-            TPLHandlerSysInfo.sendGetSysinfo(ipaddr);
-
-            return true;
-        }
-
-        return false;
+        return true;
     }
+
+    private final Runnable putDeviceStatusRequestRunner = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            Log.d(LOGTAG, "putDeviceStatusRequestRunner: jawoll");
+
+            TPLHandlerSysInfo.sendAllGetSysinfo();
+        }
+    };
 
     @Override
     public boolean doSomething(JSONObject action, JSONObject device, JSONObject status, JSONObject credentials)
