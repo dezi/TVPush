@@ -186,7 +186,7 @@ public class GUIListEntryIOT extends GUIListEntry
 
             handler.connectCamera();
             handler.setLEDOnOff(off);
-            handler.disconnectCamera();
+            //handler.disconnectCamera();
         }
     };
 
