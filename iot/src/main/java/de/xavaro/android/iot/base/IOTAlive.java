@@ -44,8 +44,6 @@ public class IOTAlive
 
     public static void setAlive(String tag)
     {
-        Log.d(LOGTAG, "setAliveStatus: tag=" + tag);
-
         synchronized (alivesStatus)
         {
             alivesStatus.put(tag, System.currentTimeMillis());
@@ -63,8 +61,6 @@ public class IOTAlive
 
     public static void setRequested(String tag)
     {
-        Log.d(LOGTAG, "setRequested: tag=" + tag);
-
         synchronized (alivesRequest)
         {
             alivesRequest.put(tag, System.currentTimeMillis());

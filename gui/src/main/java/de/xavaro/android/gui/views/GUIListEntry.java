@@ -1,6 +1,7 @@
 package de.xavaro.android.gui.views;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.Gravity;
 
 import de.xavaro.android.gui.base.GUIDefs;
@@ -39,11 +40,15 @@ public class GUIListEntry extends GUILinearLayout
 
         headerViev = new GUITextView(context);
         headerViev.setTextSizeDip(GUIDefs.FONTSIZE_HEADERS);
+        headerViev.setSingleLine(true);
+        headerViev.setEllipsize(TextUtils.TruncateAt.END);
 
         entryBox.addView(headerViev);
 
         infoView = new GUITextView(context);
         infoView.setTextSizeDip(GUIDefs.FONTSIZE_INFOS);
+        infoView.setSingleLine(true);
+        infoView.setEllipsize(TextUtils.TruncateAt.END);
 
         entryBox.addView(infoView);
 

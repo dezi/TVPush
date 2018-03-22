@@ -613,6 +613,7 @@ public class IOTProximScanner
         String type = null;
         String caps = null;
         String name = null;
+        String model = null;
 
         int rssi = result.getRssi();
         int txpo = -1;
@@ -639,8 +640,9 @@ public class IOTProximScanner
                 uuid = (new UUID(msb, lsb)).toString();
 
                 name = uuid + " (" + major + "/" + minor + ")";
-                caps = "beacon|applebeacon|fixed|stupid|gpsfine";
+                caps = "beacon|ibeacon|fixed|stupid|gpsfine";
                 type = IOTDevice.TYPE_BEACON;
+                model = "iBeacon";
             }
         }
         else
@@ -660,6 +662,7 @@ public class IOTProximScanner
                         uuid = IOTSimple.hmacSha1UUID(macAddr, name);
                         caps = "beacon|macbeacon|fixed|stupid|gpsfine";
                         type = IOTDevice.TYPE_BEACON;
+                        model = "iMac";
                     }
                 }
             }
@@ -685,6 +688,7 @@ public class IOTProximScanner
             Json.put(beacondev, "type", IOTDevice.TYPE_BEACON);
             Json.put(beacondev, "name", name);
             Json.put(beacondev, "nick", name);
+            Json.put(beacondev, "model", model);
             Json.put(beacondev, "vendor", IOTProxim.getAdvertiseVendor(vendor));
             Json.put(beacondev, "macaddr", macAddr);
             Json.put(beacondev, "driver", "iot");

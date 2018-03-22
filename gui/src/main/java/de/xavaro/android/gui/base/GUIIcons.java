@@ -87,6 +87,11 @@ public class GUIIcons
                         {
                             return bunt ? R.drawable.beacon_ibks_105_bunt_240 : R.drawable.beacon_ibks_105_240;
                         }
+
+                        if (device.model.equals("iBeacon"))
+                        {
+                            return bunt ? R.drawable.ibeacon_bunt_300 : R.drawable.ibeacon_300;
+                        }
                     }
 
                     return bunt ? R.drawable.beacon_bunt_220 : R.drawable.beacon_220;
