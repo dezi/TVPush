@@ -18,6 +18,8 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
+
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.R;
@@ -79,7 +81,30 @@ public class GUISetup
 
         Json.put(services, "dev", devEnabled == 1);
 
+        haveExtStorage();
+
         return services;
+    }
+
+    public static boolean haveExtStorage()
+    {
+        boolean have = false;
+
+        File storage = new File("/storage");
+        File[] mounts = storage.listFiles();
+
+        for (File mount : mounts)
+        {
+            if (! mount.canRead()) continue;
+            if (mount.getName().equals("emulated")) continue;
+            if (mount.getName().equals("enc_emulated")) continue;
+
+            have = true;
+        }
+
+        Log.d(LOGTAG, "haveUSBStick: have=" + have);
+
+        return have;
     }
 
     public static JSONObject getRequiredPermissions()
@@ -133,6 +158,31 @@ public class GUISetup
         }
 
         return perms;
+    }
+
+    public static JSONObject getRequiredFeatures()
+    {
+        JSONObject features = new JSONObject();
+
+        //
+        // USB-Stick.
+        //
+
+        if (Simple.isTV())
+        {
+            Json.put(features, "usb", haveExtStorage());
+        }
+
+        //
+        // SD-Card.
+        //
+
+        if (Simple.isTablet() && ! Simple.isTV())
+        {
+            Json.put(features, "ssd", haveExtStorage());
+        }
+
+        return features;
     }
 
     public static boolean requestPermission(Activity activity, String area, int requestCode)
@@ -193,8 +243,6 @@ public class GUISetup
     {
         int permission = ContextCompat.checkSelfPermission(context, manifestperm);
 
-        Log.d(LOGTAG, "havePermission: perm=" + manifestperm + " ok=" + (permission == PackageManager.PERMISSION_GRANTED));
-
         return (permission == PackageManager.PERMISSION_GRANTED);
     }
 
@@ -248,6 +296,52 @@ public class GUISetup
             return enabled
                     ? R.string.setup_services_service_dev_active
                     : R.string.setup_services_service_dev_inactive;
+        }
+
+        return -1;
+    }
+
+    public static int getTextFeatureResid()
+    {
+        return R.string.setup_features_feature;
+    }
+
+    public static int getTextForFeatureResid(String service)
+    {
+        switch (service)
+        {
+            case "usb": return R.string.setup_features_feature_usb;
+            case "ssd": return R.string.setup_features_feature_ssd;
+        }
+
+        return R.string.setup_features_feature_ukn;
+    }
+
+    public static int getIconForFeatureResid(String service)
+    {
+        switch (service)
+        {
+            case "usb": return R.drawable.usb_stick_400;
+            case "ssd": return R.drawable.ssd_120;
+        }
+
+        return -1;
+    }
+
+    public static int getTextForFeatureEnabledResid(String service, boolean enabled)
+    {
+        if (service.equals("usb"))
+        {
+            return enabled
+                    ? R.string.setup_features_feature_usb_active
+                    : R.string.setup_features_feature_usb_inactive;
+        }
+
+        if (service.equals("ssd"))
+        {
+            return enabled
+                    ? R.string.setup_features_feature_ssd_active
+                    : R.string.setup_features_feature_ssd_inactive;
         }
 
         return -1;
@@ -322,9 +416,8 @@ public class GUISetup
 
                 return true;
             }
-
         }
-        catch (Exception ex)
+        catch (Exception ignore)
         {
         }
 
@@ -355,7 +448,7 @@ public class GUISetup
         switch (area)
         {
             case "mic": return R.drawable.mic_540;
-            case "ext": return Simple.isSony() ? R.drawable.usb_stick_400 : R.drawable.ssd_120;
+            case "ext": return R.drawable.read_write_340;
             case "loc": return R.drawable.gps_530;
             case "ble": return R.drawable.bluetooth_450;
             case "cam": return R.drawable.camera_shutter_820;

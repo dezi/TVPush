@@ -34,4 +34,16 @@
     <string name="setup_permissions_perm_write_external_storage">Schreiben</string>
     <string name="setup_permissions_perm_camera">Kamera-Zugriff</string>
 
+    <string name="setup_features_feature">Feature</string>
+
+    <string name="setup_features_feature_ukn">Unbekannt</string>
+
+    <string name="setup_features_feature_usb">USB-Stick</string>
+    <string name="setup_features_feature_usb_active">USB-Stick ist eingesteckt</string>
+    <string name="setup_features_feature_usb_inactive">Kein USB-Stick sichtbar</string>
+
+    <string name="setup_features_feature_ssd">SD-Karte</string>
+    <string name="setup_features_feature_ssd_active">SD-Karte ist bereit</string>
+    <string name="setup_features_feature_ssd_inactive">Keine SD-Karte sichtbar</string>
+
 </resources>

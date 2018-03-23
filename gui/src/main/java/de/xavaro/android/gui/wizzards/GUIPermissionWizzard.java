@@ -43,6 +43,7 @@ public class GUIPermissionWizzard extends GUIPluginTitleList
     {
         collectServices(listView, todo);
         collectPermissions(listView, todo);
+        collectFeatures(listView, todo);
     }
 
     private static void collectServices(GUILinearLayout listView, boolean todo)
@@ -115,6 +116,39 @@ public class GUIPermissionWizzard extends GUIPluginTitleList
             entry.iconView.setImageResource(GUISetup.getIconForAreaResid(area));
             entry.headerViev.setText(head);
             entry.infoView.setText(infos);
+
+            entry.infoView.setTextColor(enabled
+                    ? GUIDefs.TEXT_COLOR_INFOS
+                    : GUIDefs.TEXT_COLOR_ALERTS);
+
+            listView.addView(entry);
+        }
+    }
+
+    private static void collectFeatures(GUILinearLayout listView, boolean todo)
+    {
+        JSONObject features = GUISetup.getRequiredFeatures();
+
+        Iterator<String> keys = features.keys();
+
+        while (keys.hasNext())
+        {
+            String feature = keys.next();
+            boolean enabled = Json.getBoolean(features, feature);
+            if (todo && enabled) continue;
+
+            GUIListEntry entry = new GUIListEntry(listView.getContext());
+            entry.setOnClickListener(onServiceStartClickListener);
+            entry.setTag(feature);
+
+            String head = Simple.getTrans(GUISetup.getTextFeatureResid())
+                    + ": "
+                    + Simple.getTrans(GUISetup.getTextForFeatureResid(feature));
+
+            entry.iconView.setImageResource(GUISetup.getIconForFeatureResid(feature));
+            entry.headerViev.setText(head);
+
+            entry.infoView.setText(GUISetup.getTextForFeatureEnabledResid(feature, enabled));
 
             entry.infoView.setTextColor(enabled
                     ? GUIDefs.TEXT_COLOR_INFOS
