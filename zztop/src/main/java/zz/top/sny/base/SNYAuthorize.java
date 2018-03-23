@@ -1,14 +1,10 @@
 package zz.top.sny.base;
 
-import android.os.StrictMode;
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.Iterator;
-
 import zz.top.utl.Json;
+import zz.top.utl.Log;
 
 public class SNYAuthorize
 {

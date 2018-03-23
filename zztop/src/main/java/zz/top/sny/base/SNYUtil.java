@@ -1,25 +1,25 @@
 package zz.top.sny.base;
 
-import android.os.Build;
-import android.preference.PreferenceActivity;
 import android.support.annotation.Nullable;
+
+import android.os.Build;
 
 import android.text.Html;
 import android.util.Base64;
-import android.util.Log;
 
 import org.json.JSONObject;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.io.OutputStream;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+import java.net.URL;
 
 import zz.top.utl.Json;
+import zz.top.utl.Log;
 
 public class SNYUtil
 {

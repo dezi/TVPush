@@ -1,7 +1,6 @@
 package zz.top.sny.base;
 
 import android.app.Application;
-import android.util.Log;
 
 import org.json.JSONObject;
 
@@ -11,8 +10,9 @@ import pub.android.interfaces.ext.OnDeviceHandler;
 import pub.android.interfaces.all.DoSomethingHandler;
 import pub.android.interfaces.ext.OnPincodeRequest;
 
-import zz.top.utl.Json;
 import zz.top.utl.Simple;
+import zz.top.utl.Json;
+import zz.top.utl.Log;
 
 public class SNY implements
         OnDeviceHandler,

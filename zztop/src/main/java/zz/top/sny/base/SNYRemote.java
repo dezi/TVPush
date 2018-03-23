@@ -1,7 +1,8 @@
 package zz.top.sny.base;
 
 import android.os.StrictMode;
-import android.util.Log;
+
+import zz.top.utl.Log;
 
 public class SNYRemote
 {

@@ -1,16 +1,11 @@
 package de.xavaro.android.iot.base;
 
-import android.util.Log;
-import android.view.ViewGroup;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import de.xavaro.android.iot.simple.Json;
-import de.xavaro.android.iot.simple.Simple;
 import de.xavaro.android.iot.status.IOTCredential;
 import de.xavaro.android.iot.status.IOTCredentials;
 import de.xavaro.android.iot.status.IOTMetadata;
@@ -19,6 +14,9 @@ import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
+
+import de.xavaro.android.iot.simple.Json;
+import de.xavaro.android.iot.simple.Log;
 
 public class IOTRegister
 {

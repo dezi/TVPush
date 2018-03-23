@@ -2,8 +2,6 @@ package zz.top.sny.base;
 
 import android.support.annotation.Nullable;
 
-import android.util.Log;
-
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -15,8 +13,9 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.URL;
 
-import zz.top.utl.Json;
 import zz.top.utl.Simple;
+import zz.top.utl.Json;
+import zz.top.utl.Log;
 
 public class SNYDiscover
 {

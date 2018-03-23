@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,8 +16,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import de.xavaro.android.gui.base.GUI;
-import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
+import de.xavaro.android.gui.simple.Json;
+import de.xavaro.android.gui.simple.Log;
 
 public class GUISpeechListener implements RecognitionListener
 {

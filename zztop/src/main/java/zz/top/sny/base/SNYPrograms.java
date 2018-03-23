@@ -1,10 +1,10 @@
 package zz.top.sny.base;
 
-import android.os.Environment;
 import android.support.annotation.Nullable;
 
+import android.os.Environment;
+
 import android.util.SparseArray;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -13,10 +13,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.File;
-import java.util.zip.CRC32;
 
 import zz.top.utl.Json;
-import zz.top.utl.Simple;
+import zz.top.utl.Log;
 
 public class SNYPrograms
 {
