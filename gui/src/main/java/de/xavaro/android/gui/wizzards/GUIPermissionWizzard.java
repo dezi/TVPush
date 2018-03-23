@@ -27,7 +27,7 @@ public class GUIPermissionWizzard extends GUIPluginTitleList
     {
         super(context);
 
-        setIsWizzard(true, false, 1);
+        setIsWizzard(true, false);
 
         setTitleIcon(R.drawable.permissions_240);
         setTitleText("Services and Permissions");

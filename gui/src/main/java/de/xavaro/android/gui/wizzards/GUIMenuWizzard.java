@@ -1,6 +1,7 @@
 package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.View;
 
 import org.json.JSONArray;
@@ -30,7 +31,7 @@ public class GUIMenuWizzard extends GUIPluginTitleList
     {
         super(context);
 
-        setIsWizzard(true, false, 1);
+        setIsWizzard(true, false, 1, Gravity.RIGHT);
 
         setTitleIcon(R.drawable.menu_400);
         setTitleText("Menu");

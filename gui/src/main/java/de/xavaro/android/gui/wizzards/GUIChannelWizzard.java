@@ -50,7 +50,7 @@ public class GUIChannelWizzard extends GUIPluginTitle
     {
         super(context);
 
-        setIsWizzard(true, false, 1);
+        setIsWizzard(true, false);
 
         setTitleIcon(R.drawable.magic_hand_440);
         setTitleText("Channel Wizzard");

@@ -1,6 +1,7 @@
 package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.view.KeyEvent;
@@ -44,7 +45,7 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
     {
         super(context);
 
-        setIsWizzard(true, true, 2);
+        setIsWizzard(true, true, 2, Gravity.RIGHT);
 
         mapFrame = new GUIFrameLayout(context)
         {

@@ -38,7 +38,22 @@ public class GUIPlugin extends GUIFrameLayout
         numcols = 1;
         gravity = Gravity.LEFT;
 
-        width = (Simple.getDeviceWidthDip() - (4 * DEFAULT_HORZ_MARGIN)) / 3;
+        if (Simple.isTV())
+        {
+            width = (Simple.getDeviceWidthDip() - (4 * DEFAULT_HORZ_MARGIN)) / 3;
+        }
+        else
+        {
+            if (Simple.isTablet())
+            {
+                width = (Simple.getDeviceWidthDip() - (3 * DEFAULT_HORZ_MARGIN)) / 2;
+            }
+            else
+            {
+                width = Simple.getDeviceWidthDip() - (2 * DEFAULT_HORZ_MARGIN);
+            }
+        }
+
         height = Simple.getDeviceHeightDip() - DEFAULT_TOP_MARGIN - DEFAULT_BOTTOM_MARGIN;
 
         this.setPluginPositionDip(DEFAULT_HORZ_MARGIN, DEFAULT_TOP_MARGIN);
@@ -50,20 +65,31 @@ public class GUIPlugin extends GUIFrameLayout
         onHighlightFrame(false);
     }
 
+    public void setIsWizzard(boolean wizzard, boolean helper)
+    {
+        setIsWizzard(wizzard, helper, 1, Gravity.LEFT);
+    }
+
     public void setIsWizzard(boolean wizzard, boolean helper, int numcols)
+    {
+        setIsWizzard(wizzard, helper, numcols, Gravity.LEFT);
+    }
+
+    public void setIsWizzard(boolean wizzard, boolean helper, int numcols, int gravity)
     {
         isWizzard = wizzard;
         isHelper = helper;
 
-        if (isHelper())
-        {
-            this.setPluginPositionDip(2 * DEFAULT_HORZ_MARGIN + width, DEFAULT_TOP_MARGIN);
-        }
-
         int newwidth = (numcols * width) + (numcols - 1) * DEFAULT_HORZ_MARGIN;
 
         this.setPluginSizeDip(newwidth, height);
-   }
+
+        if (gravity == Gravity.RIGHT)
+        {
+            int left = Simple.getDeviceWidthDip() - newwidth - DEFAULT_HORZ_MARGIN;
+            this.setPluginPositionDip(left, DEFAULT_TOP_MARGIN);
+        }
+    }
 
     public boolean isWizzard()
     {

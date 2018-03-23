@@ -14,7 +14,7 @@ public class GUITodoWizzard extends GUIPluginTitleList
     {
         super(context);
 
-        setIsWizzard(true, false, 1);
+        setIsWizzard(true, false);
 
         setTitleIcon(R.drawable.todo_list_512);
         setTitleText("Todo-Liste");

@@ -24,7 +24,7 @@ public class GUIPingWizzard extends GUIPluginTitleListIOT
     {
         super(context);
 
-        setIsWizzard(true, false, 1);
+        setIsWizzard(true, false);
 
         setTitleIcon(R.drawable.ping_440);
         setTitleText("Ping Wizzard");
