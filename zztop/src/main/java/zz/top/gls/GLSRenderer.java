@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
 import android.util.SparseArray;
-import android.util.Log;
 
 import com.google.android.gms.vision.face.Face;
 
@@ -17,12 +16,12 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import zz.top.dec.VIDDecode;
+import zz.top.utl.Log;
 
 public class GLSRenderer implements GLSurfaceView.Renderer
 {
     private final static String LOGTAG = GLSRenderer.class.getSimpleName();
 
-    private final static boolean debug = false;
     private final static int IFRAME_LAG_FUCK = 8;
 
     private GLSShaderRGB2SUR rgbShader;
@@ -325,8 +324,6 @@ public class GLSRenderer implements GLSurfaceView.Renderer
 
             if (diffmillis >= 1000)
             {
-                if (debug)
-                {
                     Log.d(LOGTAG, "onDrawFrame:"
                             + " fps=" + lastframes
                             + " back=" + frameQueue.size()
@@ -336,7 +333,6 @@ public class GLSRenderer implements GLSurfaceView.Renderer
                             + " dec=" + framesDecoded
                             + " bad=" + framesCorrupt
                     );
-                }
 
                 lastframes = 0;
                 lasttimems = System.currentTimeMillis();

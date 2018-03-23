@@ -10,12 +10,13 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.widget.Toast;
 import android.util.SparseArray;
-import android.util.Log;
 
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 import com.google.android.gms.vision.face.Landmark;
+
+import zz.top.utl.Log;
 
 public class GLSFaceDetect
 {

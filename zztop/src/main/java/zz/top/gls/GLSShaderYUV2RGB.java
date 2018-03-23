@@ -1,7 +1,8 @@
 package zz.top.gls;
 
 import android.opengl.GLES20;
-import android.util.Log;
+
+import zz.top.utl.Log;
 
 public class GLSShaderYUV2RGB extends GLSShader
 {

@@ -3,12 +3,13 @@ package zz.top.gls;
 import android.graphics.Bitmap;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
-import android.util.Log;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+
+import zz.top.utl.Log;
 
 public class GLSUtils
 {

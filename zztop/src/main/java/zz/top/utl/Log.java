@@ -6,7 +6,8 @@ public class Log
 
     public static String[] allow = new String[]
             {
-                    "p2p*"
+                    "p2p*",
+                    "gls*"
             };
 
     public static void d(String logtag, String message)
@@ -23,13 +24,18 @@ public class Log
     }
 
 
-    public static boolean checkLog(String[] allows, String logtag)
+    public static boolean checkLog(String[] checks, String logtag)
     {
         logtag = logtag.toLowerCase();
 
-        for (String allow : allows)
+        for (String check : checks)
         {
-            if (allow.endsWith("*") && logtag.startsWith(allow.substring(0, allow.length() -2 )))
+            if (check.endsWith("*") && logtag.startsWith(check.substring(0, check.length() -2 )))
+            {
+                return true;
+            }
+
+            if (check.equalsIgnoreCase(logtag))
             {
                 return true;
             }

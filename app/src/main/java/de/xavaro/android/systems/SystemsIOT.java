@@ -26,17 +26,17 @@ public class SystemsIOT extends IOT
 
         if ((uuid == null) || (driver == null)) return false;
 
-        if (driver.equals("p2p"))
+        if (driver.equals("p2p") && (SystemsP2P.instance != null))
         {
 
         }
 
-        if (driver.equals("tpl"))
+        if (driver.equals("tpl") && (SystemsTPL.instance != null))
         {
             return SystemsTPL.instance.putDeviceStatusRequest(iotDevice);
         }
 
-        if (driver.equals("sny"))
+        if (driver.equals("sny") && (SystemsSNY.instance != null))
         {
 
         }

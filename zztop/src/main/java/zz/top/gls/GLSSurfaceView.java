@@ -5,7 +5,8 @@ import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
+
+import zz.top.utl.Log;
 
 public class GLSSurfaceView extends GLSurfaceView
 {

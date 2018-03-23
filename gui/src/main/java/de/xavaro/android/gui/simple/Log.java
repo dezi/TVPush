@@ -27,13 +27,18 @@ public class Log
         android.util.Log.d(logtag, message);
     }
 
-    private static boolean checkLog(String[] allows, String logtag)
+    private static boolean checkLog(String[] checks, String logtag)
     {
         logtag = logtag.toLowerCase();
 
-        for (String allow : allows)
+        for (String check : checks)
         {
-            if (allow.endsWith("*") && logtag.startsWith(allow.substring(0, allow.length() -2 )))
+            if (check.endsWith("*") && logtag.startsWith(check.substring(0, check.length() -2 )))
+            {
+                return true;
+            }
+
+            if (check.equalsIgnoreCase(logtag))
             {
                 return true;
             }
