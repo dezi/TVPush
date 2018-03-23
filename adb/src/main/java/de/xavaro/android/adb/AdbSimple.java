@@ -1,4 +1,4 @@
-package com.cgutman.adblib;
+package de.xavaro.android.adb;
 
 public class AdbSimple
 {

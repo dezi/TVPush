@@ -1,4 +1,4 @@
-package com.cgutman.adblib;
+package de.xavaro.android.adb;
 
 import android.support.annotation.Nullable;
 import android.util.Log;

@@ -43,14 +43,15 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.9.0@aar') {
         transitive = true
     }
-    compile 'com.google.firebase:firebase-core:11.8.0'
-    compile 'com.google.firebase:firebase-messaging:11.8.0'
-    compile 'com.google.android.gms:play-services-vision:11.8.0'
+    compile 'com.google.firebase:firebase-core:12.0.0'
+    compile 'com.google.firebase:firebase-messaging:12.0.0'
+    compile 'com.google.android.gms:play-services-vision:12.0.0'
 
+    compile project(':adb')
     compile project(':iam')
     compile project(':gui')
-    compile project(':zztop')
     compile project(':iot')
+    compile project(':zztop')
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -1,1 +1,1 @@
-include ':app', ':gui', ':zztop', ':iot', ':iam', ':pub'
+include ':app', ':gui', ':zztop', ':iot', ':iam', ':pub', ':adb'

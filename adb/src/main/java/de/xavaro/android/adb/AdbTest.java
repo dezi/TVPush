@@ -1,15 +1,9 @@
-package com.cgutman.adblib;
+package de.xavaro.android.adb;
 
 import android.os.Environment;
-import android.util.Base64;
 
 import java.io.File;
-import java.net.Socket;
 import java.util.Scanner;
-
-import com.cgutman.adblib.AdbConnection;
-import com.cgutman.adblib.AdbCrypto;
-import com.cgutman.adblib.AdbStream;
 
 public class AdbTest
 {
