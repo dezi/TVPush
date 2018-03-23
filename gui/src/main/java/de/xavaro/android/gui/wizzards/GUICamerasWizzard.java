@@ -56,7 +56,6 @@ public class GUICamerasWizzard extends GUIPluginTitleListIOT
             IOTStatus status = IOTStatusses.getEntry(device.uuid);
 
             GUIListEntryIOT entry = new GUIListEntryIOT(listView.getContext());
-
             entry.setOnClickListener(onClickListener);
 
             entry.uuid = uuid;
@@ -74,7 +73,7 @@ public class GUICamerasWizzard extends GUIPluginTitleListIOT
         @Override
         public void onClick(View view)
         {
-            IOTDevice device = (IOTDevice) view.getTag();
+            IOTDevice device = ((GUIListEntryIOT) view).device;
 
             GUI.instance.desktopActivity.displayWizzard(GUICameraWizzard.class.getSimpleName(), device);
         }

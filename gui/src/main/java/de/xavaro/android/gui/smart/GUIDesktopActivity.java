@@ -130,21 +130,51 @@ public class GUIDesktopActivity extends GUIActivity
 
         boolean didwas = false;
 
-        for (int inx = 0; inx < topframe.getChildCount(); inx++)
+        //
+        // Check for wizzard helpers.
+        //
+
+        if (! didwas)
         {
-            View plugin = topframe.getChildAt(inx);
-
-            Log.d(LOGTAG, "onBackPressed: check=" + plugin.getClass().getSimpleName());
-
-            if ((plugin instanceof GUIPlugin) && (plugin != speechRecognition))
+            for (int inx = 0; inx < topframe.getChildCount(); inx++)
             {
-                Log.d(LOGTAG, "onBackPressed: hide=" + plugin.getClass().getSimpleName());
+                View plugin = topframe.getChildAt(inx);
+                if (plugin == speechRecognition) continue;
 
-                hidePlugin((GUIPlugin) plugin);
+                if ((plugin instanceof GUIPlugin) && ((GUIPlugin) plugin).isHelper())
+                {
+                    Log.d(LOGTAG, "onBackPressed: helper hide=" + plugin.getClass().getSimpleName());
 
-                didwas = true;
+                    hidePlugin((GUIPlugin) plugin);
 
-                inx--;
+                    didwas = true;
+
+                    inx--;
+                }
+            }
+        }
+
+        //
+        // Check for wizzards.
+        //
+
+        if (! didwas)
+        {
+            for (int inx = 0; inx < topframe.getChildCount(); inx++)
+            {
+                View plugin = topframe.getChildAt(inx);
+                if (plugin == speechRecognition) continue;
+
+                if ((plugin instanceof GUIPlugin) && ((GUIPlugin) plugin).isWizzard())
+                {
+                    Log.d(LOGTAG, "onBackPressed: wizzard hide=" + plugin.getClass().getSimpleName());
+
+                    hidePlugin((GUIPlugin) plugin);
+
+                    didwas = true;
+
+                    inx--;
+                }
             }
         }
 

@@ -26,6 +26,8 @@ public class GUIListEntryIOT extends GUIListEntry
     public IOTStatus status;
     public IOTCredential credential;
 
+    private View.OnClickListener onClickListener;
+
     public GUIListEntryIOT(Context context)
     {
         super(context);
@@ -72,7 +74,10 @@ public class GUIListEntryIOT extends GUIListEntry
 
             iconView.setImageResource(residcolor, color);
 
-            setOnClickListener(onSmartBulbClickListener);
+            if (onClickListener == null)
+            {
+                setOnClickListener(onSmartBulbClickListener);
+            }
         }
 
         if (device.type.equals("smartplug"))
@@ -83,7 +88,10 @@ public class GUIListEntryIOT extends GUIListEntry
 
             iconView.setImageResource(residcolor, color);
 
-            setOnClickListener(onSmartPlugClickListener);
+            if (onClickListener == null)
+            {
+                setOnClickListener(onSmartPlugClickListener);
+            }
         }
 
         if (device.type.equals("camera"))
@@ -94,7 +102,10 @@ public class GUIListEntryIOT extends GUIListEntry
 
             iconView.setImageResource(residcolor, color);
 
-            setOnClickListener(onCameraClickListener);
+            if (onClickListener == null)
+            {
+                setOnClickListener(onCameraClickListener);
+            }
         }
 
         String connect = (status.ipaddr != null) ? status.ipaddr : status.macaddr;
@@ -190,4 +201,10 @@ public class GUIListEntryIOT extends GUIListEntry
         }
     };
 
+    @Override
+    public void setOnClickListener(View.OnClickListener onClickListener)
+    {
+        this.onClickListener = onClickListener;
+        super.setOnClickListener(onClickListener);
+    }
 }
