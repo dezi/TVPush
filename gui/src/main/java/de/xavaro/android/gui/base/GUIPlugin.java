@@ -3,6 +3,7 @@ package de.xavaro.android.gui.base;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
+import android.view.Gravity;
 
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUIFrameLayout;
@@ -12,17 +13,21 @@ public class GUIPlugin extends GUIFrameLayout
     private final static String LOGTAG = GUIPlugin.class.getSimpleName();
 
     public static int DEFAULT_HORZ_MARGIN = 50;
-    public static int DEFAULT_VERT_MARGIN = 100;
-
-    public static int DEFAULT_WIDTH = 300;
+    public static int DEFAULT_TOP_MARGIN = 50;;
+    public static int DEFAULT_BOTTOM_MARGIN = 80;
 
     public GUIFrameLayout contentFrame;
 
-    private boolean isLarge;
     private boolean isHelper;
     private boolean isActive;
     private boolean isWizzard;
     private boolean isAttached;
+
+    private int numcols;
+    private int gravity;
+
+    private int width;
+    private int height;
 
     public GUIPlugin(Context context)
     {
@@ -30,42 +35,35 @@ public class GUIPlugin extends GUIFrameLayout
 
         contentFrame = this;
 
-        this.setPluginPositionDip(DEFAULT_HORZ_MARGIN, DEFAULT_VERT_MARGIN);
+        numcols = 1;
+        gravity = Gravity.LEFT;
 
-        this.setPluginSizeDip(DEFAULT_WIDTH,
-                Simple.getDeviceHeightDip() - 2 * DEFAULT_VERT_MARGIN);
+        width = (Simple.getDeviceWidthDip() - (4 * DEFAULT_HORZ_MARGIN)) / 3;
+        height = Simple.getDeviceHeightDip() - DEFAULT_TOP_MARGIN - DEFAULT_BOTTOM_MARGIN;
+
+        this.setPluginPositionDip(DEFAULT_HORZ_MARGIN, DEFAULT_TOP_MARGIN);
+
+        this.setPluginSizeDip(width, height);
 
         this.setPaddingDip(GUIDefs.PADDING_SMALL);
 
         onHighlightFrame(false);
     }
 
-    public void setIsWizzard(boolean wizzard, boolean helper, boolean islarge)
+    public void setIsWizzard(boolean wizzard, boolean helper, int numcols)
     {
         isWizzard = wizzard;
         isHelper = helper;
-        isLarge = islarge;
 
-        if (isLarge)
+        if (isHelper())
         {
-            int width = Simple.getDeviceWidthDip() - 2 * DEFAULT_HORZ_MARGIN;
-            int height = Simple.getDeviceHeightDip() - 2 * DEFAULT_VERT_MARGIN;
-
-            this.setPluginSizeDip(width, height);
+            this.setPluginPositionDip(2 * DEFAULT_HORZ_MARGIN + width, DEFAULT_TOP_MARGIN);
         }
-        else
-        {
-            if (isHelper)
-            {
-                this.setPluginPositionDip(DEFAULT_WIDTH + 2 * DEFAULT_HORZ_MARGIN, DEFAULT_VERT_MARGIN);
 
-                int width = Simple.getDeviceWidthDip() - DEFAULT_WIDTH - 3 * DEFAULT_HORZ_MARGIN;
-                int height = Simple.getDeviceHeightDip() - 2 * DEFAULT_VERT_MARGIN;
+        int newwidth = (numcols * width) + (numcols - 1) * DEFAULT_HORZ_MARGIN;
 
-                this.setPluginSizeDip(width, height);
-            }
-        }
-    }
+        this.setPluginSizeDip(newwidth, height);
+   }
 
     public boolean isWizzard()
     {

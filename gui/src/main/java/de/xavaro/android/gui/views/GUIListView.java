@@ -14,6 +14,14 @@ public class GUIListView extends  GUILinearLayout
     private boolean notfirst;
 
     @Override
+    public void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+
+        notfirst = false;
+    }
+
+    @Override
     public void removeAllViews()
     {
         //

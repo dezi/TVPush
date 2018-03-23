@@ -1,15 +1,10 @@
 package de.xavaro.android.gui.wizzards;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.util.Log;
-import android.view.View;
 
-import de.xavaro.android.gui.base.GUIPluginTitleList;
-import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.views.GUIListView;
+import de.xavaro.android.gui.base.GUIPluginTitleList;
 
 public class GUITodoWizzard extends GUIPluginTitleList
 {
@@ -19,7 +14,7 @@ public class GUITodoWizzard extends GUIPluginTitleList
     {
         super(context);
 
-        setIsWizzard(true, false, false);
+        setIsWizzard(true, false, 1);
 
         setTitleIcon(R.drawable.todo_list_512);
         setTitleText("Todo-Liste");
