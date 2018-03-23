@@ -16,32 +16,14 @@ import java.nio.ByteOrder;
 public class AdbProtocol
 {
 
-    /**
-     * The length of the ADB message header
-     */
     public static final int ADB_HEADER_LENGTH = 24;
 
     public static final int CMD_SYNC = 0x434e5953;
-
-    /**
-     * CNXN is the connect message. No messages (except AUTH)
-     * are valid before this message is received.
-     */
     public static final int CMD_CNXN = 0x4e584e43;
 
-    /**
-     * The current version of the ADB protocol
-     */
     public static final int CONNECT_VERSION = 0x01000000;
-
-    /**
-     * The maximum data payload supported by the ADB implementation
-     */
     public static final int CONNECT_MAXDATA = 4096;
 
-    /**
-     * The payload sent with the connect message
-     */
     public static byte[] CONNECT_PAYLOAD;
 
     static
@@ -122,23 +104,20 @@ public class AdbProtocol
         return checksum;
     }
 
-    /**
-     * This function validate the ADB message by checking
-     * its command, magic, and payload checksum.
-     *
-     * @param msg ADB message to validate
-     * @return True if the message was valid, false otherwise
-     */
     public static boolean validateMessage(AdbMessage msg)
     {
-		/* Magic is cmd ^ 0xFFFFFFFF */
-        if (msg.command != (msg.magic ^ 0xFFFFFFFF))
-            return false;
+		//
+		// Magic is cmd ^ 0xFFFFFFFF
+        //
+
+        if (msg.command != (msg.magic ^ 0xFFFFFFFF)) return false;
 
         if (msg.payloadLength != 0)
         {
             if (getPayloadChecksum(msg.payload) != msg.checksum)
+            {
                 return false;
+            }
         }
 
         return true;
@@ -165,38 +144,19 @@ public class AdbProtocol
          * };
          */
 
+		if (payload == null) payload = new byte[0];
+
         ByteBuffer message;
 
-        if (payload != null)
-        {
-            message = ByteBuffer.allocate(ADB_HEADER_LENGTH + payload.length).order(ByteOrder.LITTLE_ENDIAN);
-        }
-        else
-        {
-            message = ByteBuffer.allocate(ADB_HEADER_LENGTH).order(ByteOrder.LITTLE_ENDIAN);
-        }
+        message = ByteBuffer.allocate(ADB_HEADER_LENGTH + payload.length).order(ByteOrder.LITTLE_ENDIAN);
 
         message.putInt(cmd);
         message.putInt(arg0);
         message.putInt(arg1);
-
-        if (payload != null)
-        {
-            message.putInt(payload.length);
-            message.putInt(getPayloadChecksum(payload));
-        }
-        else
-        {
-            message.putInt(0);
-            message.putInt(0);
-        }
-
+        message.putInt(payload.length);
+        message.putInt(getPayloadChecksum(payload));
         message.putInt(cmd ^ 0xFFFFFFFF);
-
-        if (payload != null)
-        {
-            message.put(payload);
-        }
+        message.put(payload);
 
         return message.array();
     }
