@@ -22,6 +22,8 @@ public class GUIPluginTitle extends GUIPlugin
     private GUIEditText titleEdit;
     private GUIIconView titleIcon;
 
+    private int titleIconResid;
+
     public GUIPluginTitle(Context context)
     {
         super(context);
@@ -81,12 +83,23 @@ public class GUIPluginTitle extends GUIPlugin
 
     public void setTitleIcon(int resid)
     {
+        titleIconResid = resid;
         titleIcon.setImageResource(resid);
+    }
+
+    public int getTitleIconResid()
+    {
+        return titleIconResid;
     }
 
     public void setTitleText(String text)
     {
         titleText.setText(text);
+    }
+
+    public String getTitleText()
+    {
+        return titleText.getText().toString();
     }
 
     public void setTitleEdit(String text, String hint, String toast)

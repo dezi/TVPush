@@ -5,9 +5,13 @@ import android.view.View;
 
 import org.json.JSONArray;
 
+import java.util.Map;
+
 import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIIcons;
+import de.xavaro.android.gui.base.GUIPlugin;
+import de.xavaro.android.gui.base.GUIPluginTitle;
 import de.xavaro.android.gui.base.GUIPluginTitleList;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.views.GUILinearLayout;
@@ -15,7 +19,8 @@ import de.xavaro.android.gui.views.GUIListEntry;
 import de.xavaro.android.gui.views.GUIListView;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
-import pub.android.interfaces.drv.Camera;
+
+import static de.xavaro.android.gui.base.GUI.instance;
 
 public class GUIMenuWizzard extends GUIPluginTitleList
 {
@@ -39,26 +44,25 @@ public class GUIMenuWizzard extends GUIPluginTitleList
 
     public static void collectEntries(GUILinearLayout listView, boolean todo)
     {
-        JSONArray list = IOTDevices.instance.getListUUIDs();
+        Map<String,GUIPlugin> wizzards = GUI.instance.desktopActivity.getWizzards();
 
-        for (int inx = 0; inx < list.length(); inx++)
+        for (Map.Entry<String, GUIPlugin> mapentry : wizzards.entrySet())
         {
-            String uuid = Json.getString(list, inx);
-            IOTDevice device = IOTDevices.getEntry(uuid);
+            String name = mapentry.getKey();
 
-            if (device == null) continue;
+            if (name.equals(GUIMenuWizzard.class.getSimpleName())) continue;
 
-            if (! device.type.equals("camera")) continue;
+            GUIPlugin wizzard = mapentry.getValue();
 
-            if (todo) continue;
+            if (! (wizzard instanceof GUIPluginTitle)) continue;
+            if (wizzard.isHelper()) continue;
 
             GUIListEntry entry = new GUIListEntry(listView.getContext());
             entry.setOnClickListener(onClickListener);
-            entry.setTag(device);
+            entry.setTag(name);
 
-            entry.iconView.setImageResource(GUIIcons.getImageResid(device));
-            entry.headerViev.setText(device.name);
-            entry.infoView.setText(device.did);
+            entry.iconView.setImageResource(((GUIPluginTitle) wizzard).getTitleIconResid());
+            entry.headerViev.setText(((GUIPluginTitle) wizzard).getTitleText());
 
             listView.addView(entry);
         }
@@ -69,7 +73,9 @@ public class GUIMenuWizzard extends GUIPluginTitleList
         @Override
         public void onClick(View view)
         {
+            String name = (String) view.getTag();
 
+            GUI.instance.desktopActivity.displayWizzard(name);
         }
     };
 }

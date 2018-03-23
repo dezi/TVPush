@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -19,12 +18,13 @@ import de.xavaro.android.gui.base.GUIPluginTitleIOT;
 import de.xavaro.android.gui.wizzards.GUICamerasWizzard;
 import de.xavaro.android.gui.wizzards.GUIChannelWizzard;
 import de.xavaro.android.gui.wizzards.GUIGeomapWizzard;
-import de.xavaro.android.gui.plugin.GUIToastBar;
 import de.xavaro.android.gui.wizzards.GUILocationsWizzard;
+import de.xavaro.android.gui.wizzards.GUIMenuWizzard;
 import de.xavaro.android.gui.wizzards.GUIPermissionWizzard;
 import de.xavaro.android.gui.wizzards.GUIPingWizzard;
 import de.xavaro.android.gui.wizzards.GUITodoWizzard;
 import de.xavaro.android.gui.plugin.GUIVideoSurface;
+import de.xavaro.android.gui.plugin.GUIToastBar;
 
 import de.xavaro.android.iot.base.IOTObject;
 import pub.android.interfaces.drv.Camera;
@@ -33,7 +33,7 @@ public class GUIDesktopActivity extends GUIActivity
 {
     private final static String LOGTAG = GUIDesktopActivity.class.getSimpleName();
 
-    public GUIToastBar speechRecognition;
+    private GUIToastBar speechRecognition;
 
     private GUIVideoSurface videoSurface1;
     private GUIVideoSurface videoSurface2;
@@ -56,6 +56,7 @@ public class GUIDesktopActivity extends GUIActivity
 
         // @formatter:off
 
+        wizzards.put(GUIMenuWizzard.      class.getSimpleName(), new GUIMenuWizzard      (this));
         wizzards.put(GUIPingWizzard.      class.getSimpleName(), new GUIPingWizzard      (this));
         wizzards.put(GUITodoWizzard.      class.getSimpleName(), new GUITodoWizzard      (this));
         wizzards.put(GUICamerasWizzard.   class.getSimpleName(), new GUICamerasWizzard   (this));
@@ -66,13 +67,18 @@ public class GUIDesktopActivity extends GUIActivity
 
         // @formatter:on
 
-        displayWizzard(GUIPermissionWizzard.class.getSimpleName());
+        displayWizzard(GUIMenuWizzard.class.getSimpleName());
 
         checkWindowSize();
    }
 
+   public Map<String,GUIPlugin> getWizzards()
+   {
+        return wizzards;
+   }
+
    @Nullable
-    private GUIPlugin getWizzard(String wizzard)
+   private GUIPlugin getWizzard(String wizzard)
    {
        if (wizzard == null) return null;
 
@@ -97,7 +103,8 @@ public class GUIDesktopActivity extends GUIActivity
     {
         GUIPlugin wizzard = wizzards.get(name);
         if (wizzard == null) return;
-
+        
+        hideAllWizzards();
         showPlugin(wizzard);
     }
 
@@ -286,7 +293,7 @@ public class GUIDesktopActivity extends GUIActivity
         if (keyCode == KeyEvent.KEYCODE_PROG_RED) name = GUICamerasWizzard.class.getSimpleName();
         if (keyCode == KeyEvent.KEYCODE_PROG_GREEN) name = GUIPingWizzard.class.getSimpleName();
         if (keyCode == KeyEvent.KEYCODE_PROG_YELLOW) name = GUIPermissionWizzard.class.getSimpleName();
-        if (keyCode == KeyEvent.KEYCODE_PROG_BLUE) name = GUIChannelWizzard.class.getSimpleName();
+        if (keyCode == KeyEvent.KEYCODE_PROG_BLUE) name = GUIMenuWizzard.class.getSimpleName();
 
         GUIPlugin wizzard = getWizzard(name);
 
