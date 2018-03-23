@@ -103,7 +103,7 @@ public class GUIDesktopActivity extends GUIActivity
     {
         GUIPlugin wizzard = wizzards.get(name);
         if (wizzard == null) return;
-        
+
         hideAllWizzards();
         showPlugin(wizzard);
     }
