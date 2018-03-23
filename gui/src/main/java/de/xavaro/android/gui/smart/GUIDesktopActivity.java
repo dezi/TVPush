@@ -134,11 +134,17 @@ public class GUIDesktopActivity extends GUIActivity
         {
             View plugin = topframe.getChildAt(inx);
 
+            Log.d(LOGTAG, "onBackPressed: check=" + plugin.getClass().getSimpleName());
+
             if ((plugin instanceof GUIPlugin) && (plugin != speechRecognition))
             {
+                Log.d(LOGTAG, "onBackPressed: hide=" + plugin.getClass().getSimpleName());
+
                 hidePlugin((GUIPlugin) plugin);
 
                 didwas = true;
+
+                inx--;
             }
         }
 
