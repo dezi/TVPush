@@ -214,7 +214,10 @@ public class AdbConnection implements Closeable
 
                 synchronized (this)
                 {
-                    if (!connected) AdbSimple.wait(this);
+                    if (!connected)
+                    {
+                        AdbSimple.wait(this);
+                    }
 
                     if (!connected)
                     {
@@ -293,7 +296,7 @@ public class AdbConnection implements Closeable
                 AdbStream stream = openStreams.get(streamId);
                 stream.close();
             }
-            catch (IOException ignore)
+            catch (Exception ignore)
             {
             }
         }

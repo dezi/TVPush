@@ -30,11 +30,11 @@ public class AdbCrypto
 
     private KeyPair keyPair;
 
-    public static final int KEY_LENGTH_BITS = 2048;
-    public static final int KEY_LENGTH_BYTES = KEY_LENGTH_BITS / 8;
-    public static final int KEY_LENGTH_WORDS = KEY_LENGTH_BYTES / 4;
+    private static final int KEY_LENGTH_BITS = 2048;
+    private static final int KEY_LENGTH_BYTES = KEY_LENGTH_BITS / 8;
+    private static final int KEY_LENGTH_WORDS = KEY_LENGTH_BYTES / 4;
 
-    public static final int[] SIGNATURE_PADDING_AS_INT = new int[]
+    private static final int[] SIGNATURE_PADDING_AS_INT = new int[]
             {
                     0x00, 0x01, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
                     0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -57,74 +57,141 @@ public class AdbCrypto
                     0x04, 0x14
             };
 
-    public static byte[] SIGNATURE_PADDING;
+    private static byte[] SIGNATURE_PADDING;
 
     static
     {
         SIGNATURE_PADDING = new byte[SIGNATURE_PADDING_AS_INT.length];
 
-        for (int i = 0; i < SIGNATURE_PADDING.length; i++)
-            SIGNATURE_PADDING[i] = (byte) SIGNATURE_PADDING_AS_INT[i];
+        for (int inx = 0; inx < SIGNATURE_PADDING.length; inx++)
+        {
+            SIGNATURE_PADDING[inx] = (byte) SIGNATURE_PADDING_AS_INT[inx];
+        }
     }
 
     private static byte[] convertRsaPublicKeyToAdbFormat(RSAPublicKey pubkey)
     {
-        /*
-		 * ADB literally just saves the RSAPublicKey struct to a file.
-		 * 
-		 * typedef struct RSAPublicKey {
-         * int len; // Length of n[] in number of uint32_t
-         * uint32_t n0inv;  // -1 / n[0] mod 2^32
-         * uint32_t n[RSANUMWORDS]; // modulus as little endian array
-         * uint32_t rr[RSANUMWORDS]; // R^2 as little endian array
-         * int exponent; // 3 or 65537
-         * } RSAPublicKey;
-		 */
+        //
+        // ADB literally just saves the RSAPublicKey struct to a file.
+        //
+        // typedef struct RSAPublicKey
+        // {
+        //      int len;                    // Length of n[] in number of uint32_t
+        //      uint32_t n0inv;             // -1 / n[0] mod 2^32
+        //      uint32_t n[RSANUMWORDS];    // modulus as little endian array
+        //      uint32_t rr[RSANUMWORDS];   // R^2 as little endian array
+        //      int exponent;               // 3 or 65537
+        //
+        // } RSAPublicKey;
+        //
 
-		/* ------ This part is a Java-ified version of RSA_to_RSAPublicKey from adb_host_auth.c ------ */
-        BigInteger r32, r, rr, rem, n, n0inv;
+		// --- This part is a Java-ified version of RSA_to_RSAPublicKey from adb_host_auth.c ---
+
+		BigInteger r32, r, rr, rem, n, n0inv;
 
         r32 = BigInteger.ZERO.setBit(32);
+
         n = pubkey.getModulus();
         r = BigInteger.ZERO.setBit(KEY_LENGTH_WORDS * 32);
+
         rr = r.modPow(BigInteger.valueOf(2), n);
         rem = n.remainder(r32);
+
         n0inv = rem.modInverse(r32);
 
         int myN[] = new int[KEY_LENGTH_WORDS];
         int myRr[] = new int[KEY_LENGTH_WORDS];
+
         BigInteger res[];
-        for (int i = 0; i < KEY_LENGTH_WORDS; i++)
+
+        for (int inx = 0; inx < KEY_LENGTH_WORDS; inx++)
         {
             res = rr.divideAndRemainder(r32);
             rr = res[0];
             rem = res[1];
-            myRr[i] = rem.intValue();
+            myRr[inx] = rem.intValue();
 
             res = n.divideAndRemainder(r32);
             n = res[0];
             rem = res[1];
-            myN[i] = rem.intValue();
+            myN[inx] = rem.intValue();
         }
 
-		/* ------------------------------------------------------------------------------------------- */
+		// --------------------------------------------------------------------------------------
 
         ByteBuffer bbuf = ByteBuffer.allocate(524).order(ByteOrder.LITTLE_ENDIAN);
-
 
         bbuf.putInt(KEY_LENGTH_WORDS);
         bbuf.putInt(n0inv.negate().intValue());
 
-        for (int i : myN)
-            bbuf.putInt(i);
-        for (int i : myRr)
-            bbuf.putInt(i);
+        for (int inx : myN) bbuf.putInt(inx);
+        for (int inx : myRr) bbuf.putInt(inx);
 
         bbuf.putInt(pubkey.getPublicExponent().intValue());
 
         return bbuf.array();
     }
 
+    @Nullable
+    public static AdbCrypto generateAdbKeyPair()
+    {
+        try
+        {
+            AdbCrypto crypto = new AdbCrypto();
+
+            KeyPairGenerator rsaKeyPg = KeyPairGenerator.getInstance("RSA");
+            rsaKeyPg.initialize(KEY_LENGTH_BITS);
+
+            crypto.keyPair = rsaKeyPg.genKeyPair();
+
+            return crypto;
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public byte[] signAdbTokenPayload(byte[] payload) throws GeneralSecurityException
+    {
+        Cipher cipher = Cipher.getInstance("RSA/ECB/NoPadding");
+
+        cipher.init(Cipher.ENCRYPT_MODE, keyPair.getPrivate());
+        cipher.update(SIGNATURE_PADDING);
+
+        return cipher.doFinal(payload);
+    }
+
+    public byte[] getAdbPublicKeyPayload()
+    {
+        byte[] adbKey = convertRsaPublicKeyToAdbFormat((RSAPublicKey) keyPair.getPublic());
+        String b64Key = Base64.encodeToString(adbKey, Base64.NO_WRAP).trim();
+
+        String keyString = b64Key + " unknown@unknown" + '\0';
+
+        return keyString.getBytes();
+    }
+
+    public void saveAdbKeyPair(File privateKey, File publicKey)
+    {
+        try
+        {
+            FileOutputStream privOut = new FileOutputStream(privateKey);
+            FileOutputStream pubOut = new FileOutputStream(publicKey);
+
+            privOut.write(keyPair.getPrivate().getEncoded());
+            pubOut.write(keyPair.getPublic().getEncoded());
+
+            privOut.close();
+            pubOut.close();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
 
     public static AdbCrypto loadAdbKeyPair(File privateKey, File publicKey)
     {
@@ -166,86 +233,5 @@ public class AdbCrypto
         }
 
         return null;
-    }
-
-    @Nullable
-    public static AdbCrypto generateAdbKeyPair()
-    {
-        try
-        {
-            AdbCrypto crypto = new AdbCrypto();
-
-            KeyPairGenerator rsaKeyPg = KeyPairGenerator.getInstance("RSA");
-            rsaKeyPg.initialize(KEY_LENGTH_BITS);
-
-            crypto.keyPair = rsaKeyPg.genKeyPair();
-
-            return crypto;
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-
-        return null;
-    }
-
-    /**
-     * Signs the ADB SHA1 payload with the private key of this object.
-     *
-     * @param payload SHA1 payload to sign
-     * @return Signed SHA1 payload
-     * @throws GeneralSecurityException If signing fails
-     */
-
-    public byte[] signAdbTokenPayload(byte[] payload) throws GeneralSecurityException
-    {
-        Cipher cipher = Cipher.getInstance("RSA/ECB/NoPadding");
-
-        cipher.init(Cipher.ENCRYPT_MODE, keyPair.getPrivate());
-
-        cipher.update(SIGNATURE_PADDING);
-
-        return cipher.doFinal(payload);
-
-        /*
-        Signature instance = Signature.getInstance("SHA1withRSA");
-        instance.initSign(keyPair.getPrivate());
-        instance.update(payload);
-
-        return instance.sign();
-        */
-    }
-
-    public byte[] getAdbPublicKeyPayload()
-    {
-        byte[] adbKey = convertRsaPublicKeyToAdbFormat((RSAPublicKey) keyPair.getPublic());
-        String b64Key = Base64.encodeToString(adbKey, Base64.NO_WRAP).trim();
-        int rest = b64Key.length() % 4;
-
-        Log.d(LOGTAG, "getAdbPublicKeyPayload: rest=" + rest + " b64Key=>>>" + b64Key + "<<<");
-
-        String keyString = b64Key + " unknown@unknown" + '\0';
-
-        return keyString.getBytes();
-    }
-
-    public void saveAdbKeyPair(File privateKey, File publicKey)
-    {
-        try
-        {
-            FileOutputStream privOut = new FileOutputStream(privateKey);
-            FileOutputStream pubOut = new FileOutputStream(publicKey);
-
-            privOut.write(keyPair.getPrivate().getEncoded());
-            pubOut.write(keyPair.getPublic().getEncoded());
-
-            privOut.close();
-            pubOut.close();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
     }
 }

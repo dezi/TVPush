@@ -22,11 +22,11 @@ public class ApplicationBase extends GUIApplication
     {
         super.onCreate();
 
-        //Simple.removeALLPrefs(this);
+        // neeeeeeeeiiiiiiiiiinnnnn Simple.removeALLPrefs(this);
 
-        //Simple.initialize(this);
+        Simple.initialize(this);
 
-        //Systems.initialize(this);
+        Systems.initialize(this);
 
         AdbTest.main();
     }
