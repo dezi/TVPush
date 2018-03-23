@@ -56,6 +56,8 @@ public class AdbTest
         try
         {
             sock = new Socket("192.168.0.11", 5555);
+            sock.setTcpNoDelay(true);
+
             adb = AdbConnection.create(sock, crypto);
             adb.connect();
 

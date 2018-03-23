@@ -160,10 +160,10 @@ public class AdbStream implements Closeable
      * @throws IOException          If the stream fails while sending data
      * @throws InterruptedException If we are unable to wait to send data
      */
+
     public void write(String payload) throws IOException, InterruptedException
     {
-		/* ADB needs null-terminated strings */
-        write(payload.getBytes("UTF-8"), false);
+        write(payload.getBytes(), false);
         write(new byte[]{0}, true);
     }
 

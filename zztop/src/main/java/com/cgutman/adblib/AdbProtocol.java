@@ -1,6 +1,8 @@
 package com.cgutman.adblib;
 
 
+import android.support.annotation.Nullable;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -45,6 +47,8 @@ public class AdbProtocol
 
     public static boolean validateMessage(AdbMessage msg)
     {
+        if (msg == null) return false;
+
 		//
 		// Magic is cmd ^ 0xffffffff
         //
@@ -95,170 +99,81 @@ public class AdbProtocol
         return message.array();
     }
 
-    /**
-     * Generates a connect message with default parameters.
-     *
-     * @return Byte array containing the message
-     */
     public static byte[] generateConnect()
     {
         return generateMessage(CMD_CNXN, CONNECT_VERSION, CONNECT_MAXDATA, CONNECT_PAYLOAD);
     }
 
-    /**
-     * Generates an auth message with the specified type and payload.
-     *
-     * @param type Authentication type (see AUTH_TYPE_* constants)
-     * @param data The payload for the message
-     * @return Byte array containing the message
-     */
     public static byte[] generateAuth(int type, byte[] data)
     {
         return generateMessage(CMD_AUTH, type, 0, data);
     }
 
-    /**
-     * Generates an open stream message with the specified local ID and destination.
-     *
-     * @param localId A unique local ID identifying the stream
-     * @param dest    The destination of the stream on the target
-     * @return Byte array containing the message
-     * @throws UnsupportedEncodingException If the destination cannot be encoded to UTF-8
-     */
-    public static byte[] generateOpen(int localId, String dest) throws UnsupportedEncodingException
+    public static byte[] generateOpen(int localId, String dest)
     {
         ByteBuffer bbuf = ByteBuffer.allocate(dest.length() + 1);
-        bbuf.put(dest.getBytes("UTF-8"));
+
+        bbuf.put(dest.getBytes());
         bbuf.put((byte) 0);
+
         return generateMessage(CMD_OPEN, localId, 0, bbuf.array());
     }
 
-    /**
-     * Generates a write stream message with the specified IDs and payload.
-     *
-     * @param localId  The unique local ID of the stream
-     * @param remoteId The unique remote ID of the stream
-     * @param data     The data to provide as the write payload
-     * @return Byte array containing the message
-     */
     public static byte[] generateWrite(int localId, int remoteId, byte[] data)
     {
         return generateMessage(CMD_WRTE, localId, remoteId, data);
     }
 
-    /**
-     * Generates a close stream message with the specified IDs.
-     *
-     * @param localId  The unique local ID of the stream
-     * @param remoteId The unique remote ID of the stream
-     * @return Byte array containing the message
-     */
     public static byte[] generateClose(int localId, int remoteId)
     {
         return generateMessage(CMD_CLSE, localId, remoteId, null);
     }
 
-    /**
-     * Generates an okay message with the specified IDs.
-     *
-     * @param localId  The unique local ID of the stream
-     * @param remoteId The unique remote ID of the stream
-     * @return Byte array containing the message
-     */
     public static byte[] generateReady(int localId, int remoteId)
     {
         return generateMessage(CMD_OKAY, localId, remoteId, null);
     }
 
-    /**
-     * This class provides an abstraction for the ADB message format.
-     *
-     * @author Cameron Gutman
-     */
     final static class AdbMessage
     {
-        /**
-         * The command field of the message
-         */
         public int command;
-        /**
-         * The arg0 field of the message
-         */
         public int arg0;
-        /**
-         * The arg1 field of the message
-         */
         public int arg1;
-        /**
-         * The payload length field of the message
-         */
         public int payloadLength;
-        /**
-         * The checksum field of the message
-         */
         public int checksum;
-        /**
-         * The magic field of the message
-         */
         public int magic;
-        /**
-         * The payload of the message
-         */
         public byte[] payload;
 
-        /**
-         * Read and parse an ADB message from the supplied input stream.
-         * This message is NOT validated.
-         *
-         * @param in InputStream object to read data from
-         * @return An AdbMessage object represented the message read
-         * @throws IOException If the stream fails while reading
-         */
-        public static AdbMessage parseAdbMessage(InputStream in) throws IOException
+        @Nullable
+        public static AdbMessage readAdbMessage(InputStream in)
         {
-            AdbMessage msg = new AdbMessage();
-            ByteBuffer packet = ByteBuffer.allocate(ADB_HEADER_LENGTH).order(ByteOrder.LITTLE_ENDIAN);
-			
-			/* Read the header first */
-            int dataRead = 0;
-            do
+            try
             {
-                int bytesRead = in.read(packet.array(), dataRead, 24 - dataRead);
+                AdbMessage msg = new AdbMessage();
 
-                if (bytesRead < 0)
-                    throw new IOException("Stream closed");
-                else
-                    dataRead += bytesRead;
-            }
-            while (dataRead < ADB_HEADER_LENGTH);
-			
-			/* Pull out header fields */
-            msg.command = packet.getInt();
-            msg.arg0 = packet.getInt();
-            msg.arg1 = packet.getInt();
-            msg.payloadLength = packet.getInt();
-            msg.checksum = packet.getInt();
-            msg.magic = packet.getInt();
-			
-			/* If there's a payload supplied, read that too */
-            if (msg.payloadLength != 0)
-            {
+                ByteBuffer packet = ByteBuffer.allocate(ADB_HEADER_LENGTH).order(ByteOrder.LITTLE_ENDIAN);
+                int bytesRead = in.read(packet.array(), 0, ADB_HEADER_LENGTH);
+                if (bytesRead != ADB_HEADER_LENGTH) return null;
+
+                msg.command = packet.getInt();
+                msg.arg0 = packet.getInt();
+                msg.arg1 = packet.getInt();
+                msg.payloadLength = packet.getInt();
+                msg.checksum = packet.getInt();
+                msg.magic = packet.getInt();
+
                 msg.payload = new byte[msg.payloadLength];
+                bytesRead = in.read(msg.payload);
+                if (bytesRead != msg.payload.length) return null;
 
-                dataRead = 0;
-                do
-                {
-                    int bytesRead = in.read(msg.payload, dataRead, msg.payloadLength - dataRead);
-
-                    if (bytesRead < 0)
-                        throw new IOException("Stream closed");
-                    else
-                        dataRead += bytesRead;
-                }
-                while (dataRead < msg.payloadLength);
+                return msg;
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
             }
 
-            return msg;
+            return null;
         }
     }
 }
