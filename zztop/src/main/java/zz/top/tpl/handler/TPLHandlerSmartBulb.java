@@ -1,13 +1,12 @@
 package zz.top.tpl.handler;
 
-import android.graphics.Color;
-import android.util.Log;
-
 import org.json.JSONObject;
 
 import zz.top.tpl.base.TPL;
-import zz.top.utl.Json;
+
 import zz.top.utl.Simple;
+import zz.top.utl.Json;
+import zz.top.utl.Log;
 
 public class TPLHandlerSmartBulb extends TPLHandler
 {

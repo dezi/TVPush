@@ -12,8 +12,6 @@ import zz.top.tpl.handler.TPLHandlerSmartBulb;
 import zz.top.tpl.handler.TPLHandlerSmartPlug;
 import zz.top.tpl.handler.TPLHandlerSysInfo;
 
-import zz.top.utl.Json;
-
 public class TPLMessageHandler
 {
     private static final String LOGTAG = TPLMessageHandler.class.getSimpleName();

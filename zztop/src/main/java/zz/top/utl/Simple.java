@@ -1,10 +1,11 @@
 package zz.top.utl;
 
-import android.content.ContentResolver;
-import android.os.Build;
-import android.os.Handler;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
+
+import android.content.ContentResolver;
+import android.provider.Settings;
+import android.os.Handler;
+import android.os.Build;
 
 import android.app.Application;
 import android.content.Context;

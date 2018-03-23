@@ -1,7 +1,6 @@
 package zz.top.tpl.comm;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import org.json.JSONObject;
 
@@ -10,6 +9,7 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 import zz.top.utl.Json;
+import zz.top.utl.Log;
 
 public class TPLUDPReceiver extends Thread
 {

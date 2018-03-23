@@ -2,7 +2,6 @@ package zz.top.utl;
 
 import android.os.Build;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

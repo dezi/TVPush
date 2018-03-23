@@ -1,10 +1,9 @@
 package zz.top.tpl.comm;
 
-import android.util.Log;
-
 import org.json.JSONObject;
 
 import zz.top.tpl.base.TPL;
+import zz.top.utl.Log;
 
 public class TPLMessageService extends Thread
 {

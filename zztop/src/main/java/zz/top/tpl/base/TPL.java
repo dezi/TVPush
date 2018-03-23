@@ -2,7 +2,6 @@ package zz.top.tpl.base;
 
 import android.app.Application;
 import android.graphics.Color;
-import android.util.Log;
 
 import org.json.JSONObject;
 
@@ -10,14 +9,15 @@ import pub.android.interfaces.drv.SmartBulb;
 import pub.android.interfaces.drv.SmartPlug;
 import pub.android.interfaces.ext.GetSmartBulbHandler;
 import pub.android.interfaces.ext.GetSmartPlugHandler;
+
 import zz.top.tpl.comm.TPLMessageHandler;
 import zz.top.tpl.comm.TPLMessageService;
 import zz.top.tpl.handler.TPLHandlerSmartBulb;
 import zz.top.tpl.handler.TPLHandlerSmartPlug;
 import zz.top.tpl.handler.TPLHandlerSysInfo;
-
 import zz.top.tpl.publics.SmartBulbHandler;
 import zz.top.tpl.publics.SmartPlugHandler;
+import zz.top.utl.Log;
 import zz.top.utl.Simple;
 import zz.top.utl.Json;
 

@@ -1,7 +1,6 @@
 package zz.top.tpl.handler;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import org.json.JSONObject;
 
@@ -10,8 +9,9 @@ import java.util.Map;
 
 import zz.top.tpl.base.TPL;
 
-import zz.top.utl.Json;
 import zz.top.utl.Simple;
+import zz.top.utl.Json;
+import zz.top.utl.Log;
 
 public class TPLHandlerSysInfo extends TPLHandler
 {

@@ -1,7 +1,5 @@
 package zz.top.tpl.comm;
 
-import android.util.Log;
-
 import org.json.JSONObject;
 
 import java.net.DatagramPacket;
@@ -9,6 +7,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 
 import zz.top.utl.Json;
+import zz.top.utl.Log;
 
 public class TPLUDPSender extends Thread
 {

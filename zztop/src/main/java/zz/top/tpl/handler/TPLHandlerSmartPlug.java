@@ -1,12 +1,10 @@
 package zz.top.tpl.handler;
 
-import android.util.Log;
-
 import org.json.JSONObject;
 
 import zz.top.tpl.base.TPL;
+
 import zz.top.utl.Json;
-import zz.top.utl.Simple;
 
 public class TPLHandlerSmartPlug extends TPLHandler
 {
