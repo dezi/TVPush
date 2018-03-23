@@ -43,6 +43,7 @@ public class IOTProximScanner
     private final boolean debug = false;
 
     //
+    // adb shell setprop log.tag.TextView WARN
     // adb shell setprop log.tag.ScanRecord WARN
     // adb shell setprop log.tag.ScanRecord VERBOSE
     //

@@ -13,6 +13,7 @@ import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUIListEntry;
 import de.xavaro.android.gui.views.GUIListView;
+import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 import pub.android.interfaces.drv.Camera;
@@ -71,10 +72,7 @@ public class GUICamerasWizzard extends GUIPluginTitleList
         {
             IOTDevice device = (IOTDevice) view.getTag();
 
-            Camera camera = GUI.instance.onRequestCameraByUUID(device.uuid);
-            if (camera == null) return;
-
-            //GUI.instance.desktopActivity.displayCamera(true, iotobject.uuid);
+            GUI.instance.desktopActivity.displayWizzard(GUICameraWizzard.class.getSimpleName(), device);
         }
     };
 }

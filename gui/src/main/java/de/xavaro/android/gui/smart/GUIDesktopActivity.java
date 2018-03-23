@@ -15,6 +15,7 @@ import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIActivity;
 import de.xavaro.android.gui.base.GUIPlugin;
 import de.xavaro.android.gui.base.GUIPluginTitleIOT;
+import de.xavaro.android.gui.wizzards.GUICameraWizzard;
 import de.xavaro.android.gui.wizzards.GUICamerasWizzard;
 import de.xavaro.android.gui.wizzards.GUIChannelWizzard;
 import de.xavaro.android.gui.wizzards.GUIGeomapWizzard;
@@ -59,6 +60,7 @@ public class GUIDesktopActivity extends GUIActivity
         wizzards.put(GUIMenuWizzard.      class.getSimpleName(), new GUIMenuWizzard      (this));
         wizzards.put(GUIPingWizzard.      class.getSimpleName(), new GUIPingWizzard      (this));
         wizzards.put(GUITodoWizzard.      class.getSimpleName(), new GUITodoWizzard      (this));
+        wizzards.put(GUICameraWizzard.    class.getSimpleName(), new GUICameraWizzard    (this));
         wizzards.put(GUICamerasWizzard.   class.getSimpleName(), new GUICamerasWizzard   (this));
         wizzards.put(GUIChannelWizzard.   class.getSimpleName(), new GUIChannelWizzard   (this));
         wizzards.put(GUILocationsWizzard. class.getSimpleName(), new GUILocationsWizzard (this));
