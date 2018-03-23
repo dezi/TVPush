@@ -11,6 +11,10 @@
     <string name="setup_services_service_loc_active">Geolocation status is active</string>
     <string name="setup_services_service_loc_inactive">Geolocation status is inactive</string>
 
+    <string name="setup_services_service_dev">Developer</string>
+    <string name="setup_services_service_dev_active">Developer status is active</string>
+    <string name="setup_services_service_dev_inactive">Developer status is inactive</string>
+
     <string name="setup_permissions_permission">Permission</string>
 
     <string name="setup_permissions_area_ukn">Unknown</string>

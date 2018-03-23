@@ -11,6 +11,10 @@
     <string name="setup_services_service_loc_active">Standortstatus ist aktiv</string>
     <string name="setup_services_service_loc_inactive">Standortstatus ist aus</string>
 
+    <string name="setup_services_service_dev">Developer</string>
+    <string name="setup_services_service_dev_active">Developer-Status ist aktiv</string>
+    <string name="setup_services_service_dev_inactive">Developer-Status ist aktiv</string>
+
     <string name="setup_permissions_permission">Berechtigung</string>
 
     <string name="setup_permissions_area_ukn">Unbekannt</string>

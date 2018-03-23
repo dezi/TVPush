@@ -322,7 +322,7 @@ public class GUIDesktopActivity extends GUIActivity
 
         if (keyCode == KeyEvent.KEYCODE_PROG_RED) wizzard = cameraWizzard;
         if (keyCode == KeyEvent.KEYCODE_PROG_GREEN) wizzard = pingWizzard;
-        if (keyCode == KeyEvent.KEYCODE_PROG_YELLOW) wizzard = locationsWizzard;
+        if (keyCode == KeyEvent.KEYCODE_PROG_YELLOW) wizzard = permissionsWizzard;
         if (keyCode == KeyEvent.KEYCODE_PROG_BLUE) wizzard = channelWizzard;
 
         if (wizzard != null)

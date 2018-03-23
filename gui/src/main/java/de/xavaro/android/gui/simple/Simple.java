@@ -412,6 +412,11 @@ public class Simple
         return FirebaseInstanceId.getInstance().getToken();
     }
 
+    public static ContentResolver getContentResolver()
+    {
+        return contentResolver;
+    }
+
     //endregion Simple getters.
 
     //region Smart helpers.

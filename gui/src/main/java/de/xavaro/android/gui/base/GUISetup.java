@@ -29,11 +29,19 @@ public class GUISetup
     {
         JSONObject services = new JSONObject();
 
+        //
+        // Bluetooth.
+        //
+
         BluetoothAdapter adapter = Simple.getBTAdapter();
         boolean btAdapter = (adapter != null);
         boolean btAdapterEnabled = btAdapter && adapter.isEnabled();
 
         Json.put(services, "ble", btAdapterEnabled);
+
+        //
+        // Location.
+        //
 
         LocationManager locationManager = Simple.getLocationManager();
         boolean locmanEnabled = (locationManager != null);
@@ -60,6 +68,16 @@ public class GUISetup
         }
 
         Json.put(services, "loc", locgpsEnabled | locnetEnabled);
+
+        //
+        // Developer and ADB.
+        //
+
+        int devEnabled = Settings.Secure.getInt(Simple.getContentResolver(),
+                Settings.Global.DEVELOPMENT_SETTINGS_ENABLED , 0);
+
+
+        Json.put(services, "dev", locgpsEnabled | locnetEnabled);
 
         return services;
     }
@@ -190,6 +208,7 @@ public class GUISetup
         {
             case "ble": return R.string.setup_services_service_ble;
             case "loc": return R.string.setup_services_service_loc;
+            case "dev": return R.string.setup_services_service_loc;
         }
 
         return R.string.setup_services_service_ukn;
@@ -201,6 +220,7 @@ public class GUISetup
         {
             case "ble": return R.drawable.bluetooth_450;
             case "loc": return R.drawable.gps_530;
+            case "dev": return R.drawable.developer_512;
         }
 
         return -1;
@@ -220,6 +240,13 @@ public class GUISetup
             return enabled
                     ? R.string.setup_services_service_loc_active
                     : R.string.setup_services_service_loc_inactive;
+        }
+
+        if (service.equals("dev"))
+        {
+            return enabled
+                    ? R.string.setup_services_service_dev_active
+                    : R.string.setup_services_service_dev_inactive;
         }
 
         return -1;
@@ -259,6 +286,13 @@ public class GUISetup
 
                 return true;
             }
+
+            if (service.equals("dev"))
+            {
+                context.startActivity(new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
+                return true;
+            }
+
         }
         catch (Exception ex)
         {

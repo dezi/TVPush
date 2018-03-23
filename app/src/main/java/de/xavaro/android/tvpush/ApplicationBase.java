@@ -22,6 +22,6 @@ public class ApplicationBase extends GUIApplication
 
         Systems.initialize(this);
 
-        AdbTest.main();
+        //AdbTest.main();
     }
 }
