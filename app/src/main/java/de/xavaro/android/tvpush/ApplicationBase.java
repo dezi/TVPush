@@ -1,9 +1,12 @@
 package de.xavaro.android.tvpush;
 
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.util.Base64;
 import android.util.Log;
+
+import com.cgutman.adblib.AdbTest;
+
+import java.net.Socket;
+import java.util.List;
 
 import de.xavaro.android.gui.base.GUIApplication;
 
@@ -21,8 +24,10 @@ public class ApplicationBase extends GUIApplication
 
         //Simple.removeALLPrefs(this);
 
-        Simple.initialize(this);
+        //Simple.initialize(this);
 
-        Systems.initialize(this);
+        //Systems.initialize(this);
+
+        AdbTest.main();
     }
 }
