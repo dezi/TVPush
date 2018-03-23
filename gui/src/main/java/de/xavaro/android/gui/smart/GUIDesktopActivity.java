@@ -69,7 +69,7 @@ public class GUIDesktopActivity extends GUIActivity
 
         // @formatter:on
 
-        displayWizzard(GUIMenuWizzard.class.getSimpleName());
+        displayWizzard(GUICamerasWizzard.class.getSimpleName());
 
         checkWindowSize();
    }
@@ -134,12 +134,11 @@ public class GUIDesktopActivity extends GUIActivity
         {
             View plugin = topframe.getChildAt(inx);
 
-            if ((plugin instanceof GUIPlugin) && ((GUIPlugin) plugin).isActive())
+            if ((plugin instanceof GUIPlugin) && (plugin != speechRecognition))
             {
                 hidePlugin((GUIPlugin) plugin);
 
                 didwas = true;
-                break;
             }
         }
 

@@ -1,10 +1,9 @@
 package de.xavaro.android.iot.things;
 
-import android.util.Log;
-
 import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.base.IOTList;
 import de.xavaro.android.iot.base.IOTObject;
+import de.xavaro.android.iot.simple.Log;
 
 public class IOTDevices extends IOTList
 {

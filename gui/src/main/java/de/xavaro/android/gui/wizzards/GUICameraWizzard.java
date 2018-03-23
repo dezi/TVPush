@@ -64,6 +64,7 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
                 + " und" + " " + GUIDefs.UTF_ZOOMOUT;
 
         mainFrame.setSizeDip(Simple.MP, Simple.MP);
+        mainFrame.setPaddingDip(GUIDefs.PADDING_SMALL);
         mainFrame.setHighlightable(true);
         mainFrame.setFocusable(true);
         mainFrame.setToastFocus(toastFocus);
@@ -90,6 +91,8 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
             if (camera == null) return;
 
             videoSurface = camera.createSurface(getContext());
+            camera.registerSurface(videoSurface);
+
             mainFrame.addView(videoSurface);
 
             camera.connectCamera();

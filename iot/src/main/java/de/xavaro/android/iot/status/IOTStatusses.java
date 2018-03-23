@@ -1,7 +1,5 @@
 package de.xavaro.android.iot.status;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +7,7 @@ import java.util.Map;
 import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.base.IOTList;
 import de.xavaro.android.iot.base.IOTObject;
+import de.xavaro.android.iot.simple.Log;
 import de.xavaro.android.iot.simple.Simple;
 
 public class IOTStatusses extends IOTList

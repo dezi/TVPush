@@ -1,9 +1,8 @@
 package de.xavaro.android.iot.status;
 
-import android.util.Log;
-
 import de.xavaro.android.iot.base.IOTList;
 import de.xavaro.android.iot.base.IOTObject;
+import de.xavaro.android.iot.simple.Log;
 
 public class IOTCredentials extends IOTList
 {
