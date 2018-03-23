@@ -15,91 +15,30 @@ import java.nio.ByteOrder;
  */
 public class AdbProtocol
 {
-
     public static final int ADB_HEADER_LENGTH = 24;
+
+    public static final int AUTH_TYPE_TOKEN = 1;
+    public static final int AUTH_TYPE_SIGNATURE = 2;
+    public static final int AUTH_TYPE_RSA_PUBLIC = 3;
 
     public static final int CMD_SYNC = 0x434e5953;
     public static final int CMD_CNXN = 0x4e584e43;
+    public static final int CMD_AUTH = 0x48545541;
+    public static final int CMD_OPEN = 0x4e45504f;
+    public static final int CMD_OKAY = 0x59414b4f;
+    public static final int CMD_CLSE = 0x45534c43;
+    public static final int CMD_WRTE = 0x45545257;
 
     public static final int CONNECT_VERSION = 0x01000000;
     public static final int CONNECT_MAXDATA = 4096;
+    public static final byte[] CONNECT_PAYLOAD = "host::\0".getBytes();
 
-    public static byte[] CONNECT_PAYLOAD;
 
-    static
-    {
-        try
-        {
-            CONNECT_PAYLOAD = "host::\0".getBytes("UTF-8");
-        }
-        catch (UnsupportedEncodingException e)
-        {
-        }
-    }
-
-    /**
-     * AUTH is the authentication message. It is part of the
-     * RSA public key authentication added in Android 4.2.2.
-     */
-    public static final int CMD_AUTH = 0x48545541;
-
-    /**
-     * This authentication type represents a SHA1 hash to sign
-     */
-    public static final int AUTH_TYPE_TOKEN = 1;
-
-    /**
-     * This authentication type represents the signed SHA1 hash
-     */
-    public static final int AUTH_TYPE_SIGNATURE = 2;
-
-    /**
-     * This authentication type represents a RSA public key
-     */
-    public static final int AUTH_TYPE_RSA_PUBLIC = 3;
-
-    /**
-     * OPEN is the open stream message. It is sent to open
-     * a new stream on the target device.
-     */
-    public static final int CMD_OPEN = 0x4e45504f;
-
-    /**
-     * OKAY is a success message. It is sent when a write is
-     * processed successfully.
-     */
-    public static final int CMD_OKAY = 0x59414b4f;
-
-    /**
-     * CLSE is the close stream message. It it sent to close an
-     * existing stream on the target device.
-     */
-    public static final int CMD_CLSE = 0x45534c43;
-
-    /**
-     * WRTE is the write stream message. It is sent with a payload
-     * that is the data to write to the stream.
-     */
-    public static final int CMD_WRTE = 0x45545257;
-
-    /**
-     * This function performs a checksum on the ADB payload data.
-     *
-     * @param payload Payload to checksum
-     * @return The checksum of the payload
-     */
     private static int getPayloadChecksum(byte[] payload)
     {
         int checksum = 0;
 
-        for (byte b : payload)
-        {
-            /* We have to manually "unsign" these bytes because Java sucks */
-            if (b >= 0)
-                checksum += b;
-            else
-                checksum += b + 256;
-        }
+        for (byte bite : payload) checksum += bite & 0xff;
 
         return checksum;
     }
@@ -107,10 +46,10 @@ public class AdbProtocol
     public static boolean validateMessage(AdbMessage msg)
     {
 		//
-		// Magic is cmd ^ 0xFFFFFFFF
+		// Magic is cmd ^ 0xffffffff
         //
 
-        if (msg.command != (msg.magic ^ 0xFFFFFFFF)) return false;
+        if (msg.command != ~msg.magic) return false;
 
         if (msg.payloadLength != 0)
         {
@@ -123,26 +62,21 @@ public class AdbProtocol
         return true;
     }
 
-    /**
-     * This function generates an ADB message given the fields.
-     *
-     * @param cmd     Command identifier
-     * @param arg0    First argument
-     * @param arg1    Second argument
-     * @param payload Data payload
-     * @return Byte array containing the message
-     */
     public static byte[] generateMessage(int cmd, int arg0, int arg1, byte[] payload)
     {
-		/* struct message {
-         * 		unsigned command;       // command identifier constant
-         * 		unsigned arg0;          // first argument
-         * 		unsigned arg1;          // second argument
-         * 		unsigned data_length;   // length of payload (0 is allowed)
-         * 		unsigned data_check;    // checksum of data payload
-         * 		unsigned magic;         // command ^ 0xffffffff
-         * };
-         */
+        //
+        // From original adb implementation:
+        //
+		// struct message
+        // {
+        // 		unsigned command;       // command identifier constant
+        // 		unsigned arg0;          // first argument
+        // 		unsigned arg1;          // second argument
+        // 		unsigned data_length;   // length of payload (0 is allowed)
+        // 		unsigned data_check;    // checksum of data payload
+        // 		unsigned magic;         // command ^ 0xffffffff
+        // }
+        //
 
 		if (payload == null) payload = new byte[0];
 
@@ -155,7 +89,7 @@ public class AdbProtocol
         message.putInt(arg1);
         message.putInt(payload.length);
         message.putInt(getPayloadChecksum(payload));
-        message.putInt(cmd ^ 0xFFFFFFFF);
+        message.putInt(~cmd);
         message.put(payload);
 
         return message.array();
