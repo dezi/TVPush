@@ -1,17 +1,17 @@
 package com.cgutman.adblib;
 
+import android.support.annotation.Nullable;
 
 import android.util.Log;
+import android.util.SparseArray;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.ConnectException;
 import java.net.Socket;
-import java.util.HashMap;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class AdbConnection implements Closeable
 {
     private static final String LOGTAG = AdbConnection.class.getSimpleName();
@@ -28,210 +28,238 @@ public class AdbConnection implements Closeable
 
     private int maxData;
 
-    private boolean connectAttempted;
+    private boolean attempted;
     private boolean connected;
     private boolean sentSignature;
 
-    private HashMap<Integer, AdbStream> openStreams;
+    private SparseArray<AdbStream> openStreams;
 
-    public AdbConnection()
+    public AdbConnection(String ipaddr, int ipport, AdbCrypto crypto) throws IOException
     {
-        openStreams = new HashMap<>();
-        connectionThread = createConnectionThread();
+        this.crypto = crypto;
+
+        socket = new Socket(ipaddr, ipport);
+        socket.setTcpNoDelay(true);
+
+        inputStream = socket.getInputStream();
+        outputStream = socket.getOutputStream();
+
+        openStreams = new SparseArray<>();
+
+        connectionThread = new Thread(connectionRunner);
+
     }
 
-    public static AdbConnection create(Socket socket, AdbCrypto crypto) throws IOException
+    private final Runnable connectionRunner = new Runnable()
     {
-        AdbConnection newConn = new AdbConnection();
-
-        newConn.crypto = crypto;
-        newConn.socket = socket;
-
-        newConn.inputStream = socket.getInputStream();
-        newConn.outputStream = socket.getOutputStream();
-
-        return newConn;
-    }
-
-    private Thread createConnectionThread()
-    {
-        final AdbConnection conn = this;
-
-        return new Thread(new Runnable()
+        @Override
+        public void run()
         {
-            @Override
-            public void run()
+            AdbConnection conn = AdbConnection.this;
+
+            while (!connectionThread.isInterrupted())
             {
-                while (!connectionThread.isInterrupted())
+                try
                 {
-                    try
+                    AdbProtocol.AdbMessage msg = AdbProtocol.AdbMessage.readAdbMessage(inputStream);
+
+                    if (!AdbProtocol.validateMessage(msg))
                     {
-                        AdbProtocol.AdbMessage msg = AdbProtocol.AdbMessage.readAdbMessage(inputStream);
+                        Log.e(LOGTAG, "createConnectionThread: message corrupted!");
 
-                        if (!AdbProtocol.validateMessage(msg))
-                        {
-                            Log.e(LOGTAG, "createConnectionThread: message corrupted!");
-
-                            continue;
-                        }
-
-                        switch (msg.command)
-                        {
-                            case AdbProtocol.CMD_OKAY:
-                            case AdbProtocol.CMD_WRTE:
-                            case AdbProtocol.CMD_CLSE:
-
-                                if (!conn.connected) continue;
-							
-                                AdbStream waitingStream = openStreams.get(msg.arg1);
-
-                                if (waitingStream == null)
-                                {
-                                    Log.e(LOGTAG, "createConnectionThread: no waiting stream!");
-
-                                    continue;
-                                }
-
-                                synchronized (waitingStream)
-                                {
-                                    if (msg.command == AdbProtocol.CMD_OKAY)
-                                    {
-                                        waitingStream.updateRemoteId(msg.arg0);
-                                        waitingStream.readyForWrite();
-                                        waitingStream.notify();
-                                    }
-
-                                    if (msg.command == AdbProtocol.CMD_WRTE)
-                                    {
-                                        waitingStream.addPayload(msg.payload);
-                                        waitingStream.sendReady();
-                                    }
-
-                                    if (msg.command == AdbProtocol.CMD_CLSE)
-                                    {
-                                        conn.openStreams.remove(msg.arg1);
-                                        waitingStream.notifyClose();
-                                    }
-                                }
-
-                                break;
-
-                            case AdbProtocol.CMD_AUTH:
-
-                                byte[] packet;
-
-                                if (msg.arg0 == AdbProtocol.AUTH_TYPE_TOKEN)
-                                {
-                                    if (conn.sentSignature)
-                                    {
-                                        packet = AdbProtocol.generateAuth(AdbProtocol.AUTH_TYPE_RSA_PUBLIC,
-                                                conn.crypto.getAdbPublicKeyPayload());
-                                    }
-                                    else
-                                    {
-                                        packet = AdbProtocol.generateAuth(AdbProtocol.AUTH_TYPE_SIGNATURE,
-                                                conn.crypto.signAdbTokenPayload(msg.payload));
-
-                                        conn.sentSignature = true;
-                                    }
-								
-                                    conn.outputStream.write(packet);
-                                    conn.outputStream.flush();
-                                }
-                                break;
-
-                            case AdbProtocol.CMD_CNXN:
-                                synchronized (conn)
-                                {
-                                    conn.maxData = msg.arg1;
-                                    conn.connected = true;
-                                    conn.notifyAll();
-                                }
-                                break;
-
-                            default:
-                                break;
-                        }
+                        continue;
                     }
-                    catch (Exception e)
+
+                    switch (msg.command)
                     {
-                        break;
+                        case AdbProtocol.CMD_OKAY:
+                        case AdbProtocol.CMD_WRTE:
+                        case AdbProtocol.CMD_CLSE:
+
+                            if (!conn.connected) continue;
+
+                            AdbStream waitingStream = openStreams.get(msg.arg1);
+
+                            if (waitingStream == null)
+                            {
+                                Log.e(LOGTAG, "createConnectionThread: no waiting stream!");
+
+                                continue;
+                            }
+
+                            synchronized (waitingStream)
+                            {
+                                if (msg.command == AdbProtocol.CMD_OKAY)
+                                {
+                                    waitingStream.updateRemoteId(msg.arg0);
+                                    waitingStream.readyForWrite();
+                                    waitingStream.notify();
+                                }
+
+                                if (msg.command == AdbProtocol.CMD_WRTE)
+                                {
+                                    waitingStream.addPayload(msg.payload);
+                                    waitingStream.sendReady();
+                                }
+
+                                if (msg.command == AdbProtocol.CMD_CLSE)
+                                {
+                                    conn.openStreams.remove(msg.arg1);
+                                    waitingStream.notifyClose();
+                                }
+                            }
+
+                            break;
+
+                        case AdbProtocol.CMD_AUTH:
+
+                            byte[] packet;
+
+                            if (msg.arg0 == AdbProtocol.AUTH_TYPE_TOKEN)
+                            {
+                                if (conn.sentSignature)
+                                {
+                                    packet = AdbProtocol.generateAuth(AdbProtocol.AUTH_TYPE_RSA_PUBLIC,
+                                            conn.crypto.getAdbPublicKeyPayload());
+                                }
+                                else
+                                {
+                                    packet = AdbProtocol.generateAuth(AdbProtocol.AUTH_TYPE_SIGNATURE,
+                                            conn.crypto.signAdbTokenPayload(msg.payload));
+
+                                    conn.sentSignature = true;
+                                }
+
+                                conn.outputStream.write(packet);
+                                conn.outputStream.flush();
+                            }
+                            break;
+
+                        case AdbProtocol.CMD_CNXN:
+
+                            synchronized (conn)
+                            {
+                                conn.maxData = msg.arg1;
+                                conn.connected = true;
+                                conn.notifyAll();
+                            }
+
+                            break;
                     }
                 }
-				
-				/* This thread takes care of cleaning up pending streams */
-                synchronized (conn)
+                catch (Exception ex)
                 {
-                    cleanupStreams();
-                    conn.notifyAll();
-                    conn.connectAttempted = false;
+                    ex.printStackTrace();
+
+                    break;
                 }
             }
-        });
-    }
+
+            synchronized (conn)
+            {
+                cleanupStreams();
+                conn.notifyAll();
+                conn.attempted = false;
+            }
+        }
+    };
 
     public int getMaxData()
     {
         return maxData;
     }
 
-    public void connect() throws IOException, InterruptedException
+    private boolean writeAndFlush(byte[] data)
     {
-        if (connected)
-            throw new IllegalStateException("Already connected");
-		
-		/* Write the CONNECT packet */
-        outputStream.write(AdbProtocol.generateConnect());
-        outputStream.flush();
-		
-		/* Start the connection thread to respond to the peer */
-        connectAttempted = true;
-        connectionThread.start();
-		
-		/* Wait for the connection to go live */
-        synchronized (this)
+        try
         {
-            if (!connected)
-                wait();
-
-            if (!connected)
-            {
-                throw new IOException("Connection failed");
-            }
+            outputStream.write(data);
+            outputStream.flush();
         }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+
+            return false;
+        }
+
+        return true;
     }
 
-    public AdbStream open(String destination) throws IOException, InterruptedException
+    public boolean connect()
     {
-        int localId = ++lastLocalId;
-
-        if (!connectAttempted)
-            throw new IllegalStateException("connect() must be called first");
-		
-        synchronized (this)
+        if (! connected)
         {
-            if (!connected) wait();
-
-            if (!connected)
+            if (writeAndFlush(AdbProtocol.generateConnect()))
             {
-                throw new IOException("Connection failed");
+                attempted = true;
+                connectionThread.start();
+
+                synchronized (this)
+                {
+                    if (!connected) AdbSimple.wait(this);
+
+                    if (!connected)
+                    {
+                        Log.e(LOGTAG, "Connection failed!");
+                    }
+                }
             }
         }
-		
-        AdbStream stream = new AdbStream(this, localId);
-        openStreams.put(localId, stream);
-		
-        outputStream.write(AdbProtocol.generateOpen(localId, destination));
-        outputStream.flush();
-		
-        synchronized (stream)
+
+        return connected;
+    }
+
+    private boolean checkConnected()
+    {
+        if (attempted)
         {
-            stream.wait();
+            synchronized (this)
+            {
+                if (!connected)
+                {
+                    Log.d(LOGTAG, "checkConnected: Waiting for connect to become ready.");
+
+                    AdbSimple.wait(this);
+                }
+
+                if (!connected)
+                {
+                    Log.e(LOGTAG, "checkConnected: Connection failed!");
+                }
+            }
         }
-		
-        if (stream.isClosed())
+
+        return connected;
+    }
+
+    @Nullable
+    public AdbStream openService(String service)
+    {
+        AdbStream stream = null;
+
+        if (checkConnected())
         {
-            throw new ConnectException("Stream open actively rejected by remote peer");
+            int localId = ++lastLocalId;
+
+            stream = new AdbStream(this, localId);
+            openStreams.put(localId, stream);
+
+            if (writeAndFlush(AdbProtocol.generateOpen(localId, service)))
+            {
+                synchronized (stream)
+                {
+                    AdbSimple.wait(stream);
+                }
+
+                if (stream.isClosed())
+                {
+                    Log.e(LOGTAG, "Stream rejected by remote host!");
+
+                    openStreams.remove(localId);
+                    stream = null;
+                }
+            }
         }
 
         return stream;
@@ -239,10 +267,12 @@ public class AdbConnection implements Closeable
 
     private void cleanupStreams()
     {
-        for (AdbStream stream : openStreams.values())
+        for (int inx = 0; inx < openStreams.size(); inx++)
         {
             try
             {
+                int streamId = openStreams.keyAt(inx);
+                AdbStream stream = openStreams.get(streamId);
                 stream.close();
             }
             catch (IOException ignore)
@@ -269,5 +299,7 @@ public class AdbConnection implements Closeable
         catch (Exception ignore)
         {
         }
+
+        Log.d(LOGTAG, "close: connection closed.");
     }
 }

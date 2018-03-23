@@ -48,20 +48,16 @@ public class AdbTest
     {
         Scanner in = new Scanner(System.in);
         AdbConnection adb;
-        Socket sock;
         AdbCrypto crypto;
 
         crypto = setupCrypto("pub.key", "priv.key");
 
         try
         {
-            sock = new Socket("192.168.0.11", 5555);
-            sock.setTcpNoDelay(true);
-
-            adb = AdbConnection.create(sock, crypto);
+            adb = new AdbConnection("192.168.0.11", 5555, crypto);
             adb.connect();
 
-            stream = adb.open("shell:");
+            stream = adb.openService("shell:");
         }
         catch (Exception ex)
         {
