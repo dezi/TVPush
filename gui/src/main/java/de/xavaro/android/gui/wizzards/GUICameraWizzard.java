@@ -90,10 +90,13 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
 
             if (camera == null) return;
 
-            videoSurface = camera.createSurface(getContext());
-            camera.registerSurface(videoSurface);
+            if (videoSurface == null)
+            {
+                videoSurface = camera.createSurface(getContext());
+                mainFrame.addView(videoSurface);
 
-            mainFrame.addView(videoSurface);
+                camera.registerSurface(videoSurface);
+            }
 
             camera.connectCamera();
             camera.setResolution(Camera.RESOLUTION_720P);
@@ -108,7 +111,18 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
 
         if (camera != null)
         {
+            if (videoSurface != null)
+            {
+                if (videoSurface.getParent() != null)
+                {
+                    mainFrame.removeView(videoSurface);
+                }
 
+                videoSurface = null;
+            }
+
+            camera.disconnectCamera();
+            camera = null;
         }
     }
 
