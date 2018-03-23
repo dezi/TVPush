@@ -208,7 +208,7 @@ public class GUISetup
         {
             case "ble": return R.string.setup_services_service_ble;
             case "loc": return R.string.setup_services_service_loc;
-            case "dev": return R.string.setup_services_service_loc;
+            case "dev": return R.string.setup_services_service_dev;
         }
 
         return R.string.setup_services_service_ukn;
