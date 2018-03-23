@@ -1,12 +1,12 @@
 package de.xavaro.android.systems;
 
 import android.app.Application;
-import android.util.Log;
 
 import org.json.JSONObject;
 
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.simple.Simple;
+
 import zz.top.sny.base.SNY;
 import zz.top.utl.Json;
 

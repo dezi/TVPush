@@ -2,8 +2,6 @@ package de.xavaro.android.systems;
 
 import android.app.Application;
 
-import de.xavaro.android.iot.base.IOTBackup;
-
 public class Systems
 {
     public static SystemsGUI gui;
