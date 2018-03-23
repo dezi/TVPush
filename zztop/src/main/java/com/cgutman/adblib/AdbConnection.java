@@ -2,36 +2,33 @@ package com.cgutman.adblib;
 
 import android.support.annotation.Nullable;
 
-import android.util.Log;
 import android.util.SparseArray;
+import android.util.Log;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Closeable;
 import java.net.Socket;
 
-@SuppressWarnings({"WeakerAccess", "unused"})
+@SuppressWarnings({"WeakerAccess", "unused", "SynchronizationOnLocalVariableOrMethodParameter"})
 public class AdbConnection implements Closeable
 {
     private static final String LOGTAG = AdbConnection.class.getSimpleName();
 
-    private Socket socket;
-
-    private int lastLocalId;
-
-    public OutputStream outputStream;
-    private InputStream inputStream;
-
-    private AdbCrypto crypto;
-    private Thread connectionThread;
-
     private int maxData;
+    private int lastLocalId;
 
     private boolean attempted;
     private boolean connected;
     private boolean sentSignature;
 
+    private Socket socket;
+    private OutputStream outputStream;
+    private InputStream inputStream;
+
+    private AdbCrypto crypto;
+    private Thread connectionThread;
     private SparseArray<AdbStream> openStreams;
 
     public AdbConnection(String ipaddr, int ipport, AdbCrypto crypto) throws IOException
@@ -45,11 +42,10 @@ public class AdbConnection implements Closeable
         outputStream = socket.getOutputStream();
 
         openStreams = new SparseArray<>();
-
         connectionThread = new Thread(connectionRunner);
-
     }
 
+    @SuppressWarnings("FieldCanBeLocal")
     private final Runnable connectionRunner = new Runnable()
     {
         @Override
@@ -61,11 +57,11 @@ public class AdbConnection implements Closeable
             {
                 try
                 {
-                    AdbProtocol.AdbMessage msg = AdbProtocol.AdbMessage.readAdbMessage(inputStream);
+                    AdbProtocol.AdbMessage msg = AdbProtocol.readAdbMessage(inputStream);
 
                     if (!AdbProtocol.validateMessage(msg))
                     {
-                        Log.e(LOGTAG, "createConnectionThread: message corrupted!");
+                        Log.e(LOGTAG, "connectionRunner: message corrupted!");
 
                         continue;
                     }
@@ -82,7 +78,7 @@ public class AdbConnection implements Closeable
 
                             if (waitingStream == null)
                             {
-                                Log.e(LOGTAG, "createConnectionThread: no waiting stream!");
+                                Log.e(LOGTAG, "connectionRunner: no waiting stream!");
 
                                 continue;
                             }
@@ -113,29 +109,43 @@ public class AdbConnection implements Closeable
 
                         case AdbProtocol.CMD_AUTH:
 
-                            byte[] packet;
+                            Log.d(LOGTAG, "connectionRunner: AUTH type=" + msg.arg0);
 
                             if (msg.arg0 == AdbProtocol.AUTH_TYPE_TOKEN)
                             {
+                                Log.d(LOGTAG, "connectionRunner: AUTH TOKEN.");
+
+                                byte[] packet;
+
                                 if (conn.sentSignature)
                                 {
+                                    Log.d(LOGTAG, "connectionRunner: send RSA-KEY.");
+
                                     packet = AdbProtocol.generateAuth(AdbProtocol.AUTH_TYPE_RSA_PUBLIC,
                                             conn.crypto.getAdbPublicKeyPayload());
                                 }
                                 else
                                 {
+                                    Log.d(LOGTAG, "connectionRunner: send SIGNATURE.");
+
                                     packet = AdbProtocol.generateAuth(AdbProtocol.AUTH_TYPE_SIGNATURE,
                                             conn.crypto.signAdbTokenPayload(msg.payload));
 
                                     conn.sentSignature = true;
                                 }
 
-                                conn.outputStream.write(packet);
-                                conn.outputStream.flush();
+                                writeAndFlush(packet);
                             }
+                            else
+                            {
+                                Log.d(LOGTAG, "connectionRunner: AUTH UNKNOWN.");
+                            }
+
                             break;
 
                         case AdbProtocol.CMD_CNXN:
+
+                            Log.d(LOGTAG, "connectionRunner: CNXN maxData=" + msg.arg1);
 
                             synchronized (conn)
                             {
@@ -157,9 +167,11 @@ public class AdbConnection implements Closeable
 
             synchronized (conn)
             {
-                cleanupStreams();
-                conn.notifyAll();
                 conn.attempted = false;
+                conn.connected = false;
+
+                closeStreams();
+                conn.notifyAll();
             }
         }
     };
@@ -169,7 +181,12 @@ public class AdbConnection implements Closeable
         return maxData;
     }
 
-    private boolean writeAndFlush(byte[] data)
+    public boolean writeAndFlush(byte[] data)
+    {
+        return writePacket(data, true);
+    }
+
+    public boolean writePacket(byte[] data, boolean flush)
     {
         try
         {
@@ -257,6 +274,7 @@ public class AdbConnection implements Closeable
                     Log.e(LOGTAG, "Stream rejected by remote host!");
 
                     openStreams.remove(localId);
+
                     stream = null;
                 }
             }
@@ -265,7 +283,7 @@ public class AdbConnection implements Closeable
         return stream;
     }
 
-    private void cleanupStreams()
+    private void closeStreams()
     {
         for (int inx = 0; inx < openStreams.size(); inx++)
         {

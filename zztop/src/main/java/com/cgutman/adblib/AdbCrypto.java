@@ -1,13 +1,13 @@
 package com.cgutman.adblib;
 
 import android.support.annotation.Nullable;
+
 import android.util.Base64;
 import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -15,12 +15,12 @@ import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.EncodedKeySpec;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+
+//import javax.xml.bind.DatatypeConverter;
 
 import javax.crypto.Cipher;
 
@@ -114,12 +114,14 @@ public class AdbCrypto
 
         bbuf.putInt(KEY_LENGTH_WORDS);
         bbuf.putInt(n0inv.negate().intValue());
+
         for (int i : myN)
             bbuf.putInt(i);
         for (int i : myRr)
             bbuf.putInt(i);
 
         bbuf.putInt(pubkey.getPublicExponent().intValue());
+
         return bbuf.array();
     }
 
@@ -198,34 +200,35 @@ public class AdbCrypto
 
     public byte[] signAdbTokenPayload(byte[] payload) throws GeneralSecurityException
     {
-        Cipher c = Cipher.getInstance("RSA/ECB/NoPadding");
+        Cipher cipher = Cipher.getInstance("RSA/ECB/NoPadding");
 
-        c.init(Cipher.ENCRYPT_MODE, keyPair.getPrivate());
+        cipher.init(Cipher.ENCRYPT_MODE, keyPair.getPrivate());
 
-        c.update(SIGNATURE_PADDING);
+        cipher.update(SIGNATURE_PADDING);
 
-        return c.doFinal(payload);
+        return cipher.doFinal(payload);
+
+        /*
+        Signature instance = Signature.getInstance("SHA1withRSA");
+        instance.initSign(keyPair.getPrivate());
+        instance.update(payload);
+
+        return instance.sign();
+        */
     }
 
-
-    public byte[] getAdbPublicKeyPayload() throws IOException
+    public byte[] getAdbPublicKeyPayload()
     {
-        byte[] convertedKey = convertRsaPublicKeyToAdbFormat((RSAPublicKey) keyPair.getPublic());
+        byte[] adbKey = convertRsaPublicKeyToAdbFormat((RSAPublicKey) keyPair.getPublic());
+        String b64Key = Base64.encodeToString(adbKey, Base64.NO_WRAP).trim();
+        int rest = b64Key.length() % 4;
 
-        StringBuilder keyString = new StringBuilder(720);
+        Log.d(LOGTAG, "getAdbPublicKeyPayload: rest=" + rest + " b64Key=>>>" + b64Key + "<<<");
 
-        //
-        // The key is base64 encoded with a user@host suffix
-        // and terminated with a NUL.
-        //
+        String keyString = b64Key + " unknown@unknown" + '\0';
 
-        keyString.append(Base64.encodeToString(convertedKey,0));
-        keyString.append(" unknown@unknown");
-        keyString.append('\0');
-
-        return keyString.toString().getBytes("UTF-8");
+        return keyString.getBytes();
     }
-
 
     public void saveAdbKeyPair(File privateKey, File publicKey)
     {

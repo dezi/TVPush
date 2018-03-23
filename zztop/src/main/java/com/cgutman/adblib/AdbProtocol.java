@@ -1,20 +1,12 @@
 package com.cgutman.adblib;
 
-
 import android.support.annotation.Nullable;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-
-/**
- * This class provides useful functions and fields for ADB protocol details.
- *
- * @author Cameron Gutman
- */
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class AdbProtocol
 {
     public static final int ADB_HEADER_LENGTH = 24;
@@ -33,25 +25,12 @@ public class AdbProtocol
 
     public static final int CONNECT_VERSION = 0x01000000;
     public static final int CONNECT_MAXDATA = 4096;
-    public static final byte[] CONNECT_PAYLOAD = "host::\0".getBytes();
 
-
-    private static int getPayloadChecksum(byte[] payload)
-    {
-        int checksum = 0;
-
-        for (byte bite : payload) checksum += bite & 0xff;
-
-        return checksum;
-    }
+    public static final String CONNECT_SERVICE = "host::";
 
     public static boolean validateMessage(AdbMessage msg)
     {
         if (msg == null) return false;
-
-		//
-		// Magic is cmd ^ 0xffffffff
-        //
 
         if (msg.command != ~msg.magic) return false;
 
@@ -64,6 +43,15 @@ public class AdbProtocol
         }
 
         return true;
+    }
+
+    private static int getPayloadChecksum(byte[] payload)
+    {
+        int checksum = 0;
+
+        for (byte bite : payload) checksum += bite & 0xff;
+
+        return checksum;
     }
 
     public static byte[] generateMessage(int cmd, int arg0, int arg1, byte[] payload)
@@ -101,7 +89,14 @@ public class AdbProtocol
 
     public static byte[] generateConnect()
     {
-        return generateMessage(CMD_CNXN, CONNECT_VERSION, CONNECT_MAXDATA, CONNECT_PAYLOAD);
+        byte[] dest = CONNECT_SERVICE.getBytes();
+
+        ByteBuffer data = ByteBuffer.allocate(dest.length + 1);
+
+        data.put(dest);
+        data.put((byte) 0);
+
+        return generateMessage(CMD_CNXN, CONNECT_VERSION, CONNECT_MAXDATA, data.array());
     }
 
     public static byte[] generateAuth(int type, byte[] data)
@@ -109,14 +104,16 @@ public class AdbProtocol
         return generateMessage(CMD_AUTH, type, 0, data);
     }
 
-    public static byte[] generateOpen(int localId, String dest)
+    public static byte[] generateOpen(int localId, String service)
     {
-        ByteBuffer bbuf = ByteBuffer.allocate(dest.length() + 1);
+        byte[] dest = service.getBytes();
 
-        bbuf.put(dest.getBytes());
-        bbuf.put((byte) 0);
+        ByteBuffer data = ByteBuffer.allocate(dest.length + 1);
 
-        return generateMessage(CMD_OPEN, localId, 0, bbuf.array());
+        data.put(dest);
+        data.put((byte) 0);
+
+        return generateMessage(CMD_OPEN, localId, 0, data.array());
     }
 
     public static byte[] generateWrite(int localId, int remoteId, byte[] data)
@@ -134,7 +131,39 @@ public class AdbProtocol
         return generateMessage(CMD_OKAY, localId, remoteId, null);
     }
 
-    final static class AdbMessage
+    @Nullable
+    public static AdbMessage readAdbMessage(InputStream in)
+    {
+        try
+        {
+            AdbMessage msg = new AdbMessage();
+
+            ByteBuffer packet = ByteBuffer.allocate(ADB_HEADER_LENGTH).order(ByteOrder.LITTLE_ENDIAN);
+            int bytesRead = in.read(packet.array(), 0, ADB_HEADER_LENGTH);
+            if (bytesRead != ADB_HEADER_LENGTH) return null;
+
+            msg.command = packet.getInt();
+            msg.arg0 = packet.getInt();
+            msg.arg1 = packet.getInt();
+            msg.payloadLength = packet.getInt();
+            msg.checksum = packet.getInt();
+            msg.magic = packet.getInt();
+
+            msg.payload = new byte[msg.payloadLength];
+            bytesRead = in.read(msg.payload);
+            if (bytesRead != msg.payload.length) return null;
+
+            return msg;
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static class AdbMessage
     {
         public int command;
         public int arg0;
@@ -143,37 +172,5 @@ public class AdbProtocol
         public int checksum;
         public int magic;
         public byte[] payload;
-
-        @Nullable
-        public static AdbMessage readAdbMessage(InputStream in)
-        {
-            try
-            {
-                AdbMessage msg = new AdbMessage();
-
-                ByteBuffer packet = ByteBuffer.allocate(ADB_HEADER_LENGTH).order(ByteOrder.LITTLE_ENDIAN);
-                int bytesRead = in.read(packet.array(), 0, ADB_HEADER_LENGTH);
-                if (bytesRead != ADB_HEADER_LENGTH) return null;
-
-                msg.command = packet.getInt();
-                msg.arg0 = packet.getInt();
-                msg.arg1 = packet.getInt();
-                msg.payloadLength = packet.getInt();
-                msg.checksum = packet.getInt();
-                msg.magic = packet.getInt();
-
-                msg.payload = new byte[msg.payloadLength];
-                bytesRead = in.read(msg.payload);
-                if (bytesRead != msg.payload.length) return null;
-
-                return msg;
-            }
-            catch (Exception ex)
-            {
-                ex.printStackTrace();
-            }
-
-            return null;
-        }
     }
 }
