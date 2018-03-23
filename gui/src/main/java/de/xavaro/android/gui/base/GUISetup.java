@@ -13,6 +13,7 @@ import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -76,8 +77,7 @@ public class GUISetup
         int devEnabled = Settings.Secure.getInt(Simple.getContentResolver(),
                 Settings.Global.DEVELOPMENT_SETTINGS_ENABLED , 0);
 
-
-        Json.put(services, "dev", locgpsEnabled | locnetEnabled);
+        Json.put(services, "dev", devEnabled == 1);
 
         return services;
     }
@@ -128,8 +128,6 @@ public class GUISetup
             {
                 JSONArray cam = new JSONArray();
                 Json.put(cam, Manifest.permission.CAMERA);
-                Json.put(cam, Manifest.permission.CAPTURE_AUDIO_OUTPUT);
-                Json.put(cam, Manifest.permission.CAPTURE_VIDEO_OUTPUT);
                 Json.put(perms, "cam", cam);
             }
         }
@@ -145,7 +143,7 @@ public class GUISetup
         if (area.equals("loc")) which = Manifest.permission.ACCESS_FINE_LOCATION;
         if (area.equals("ble")) which = Manifest.permission.BLUETOOTH_ADMIN;
         if (area.equals("ext")) which = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-        if (area.equals("cam")) which = Manifest.permission.CAPTURE_VIDEO_OUTPUT;
+        if (area.equals("cam")) which = Manifest.permission.CAMERA;
 
         if ((which != null) && ! havePermission(activity, which))
         {
@@ -194,6 +192,9 @@ public class GUISetup
     private static boolean havePermission(Context context, String manifestperm)
     {
         int permission = ContextCompat.checkSelfPermission(context, manifestperm);
+
+        Log.d(LOGTAG, "havePermission: perm=" + manifestperm + " ok=" + (permission == PackageManager.PERMISSION_GRANTED));
+
         return (permission == PackageManager.PERMISSION_GRANTED);
     }
 
@@ -289,7 +290,36 @@ public class GUISetup
 
             if (service.equals("dev"))
             {
-                context.startActivity(new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
+                int devEnabled = Settings.Secure.getInt(Simple.getContentResolver(),
+                        Settings.Global.DEVELOPMENT_SETTINGS_ENABLED , 0);
+
+                if (devEnabled == 1)
+                {
+                    context.startActivity(new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
+                }
+                else
+                {
+                    if (Simple.isSony())
+                    {
+                        //
+                        // Fuck dat. Sony engineers fucked it up again.
+                        //
+
+                        String pkg = "com.android.tv.settings";
+                        String cls = "com.sony.dtv.settings.about.AboutActivity";
+
+                        ComponentName cn = new ComponentName(pkg, cls);
+                        Intent intent = new Intent();
+                        intent.setComponent(cn);
+
+                        context.startActivity(intent);
+                    }
+                    else
+                    {
+                        context.startActivity(new Intent(Settings.ACTION_DEVICE_INFO_SETTINGS));
+                    }
+                }
+
                 return true;
             }
 
@@ -354,10 +384,6 @@ public class GUISetup
                 return R.string.setup_permissions_perm_write_external_storage;
             case Manifest.permission.CAMERA:
                 return R.string.setup_permissions_perm_camera;
-            case Manifest.permission.CAPTURE_AUDIO_OUTPUT:
-                return R.string.setup_permissions_perm_capture_audio_output;
-            case Manifest.permission.CAPTURE_VIDEO_OUTPUT:
-                return R.string.setup_permissions_perm_capture_video_output;
         }
 
         return R.string.setup_permissions_perm_unknown;

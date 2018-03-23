@@ -61,7 +61,7 @@ public class GUIDesktopActivity extends GUIActivity
 
         geomapWizzard = new GUIGeomapWizzard(this);
 
-        displayPingWizzard();
+        displayPermissionsWizzard();
 
         checkWindowSize();
    }

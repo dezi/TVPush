@@ -33,7 +33,5 @@
     <string name="setup_permissions_perm_read_external_storage">Read</string>
     <string name="setup_permissions_perm_write_external_storage">Write</string>
     <string name="setup_permissions_perm_camera">Camera-Access</string>
-    <string name="setup_permissions_perm_capture_audio_output">Audio-Recording</string>
-    <string name="setup_permissions_perm_capture_video_output">Video-Recording</string>
 
 </resources>

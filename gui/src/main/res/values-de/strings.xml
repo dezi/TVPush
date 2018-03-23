@@ -11,9 +11,9 @@
     <string name="setup_services_service_loc_active">Standortstatus ist aktiv</string>
     <string name="setup_services_service_loc_inactive">Standortstatus ist aus</string>
 
-    <string name="setup_services_service_dev">Developer</string>
-    <string name="setup_services_service_dev_active">Developer-Status ist aktiv</string>
-    <string name="setup_services_service_dev_inactive">Developer-Status ist aktiv</string>
+    <string name="setup_services_service_dev">Entwickler</string>
+    <string name="setup_services_service_dev_active">Entwickler-Status ist aktiv</string>
+    <string name="setup_services_service_dev_inactive">Entwickler-Status ist aktiv</string>
 
     <string name="setup_permissions_permission">Berechtigung</string>
 
@@ -33,7 +33,5 @@
     <string name="setup_permissions_perm_read_external_storage">Lesen</string>
     <string name="setup_permissions_perm_write_external_storage">Schreiben</string>
     <string name="setup_permissions_perm_camera">Kamera-Zugriff</string>
-    <string name="setup_permissions_perm_capture_audio_output">Audio-Aufnahme</string>
-    <string name="setup_permissions_perm_capture_video_output">Video-Aufnahme</string>
 
 </resources>
