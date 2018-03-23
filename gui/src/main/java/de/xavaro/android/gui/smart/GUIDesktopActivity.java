@@ -1,14 +1,21 @@
 package de.xavaro.android.gui.smart;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIActivity;
 import de.xavaro.android.gui.base.GUIPlugin;
+import de.xavaro.android.gui.base.GUIPluginTitleIOT;
 import de.xavaro.android.gui.wizzards.GUICamerasWizzard;
 import de.xavaro.android.gui.wizzards.GUIChannelWizzard;
 import de.xavaro.android.gui.wizzards.GUIGeomapWizzard;
@@ -28,19 +35,12 @@ public class GUIDesktopActivity extends GUIActivity
 
     public GUIToastBar speechRecognition;
 
-    public GUIPingWizzard pingWizzard;
-    public GUITodoWizzard todoWizzard;
-    public GUICamerasWizzard cameraWizzard;
-    public GUIChannelWizzard channelWizzard;
-    public GUILocationsWizzard locationsWizzard;
-    public GUIPermissionWizzard permissionsWizzard;
-
-    public GUIGeomapWizzard geomapWizzard;
-
     private GUIVideoSurface videoSurface1;
     private GUIVideoSurface videoSurface2;
     private GUIVideoSurface videoSurface3;
     private GUIVideoSurface videoSurface4;
+
+    private Map<String,GUIPlugin> wizzards;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -52,19 +52,67 @@ public class GUIDesktopActivity extends GUIActivity
         speechRecognition = new GUIToastBar(this);
         topframe.addView(speechRecognition, speechRecognition.getPreferredLayout());
 
-        pingWizzard = new GUIPingWizzard(this);
-        todoWizzard = new GUITodoWizzard(this);
-        cameraWizzard = new GUICamerasWizzard(this);
-        channelWizzard = new GUIChannelWizzard(this);
-        locationsWizzard = new GUILocationsWizzard(this);
-        permissionsWizzard = new GUIPermissionWizzard(this);
+        wizzards = new LinkedHashMap<>();
 
-        geomapWizzard = new GUIGeomapWizzard(this);
+        // @formatter:off
 
-        displayPermissionsWizzard();
+        wizzards.put(GUIPingWizzard.      class.getSimpleName(), new GUIPingWizzard      (this));
+        wizzards.put(GUITodoWizzard.      class.getSimpleName(), new GUITodoWizzard      (this));
+        wizzards.put(GUICamerasWizzard.   class.getSimpleName(), new GUICamerasWizzard   (this));
+        wizzards.put(GUIChannelWizzard.   class.getSimpleName(), new GUIChannelWizzard   (this));
+        wizzards.put(GUILocationsWizzard. class.getSimpleName(), new GUILocationsWizzard (this));
+        wizzards.put(GUIGeomapWizzard.    class.getSimpleName(), new GUIGeomapWizzard    (this));
+        wizzards.put(GUIPermissionWizzard.class.getSimpleName(), new GUIPermissionWizzard(this));
+
+        // @formatter:on
+
+        displayWizzard(GUIPermissionWizzard.class.getSimpleName());
 
         checkWindowSize();
    }
+
+   @Nullable
+    private GUIPlugin getWizzard(String wizzard)
+   {
+       if (wizzard == null) return null;
+
+       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+       {
+           return wizzards.getOrDefault(wizzard, null);
+       }
+       else
+       {
+           try
+           {
+               return wizzards.get(wizzard);
+           }
+           catch (Exception ignore)
+           {
+               return null;
+           }
+       }
+   }
+
+    public void displayWizzard(String name)
+    {
+        GUIPlugin wizzard = wizzards.get(name);
+        if (wizzard == null) return;
+
+        showPlugin(wizzard);
+    }
+
+    public void displayWizzard(String name, IOTObject iotobject)
+    {
+        GUIPlugin wizzard = wizzards.get(name);
+        if (wizzard == null) return;
+
+        if (wizzard instanceof GUIPluginTitleIOT)
+        {
+            ((GUIPluginTitleIOT) wizzard).setIOTObject(iotobject);
+        }
+
+        showPlugin(wizzard);
+    }
 
     @Override
     public void onBackPressed()
@@ -79,15 +127,7 @@ public class GUIDesktopActivity extends GUIActivity
 
             if ((plugin instanceof GUIPlugin) && ((GUIPlugin) plugin).isActive())
             {
-                if (plugin == locationsWizzard)
-                {
-                    hideLocationsWizzard();
-                }
-
-                if (plugin == geomapWizzard)
-                {
-                    hideGeomapWizzard();
-                }
+                hidePlugin((GUIPlugin) plugin);
 
                 didwas = true;
                 break;
@@ -155,83 +195,9 @@ public class GUIDesktopActivity extends GUIActivity
         checkWindowSize();
     }
 
-    public void hideChannelWizzard()
-    {
-        hidePlugin(channelWizzard);
-    }
-
-    public void displayChannelWizzard()
-    {
-        showPlugin(channelWizzard);
-    }
-
-    public void hideGeomapWizzard()
-    {
-        hidePlugin(geomapWizzard);
-    }
-
-    public void displayGeomapWizzard(IOTObject iotobject)
-    {
-        geomapWizzard.setIOTObject(iotobject);
-
-        showPlugin(geomapWizzard);
-    }
-
-    public void hideLocationsWizzard()
-    {
-        hidePlugin(geomapWizzard);
-        hidePlugin(locationsWizzard);
-    }
-
-    public void displayLocationsWizzard()
-    {
-        showPlugin(locationsWizzard);
-    }
-
-    public void hidePingWizzard()
-    {
-        hidePlugin(pingWizzard);
-    }
-
-    public void displayPingWizzard()
-    {
-        showPlugin(pingWizzard);
-    }
-
-    public void hideTodoWizzard()
-    {
-        hidePlugin(geomapWizzard);
-        hidePlugin(todoWizzard);
-    }
-
-    public void displayTodoWizzard()
-    {
-        showPlugin(todoWizzard);
-    }
-
-    public void hideCameraWizzard()
-    {
-        hidePlugin(cameraWizzard);
-    }
-
-    public void displayCameraWizzard()
-    {
-        showPlugin(cameraWizzard);
-    }
-
-    public void hidePermissionsWizzard()
-    {
-        hidePlugin(permissionsWizzard);
-    }
-
-    public void displayPermissionsWizzard()
-    {
-        showPlugin(permissionsWizzard);
-    }
-
     private void showPlugin(GUIPlugin plugin)
     {
-        if (plugin.getParent() == null)
+        if ((plugin != null) && (plugin.getParent() == null))
         {
             topframe.addView(plugin);
         }
@@ -249,13 +215,10 @@ public class GUIDesktopActivity extends GUIActivity
 
     private void hideAllWizzards()
     {
-        hidePlugin(todoWizzard);
-        hidePlugin(pingWizzard);
-        hidePlugin(cameraWizzard);
-        hidePlugin(geomapWizzard);
-        hidePlugin(channelWizzard);
-        hidePlugin(locationsWizzard);
-        hidePlugin(permissionsWizzard);
+        for (Map.Entry<String, GUIPlugin> entry : wizzards.entrySet())
+        {
+            hidePlugin(entry.getValue());
+        }
     }
 
     public void displaySpeechRecognition(boolean show)
@@ -318,12 +281,14 @@ public class GUIDesktopActivity extends GUIActivity
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
-        GUIPlugin wizzard = null;
+        String name = null;
 
-        if (keyCode == KeyEvent.KEYCODE_PROG_RED) wizzard = cameraWizzard;
-        if (keyCode == KeyEvent.KEYCODE_PROG_GREEN) wizzard = pingWizzard;
-        if (keyCode == KeyEvent.KEYCODE_PROG_YELLOW) wizzard = permissionsWizzard;
-        if (keyCode == KeyEvent.KEYCODE_PROG_BLUE) wizzard = channelWizzard;
+        if (keyCode == KeyEvent.KEYCODE_PROG_RED) name = GUICamerasWizzard.class.getSimpleName();
+        if (keyCode == KeyEvent.KEYCODE_PROG_GREEN) name = GUIPingWizzard.class.getSimpleName();
+        if (keyCode == KeyEvent.KEYCODE_PROG_YELLOW) name = GUIPermissionWizzard.class.getSimpleName();
+        if (keyCode == KeyEvent.KEYCODE_PROG_BLUE) name = GUIChannelWizzard.class.getSimpleName();
+
+        GUIPlugin wizzard = getWizzard(name);
 
         if (wizzard != null)
         {

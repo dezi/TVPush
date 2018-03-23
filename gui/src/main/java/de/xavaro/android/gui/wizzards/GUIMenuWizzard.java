@@ -1,37 +1,34 @@
 package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 
 import org.json.JSONArray;
 
 import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.base.GUI;
-import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUIIcons;
 import de.xavaro.android.gui.base.GUIPluginTitleList;
 import de.xavaro.android.gui.simple.Json;
-import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUIListEntry;
 import de.xavaro.android.gui.views.GUIListView;
-import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
+import pub.android.interfaces.drv.Camera;
 
-public class GUILocationsWizzard extends GUIPluginTitleList
+public class GUIMenuWizzard extends GUIPluginTitleList
 {
-    private final static String LOGTAG = GUILocationsWizzard.class.getSimpleName();
+    private final static String LOGTAG = GUIMenuWizzard.class.getSimpleName();
 
-    public GUILocationsWizzard(Context context)
+    public GUIMenuWizzard(Context context)
     {
         super(context);
 
         setIsWizzard(true, false, false);
 
-        setTitleIcon(R.drawable.position_560);
-        setTitleText("Geo-Positionen");
+        setTitleIcon(R.drawable.menu_400);
+        setTitleText("Menu");
     }
 
     @Override
@@ -51,38 +48,17 @@ public class GUILocationsWizzard extends GUIPluginTitleList
 
             if (device == null) continue;
 
-            if (! device.hasCapability("fixed")) continue;
+            if (! device.type.equals("camera")) continue;
 
-            boolean isnice = (device.fixedLatFine != null)
-                    && (device.fixedLonFine != null)
-                    && (device.fixedAltFine != null);
-
-            if (todo && isnice) continue;
+            if (todo) continue;
 
             GUIListEntry entry = new GUIListEntry(listView.getContext());
             entry.setOnClickListener(onClickListener);
             entry.setTag(device);
 
-            String info = "Keine Geo-Position";
-
-            if (isnice)
-            {
-                info = ""
-                        + Simple.getRounded3(device.fixedLatFine)
-                        + " "
-                        + Simple.getRounded3(device.fixedLonFine)
-                        + " "
-                        + Simple.getRounded3(device.fixedAltFine)
-                        + " m";
-            }
-
             entry.iconView.setImageResource(GUIIcons.getImageResid(device));
             entry.headerViev.setText(device.name);
-            entry.infoView.setText(info);
-
-            entry.infoView.setTextColor(isnice
-                    ? GUIDefs.TEXT_COLOR_INFOS
-                    : GUIDefs.TEXT_COLOR_ALERTS);
+            entry.infoView.setText(device.did);
 
             listView.addView(entry);
         }
@@ -93,9 +69,7 @@ public class GUILocationsWizzard extends GUIPluginTitleList
         @Override
         public void onClick(View view)
         {
-            IOTObject iotobject = (IOTObject) view.getTag();
 
-            GUI.instance.desktopActivity.displayWizzard(GUIGeomapWizzard.class.getSimpleName(), iotobject);
         }
     };
 }
