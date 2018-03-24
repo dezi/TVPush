@@ -17,7 +17,7 @@ public class AdbTest
             adb = new AdbConnection("192.168.0.11", 5555);
             adb.connect();
 
-            stream = adb.openService("shell:");
+            stream = adb.openService("shell:ls -al /storage");
         }
         catch (Exception ex)
         {
@@ -57,7 +57,10 @@ public class AdbTest
 
         try
         {
-            stream.write("ls -al /storage\n");
+            String command = "ls -al /storage\n";
+
+            Log.d(LOGTAG, "main: write=" + command);
+            //stream.write(command);
         }
         catch (Exception ex)
         {
