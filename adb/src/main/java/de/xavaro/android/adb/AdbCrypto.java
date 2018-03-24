@@ -1,5 +1,6 @@
 package de.xavaro.android.adb;
 
+import android.os.Environment;
 import android.support.annotation.Nullable;
 
 import android.util.Base64;
@@ -234,4 +235,34 @@ public class AdbCrypto
 
         return null;
     }
+
+    public static AdbCrypto setupCrypto(String pubKeyFile, String privKeyFile)
+    {
+        File ext = Environment.getExternalStorageDirectory();
+        File pub = new File(ext, pubKeyFile);
+        File priv = new File(ext, privKeyFile);
+
+        AdbCrypto crypto = null;
+
+        if (pub.exists() && priv.exists())
+        {
+            crypto = AdbCrypto.loadAdbKeyPair(priv, pub);
+        }
+
+        if (crypto == null)
+        {
+            crypto = AdbCrypto.generateAdbKeyPair();
+
+            if (crypto != null) crypto.saveAdbKeyPair(priv, pub);
+
+            System.out.println("Generated new keypair");
+        }
+        else
+        {
+            System.out.println("Loaded existing keypair");
+        }
+
+        return crypto;
+    }
+
 }

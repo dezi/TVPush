@@ -31,15 +31,21 @@ public class AdbConnection implements Closeable
     private Thread connectionThread;
     private SparseArray<AdbStream> openStreams;
 
-    public AdbConnection(String ipaddr, int ipport, AdbCrypto crypto) throws IOException
+    public AdbConnection(String ipaddr, int ipport) throws IOException
     {
-        this.crypto = crypto;
+        this.crypto = AdbCrypto.setupCrypto("pub.key", "priv.key");
+
+        Log.d(LOGTAG, "AdbConnection: open socket...");
 
         socket = new Socket(ipaddr, ipport);
         socket.setTcpNoDelay(true);
 
+        Log.d(LOGTAG, "AdbConnection: open socket done.");
+
         inputStream = socket.getInputStream();
         outputStream = socket.getOutputStream();
+
+        Log.d(LOGTAG, "AdbConnection: get streams done.");
 
         openStreams = new SparseArray<>();
         connectionThread = new Thread(connectionRunner);
@@ -207,11 +213,11 @@ public class AdbConnection implements Closeable
     {
         if (! connected)
         {
+            attempted = true;
+            connectionThread.start();
+
             if (writeAndFlush(AdbProtocol.generateConnect()))
             {
-                attempted = true;
-                connectionThread.start();
-
                 synchronized (this)
                 {
                     if (!connected)
