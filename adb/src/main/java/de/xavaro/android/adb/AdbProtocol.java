@@ -1,16 +1,10 @@
 package de.xavaro.android.adb;
 
-import android.support.annotation.Nullable;
-
-import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class AdbProtocol
 {
-    public static final int ADB_HEADER_LENGTH = 24;
-
     public static final int AUTH_TYPE_TOKEN = 1;
     public static final int AUTH_TYPE_SIGNATURE = 2;
     public static final int AUTH_TYPE_RSA_PUBLIC = 3;
@@ -28,64 +22,11 @@ public class AdbProtocol
 
     public static final String CONNECT_SERVICE = "host::";
 
-    public static boolean validateMessage(AdbMessage msg)
+    public static byte[] generateMessage(int command, int arg0, int arg1, byte[] payload)
     {
-        if (msg == null) return false;
-
-        if (msg.command != ~msg.magic) return false;
-
-        if (msg.payloadLength != 0)
-        {
-            if (getPayloadChecksum(msg.payload) != msg.checksum)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private static int getPayloadChecksum(byte[] payload)
-    {
-        int checksum = 0;
-
-        for (byte bite : payload) checksum += bite & 0xff;
-
-        return checksum;
-    }
-
-    public static byte[] generateMessage(int cmd, int arg0, int arg1, byte[] payload)
-    {
-        //
-        // From original adb implementation:
-        //
-		// struct message
-        // {
-        // 		unsigned command;       // command identifier constant
-        // 		unsigned arg0;          // first argument
-        // 		unsigned arg1;          // second argument
-        // 		unsigned data_length;   // length of payload (0 is allowed)
-        // 		unsigned data_check;    // checksum of data payload
-        // 		unsigned magic;         // command ^ 0xffffffff
-        // }
-        //
-
-		if (payload == null) payload = new byte[0];
-
-        ByteBuffer message;
-
-        message = ByteBuffer.allocate(ADB_HEADER_LENGTH + payload.length).order(ByteOrder.LITTLE_ENDIAN);
-
-        message.putInt(cmd);
-        message.putInt(arg0);
-        message.putInt(arg1);
-        message.putInt(payload.length);
-        message.putInt(getPayloadChecksum(payload));
-        message.putInt(~cmd);
-        message.put(payload);
-
-        return message.array();
-    }
+        AdbMessage msg = new AdbMessage(command, arg0, arg1, payload);
+        return msg.getMessageBytes();
+   }
 
     public static byte[] generateConnect()
     {
@@ -104,73 +45,30 @@ public class AdbProtocol
         return generateMessage(CMD_AUTH, type, 0, data);
     }
 
-    public static byte[] generateOpen(int localId, String service)
+    public static byte[] generateOpen(int locId, String service)
     {
-        byte[] dest = service.getBytes();
+        byte[] servdata = service.getBytes();
 
-        ByteBuffer data = ByteBuffer.allocate(dest.length + 1);
+        ByteBuffer data = ByteBuffer.allocate(servdata.length + 1);
 
-        data.put(dest);
+        data.put(servdata);
         data.put((byte) 0);
 
-        return generateMessage(CMD_OPEN, localId, 0, data.array());
+        return generateMessage(CMD_OPEN, locId, 0, data.array());
     }
 
-    public static byte[] generateWrite(int localId, int remoteId, byte[] data)
+    public static byte[] generateWrite(int locId, int remId, byte[] data)
     {
-        return generateMessage(CMD_WRTE, localId, remoteId, data);
+        return generateMessage(CMD_WRTE, locId, remId, data);
     }
 
-    public static byte[] generateClose(int localId, int remoteId)
+    public static byte[] generateClose(int locId, int remId)
     {
-        return generateMessage(CMD_CLSE, localId, remoteId, null);
+        return generateMessage(CMD_CLSE, locId, remId, null);
     }
 
-    public static byte[] generateOkay(int localId, int remoteId)
+    public static byte[] generateOkay(int locId, int remId)
     {
-        return generateMessage(CMD_OKAY, localId, remoteId, null);
-    }
-
-    @Nullable
-    public static AdbMessage readAdbMessage(InputStream in)
-    {
-        try
-        {
-            AdbMessage msg = new AdbMessage();
-
-            ByteBuffer packet = ByteBuffer.allocate(ADB_HEADER_LENGTH).order(ByteOrder.LITTLE_ENDIAN);
-            int bytesRead = in.read(packet.array(), 0, ADB_HEADER_LENGTH);
-            if (bytesRead != ADB_HEADER_LENGTH) return null;
-
-            msg.command = packet.getInt();
-            msg.arg0 = packet.getInt();
-            msg.arg1 = packet.getInt();
-            msg.payloadLength = packet.getInt();
-            msg.checksum = packet.getInt();
-            msg.magic = packet.getInt();
-
-            msg.payload = new byte[msg.payloadLength];
-            bytesRead = in.read(msg.payload);
-            if (bytesRead != msg.payload.length) return null;
-
-            return msg;
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public static class AdbMessage
-    {
-        public int command;
-        public int arg0;
-        public int arg1;
-        public int payloadLength;
-        public int checksum;
-        public int magic;
-        public byte[] payload;
+        return generateMessage(CMD_OKAY, locId, remId, null);
     }
 }

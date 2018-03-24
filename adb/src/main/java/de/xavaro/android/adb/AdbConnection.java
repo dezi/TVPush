@@ -17,7 +17,7 @@ public class AdbConnection implements Closeable
     private static final String LOGTAG = AdbConnection.class.getSimpleName();
 
     private int maxData;
-    private int lastLocalId;
+    private int lastlocId;
 
     private boolean attempted;
     private boolean connected;
@@ -112,7 +112,7 @@ public class AdbConnection implements Closeable
             {
                 try
                 {
-                    AdbProtocol.AdbMessage msg = AdbProtocol.readAdbMessage(inputStream);
+                    AdbMessage msg = AdbMessage.readAdbMessage(inputStream);
 
                     if (msg == null)
                     {
@@ -121,84 +121,38 @@ public class AdbConnection implements Closeable
                         break;
                     }
 
-                    if (!AdbProtocol.validateMessage(msg))
+                    if (!msg.validateMessage())
                     {
                         Log.e(LOGTAG, "connectionRunner: message corrupted!");
 
                         break;
                     }
 
-                    if (msg.command == AdbProtocol.CMD_CLSE)
-                    {
-                        synchronized (openStreams)
-                        {
-                            waitingStream = openStreams.get(msg.arg1);
-
-                            if (waitingStream != null)
-                            {
-                                conn.openStreams.remove(msg.arg1);
-                                waitingStream.notifyClose();
-                            }
-                        }
-
-                        Log.d(LOGTAG, "connectionRunner: recv CLSE"
-                                + " localId=" + msg.arg1
-                                + " remoteId=" + msg.arg0
-                                + " stream=" + (waitingStream != null)
-                        );
-
-                        continue;
-                    }
-
-                    if (msg.command == AdbProtocol.CMD_OKAY)
-                    {
-                        synchronized (openStreams)
-                        {
-                            waitingStream = openStreams.get(msg.arg1);
-                        }
-
-                        Log.d(LOGTAG, "connectionRunner: recv OKAY"
-                                + " localId=" + msg.arg1
-                                + " remoteId=" + msg.arg0
-                                + " stream=" + (waitingStream != null)
-                        );
-
-                        if (waitingStream != null)
-                        {
-                            synchronized (waitingStream)
-                            {
-                                waitingStream.updateRemoteId(msg.arg0);
-                                waitingStream.readyForWrite();
-                                waitingStream.notify();
-                            }
-                        }
-
-                        continue;
-                    }
-
                     switch (msg.command)
                     {
-                        //case AdbProtocol.CMD_OKAY:
+                        case AdbProtocol.CMD_CLSE:
+                        case AdbProtocol.CMD_OKAY:
                         case AdbProtocol.CMD_WRTE:
-
-                            if (!conn.connected) continue;
 
                             waitingStream = openStreams.get(msg.arg1);
 
-                            if (waitingStream == null)
-                            {
-                                Log.d(LOGTAG, "connectionRunner:"
-                                        + " msg.command=0x" + Integer.toHexString(msg.command)
-                                        + " msg.arg1=" + msg.arg1
-                                        );
+                            Log.d(LOGTAG, "connectionRunner: recv"
+                                    + " cmd=" + msg.cmdstr
+                                    + " locId=" + msg.arg1
+                                    + " remId=" + msg.arg0
+                                    + " stream=" + (waitingStream != null)
+                            );
 
-                                Log.e(LOGTAG, "connectionRunner: no waiting stream!");
-
-                                continue;
-                            }
+                            if (waitingStream == null) continue;
 
                             synchronized (waitingStream)
                             {
+                                if (msg.command == AdbProtocol.CMD_CLSE)
+                                {
+                                    conn.openStreams.remove(msg.arg1);
+                                    waitingStream.notifyClose();
+                                }
+
                                 if (msg.command == AdbProtocol.CMD_OKAY)
                                 {
                                     waitingStream.updateRemoteId(msg.arg0);
@@ -336,12 +290,12 @@ public class AdbConnection implements Closeable
 
         if (checkConnected())
         {
-            int localId = ++lastLocalId;
+            int locId = ++lastlocId;
 
-            stream = new AdbStream(this, localId);
-            openStreams.put(localId, stream);
+            stream = new AdbStream(this, locId);
+            openStreams.put(locId, stream);
 
-            if (writePacket(AdbProtocol.generateOpen(localId, service)))
+            if (writePacket(AdbProtocol.generateOpen(locId, service)))
             {
                 synchronized (stream)
                 {
@@ -352,7 +306,7 @@ public class AdbConnection implements Closeable
                 {
                     Log.e(LOGTAG, "Stream rejected by remote host!");
 
-                    openStreams.remove(localId);
+                    openStreams.remove(locId);
 
                     stream = null;
                 }
