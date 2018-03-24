@@ -10,21 +10,10 @@ public class AdbTest
 
     public static void main()
     {
-        AdbConnection adb;
+        AdbConnection adb = new AdbConnection("192.168.0.11", 5555);
+        if (! adb.connect()) return;
 
-        try
-        {
-            adb = new AdbConnection("192.168.0.11", 5555);
-            adb.connect();
-
-            stream = adb.openService("shell:ls -al /storage");
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-
-            return;
-        }
+        stream = adb.openService("shell:ls -al /storage");
 
         new Thread(new Runnable()
         {

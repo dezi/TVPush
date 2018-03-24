@@ -1,6 +1,7 @@
 package de.xavaro.android.adb;
 
 import android.support.annotation.Nullable;
+
 import android.util.Log;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
