@@ -45,7 +45,7 @@ public class IOTUDPReceiver extends Thread
 
         running = true;
 
-        while (running)
+        while (running && (IOTUDP.socket != null))
         {
             try
             {

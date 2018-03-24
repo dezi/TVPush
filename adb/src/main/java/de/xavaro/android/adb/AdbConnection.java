@@ -106,31 +106,92 @@ public class AdbConnection implements Closeable
         {
             AdbConnection conn = AdbConnection.this;
 
+            AdbStream waitingStream;
+
             while (!connectionThread.isInterrupted())
             {
                 try
                 {
                     AdbProtocol.AdbMessage msg = AdbProtocol.readAdbMessage(inputStream);
 
+                    if (msg == null)
+                    {
+                        Log.e(LOGTAG, "connectionRunner: Connection lost!");
+
+                        break;
+                    }
+
                     if (!AdbProtocol.validateMessage(msg))
                     {
                         Log.e(LOGTAG, "connectionRunner: message corrupted!");
+
+                        break;
+                    }
+
+                    if (msg.command == AdbProtocol.CMD_CLSE)
+                    {
+                        synchronized (openStreams)
+                        {
+                            waitingStream = openStreams.get(msg.arg1);
+
+                            if (waitingStream != null)
+                            {
+                                conn.openStreams.remove(msg.arg1);
+                                waitingStream.notifyClose();
+                            }
+                        }
+
+                        Log.d(LOGTAG, "connectionRunner: recv CLSE"
+                                + " localId=" + msg.arg1
+                                + " remoteId=" + msg.arg0
+                                + " stream=" + (waitingStream != null)
+                        );
+
+                        continue;
+                    }
+
+                    if (msg.command == AdbProtocol.CMD_OKAY)
+                    {
+                        synchronized (openStreams)
+                        {
+                            waitingStream = openStreams.get(msg.arg1);
+                        }
+
+                        Log.d(LOGTAG, "connectionRunner: recv OKAY"
+                                + " localId=" + msg.arg1
+                                + " remoteId=" + msg.arg0
+                                + " stream=" + (waitingStream != null)
+                        );
+
+                        if (waitingStream != null)
+                        {
+                            synchronized (waitingStream)
+                            {
+                                waitingStream.updateRemoteId(msg.arg0);
+                                waitingStream.readyForWrite();
+                                waitingStream.notify();
+                            }
+                        }
 
                         continue;
                     }
 
                     switch (msg.command)
                     {
-                        case AdbProtocol.CMD_OKAY:
+                        //case AdbProtocol.CMD_OKAY:
                         case AdbProtocol.CMD_WRTE:
-                        case AdbProtocol.CMD_CLSE:
 
                             if (!conn.connected) continue;
 
-                            AdbStream waitingStream = openStreams.get(msg.arg1);
+                            waitingStream = openStreams.get(msg.arg1);
 
                             if (waitingStream == null)
                             {
+                                Log.d(LOGTAG, "connectionRunner:"
+                                        + " msg.command=0x" + Integer.toHexString(msg.command)
+                                        + " msg.arg1=" + msg.arg1
+                                        );
+
                                 Log.e(LOGTAG, "connectionRunner: no waiting stream!");
 
                                 continue;
@@ -149,12 +210,6 @@ public class AdbConnection implements Closeable
                                 {
                                     waitingStream.addPayload(msg.payload);
                                     waitingStream.sendReady();
-                                }
-
-                                if (msg.command == AdbProtocol.CMD_CLSE)
-                                {
-                                    conn.openStreams.remove(msg.arg1);
-                                    waitingStream.notifyClose();
                                 }
                             }
 

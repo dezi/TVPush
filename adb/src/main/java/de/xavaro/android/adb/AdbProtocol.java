@@ -126,7 +126,7 @@ public class AdbProtocol
         return generateMessage(CMD_CLSE, localId, remoteId, null);
     }
 
-    public static byte[] generateReady(int localId, int remoteId)
+    public static byte[] generateOkay(int localId, int remoteId)
     {
         return generateMessage(CMD_OKAY, localId, remoteId, null);
     }

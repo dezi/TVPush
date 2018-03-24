@@ -42,7 +42,7 @@ public class AdbStream implements Closeable
 
     void sendReady()
     {
-        byte[] packet = AdbProtocol.generateReady(localId, remoteId);
+        byte[] packet = AdbProtocol.generateOkay(localId, remoteId);
 
         adbConn.writePacket(packet);
     }
@@ -74,18 +74,18 @@ public class AdbStream implements Closeable
     @Nullable
     public byte[] read()
     {
-        byte[] data = null;
+        byte[] data;
 
         synchronized (readQueue)
         {
-            while (!isClosed && (data = readQueue.poll()) == null)
+            while (((data = readQueue.poll()) == null) && ! isClosed())
             {
                 AdbSimple.wait(readQueue);
-            }
 
-            if (isClosed)
-            {
-                Log.e(LOGTAG, "read: Stream was closed!");
+                if (isClosed())
+                {
+                    Log.e(LOGTAG, "read: Stream was closed!");
+                }
             }
         }
 
@@ -133,6 +133,6 @@ public class AdbStream implements Closeable
 
     public boolean isClosed()
     {
-        return isClosed;
+        return isClosed && (readQueue.size() == 0);
     }
 }

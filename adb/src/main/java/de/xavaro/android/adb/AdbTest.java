@@ -59,7 +59,7 @@ public class AdbTest
         {
             String command = "ls -al /storage\n";
 
-            Log.d(LOGTAG, "main: write=" + command);
+            //Log.d(LOGTAG, "main: write=" + command);
             //stream.write(command);
         }
         catch (Exception ex)
