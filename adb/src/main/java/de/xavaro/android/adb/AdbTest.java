@@ -1,16 +1,17 @@
 package de.xavaro.android.adb;
 
+import android.content.Context;
 import android.util.Log;
 
 public class AdbTest
 {
     private static final String LOGTAG = AdbTest.class.getSimpleName();
 
-    public static void testShell()
+    public static void testShell(Context context)
     {
         Log.d(LOGTAG, "testShell: open.");
 
-        AdbConn adb = new AdbConn("192.168.0.11", 5555);
+        AdbConn adb = new AdbConn(context, "192.168.0.11", 5555);
 
         Log.d(LOGTAG, "testShell: connect.");
 

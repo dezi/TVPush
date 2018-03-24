@@ -1,7 +1,10 @@
 package de.xavaro.android.adb;
 
-import android.os.Environment;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.support.annotation.Nullable;
+
+import android.os.Environment;
 
 import android.util.Base64;
 import android.util.Log;
@@ -12,28 +15,34 @@ import java.io.FileOutputStream;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+
 import java.security.GeneralSecurityException;
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPublicKey;
-import java.security.spec.EncodedKeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-
-//import javax.xml.bind.DatatypeConverter;
+import java.security.spec.EncodedKeySpec;
+import java.security.KeyPairGenerator;
+import java.security.KeyFactory;
+import java.security.KeyPair;
 
 import javax.crypto.Cipher;
 
-public class AdbCrypto
+public class AdbAuth
 {
-    private static final String LOGTAG = AdbCrypto.class.getSimpleName();
+    private final static String LOGTAG = AdbAuth.class.getSimpleName();
+
+    private final static boolean saveToPrefs = true;
+
+    private final static String pubKeyName = "adb.auth.rsa.public";
+    private final static String privKeyName = "adb.auth.rsa.private";
 
     private KeyPair keyPair;
 
     private static final int KEY_LENGTH_BITS = 2048;
     private static final int KEY_LENGTH_BYTES = KEY_LENGTH_BITS / 8;
     private static final int KEY_LENGTH_WORDS = KEY_LENGTH_BYTES / 4;
+
+    private static byte[] SIGNATURE_PADDING_AS_BYTE;
 
     private static final int[] SIGNATURE_PADDING_AS_INT = new int[]
             {
@@ -58,19 +67,173 @@ public class AdbCrypto
                     0x04, 0x14
             };
 
-    private static byte[] SIGNATURE_PADDING;
-
     static
     {
-        SIGNATURE_PADDING = new byte[SIGNATURE_PADDING_AS_INT.length];
+        SIGNATURE_PADDING_AS_BYTE = new byte[SIGNATURE_PADDING_AS_INT.length];
 
-        for (int inx = 0; inx < SIGNATURE_PADDING.length; inx++)
+        for (int inx = 0; inx < SIGNATURE_PADDING_AS_BYTE.length; inx++)
         {
-            SIGNATURE_PADDING[inx] = (byte) SIGNATURE_PADDING_AS_INT[inx];
+            SIGNATURE_PADDING_AS_BYTE[inx] = (byte) SIGNATURE_PADDING_AS_INT[inx];
         }
     }
 
-    private static byte[] convertRsaPublicKeyToAdbFormat(RSAPublicKey pubkey)
+    public static AdbAuth createAdbAuth(Context context)
+    {
+        AdbAuth adbAuth = new AdbAuth();
+
+        if (! adbAuth.loadKeyPair())
+        {
+            if (adbAuth.generateRSAKeyPair())
+            {
+                adbAuth.saveKeyPair();
+            }
+            else
+            {
+                Log.e(LOGTAG, "createAdbAuth: RSA crypto not available!");
+
+                adbAuth = null;
+            }
+        }
+
+        return adbAuth;
+    }
+
+    private boolean loadKeyPair()
+    {
+        try
+        {
+            File ext = Environment.getExternalStorageDirectory();
+
+            File publicKey = new File(ext, pubKeyName);
+            int pubKeyLength = (int) publicKey.length();
+            byte[] pubKeyBytes = new byte[pubKeyLength];
+
+            FileInputStream pubIn = new FileInputStream(publicKey);
+            int pubRead = pubIn.read(pubKeyBytes);
+            pubIn.close();
+
+            Log.d(LOGTAG, "loadKeyPair: public len=" + pubRead + " ok=" + (pubRead == pubKeyLength));
+
+            File privateKey = new File(ext, privKeyName);
+            int privKeyLength = (int) privateKey.length();
+            byte[] privKeyBytes = new byte[privKeyLength];
+
+            FileInputStream privIn = new FileInputStream(privateKey);
+            int privRead = privIn.read(privKeyBytes);
+            privIn.close();
+
+            Log.d(LOGTAG, "loadKeyPair: private len=" + privRead + " ok=" + (privRead == privKeyLength));
+
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+
+            EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(pubKeyBytes);
+            EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privKeyBytes);
+
+            keyPair = new KeyPair(keyFactory.generatePublic(publicKeySpec),
+                    keyFactory.generatePrivate(privateKeySpec));
+
+            boolean ok = (pubRead == pubKeyLength) && (privRead == privKeyLength);
+
+            Log.d(LOGTAG, "loadKeyPair: loaded key pairs ok=" + ok);
+
+            return ok;
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public void saveKeyPair()
+    {
+        try
+        {
+            File ext = Environment.getExternalStorageDirectory();
+
+            File publicKey = new File(ext, pubKeyName);
+            FileOutputStream pubOut = new FileOutputStream(publicKey);
+            pubOut.write(keyPair.getPublic().getEncoded());
+            pubOut.close();
+
+            Log.d(LOGTAG, "saveKeyPair: public=" + publicKey.toString());
+
+            File privateKey = new File(ext, pubKeyName);
+            FileOutputStream privOut = new FileOutputStream(privateKey);
+            privOut.write(keyPair.getPrivate().getEncoded());
+            privOut.close();
+
+            Log.d(LOGTAG, "saveKeyPair: private=" + privateKey.toString());
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
+    public boolean generateRSAKeyPair()
+    {
+        try
+        {
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+            keyPairGenerator.initialize(KEY_LENGTH_BITS);
+            keyPair = keyPairGenerator.genKeyPair();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return false;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public AdbAuth()
+    {
+
+    }
+
+
+
+    @Nullable
+    public static AdbAuth generateAdbKeyPair()
+    {
+        try
+        {
+            AdbAuth crypto = new AdbAuth();
+
+            KeyPairGenerator rsaKeyPg = KeyPairGenerator.getInstance("RSA");
+            rsaKeyPg.initialize(KEY_LENGTH_BITS);
+
+            crypto.keyPair = rsaKeyPg.genKeyPair();
+
+            return crypto;
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private static byte[] convertRSAPublicKeyToAdbFormat(RSAPublicKey pubkey)
     {
         //
         // ADB literally just saves the RSAPublicKey struct to a file.
@@ -120,39 +283,17 @@ public class AdbCrypto
 
 		// --------------------------------------------------------------------------------------
 
-        ByteBuffer bbuf = ByteBuffer.allocate(524).order(ByteOrder.LITTLE_ENDIAN);
+        ByteBuffer rsabuf = ByteBuffer.allocate(524).order(ByteOrder.LITTLE_ENDIAN);
 
-        bbuf.putInt(KEY_LENGTH_WORDS);
-        bbuf.putInt(n0inv.negate().intValue());
+        rsabuf.putInt(KEY_LENGTH_WORDS);
+        rsabuf.putInt(n0inv.negate().intValue());
 
-        for (int inx : myN) bbuf.putInt(inx);
-        for (int inx : myRr) bbuf.putInt(inx);
+        for (int inx : myN) rsabuf.putInt(inx);
+        for (int inx : myRr) rsabuf.putInt(inx);
 
-        bbuf.putInt(pubkey.getPublicExponent().intValue());
+        rsabuf.putInt(pubkey.getPublicExponent().intValue());
 
-        return bbuf.array();
-    }
-
-    @Nullable
-    public static AdbCrypto generateAdbKeyPair()
-    {
-        try
-        {
-            AdbCrypto crypto = new AdbCrypto();
-
-            KeyPairGenerator rsaKeyPg = KeyPairGenerator.getInstance("RSA");
-            rsaKeyPg.initialize(KEY_LENGTH_BITS);
-
-            crypto.keyPair = rsaKeyPg.genKeyPair();
-
-            return crypto;
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-
-        return null;
+        return rsabuf.array();
     }
 
     public byte[] signAdbTokenPayload(byte[] payload) throws GeneralSecurityException
@@ -160,14 +301,14 @@ public class AdbCrypto
         Cipher cipher = Cipher.getInstance("RSA/ECB/NoPadding");
 
         cipher.init(Cipher.ENCRYPT_MODE, keyPair.getPrivate());
-        cipher.update(SIGNATURE_PADDING);
+        cipher.update(SIGNATURE_PADDING_AS_BYTE);
 
         return cipher.doFinal(payload);
     }
 
     public byte[] getAdbPublicKeyPayload()
     {
-        byte[] adbKey = convertRsaPublicKeyToAdbFormat((RSAPublicKey) keyPair.getPublic());
+        byte[] adbKey = convertRSAPublicKeyToAdbFormat((RSAPublicKey) keyPair.getPublic());
         String b64Key = Base64.encodeToString(adbKey, Base64.NO_WRAP).trim();
 
         String keyString = b64Key + " unknown@unknown" + '\0';
@@ -194,11 +335,11 @@ public class AdbCrypto
         }
     }
 
-    public static AdbCrypto loadAdbKeyPair(File privateKey, File publicKey)
+    public static AdbAuth loadAdbKeyPair(File privateKey, File publicKey)
     {
         try
         {
-            AdbCrypto crypto = new AdbCrypto();
+            AdbAuth crypto = new AdbAuth();
 
             int privKeyLength = (int) privateKey.length();
             int pubKeyLength = (int) publicKey.length();
@@ -236,22 +377,22 @@ public class AdbCrypto
         return null;
     }
 
-    public static AdbCrypto setupCrypto(String pubKeyFile, String privKeyFile)
+    public static AdbAuth setupCrypto(Context context)
     {
         File ext = Environment.getExternalStorageDirectory();
-        File pub = new File(ext, pubKeyFile);
-        File priv = new File(ext, privKeyFile);
+        File pub = new File(ext, pubKeyName);
+        File priv = new File(ext, privKeyName);
 
-        AdbCrypto crypto = null;
+        AdbAuth crypto = null;
 
         if (pub.exists() && priv.exists())
         {
-            crypto = AdbCrypto.loadAdbKeyPair(priv, pub);
+            crypto = AdbAuth.loadAdbKeyPair(priv, pub);
         }
 
         if (crypto == null)
         {
-            crypto = AdbCrypto.generateAdbKeyPair();
+            crypto = AdbAuth.generateAdbKeyPair();
 
             if (crypto != null) crypto.saveAdbKeyPair(priv, pub);
 
@@ -264,5 +405,4 @@ public class AdbCrypto
 
         return crypto;
     }
-
 }

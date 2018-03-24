@@ -1,5 +1,6 @@
 package de.xavaro.android.adb;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 
 import android.util.SparseArray;
@@ -15,6 +16,7 @@ public class AdbConn implements Closeable
 {
     private static final String LOGTAG = AdbConn.class.getSimpleName();
 
+    private Context context;
     private String ipaddr;
     private int ipport;
 
@@ -29,21 +31,32 @@ public class AdbConn implements Closeable
     private OutputStream outputStream;
     private InputStream inputStream;
 
-    private AdbCrypto crypto;
+    private AdbAuth adbAuth;
     private Thread connThread;
 
     private final SparseArray<AdbStream> openStreams = new SparseArray<>();
 
-    public AdbConn(String ipaddr, int ipport)
+    public AdbConn(Context context, String ipaddr, int ipport)
     {
+        this.context = context;
+
         this.ipaddr = ipaddr;
         this.ipport = ipport;
-
-        this.crypto = AdbCrypto.setupCrypto("pub.key", "priv.key");
     }
 
     public boolean connect()
     {
+        Log.d(LOGTAG, "connect: start connect.");
+
+        adbAuth = AdbAuth.createAdbAuth(context);
+
+        if (adbAuth == null)
+        {
+            Log.e(LOGTAG, "connect: RSA crypto not available!");
+
+            return false;
+        }
+
         if (socket == null)
         {
             try
@@ -51,17 +64,17 @@ public class AdbConn implements Closeable
                 attempted = false;
                 connected = false;
 
-                Log.d(LOGTAG, "connect: Open socket...");
+                Log.d(LOGTAG, "connect: open socket...");
 
                 socket = new Socket(ipaddr, ipport);
                 socket.setTcpNoDelay(true);
 
-                Log.d(LOGTAG, "connect: Open socket done.");
+                Log.d(LOGTAG, "connect: open socket done.");
 
                 inputStream = socket.getInputStream();
                 outputStream = socket.getOutputStream();
 
-                Log.d(LOGTAG, "connect: Get streams done.");
+                Log.d(LOGTAG, "connect: get streams done.");
 
                 connThread = new Thread(connRun);
             }
@@ -82,7 +95,7 @@ public class AdbConn implements Closeable
 
         if (! connected)
         {
-            Log.d(LOGTAG, "connect: Attempting connect.");
+            Log.d(LOGTAG, "connect: attempting connect.");
 
             attempted = true;
             connThread.start();
@@ -98,11 +111,11 @@ public class AdbConn implements Closeable
 
                     if (connected)
                     {
-                        Log.d(LOGTAG, "Connection success.");
+                        Log.d(LOGTAG, "connect: connection success.");
                     }
                     else
                     {
-                        Log.e(LOGTAG, "Connection failed!");
+                        Log.e(LOGTAG, "connect: connection failed!");
                     }
                 }
             }
@@ -115,7 +128,7 @@ public class AdbConn implements Closeable
     {
         synchronized (openStreams)
         {
-            Log.d(LOGTAG, "closeStreams: Closing streams size=" + openStreams.size());
+            Log.d(LOGTAG, "closeStreams: closing streams size=" + openStreams.size());
 
             for (int inx = 0; inx < openStreams.size(); inx++)
             {
@@ -137,7 +150,7 @@ public class AdbConn implements Closeable
     @Override
     public void close()
     {
-        Log.d(LOGTAG, "close: Closing connection.");
+        Log.d(LOGTAG, "close: closing connection.");
 
         closeStreams();
 
@@ -208,7 +221,7 @@ public class AdbConn implements Closeable
 
                     if (msg == null)
                     {
-                        Log.e(LOGTAG, "connRun: Connection lost!");
+                        Log.e(LOGTAG, "connRun: connection lost!");
 
                         break;
                     }
@@ -285,14 +298,14 @@ public class AdbConn implements Closeable
                                     Log.d(LOGTAG, "connRun: send RSA-KEY.");
 
                                     packet = AdbProtocol.generateAuth(AdbProtocol.AUTH_TYPE_RSA_PUBLIC,
-                                            conn.crypto.getAdbPublicKeyPayload());
+                                            conn.adbAuth.getAdbPublicKeyPayload());
                                 }
                                 else
                                 {
                                     Log.d(LOGTAG, "connRun: send SIGNATURE.");
 
                                     packet = AdbProtocol.generateAuth(AdbProtocol.AUTH_TYPE_SIGNATURE,
-                                            conn.crypto.signAdbTokenPayload(msg.payload));
+                                            conn.adbAuth.signAdbTokenPayload(msg.payload));
 
                                     conn.sentSignature = true;
                                 }
