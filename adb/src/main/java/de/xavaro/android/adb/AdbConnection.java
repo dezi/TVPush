@@ -51,6 +51,53 @@ public class AdbConnection implements Closeable
         connectionThread = new Thread(connectionRunner);
     }
 
+    public boolean connect()
+    {
+        if (! connected)
+        {
+            attempted = true;
+            connectionThread.start();
+
+            if (writePacket(AdbProtocol.generateConnect()))
+            {
+                synchronized (this)
+                {
+                    if (!connected)
+                    {
+                        AdbSimple.wait(this);
+                    }
+
+                    if (!connected)
+                    {
+                        Log.e(LOGTAG, "Connection failed!");
+                    }
+                }
+            }
+        }
+
+        return connected;
+    }
+
+    @Override
+    public void close()
+    {
+        if (connectionThread != null)
+        {
+            connectionThread.interrupt();
+            connectionThread = null;
+        }
+
+        try
+        {
+            socket.close();
+        }
+        catch (Exception ignore)
+        {
+        }
+
+        Log.d(LOGTAG, "close: connection closed.");
+    }
+
     @SuppressWarnings("FieldCanBeLocal")
     private final Runnable connectionRunner = new Runnable()
     {
@@ -140,7 +187,7 @@ public class AdbConnection implements Closeable
                                     conn.sentSignature = true;
                                 }
 
-                                writeAndFlush(packet);
+                                writePacket(packet);
                             }
                             else
                             {
@@ -187,12 +234,7 @@ public class AdbConnection implements Closeable
         return maxData;
     }
 
-    public boolean writeAndFlush(byte[] data)
-    {
-        return writePacket(data, true);
-    }
-
-    public boolean writePacket(byte[] data, boolean flush)
+    public boolean writePacket(byte[] data)
     {
         try
         {
@@ -207,33 +249,6 @@ public class AdbConnection implements Closeable
         }
 
         return true;
-    }
-
-    public boolean connect()
-    {
-        if (! connected)
-        {
-            attempted = true;
-            connectionThread.start();
-
-            if (writeAndFlush(AdbProtocol.generateConnect()))
-            {
-                synchronized (this)
-                {
-                    if (!connected)
-                    {
-                        AdbSimple.wait(this);
-                    }
-
-                    if (!connected)
-                    {
-                        Log.e(LOGTAG, "Connection failed!");
-                    }
-                }
-            }
-        }
-
-        return connected;
     }
 
     private boolean checkConnected()
@@ -271,7 +286,7 @@ public class AdbConnection implements Closeable
             stream = new AdbStream(this, localId);
             openStreams.put(localId, stream);
 
-            if (writeAndFlush(AdbProtocol.generateOpen(localId, service)))
+            if (writePacket(AdbProtocol.generateOpen(localId, service)))
             {
                 synchronized (stream)
                 {
@@ -308,25 +323,5 @@ public class AdbConnection implements Closeable
         }
 		
         openStreams.clear();
-    }
-
-    @Override
-    public void close()
-    {
-        if (connectionThread != null)
-        {
-            connectionThread.interrupt();
-            connectionThread = null;
-        }
-
-        try
-        {
-            socket.close();
-        }
-        catch (Exception ignore)
-        {
-        }
-
-        Log.d(LOGTAG, "close: connection closed.");
     }
 }

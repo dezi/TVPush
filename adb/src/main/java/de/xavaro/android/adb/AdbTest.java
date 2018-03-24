@@ -1,13 +1,10 @@
 package de.xavaro.android.adb;
 
-import android.os.Environment;
 import android.util.Log;
-
-import java.io.File;
 
 public class AdbTest
 {
-    private static final String LOGTAG = AdbConnection.class.getSimpleName();
+    private static final String LOGTAG = AdbTest.class.getSimpleName();
 
     public static AdbStream stream;
 
@@ -34,6 +31,8 @@ public class AdbTest
             @Override
             public void run()
             {
+                Log.d(LOGTAG, "main: start reading.");
+
                 while (!stream.isClosed())
                 {
                     try
@@ -42,7 +41,7 @@ public class AdbTest
 
                         if (data != null)
                         {
-                            Log.d(LOGTAG, "main: " +  new String(data));
+                            Log.d(LOGTAG, "main: read=" +  new String(data));
                         }
                     }
                     catch (Exception ex)
@@ -51,12 +50,14 @@ public class AdbTest
                         return;
                     }
                 }
+
+                Log.d(LOGTAG, "main: done reading.");
             }
         }).start();
 
         try
         {
-            stream.write("ls\n");
+            stream.write("ls -al /storage\n");
         }
         catch (Exception ex)
         {

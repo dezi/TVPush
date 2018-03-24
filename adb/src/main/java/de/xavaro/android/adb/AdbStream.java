@@ -44,7 +44,7 @@ public class AdbStream implements Closeable
     {
         byte[] packet = AdbProtocol.generateReady(localId, remoteId);
 
-        adbConn.writeAndFlush(packet);
+        adbConn.writePacket(packet);
     }
 
     void updateRemoteId(int remoteId)
@@ -94,16 +94,10 @@ public class AdbStream implements Closeable
 
     public void write(String payload)
     {
-        write(payload.getBytes(), false);
-        write(new byte[]{0}, true);
+        write(payload.getBytes());
     }
 
     public void write(byte[] payload)
-    {
-        write(payload, true);
-    }
-
-    public void write(byte[] payload, boolean flush)
     {
         synchronized (this)
         {
@@ -120,7 +114,7 @@ public class AdbStream implements Closeable
 		
         byte[] packet = AdbProtocol.generateWrite(localId, remoteId, payload);
 
-        adbConn.writePacket(packet, flush);
+        adbConn.writePacket(packet);
     }
 
     @Override
@@ -134,7 +128,7 @@ public class AdbStream implements Closeable
 
         byte[] packet = AdbProtocol.generateClose(localId, remoteId);
 
-        adbConn.writeAndFlush(packet);
+        adbConn.writePacket(packet);
     }
 
     public boolean isClosed()
