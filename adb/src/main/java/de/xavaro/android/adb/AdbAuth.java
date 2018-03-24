@@ -1,11 +1,11 @@
 package de.xavaro.android.adb;
 
-import android.content.ContentResolver;
-import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 
+import android.content.Context;
 import android.os.Environment;
-
 import android.util.Base64;
 import android.util.Log;
 
@@ -81,11 +81,11 @@ public class AdbAuth
     {
         AdbAuth adbAuth = new AdbAuth();
 
-        if (! adbAuth.loadKeyPair())
+        if (! adbAuth.loadKeyPair(context))
         {
             if (adbAuth.generateRSAKeyPair())
             {
-                adbAuth.saveKeyPair();
+                adbAuth.saveKeyPair(context);
             }
             else
             {
@@ -94,11 +94,17 @@ public class AdbAuth
                 adbAuth = null;
             }
         }
+        else
+        {
+            Log.d(LOGTAG, "createAdbAuth: RSA crypto loaded.");
+
+            adbAuth.saveKeyPair(context);
+        }
 
         return adbAuth;
     }
 
-    private boolean loadKeyPair()
+    private boolean loadKeyPair(Context context)
     {
         try
         {
@@ -146,30 +152,53 @@ public class AdbAuth
         return false;
     }
 
-    public void saveKeyPair()
+    public boolean saveKeyPair(Context context)
     {
         try
         {
-            File ext = Environment.getExternalStorageDirectory();
+            if (saveToPrefs)
+            {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
-            File publicKey = new File(ext, pubKeyName);
-            FileOutputStream pubOut = new FileOutputStream(publicKey);
-            pubOut.write(keyPair.getPublic().getEncoded());
-            pubOut.close();
+                String pubBase64 = Base64.encodeToString(keyPair.getPublic().getEncoded(), Base64.NO_WRAP);
+                boolean publicOk = prefs.edit().putString(pubKeyName, pubBase64).commit();
 
-            Log.d(LOGTAG, "saveKeyPair: public=" + publicKey.toString());
+                Log.d(LOGTAG, "saveKeyPair: public=" + pubKeyName + " ok=" + publicOk);
 
-            File privateKey = new File(ext, pubKeyName);
-            FileOutputStream privOut = new FileOutputStream(privateKey);
-            privOut.write(keyPair.getPrivate().getEncoded());
-            privOut.close();
+                String privBase64 = Base64.encodeToString(keyPair.getPublic().getEncoded(), Base64.NO_WRAP);
+                boolean privateOk = prefs.edit().putString(privKeyName, privBase64).commit();
 
-            Log.d(LOGTAG, "saveKeyPair: private=" + privateKey.toString());
+                Log.d(LOGTAG, "saveKeyPair: public=" + privKeyName + " ok=" + privateOk);
+
+                return publicOk && privateOk;
+            }
+            else
+            {
+                File ext = Environment.getExternalStorageDirectory();
+
+                File publicKey = new File(ext, pubKeyName);
+                FileOutputStream pubOut = new FileOutputStream(publicKey);
+                pubOut.write(keyPair.getPublic().getEncoded());
+                pubOut.close();
+
+                Log.d(LOGTAG, "saveKeyPair: public=" + publicKey.toString());
+
+                File privateKey = new File(ext, privKeyName);
+                FileOutputStream privOut = new FileOutputStream(privateKey);
+                privOut.write(keyPair.getPrivate().getEncoded());
+                privOut.close();
+
+                Log.d(LOGTAG, "saveKeyPair: private=" + privateKey.toString());
+
+                return true;
+            }
         }
         catch (Exception ex)
         {
             ex.printStackTrace();
         }
+
+        return false;
     }
 
     public boolean generateRSAKeyPair()
