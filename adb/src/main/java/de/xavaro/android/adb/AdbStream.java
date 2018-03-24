@@ -17,13 +17,13 @@ public class AdbStream implements Closeable
     private int localId;
     private int remoteId;
 
-    private final AdbConnection adbConn;
+    private final AdbConn adbConn;
     private final AtomicBoolean writeReady;
     private final Queue<byte[]> readQueue;
 
     private boolean isClosed;
 
-    public AdbStream(AdbConnection adbConn, int localId)
+    public AdbStream(AdbConn adbConn, int localId)
     {
         this.isClosed = false;
         this.adbConn = adbConn;

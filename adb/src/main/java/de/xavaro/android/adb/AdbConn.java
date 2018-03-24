@@ -5,16 +5,15 @@ import android.support.annotation.Nullable;
 import android.util.SparseArray;
 import android.util.Log;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Closeable;
 import java.net.Socket;
 
 @SuppressWarnings({"WeakerAccess", "unused", "SynchronizationOnLocalVariableOrMethodParameter"})
-public class AdbConnection implements Closeable
+public class AdbConn implements Closeable
 {
-    private static final String LOGTAG = AdbConnection.class.getSimpleName();
+    private static final String LOGTAG = AdbConn.class.getSimpleName();
 
     private String ipaddr;
     private int ipport;
@@ -32,12 +31,14 @@ public class AdbConnection implements Closeable
 
     private AdbCrypto crypto;
     private Thread connThread;
-    private SparseArray<AdbStream> openStreams;
 
-    public AdbConnection(String ipaddr, int ipport)
+    private final SparseArray<AdbStream> openStreams = new SparseArray<>();
+
+    public AdbConn(String ipaddr, int ipport)
     {
         this.ipaddr = ipaddr;
         this.ipport = ipport;
+
         this.crypto = AdbCrypto.setupCrypto("pub.key", "priv.key");
     }
 
@@ -50,19 +51,18 @@ public class AdbConnection implements Closeable
                 attempted = false;
                 connected = false;
 
-                Log.d(LOGTAG, "AdbConnection: open socket...");
+                Log.d(LOGTAG, "connect: Open socket...");
 
                 socket = new Socket(ipaddr, ipport);
                 socket.setTcpNoDelay(true);
 
-                Log.d(LOGTAG, "AdbConnection: open socket done.");
+                Log.d(LOGTAG, "connect: Open socket done.");
 
                 inputStream = socket.getInputStream();
                 outputStream = socket.getOutputStream();
 
-                Log.d(LOGTAG, "AdbConnection: get streams done.");
+                Log.d(LOGTAG, "connect: Get streams done.");
 
-                openStreams = new SparseArray<>();
                 connThread = new Thread(connRun);
             }
             catch (Exception ex)
@@ -72,7 +72,6 @@ public class AdbConnection implements Closeable
                 inputStream = null;
                 outputStream = null;
 
-                openStreams = null;
                 connThread = null;
 
                 ex.printStackTrace();
@@ -83,6 +82,8 @@ public class AdbConnection implements Closeable
 
         if (! connected)
         {
+            Log.d(LOGTAG, "connect: Attempting connect.");
+
             attempted = true;
             connThread.start();
 
@@ -95,7 +96,11 @@ public class AdbConnection implements Closeable
                         AdbSimple.wait(this);
                     }
 
-                    if (!connected)
+                    if (connected)
+                    {
+                        Log.d(LOGTAG, "Connection success.");
+                    }
+                    else
                     {
                         Log.e(LOGTAG, "Connection failed!");
                     }
@@ -106,24 +111,85 @@ public class AdbConnection implements Closeable
         return connected;
     }
 
+    private void closeStreams()
+    {
+        synchronized (openStreams)
+        {
+            Log.d(LOGTAG, "closeStreams: Closing streams size=" + openStreams.size());
+
+            for (int inx = 0; inx < openStreams.size(); inx++)
+            {
+                try
+                {
+                    int streamId = openStreams.keyAt(inx);
+                    AdbStream stream = openStreams.get(streamId);
+                    stream.close();
+                }
+                catch (Exception ignore)
+                {
+                }
+            }
+
+            openStreams.clear();
+        }
+    }
+
     @Override
     public void close()
     {
+        Log.d(LOGTAG, "close: Closing connection.");
+
+        closeStreams();
+
         if (connThread != null)
         {
-            connThread.interrupt();
-            connThread = null;
+            try
+            {
+                connThread.interrupt();
+                connThread.join();
+            }
+            catch (Exception ignore)
+            {
+            }
         }
 
-        try
+        if (socket != null)
         {
-            socket.close();
-        }
-        catch (Exception ignore)
-        {
+            try
+            {
+                socket.close();
+            }
+            catch (Exception ignore)
+            {
+            }
         }
 
-        Log.d(LOGTAG, "close: connection closed.");
+        if (outputStream != null)
+        {
+            try
+            {
+                outputStream.close();
+            }
+            catch (Exception ignore)
+            {
+            }
+        }
+
+        if (inputStream != null)
+        {
+            try
+            {
+                inputStream.close();
+            }
+            catch (Exception ignore)
+            {
+            }
+        }
+
+        outputStream = null;
+        inputStream = null;
+        connThread = null;
+        socket = null;
     }
 
     @SuppressWarnings("FieldCanBeLocal")
@@ -132,9 +198,7 @@ public class AdbConnection implements Closeable
         @Override
         public void run()
         {
-            AdbConnection conn = AdbConnection.this;
-
-            AdbStream waitingStream;
+            AdbConn conn = AdbConn.this;
 
             while (!connThread.isInterrupted())
             {
@@ -162,36 +226,45 @@ public class AdbConnection implements Closeable
                         case AdbProtocol.CMD_OKAY:
                         case AdbProtocol.CMD_WRTE:
 
-                            waitingStream = openStreams.get(msg.arg1);
+                            AdbStream stream;
+
+                            synchronized (openStreams)
+                            {
+                                stream = openStreams.get(msg.arg1);
+                            }
 
                             Log.d(LOGTAG, "connRun: recv"
                                     + " cmd=" + msg.cmdstr
                                     + " locId=" + msg.arg1
                                     + " remId=" + msg.arg0
-                                    + " stream=" + (waitingStream != null)
+                                    + " stream=" + (stream != null)
                             );
 
-                            if (waitingStream == null) continue;
+                            if (stream == null) continue;
 
-                            synchronized (waitingStream)
+                            synchronized (stream)
                             {
                                 if (msg.command == AdbProtocol.CMD_CLSE)
                                 {
-                                    conn.openStreams.remove(msg.arg1);
-                                    waitingStream.notifyClose();
+                                    synchronized (openStreams)
+                                    {
+                                        conn.openStreams.remove(msg.arg1);
+                                    }
+
+                                    stream.notifyClose();
                                 }
 
                                 if (msg.command == AdbProtocol.CMD_OKAY)
                                 {
-                                    waitingStream.updateRemoteId(msg.arg0);
-                                    waitingStream.readyForWrite();
-                                    waitingStream.notify();
+                                    stream.updateRemoteId(msg.arg0);
+                                    stream.readyForWrite();
+                                    stream.notify();
                                 }
 
                                 if (msg.command == AdbProtocol.CMD_WRTE)
                                 {
-                                    waitingStream.addPayload(msg.payload);
-                                    waitingStream.sendReady();
+                                    stream.addPayload(msg.payload);
+                                    stream.sendReady();
                                 }
                             }
 
@@ -321,7 +394,11 @@ public class AdbConnection implements Closeable
             int locId = ++lastlocId;
 
             stream = new AdbStream(this, locId);
-            openStreams.put(locId, stream);
+
+            synchronized (openStreams)
+            {
+                openStreams.put(locId, stream);
+            }
 
             if (writePacket(AdbProtocol.generateOpen(locId, service)))
             {
@@ -334,7 +411,10 @@ public class AdbConnection implements Closeable
                 {
                     Log.e(LOGTAG, "Stream rejected by remote host!");
 
-                    openStreams.remove(locId);
+                    synchronized (openStreams)
+                    {
+                        openStreams.remove(locId);
+                    }
 
                     stream = null;
                 }
@@ -342,23 +422,5 @@ public class AdbConnection implements Closeable
         }
 
         return stream;
-    }
-
-    private void closeStreams()
-    {
-        for (int inx = 0; inx < openStreams.size(); inx++)
-        {
-            try
-            {
-                int streamId = openStreams.keyAt(inx);
-                AdbStream stream = openStreams.get(streamId);
-                stream.close();
-            }
-            catch (Exception ignore)
-            {
-            }
-        }
-		
-        openStreams.clear();
     }
 }

@@ -6,54 +6,43 @@ public class AdbTest
 {
     private static final String LOGTAG = AdbTest.class.getSimpleName();
 
-    public static AdbStream stream;
-
-    public static void main()
+    public static void testShell()
     {
-        AdbConnection adb = new AdbConnection("192.168.0.11", 5555);
-        if (! adb.connect()) return;
+        Log.d(LOGTAG, "testShell: open.");
 
-        stream = adb.openService("shell:ls -al /storage");
+        AdbConn adb = new AdbConn("192.168.0.11", 5555);
 
-        new Thread(new Runnable()
+        Log.d(LOGTAG, "testShell: connect.");
+
+        if (adb.connect())
         {
-            @Override
-            public void run()
+            Log.d(LOGTAG, "testShell: connected.");
+
+            AdbStream stream = adb.openService("shell:ls -al /storage");
+
+            Log.d(LOGTAG, "testShell: open service.");
+
+            if (stream != null)
             {
-                Log.d(LOGTAG, "main: start reading.");
+                Log.d(LOGTAG, "testShell: service opened.");
 
                 while (!stream.isClosed())
                 {
-                    try
-                    {
-                        byte[] data = stream.read();
+                    byte[] data = stream.read();
 
-                        if (data != null)
-                        {
-                            Log.d(LOGTAG, "main: read=" +  new String(data));
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        ex.printStackTrace();
-                        return;
-                    }
+                    Log.d(LOGTAG, "testShell: read=" + ((data == null) ? null : new String(data)));
                 }
 
-                Log.d(LOGTAG, "main: done reading.");
+                Log.d(LOGTAG, "testShell: service closed.");
             }
-        }).start();
 
-        try
-        {
-            String command = "ls -al /storage\n";
+            adb.close();
 
-            //Log.d(LOGTAG, "main: write=" + command);
-            //stream.write(command);
+            Log.d(LOGTAG, "testShell: connection closed.");
         }
-        catch (Exception ex)
+        else
         {
-            ex.printStackTrace();
+            Log.d(LOGTAG, "testShell: connection failed.");
         }
-    }
+   }
 }

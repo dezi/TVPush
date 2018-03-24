@@ -87,10 +87,10 @@ public class AdbMessage
 
             byte[] cmdstr = new byte[ 4 ];
 
-            cmdstr[ 0 ] = (byte) (msg.command >> 24);
-            cmdstr[ 1 ] = (byte) (msg.command >> 16);
-            cmdstr[ 2 ] = (byte) (msg.command >> 8);
-            cmdstr[ 3 ] = (byte) msg.command;
+            cmdstr[ 0 ] = (byte) msg.command;
+            cmdstr[ 1 ] = (byte) (msg.command >> 8);
+            cmdstr[ 2 ] = (byte) (msg.command >> 16);
+            cmdstr[ 3 ] = (byte) (msg.command >> 24);
 
             msg.cmdstr = new String(cmdstr);
 
