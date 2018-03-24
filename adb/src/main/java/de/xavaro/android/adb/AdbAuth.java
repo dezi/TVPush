@@ -108,37 +108,57 @@ public class AdbAuth
     {
         try
         {
-            File ext = Environment.getExternalStorageDirectory();
+            boolean ok;
 
-            File publicKey = new File(ext, pubKeyName);
-            int pubKeyLength = (int) publicKey.length();
-            byte[] pubKeyBytes = new byte[pubKeyLength];
+            byte[] pubKeyBytes;
+            byte[] privKeyBytes;
 
-            FileInputStream pubIn = new FileInputStream(publicKey);
-            int pubRead = pubIn.read(pubKeyBytes);
-            pubIn.close();
+            if (saveToPrefs)
+            {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
-            Log.d(LOGTAG, "loadKeyPair: public len=" + pubRead + " ok=" + (pubRead == pubKeyLength));
+                pubKeyBytes = Base64.decode(prefs.getString(pubKeyName, null), Base64.DEFAULT);
+                privKeyBytes = Base64.decode(prefs.getString(privKeyName, null), Base64.DEFAULT);
 
-            File privateKey = new File(ext, privKeyName);
-            int privKeyLength = (int) privateKey.length();
-            byte[] privKeyBytes = new byte[privKeyLength];
+                ok = (pubKeyBytes != null) && (privKeyBytes != null);
+            }
+            else
+            {
+                File ext = Environment.getExternalStorageDirectory();
 
-            FileInputStream privIn = new FileInputStream(privateKey);
-            int privRead = privIn.read(privKeyBytes);
-            privIn.close();
+                File publicKey = new File(ext, pubKeyName);
+                int pubKeyLength = (int) publicKey.length();
+                pubKeyBytes = new byte[pubKeyLength];
 
-            Log.d(LOGTAG, "loadKeyPair: private len=" + privRead + " ok=" + (privRead == privKeyLength));
+                FileInputStream pubIn = new FileInputStream(publicKey);
+                int pubRead = pubIn.read(pubKeyBytes);
+                pubIn.close();
 
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+                Log.d(LOGTAG, "loadKeyPair: public len=" + pubRead + " ok=" + (pubRead == pubKeyLength));
 
-            EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(pubKeyBytes);
-            EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privKeyBytes);
+                File privateKey = new File(ext, privKeyName);
+                int privKeyLength = (int) privateKey.length();
+                privKeyBytes = new byte[privKeyLength];
 
-            keyPair = new KeyPair(keyFactory.generatePublic(publicKeySpec),
-                    keyFactory.generatePrivate(privateKeySpec));
+                FileInputStream privIn = new FileInputStream(privateKey);
+                int privRead = privIn.read(privKeyBytes);
+                privIn.close();
 
-            boolean ok = (pubRead == pubKeyLength) && (privRead == privKeyLength);
+                Log.d(LOGTAG, "loadKeyPair: private len=" + privRead + " ok=" + (privRead == privKeyLength));
+
+                ok = (pubRead == pubKeyLength) && (privRead == privKeyLength);
+            }
+
+            if (ok)
+            {
+                KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+
+                EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(pubKeyBytes);
+                EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privKeyBytes);
+
+                keyPair = new KeyPair(keyFactory.generatePublic(publicKeySpec),
+                        keyFactory.generatePrivate(privateKeySpec));
+            }
 
             Log.d(LOGTAG, "loadKeyPair: loaded key pairs ok=" + ok);
 
@@ -165,7 +185,7 @@ public class AdbAuth
 
                 Log.d(LOGTAG, "saveKeyPair: public=" + pubKeyName + " ok=" + publicOk);
 
-                String privBase64 = Base64.encodeToString(keyPair.getPublic().getEncoded(), Base64.NO_WRAP);
+                String privBase64 = Base64.encodeToString(keyPair.getPrivate().getEncoded(), Base64.NO_WRAP);
                 boolean privateOk = prefs.edit().putString(privKeyName, privBase64).commit();
 
                 Log.d(LOGTAG, "saveKeyPair: public=" + privKeyName + " ok=" + privateOk);
