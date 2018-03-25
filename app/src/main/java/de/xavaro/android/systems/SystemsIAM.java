@@ -5,8 +5,11 @@ import android.app.Application;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import de.xavaro.android.gui.base.GUI;
+
 import de.xavaro.android.iam.base.IAM;
 import de.xavaro.android.iam.eval.IAMEvalChannels;
+
 import de.xavaro.android.iot.status.IOTCredential;
 import de.xavaro.android.iot.status.IOTMetadata;
 import de.xavaro.android.iot.status.IOTStatus;
@@ -22,6 +25,8 @@ public class SystemsIAM extends IAM
     public SystemsIAM(Application application)
     {
         super(application);
+
+        GUI.instance.subSystems.registerSubsystem(getDriverTag());
 
         JSONObject channelsForDevices = new JSONObject();
 

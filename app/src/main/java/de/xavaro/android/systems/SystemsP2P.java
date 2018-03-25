@@ -4,6 +4,8 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.gui.base.GUI;
+
 import zz.top.p2p.base.P2P;
 
 public class SystemsP2P extends P2P
@@ -13,6 +15,8 @@ public class SystemsP2P extends P2P
     public SystemsP2P(Application application)
     {
         super(application);
+
+        GUI.instance.subSystems.registerSubsystem(getDriverTag());
     }
 
     @Override

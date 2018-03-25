@@ -4,6 +4,8 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.gui.base.GUI;
+
 import zz.top.tpl.base.TPL;
 
 public class SystemsTPL extends TPL
@@ -13,6 +15,8 @@ public class SystemsTPL extends TPL
     public SystemsTPL(Application application)
     {
         super(application);
+
+        GUI.instance.subSystems.registerSubsystem(getDriverTag());
     }
 
     @Override
