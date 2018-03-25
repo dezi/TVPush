@@ -68,9 +68,4 @@ public class AdbServicePull extends AdbService
 
         return false;
     };
-
-    protected void onRemoteDataReceived(byte[] data)
-    {
-        Log.d(LOGTAG, "onRemoteDataReceived: size=" + data.length);
-    }
 }

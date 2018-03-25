@@ -103,6 +103,10 @@ public abstract class AdbService
     {
     }
 
+    protected void onRemoteDataReceived(byte[] data)
+    {
+    }
+
     protected void onRemoteServiceClose()
     {
 
