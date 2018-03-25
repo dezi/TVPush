@@ -37,9 +37,14 @@ public class SNY implements
     }
 
     @Override
-    public String getDriverTag()
+    public JSONObject getDriverInfo()
     {
-        return "sny";
+        JSONObject info = new JSONObject();
+
+        Json.put(info, "drv", "sny");
+        Json.put(info, "name", "Sony Android TV");
+
+        return info;
     }
 
     @Override

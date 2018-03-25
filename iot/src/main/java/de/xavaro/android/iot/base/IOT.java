@@ -81,9 +81,14 @@ public class IOT implements
     }
 
     @Override
-    public String getDriverTag()
+    public JSONObject getDriverInfo()
     {
-        return "iot";
+        JSONObject info = new JSONObject();
+
+        Json.put(info, "drv", "iot");
+        Json.put(info, "name", "I.O.T");
+
+        return info;
     }
 
     @Override

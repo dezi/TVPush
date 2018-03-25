@@ -26,7 +26,7 @@ public class SystemsIAM extends IAM
     {
         super(application);
 
-        GUI.instance.subSystems.registerSubsystem(getDriverTag());
+        GUI.instance.subSystems.registerSubsystem(getDriverInfo());
 
         JSONObject channelsForDevices = new JSONObject();
 

@@ -1,18 +1,19 @@
 package de.xavaro.android.gui.base;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 public class GUISubSystems
 {
-    private final ArrayList<String> subSystems = new ArrayList<>();
+    private final ArrayList<JSONObject> subSystems = new ArrayList<>();
 
-    public void registerSubsystem(String driverTag)
+    public void registerSubsystem(JSONObject driverInfo)
     {
-        if (! subSystems.contains(driverTag))
+        if (! subSystems.contains(driverInfo))
         {
-            subSystems.add(driverTag);
+            subSystems.add(driverInfo);
         }
     }
 
@@ -20,7 +21,7 @@ public class GUISubSystems
     {
         JSONArray subsys = new JSONArray();
 
-        for (String subSystem : subSystems)
+        for (JSONObject subSystem : subSystems)
         {
             subsys.put(subSystem);
         }

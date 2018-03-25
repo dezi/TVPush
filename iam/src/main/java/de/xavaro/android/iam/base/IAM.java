@@ -33,9 +33,14 @@ public class IAM implements
     }
 
     @Override
-    public String getDriverTag()
+    public JSONObject getDriverInfo()
     {
-        return "iam";
+        JSONObject info = new JSONObject();
+
+        Json.put(info, "drv", "iam");
+        Json.put(info, "name", "I.A.M");
+
+        return info;
     }
 
     @Override

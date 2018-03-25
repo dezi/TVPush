@@ -18,7 +18,7 @@ public class SystemsSNY extends SNY
     {
         super(application);
 
-        GUI.instance.subSystems.registerSubsystem(getDriverTag());
+        GUI.instance.subSystems.registerSubsystem(getDriverInfo());
     }
 
     @Override

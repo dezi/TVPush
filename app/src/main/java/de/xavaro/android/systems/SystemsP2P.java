@@ -16,7 +16,7 @@ public class SystemsP2P extends P2P
     {
         super(application);
 
-        GUI.instance.subSystems.registerSubsystem(getDriverTag());
+        GUI.instance.subSystems.registerSubsystem(getDriverInfo());
     }
 
     @Override

@@ -41,9 +41,14 @@ public class P2P implements
     }
 
     @Override
-    public String getDriverTag()
+    public JSONObject getDriverInfo()
     {
-        return "p2p";
+        JSONObject info = new JSONObject();
+
+        Json.put(info, "drv", "p2p");
+        Json.put(info, "name", "YI Home Cameras");
+
+        return info;
     }
 
     public void login(String email, String password)

@@ -7,6 +7,7 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.smart.GUIDesktopActivity;
 import de.xavaro.android.gui.smart.GUISpeechListener;
 
@@ -62,9 +63,14 @@ public class GUI implements
     }
 
     @Override
-    public String getDriverTag()
+    public JSONObject getDriverInfo()
     {
-        return "gui";
+        JSONObject info = new JSONObject();
+
+        Json.put(info, "drv", "gui");
+        Json.put(info, "name", "G.U.I");
+
+        return info;
     }
 
     @Override

@@ -60,10 +60,16 @@ public class TPL implements
     }
 
     @Override
-    public String getDriverTag()
+    public JSONObject getDriverInfo()
     {
-        return "tpl";
+        JSONObject info = new JSONObject();
+
+        Json.put(info, "drv", "tpl");
+        Json.put(info, "name", "TP-Link Smart Home");
+
+        return info;
     }
+
     @Override
     public void onDeviceFound(JSONObject device)
     {
