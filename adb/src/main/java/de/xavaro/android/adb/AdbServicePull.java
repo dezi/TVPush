@@ -3,11 +3,14 @@ package de.xavaro.android.adb;
 import android.content.Context;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
+
 public class AdbServicePull extends AdbService
 {
     private static final String LOGTAG = AdbServicePull.class.getSimpleName();
 
-    protected String remoteFile;
+    public String remoteFile;
+    public ByteArrayOutputStream outputStream;
 
     public AdbServicePull(Context context, String ipaddr, int ipport, String remoteFile)
     {
@@ -20,7 +23,7 @@ public class AdbServicePull extends AdbService
     {
         Log.d(LOGTAG, "onStartService: pull.");
 
-        AdbStream stream = adb.openService("shell:cat " + remoteFile);
+        AdbStream stream = adb.openService("shell:cat < " + remoteFile);
 
         Log.d(LOGTAG, "onStartService: open service.");
 
@@ -28,13 +31,32 @@ public class AdbServicePull extends AdbService
         {
             Log.d(LOGTAG, "onStartService: service opened.");
 
+            success = true;
+
             onRemoteServiceOpen();
+
+            outputStream = new ByteArrayOutputStream();
 
             while (!stream.isClosed())
             {
                 byte[] data = stream.read();
 
-                if (data != null) onRemoteDataReceived(data);
+                if (data != null)
+                {
+                    try
+                    {
+                        outputStream.write(data);
+                    }
+                    catch (Exception ex)
+                    {
+                        ex.printStackTrace();
+
+                        success = false;
+                        break;
+                    }
+
+                    onRemoteDataReceived(data);
+                }
             }
 
             onRemoteServiceClose();
@@ -43,7 +65,7 @@ public class AdbServicePull extends AdbService
 
             onServiceSuccess();
 
-            return true;
+            return success;
         }
         else
         {

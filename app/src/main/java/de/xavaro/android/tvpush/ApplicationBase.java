@@ -33,6 +33,7 @@ public class ApplicationBase extends GUIApplication
         //AdbServiceCheck adbServiceCheck = new AdbServiceCheck(this, "192.168.0.11", 5555);
         //Log.d(LOGTAG, "onCreate: adbServiceCheck:" + adbServiceCheck.startSync());
 
+
         adbServicePull = new AdbServicePull(
                 this, "192.168.0.11", 5555,
                 "/storage/E06D-EF93/sdb.xml")
@@ -40,14 +41,19 @@ public class ApplicationBase extends GUIApplication
             @Override
             protected void onServiceSuccess()
             {
+                Log.d(LOGTAG, "AdbServicePull: onServiceSuccess size=" + adbServicePull.outputStream.size());
             }
 
             @Override
             protected void onServiceFailed()
             {
+                Log.d(LOGTAG, "AdbServicePull: onServiceFailed.");
             }
         };
 
-        adbServicePull.start();
+        boolean success = adbServicePull.startSync();
+
+        Log.d(LOGTAG, "onCreate: AdbServicePull: startsync: success=" + success);
+        if (success ) Log.d(LOGTAG, "onCreate: AdbServicePull: startsync: size=" + adbServicePull.outputStream.size());
     }
 }
