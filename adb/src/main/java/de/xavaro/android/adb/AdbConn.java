@@ -25,6 +25,7 @@ public class AdbConn implements Closeable
 
     private boolean attempted;
     private boolean connected;
+    private boolean isclosed;
     private boolean sentSignature;
 
     private Socket socket;
@@ -47,6 +48,8 @@ public class AdbConn implements Closeable
     public boolean connect()
     {
         Log.d(LOGTAG, "connect: start connect ip=" + ipaddr + " port=" + ipport);
+
+        isclosed = false;
 
         adbAuth = AdbAuth.createAdbAuth(context);
 
@@ -153,6 +156,8 @@ public class AdbConn implements Closeable
     {
         Log.d(LOGTAG, "close: closing connection.");
 
+        isclosed = true;
+
         closeStreams();
 
         if (connThread != null)
@@ -222,7 +227,10 @@ public class AdbConn implements Closeable
 
                     if (msg == null)
                     {
-                        Log.e(LOGTAG, "connRun: connection lost!");
+                        if (! isclosed)
+                        {
+                            Log.e(LOGTAG, "connRun: connection lost!");
+                        }
 
                         break;
                     }

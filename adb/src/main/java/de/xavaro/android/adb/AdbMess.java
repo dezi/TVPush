@@ -104,9 +104,9 @@ public class AdbMess
 
             return msg;
         }
-        catch (SocketTimeoutException to)
+        catch (SocketTimeoutException ignore)
         {
-            Log.e(LOGTAG, "readAdbMessage: socket timed out!");
+            //Log.e(LOGTAG, "readAdbMessage: socket timed out!");
         }
         catch (Exception ex)
         {
