@@ -151,38 +151,6 @@ public class GUISetup
         return features;
     }
 
-    public static boolean requestPermission(Activity activity, String area, int requestCode)
-    {
-        String which = null;
-
-        if (area.equals("mic")) which = Manifest.permission.RECORD_AUDIO;
-        if (area.equals("loc")) which = Manifest.permission.ACCESS_FINE_LOCATION;
-        if (area.equals("ble")) which = Manifest.permission.BLUETOOTH_ADMIN;
-        if (area.equals("ext")) which = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-        if (area.equals("cam")) which = Manifest.permission.CAMERA;
-
-        if ((which != null) && ! havePermission(activity, which))
-        {
-            ActivityCompat.requestPermissions(activity, new String[]{which}, requestCode);
-
-            return true;
-        }
-
-        //
-        // Open the complete permissions
-        // setup page for current app.
-        //
-
-        Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
-
-        Intent intent = new Intent();
-        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        intent.setData(uri);
-        activity.startActivity(intent);
-
-        return false;
-    }
-
     public static boolean checkPermissions(Context context, String area)
     {
         boolean haveRights = false;
@@ -308,6 +276,10 @@ public class GUISetup
         return have;
     }
 
+    //
+    // Services.
+    //
+
     public static int getTextServiceResid()
     {
         return R.string.setup_services_service;
@@ -368,6 +340,44 @@ public class GUISetup
 
         return -1;
     }
+
+    //
+    // Permissions.
+    //
+
+    public static int getTextPermissionResid()
+    {
+        return R.string.setup_permissions_permission;
+    }
+
+    public static int getTextForPermissionResid(String manifestperm)
+    {
+        switch (manifestperm)
+        {
+            case Manifest.permission.RECORD_AUDIO:
+                return R.string.setup_permissions_perm_record_audio;
+            case Manifest.permission.BLUETOOTH:
+                return R.string.setup_permissions_perm_bluetooth;
+            case Manifest.permission.BLUETOOTH_ADMIN:
+                return R.string.setup_permissions_perm_bluetooth_admin;
+            case Manifest.permission.ACCESS_FINE_LOCATION:
+                return R.string.setup_permissions_perm_access_fine_location;
+            case Manifest.permission.ACCESS_COARSE_LOCATION:
+                return R.string.setup_permissions_perm_access_coarse_location;
+            case Manifest.permission.READ_EXTERNAL_STORAGE:
+                return R.string.setup_permissions_perm_read_external_storage;
+            case Manifest.permission.WRITE_EXTERNAL_STORAGE:
+                return R.string.setup_permissions_perm_write_external_storage;
+            case Manifest.permission.CAMERA:
+                return R.string.setup_permissions_perm_camera;
+        }
+
+        return R.string.setup_permissions_perm_unknown;
+    }
+
+    //
+    // Features.
+    //
 
     public static int getTextFeatureResid()
     {
@@ -452,10 +462,7 @@ public class GUISetup
 
             if (service.equals("dev"))
             {
-                int devEnabled = Settings.Secure.getInt(Simple.getContentResolver(),
-                        Settings.Global.DEVELOPMENT_SETTINGS_ENABLED , 0);
-
-                if (devEnabled == 1)
+                if (haveService("dev"))
                 {
                     context.startActivity(new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
                 }
@@ -492,33 +499,35 @@ public class GUISetup
         return false;
     }
 
-    public static int getTextPermissionResid()
+    public static boolean requestPermission(Activity activity, String area, int requestCode)
     {
-        return R.string.setup_permissions_permission;
-    }
+        String which = null;
 
-    public static int getTextForPermissionResid(String manifestperm)
-    {
-        switch (manifestperm)
+        if (area.equals("mic")) which = Manifest.permission.RECORD_AUDIO;
+        if (area.equals("loc")) which = Manifest.permission.ACCESS_FINE_LOCATION;
+        if (area.equals("ble")) which = Manifest.permission.BLUETOOTH_ADMIN;
+        if (area.equals("ext")) which = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        if (area.equals("cam")) which = Manifest.permission.CAMERA;
+
+        if ((which != null) && ! havePermission(activity, which))
         {
-            case Manifest.permission.RECORD_AUDIO:
-                return R.string.setup_permissions_perm_record_audio;
-            case Manifest.permission.BLUETOOTH:
-                return R.string.setup_permissions_perm_bluetooth;
-            case Manifest.permission.BLUETOOTH_ADMIN:
-                return R.string.setup_permissions_perm_bluetooth_admin;
-            case Manifest.permission.ACCESS_FINE_LOCATION:
-                return R.string.setup_permissions_perm_access_fine_location;
-            case Manifest.permission.ACCESS_COARSE_LOCATION:
-                return R.string.setup_permissions_perm_access_coarse_location;
-            case Manifest.permission.READ_EXTERNAL_STORAGE:
-                return R.string.setup_permissions_perm_read_external_storage;
-            case Manifest.permission.WRITE_EXTERNAL_STORAGE:
-                return R.string.setup_permissions_perm_write_external_storage;
-            case Manifest.permission.CAMERA:
-                return R.string.setup_permissions_perm_camera;
+            ActivityCompat.requestPermissions(activity, new String[]{which}, requestCode);
+
+            return true;
         }
 
-        return R.string.setup_permissions_perm_unknown;
+        //
+        // Open the complete permissions
+        // setup page for current app.
+        //
+
+        Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
+
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(uri);
+        activity.startActivity(intent);
+
+        return false;
     }
 }
