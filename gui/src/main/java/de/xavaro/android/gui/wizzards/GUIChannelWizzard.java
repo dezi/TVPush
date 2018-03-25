@@ -32,36 +32,32 @@ public class GUIChannelWizzard extends GUIPluginTitle
 {
     private final static String LOGTAG = GUIChannelWizzard.class.getSimpleName();
 
-    public final static int WIDTH = 600;
-    public final static int HEIGTH = 300;
-
-    private int CHANNEL_COLS = 4;
+    private int CHANNEL_COLS = 5;
     private int CHANNEL_WIDTH;
     private int CHANNEL_HEIGHT;
 
-    private JSONArray channels;
     private ArrayList<GUIFrameLayout> channelPosi;
     private HashMap<GUIFrameLayout, GUITextView> containerText;
 
     private GUIFrameLayout scrollContent;
     private GUIScrollView scrollView;
 
+    private GUIFrameLayout selectedContainer;
+
     public GUIChannelWizzard(Context context)
     {
         super(context);
 
-        setIsWizzard(true, false);
+        setIsWizzard(true, false, 3, Gravity.LEFT);
 
         setTitleIcon(R.drawable.magic_hand_440);
         setTitleText("Channel Wizzard");
 
         scrollView = new GUIScrollView(getContext());
-
         contentFrame.addView(scrollView);
 
         scrollContent = new GUIFrameLayout(getContext());
-        scrollContent.setBackgroundColor(GUIDefs.COLOR_LIGHT_TRANSPARENT);
-
+        scrollContent.setBackgroundColor(Color.WHITE);
         scrollView.addView(scrollContent);
 
         Log.d(LOGTAG, "GUIChannelWizzard: width=" + getPluginWidthDip() + " height=" + getPluginHeightDip());
@@ -126,8 +122,6 @@ public class GUIChannelWizzard extends GUIPluginTitle
         return channelView;
     }
 
-    public GUIFrameLayout selectedContainer;
-
     private void moveToPosi(GUIFrameLayout layout, int posi)
     {
         Integer[] posixy = getPosition(posi);
@@ -140,7 +134,7 @@ public class GUIChannelWizzard extends GUIPluginTitle
         String newTxt = (posi + 1) + "";
 
         if (posi < 100) newTxt = "0" + newTxt;
-        if (posi < 10)  newTxt = "0" + newTxt;
+        if (posi <  10) newTxt = "0" + newTxt;
 
         GUITextView txtView = containerText.get(layout);
         String text = (String) txtView.getText();
@@ -158,11 +152,6 @@ public class GUIChannelWizzard extends GUIPluginTitle
         return posi;
     }
 
-//    private int getPosition(Integer[] posi)
-//    {
-//        return (posi[ 0 ] + CHANNEL_COLS * posi[ 1 ]);
-//    }
-
     private Integer[] getPosition(int posi)
     {
         return new Integer[]{
@@ -175,14 +164,6 @@ public class GUIChannelWizzard extends GUIPluginTitle
     {
         int start = channelPosi.lastIndexOf(selectedContainer);
         int end = key2Posi(start, keyCode);
-
-//        Integer[] oldPosi = getPosition(start);
-//        Integer[] newPosi = getPosition(end);
-//
-//        Log.d(LOGTAG, "moveDat: start=" + start);
-//        Log.d(LOGTAG, "moveDat: end=" + end);
-//        Log.d(LOGTAG, "moveDat: oldPosi=" + oldPosi[ 0 ] + "/" + oldPosi[ 1 ]);
-//        Log.d(LOGTAG, "moveDat: newPosi=" + newPosi[ 0 ] + "/" + newPosi[ 1 ]);
 
         if ((end < 0) || (end >= channelPosi.size())) return;
 
@@ -206,42 +187,30 @@ public class GUIChannelWizzard extends GUIPluginTitle
 
         channelPosi.set(end, selectedContainer);
 
+        int containerTop    = CHANNEL_HEIGHT * (end / CHANNEL_COLS);
+        int containerBottom = containerTop + CHANNEL_HEIGHT;
+
+        int scrollTop       = scrollView.getScrollY();
+        int scrollBottom    = scrollView.getBottom() + scrollTop;
+
+        if (containerTop < scrollTop)
+        {
+            Log.d(LOGTAG, "moveDat: scrollUp");
+            scrollView.smoothScrollBy(0, -CHANNEL_HEIGHT);
+        }
+
+        if (containerBottom > scrollBottom)
+        {
+            Log.d(LOGTAG, "moveDat: scrollDown");
+            scrollView.smoothScrollBy(0, CHANNEL_HEIGHT);
+        }
+
         invalidate();
-//        scrollView.scrollTo(0, (int) selectedContainer.getY());
-
-//        int selectedContainerBottom = (((LayoutParams) selectedContainer.getLayoutParams()).topMargin) + CHANNEL_HEIGHT;
-        int selectedContainerBottom = selectedContainer.getBottom() + CHANNEL_HEIGHT;
-        int scrollBottom = scrollView.getBottom() + scrollView.getScrollY();
-//        Log.d(LOGTAG, "moveDat: selectedContainerBottom=" + selectedContainerBottom);
-//        Log.d(LOGTAG, "moveDat: scrollBottom=" + scrollBottom);
-
-        if (selectedContainerBottom > scrollBottom)
-        {
-//            Log.d(LOGTAG, "moveDat: 1111 smoothScrollTo");
-//            scrollView.smoothScrollTo(0, selectedContainer.getTop());
-        }
-
-//        int selectedContainerTop = selectedContainer.getBottom();
-
-//        int scrollTop = scrollView.getBottom() - scrollView.getScrollY();
-
-//        Log.d(LOGTAG, "moveDat: selectedContainer.getY=" + selectedContainer.getY());
-        Log.d(LOGTAG, "moveDat: selectedContainer.getTop=" + selectedContainer.getTop());
-//        Log.d(LOGTAG, "moveDat: selectedContainer.getBottom=" + selectedContainer.getBottom());
-//        Log.d(LOGTAG, "moveDat: getBottom=" + scrollView.getBottom());
-//        Log.d(LOGTAG, "moveDat: getTop=" + scrollView.getTop());
-        Log.d(LOGTAG, "moveDat: getScrollY=" + scrollView.getScrollY());
-
-        if (scrollView.getScrollY() > selectedContainer.getTop())
-        {
-            Log.d(LOGTAG, "moveDat: 2222 smoothScrollTo");
-            scrollView.smoothScrollTo(0, selectedContainer.getTop() - CHANNEL_HEIGHT - 50);
-        }
     }
 
     private void createContainer(JSONObject channel, int posi)
     {
-        final GUIFrameLayout bgLayout = new GUIFrameLayout(getContext());
+        final GUIFrameLayout bgFrame = new GUIFrameLayout(getContext());
 
         Integer[] initPosi = getPosition(posi);
 
@@ -280,30 +249,34 @@ public class GUIChannelWizzard extends GUIPluginTitle
 
                 if (container != selectedContainer)
                 {
-                    bgLayout.saveBackground();
-                    bgLayout.setBackgroundColor(0xffd4d4d4);
+                    bgFrame.saveBackground();
+                    bgFrame.setBackgroundColor(0xffd4d4d4);
                     selectedContainer = container;
                 }
                 else
                 {
-                    bgLayout.restoreBackground();
+                    bgFrame.restoreBackground();
                     selectedContainer = null;
                 }
             }
         });
 
         GUITextView text = createChannelTextView(channel);
-        bgLayout.addView(text);
+        bgFrame.addView(text);
 
-        container.addView(bgLayout);
+        container.addView(bgFrame);
+
         scrollContent.addView(container);
-
         channelPosi.add(container);
-
         containerText.put(container, text);
 
-        if (posi == 0) container.requestFocus();
+        if (posi == 0)
+        {
+            container.requestFocus();
+        }
     }
+
+    private String mode = "tv";
 
     private void createChannelView()
     {
@@ -311,17 +284,23 @@ public class GUIChannelWizzard extends GUIPluginTitle
         channelPosi = new ArrayList<>();
         containerText = new HashMap<>();
 
-        channels = getChannels();
+        JSONArray channels = getChannels();
         if (channels == null) return;
+
+        int posi = 0;
 
         for (int inx = 0; inx < channels.length(); inx++)
         {
             JSONObject channel = Json.getObject(channels, inx);
 
             String type = Json.getString(channel, "type");
-            if ((type == null) || !type.equalsIgnoreCase("tv")) continue;
+            if ((type == null) || !type.equalsIgnoreCase(mode))
+            {
+                continue;
+            }
 
-            createContainer(channel, inx);
+            createContainer(channel, posi);
+            posi++;
         }
     }
 
@@ -331,5 +310,4 @@ public class GUIChannelWizzard extends GUIPluginTitle
         containerText = null;
         scrollContent.removeAllViews();
     }
-
 }
