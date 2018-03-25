@@ -14,7 +14,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.iot.base.IOT;
 
 import de.xavaro.android.gui.R;
@@ -107,6 +106,19 @@ public class GUIChannelWizzard extends GUIPluginTitle
         return null;
     }
 
+    private void updateDailPos(GUITextView textView, int posi)
+    {
+        String dialTxt = (posi + 1) + "";
+
+        if (posi < 100) dialTxt = "0" + dialTxt;
+        if (posi <  10) dialTxt = "0" + dialTxt;
+
+        JSONObject channelInfo = (JSONObject) textView.getTag();
+        String name = dialTxt + ": " + Json.getString(channelInfo, "name");
+
+        textView.setText(name);
+    }
+
     private GUITextView createChannelTextView(JSONObject channel)
     {
         GUITextView channelView = new GUITextView(getContext());
@@ -116,8 +128,8 @@ public class GUIChannelWizzard extends GUIPluginTitle
         channelView.setPaddingDip(3);
         channelView.setFocusable(false);
         channelView.setTextSizeDip(12);
-        channelView.setText(Json.getString(channel, "dial") + ": " + Json.getString(channel, "name"));
         channelView.setLayoutParams(new FrameLayout.LayoutParams(Simple.MP, Simple.MP, Gravity.CENTER));
+        channelView.setTag(channel);
 
         return channelView;
     }
@@ -131,15 +143,8 @@ public class GUIChannelWizzard extends GUIPluginTitle
         prams.topMargin  = CHANNEL_HEIGHT * posixy[ 1 ];
         layout.setLayoutParams(prams);
 
-        String newTxt = (posi + 1) + "";
-
-        if (posi < 100) newTxt = "0" + newTxt;
-        if (posi <  10) newTxt = "0" + newTxt;
-
         GUITextView txtView = containerText.get(layout);
-        String text = (String) txtView.getText();
-
-        txtView.setText(newTxt + ": " + text.substring(5));
+        updateDailPos(txtView, posi);
     }
 
     private int key2Posi(int posi, int keyCode)
@@ -195,13 +200,11 @@ public class GUIChannelWizzard extends GUIPluginTitle
 
         if (containerTop < scrollTop)
         {
-            Log.d(LOGTAG, "moveDat: scrollUp");
             scrollView.smoothScrollBy(0, -CHANNEL_HEIGHT);
         }
 
         if (containerBottom > scrollBottom)
         {
-            Log.d(LOGTAG, "moveDat: scrollDown");
             scrollView.smoothScrollBy(0, CHANNEL_HEIGHT);
         }
 
@@ -210,6 +213,8 @@ public class GUIChannelWizzard extends GUIPluginTitle
 
     private void createContainer(JSONObject channel, int posi)
     {
+        Log.d(LOGTAG, "createContainer: posi=" + posi + " channel=" + Json.toPretty(channel));
+
         final GUIFrameLayout bgFrame = new GUIFrameLayout(getContext());
 
         Integer[] initPosi = getPosition(posi);
@@ -262,6 +267,7 @@ public class GUIChannelWizzard extends GUIPluginTitle
         });
 
         GUITextView text = createChannelTextView(channel);
+        updateDailPos(text, posi);
         bgFrame.addView(text);
 
         container.addView(bgFrame);
@@ -277,6 +283,7 @@ public class GUIChannelWizzard extends GUIPluginTitle
     }
 
     private String mode = "tv";
+//    private String mode = "radio";
 
     private void createChannelView()
     {
