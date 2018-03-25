@@ -5,6 +5,7 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
+import pub.android.interfaces.all.SubSystem;
 import pub.android.interfaces.drv.Camera;
 import pub.android.interfaces.ext.GetCameraHandler;
 import pub.android.interfaces.ext.OnDeviceHandler;
@@ -19,6 +20,7 @@ import zz.top.utl.Json;
 import zz.top.utl.Simple;
 
 public class P2P implements
+        SubSystem,
         OnDeviceHandler,
         DoSomethingHandler,
         GetCameraHandler
@@ -36,6 +38,12 @@ public class P2P implements
         Simple.initialize(application);
 
         cloud = new P2PCloud(this);
+    }
+
+    @Override
+    public String getDriverTag()
+    {
+        return "p2p";
     }
 
     public void login(String email, String password)

@@ -4,6 +4,7 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
+import pub.android.interfaces.all.SubSystem;
 import pub.android.interfaces.ext.GetDeviceCredentials;
 import pub.android.interfaces.ext.OnBackgroundRequest;
 import pub.android.interfaces.ext.OnDeviceHandler;
@@ -15,6 +16,7 @@ import zz.top.utl.Json;
 import zz.top.utl.Log;
 
 public class SNY implements
+        SubSystem,
         OnDeviceHandler,
         GetDeviceCredentials,
         DoSomethingHandler,
@@ -32,6 +34,12 @@ public class SNY implements
         Simple.initialize(application);
 
         SNYDiscover.discover(10);
+    }
+
+    @Override
+    public String getDriverTag()
+    {
+        return "sny";
     }
 
     @Override

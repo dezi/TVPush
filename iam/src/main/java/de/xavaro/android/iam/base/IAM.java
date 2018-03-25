@@ -9,9 +9,12 @@ import org.json.JSONObject;
 import de.xavaro.android.iam.eval.IAMEval;
 import de.xavaro.android.iam.simple.Json;
 
+import pub.android.interfaces.all.SubSystem;
 import pub.android.interfaces.iam.ArtificialIntelligenceHandler;
 
-public class IAM implements ArtificialIntelligenceHandler
+public class IAM implements
+        SubSystem,
+        ArtificialIntelligenceHandler
 {
     private static final String LOGTAG = IAM.class.getSimpleName();
 
@@ -27,6 +30,12 @@ public class IAM implements ArtificialIntelligenceHandler
         {
             throw new RuntimeException("IAM system already initialized.");
         }
+    }
+
+    @Override
+    public String getDriverTag()
+    {
+        return "iam";
     }
 
     @Override

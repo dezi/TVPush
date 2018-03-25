@@ -5,6 +5,7 @@ import android.graphics.Color;
 
 import org.json.JSONObject;
 
+import pub.android.interfaces.all.SubSystem;
 import pub.android.interfaces.drv.SmartBulb;
 import pub.android.interfaces.drv.SmartPlug;
 import pub.android.interfaces.ext.GetSmartBulbHandler;
@@ -26,6 +27,7 @@ import pub.android.interfaces.ext.PutStatusRequest;
 import pub.android.interfaces.all.DoSomethingHandler;
 
 public class TPL implements
+        SubSystem,
         OnDeviceHandler,
         PutStatusRequest,
         DoSomethingHandler,
@@ -57,6 +59,11 @@ public class TPL implements
         }
     }
 
+    @Override
+    public String getDriverTag()
+    {
+        return "tpl";
+    }
     @Override
     public void onDeviceFound(JSONObject device)
     {

@@ -31,14 +31,6 @@ public class SystemsGUI extends GUI
     }
 
     @Override
-    public Camera onRequestCameraByUUID(String uuid)
-    {
-        Log.d(LOGTAG, "onRequestCameraByUUID: uuid=" + uuid);
-
-        return Cameras.createCameraByUUID(uuid);
-    }
-
-    @Override
     public Camera onCameraHandlerRequest(JSONObject device, JSONObject status, JSONObject credentials)
     {
         String uuid = Json.getString(device, "uuid");

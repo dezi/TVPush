@@ -1,7 +1,8 @@
 package de.xavaro.android.gui.base;
 
-import android.app.Application;
 import android.support.annotation.Nullable;
+
+import android.app.Application;
 import android.util.Log;
 
 import org.json.JSONObject;
@@ -9,6 +10,7 @@ import org.json.JSONObject;
 import de.xavaro.android.gui.smart.GUIDesktopActivity;
 import de.xavaro.android.gui.smart.GUISpeechListener;
 
+import pub.android.interfaces.all.SubSystem;
 import pub.android.interfaces.drv.Camera;
 import pub.android.interfaces.drv.SmartBulb;
 import pub.android.interfaces.drv.SmartPlug;
@@ -18,6 +20,7 @@ import pub.android.interfaces.gui.OnSmartBulbHandlerRequest;
 import pub.android.interfaces.gui.OnSmartPlugHandlerRequest;
 
 public class GUI implements
+        SubSystem,
         DesktopHandler,
         OnCameraHandlerRequest,
         OnSmartPlugHandlerRequest,
@@ -57,11 +60,9 @@ public class GUI implements
     }
 
     @Override
-    public Camera onRequestCameraByUUID(String uuid)
+    public String getDriverTag()
     {
-        Log.d(LOGTAG, "onRequestCameraByUUID: STUB! uuid=" + uuid);
-
-        return null;
+        return "gui";
     }
 
     @Override

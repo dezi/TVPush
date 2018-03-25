@@ -181,64 +181,6 @@ public class GUIDesktopActivity extends GUIActivity
         if (! didwas) super.onBackPressed();
     }
 
-    public void displayCamera(boolean show, String uuid)
-    {
-        Camera camera = GUI.instance.onRequestCameraByUUID(uuid);
-        if (camera == null) return;
-
-        if (show)
-        {
-            bringToFront();
-
-            GUIVideoSurface videoSurface = null;
-
-            int index = -1;
-            int left = 400;
-            int top = 100;
-
-            if ((videoSurface == null) && (videoSurface1 == null))
-            {
-                index = 0;
-                videoSurface = videoSurface1 = new GUIVideoSurface(this);
-            }
-
-            if ((videoSurface == null) && (videoSurface2 == null))
-            {
-                index = 1;
-                videoSurface = videoSurface2 = new GUIVideoSurface(this);
-
-                left += 200;
-            }
-
-            if ((videoSurface == null) && (videoSurface3 == null))
-            {
-                index = 2;
-                videoSurface = videoSurface3 = new GUIVideoSurface(this);
-            }
-
-            if ((videoSurface == null) && (videoSurface4 == null))
-            {
-                index = 3;
-                videoSurface = videoSurface4 = new GUIVideoSurface(this);
-
-                top += 200;
-                left += 200;
-            }
-
-            if (index < 0) return;
-
-            videoSurface.setPluginPositionDip(left, top);
-            topframe.addView(videoSurface);
-
-            camera.connectCamera();
-            camera.registerSurface(videoSurface.getGLSVideoView());
-            camera.setResolution(Camera.RESOLUTION_720P);
-            camera.startRealtimeVideo();
-        }
-
-        checkWindowSize();
-    }
-
     private void showPlugin(GUIPlugin plugin)
     {
         if ((plugin != null) && (plugin.getParent() == null))
@@ -263,6 +205,10 @@ public class GUIDesktopActivity extends GUIActivity
         {
             hidePlugin(entry.getValue());
         }
+    }
+
+    public void displayCamera(boolean show, String uuid)
+    {
     }
 
     public void displaySpeechRecognition(boolean show)

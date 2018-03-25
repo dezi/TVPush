@@ -19,10 +19,12 @@ import de.xavaro.android.iot.things.IOTDomain;
 import de.xavaro.android.iot.things.IOTHuman;
 import de.xavaro.android.iot.simple.Simple;
 
+import pub.android.interfaces.all.SubSystem;
 import pub.android.interfaces.iot.GetDevices;
 import pub.android.interfaces.iot.OnStatusRequest;
 
 public class IOT implements
+        SubSystem,
         GetDevices,
         OnStatusRequest
 {
@@ -76,6 +78,12 @@ public class IOT implements
         {
             throw new RuntimeException("IOT system already initialized.");
         }
+    }
+
+    @Override
+    public String getDriverTag()
+    {
+        return "iot";
     }
 
     @Override
