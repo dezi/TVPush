@@ -458,6 +458,16 @@ public class GUISetup
         return 0;
     }
 
+    //
+    // Systems.
+    //
+
+    
+
+    //
+    // General methods.
+    //
+
     public static boolean startIntentForService(Context context, String service)
     {
         try
