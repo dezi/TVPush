@@ -566,9 +566,39 @@ public class GUISetup
 
     //region Subsystems.
 
-    public static JSONArray getRequiredSubsystems()
+    public static JSONArray getAvailableSubsystems()
     {
         return GUI.instance.subSystems.getRegisteredSubsystems();
+    }
+
+    public static int getTextSubsystemResid()
+    {
+        return R.string.setup_subysystems_subsystem;
+    }
+
+    public static int getIconForSubsystemResid(String service)
+    {
+        switch (service)
+        {
+            case "iam": return R.drawable.subsystem_iam_220;
+            case "p2p": return R.drawable.subsystem_yi_home_190;
+            case "tpl": return R.drawable.subsystem_tp_link_410;
+            case "sny": return R.drawable.subsystem_sony_600;
+        }
+
+        return R.drawable.unknown_550;
+    }
+
+    public static String getTextForSubsystemEnabled(String subsystem, boolean enabled)
+    {
+        if (enabled)
+        {
+            return Simple.getTrans(R.string.setup_subysystems_subsystem_active, subsystem);
+        }
+        else
+        {
+            return Simple.getTrans(R.string.setup_subysystems_subsystem_inactive, subsystem);
+        }
     }
 
     //endregion Subsystems.

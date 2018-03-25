@@ -47,4 +47,9 @@
     <string name="setup_features_feature_adb_active">ADB-Access is granted</string>
     <string name="setup_features_feature_adb_inactive">ADB-Access is unconfigured</string>
 
+    <string name="setup_subysystems_subsystem">Sub-System</string>
+
+    <string name="setup_subysystems_subsystem_active">%1$s is activated</string>
+    <string name="setup_subysystems_subsystem_inactive">%1$s is not activated</string>
+
 </resources>

@@ -44,6 +44,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
         collectServices(listView, todo);
         collectPermissions(listView, todo);
         collectFeatures(listView, todo);
+        collectSubsystems(listView, todo);
     }
 
     private static void collectServices(GUILinearLayout listView, boolean todo)
@@ -139,7 +140,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
             if (todo && enabled) continue;
 
             GUIListEntry entry = new GUIListEntry(listView.getContext());
-            entry.setOnClickListener(onServiceStartClickListener);
+            entry.setOnClickListener(onFeatureStartClickListener);
             entry.setTag(feature);
 
             String head = Simple.getTrans(GUISetup.getTextFeatureResid())
@@ -150,6 +151,43 @@ public class GUISetupWizzard extends GUIPluginTitleList
             entry.headerViev.setText(head);
 
             entry.infoView.setText(GUISetup.getTextForFeatureEnabledResid(feature, enabled));
+
+            entry.infoView.setTextColor(enabled
+                    ? GUIDefs.TEXT_COLOR_INFOS
+                    : GUIDefs.TEXT_COLOR_ALERTS);
+
+            listView.addView(entry);
+        }
+    }
+
+    private static void collectSubsystems(GUILinearLayout listView, boolean todo)
+    {
+        JSONArray subsystems = GUISetup.getAvailableSubsystems();
+
+        for (int inx = 0; inx < subsystems.length(); inx++)
+        {
+            JSONObject subsystem = Json.getObject(subsystems, inx);
+            if (subsystem == null) continue;
+
+            String drv = Json.getString(subsystem, "drv");
+            String name = Json.getString(subsystem, "name");
+
+            boolean enabled = false;
+
+            if (todo && enabled) continue;
+
+            GUIListEntry entry = new GUIListEntry(listView.getContext());
+            entry.setOnClickListener(onSubsystemStartClickListener);
+            entry.setTag(subsystem);
+
+            String head = Simple.getTrans(GUISetup.getTextSubsystemResid())
+                    + ": "
+                    + name;
+
+            entry.iconView.setImageResource(GUISetup.getIconForSubsystemResid(drv));
+            entry.headerViev.setText(head);
+
+            entry.infoView.setText(GUISetup.getTextForSubsystemEnabled(name, enabled));
 
             entry.infoView.setTextColor(enabled
                     ? GUIDefs.TEXT_COLOR_INFOS
@@ -176,6 +214,22 @@ public class GUISetupWizzard extends GUIPluginTitleList
         {
             String service = (String) view.getTag();
             GUISetup.requestPermission((Activity) view.getContext(), service, 4711);
+        }
+    };
+
+    private static final OnClickListener onFeatureStartClickListener = new OnClickListener()
+    {
+        @Override
+        public void onClick(View view)
+        {
+        }
+    };
+
+    private static final OnClickListener onSubsystemStartClickListener = new OnClickListener()
+    {
+        @Override
+        public void onClick(View view)
+        {
         }
     };
 }
