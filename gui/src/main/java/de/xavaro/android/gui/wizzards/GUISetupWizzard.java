@@ -81,22 +81,22 @@ public class GUISetupWizzard extends GUIPluginTitleList
 
     private static void collectPermissions(GUILinearLayout listView, boolean todo)
     {
-        JSONObject areas = GUISetup.getRequiredPermissions();
+        JSONObject services = GUISetup.getRequiredPermissions();
 
-        Iterator<String> keys = areas.keys();
+        Iterator<String> keys = services.keys();
 
         while (keys.hasNext())
         {
-            String area = keys.next();
-            boolean enabled = GUISetup.checkPermissions(listView.getContext(), area);
+            String service = keys.next();
+            boolean enabled = GUISetup.checkPermissions(listView.getContext(), service);
             if (todo && enabled) continue;
 
-            JSONArray perms = Json.getArray(areas, area);
+            JSONArray perms = Json.getArray(services, service);
             if (perms == null) continue;
 
             GUIListEntry entry = new GUIListEntry(listView.getContext());
             entry.setOnClickListener(onAreaPermissionClickListener);
-            entry.setTag(area);
+            entry.setTag(service);
 
             String infos = "";
 
@@ -111,9 +111,9 @@ public class GUISetupWizzard extends GUIPluginTitleList
 
             String head = Simple.getTrans(GUISetup.getTextPermissionResid())
                     + ": "
-                    + Simple.getTrans(GUISetup.getTextForAreaResid(area));
+                    + Simple.getTrans(GUISetup.getTextForServiceResid(service));
 
-            entry.iconView.setImageResource(GUISetup.getIconForAreaResid(area));
+            entry.iconView.setImageResource(GUISetup.getIconForServiceResid(service));
             entry.headerViev.setText(head);
             entry.infoView.setText(infos);
 

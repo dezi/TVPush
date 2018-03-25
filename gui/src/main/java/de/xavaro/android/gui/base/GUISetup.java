@@ -36,94 +36,52 @@ public class GUISetup
         // Bluetooth.
         //
 
-        BluetoothAdapter adapter = Simple.getBTAdapter();
-        boolean btAdapter = (adapter != null);
-        boolean btAdapterEnabled = btAdapter && adapter.isEnabled();
+        Json.put(services, "ble", haveService("ble"));
 
-        Json.put(services, "ble", btAdapterEnabled);
+        //
+        // Location.
+        //
+
+        Json.put(services, "loc", haveService("loc"));
+
+        //
+        // Developer.
+        //
+
+        Json.put(services, "dev", haveService("dev"));
+
+        return services;
+    }
+
+    public static JSONObject getRequiredPermissions()
+    {
+        JSONObject perms = new JSONObject();
+
+        //
+        // Microphone.
+        //
+
+        JSONArray mic = new JSONArray();
+        Json.put(mic, Manifest.permission.RECORD_AUDIO);
+        Json.put(perms, "mic", mic);
+
+        //
+        // Bluetooth.
+        //
+
+        JSONArray ble = new JSONArray();
+        Json.put(ble, Manifest.permission.BLUETOOTH);
+        Json.put(ble, Manifest.permission.BLUETOOTH_ADMIN);
+        Json.put(perms, "ble", ble);
 
         //
         // Location.
         //
 
         LocationManager locationManager = Simple.getLocationManager();
-        boolean locmanEnabled = (locationManager != null);
-        boolean locgpsEnabled = false;
-        boolean locnetEnabled = false;
-
-        if (locmanEnabled)
-        {
-            try
-            {
-                locgpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            }
-            catch (Exception ignore)
-            {
-            }
-
-            try
-            {
-                locnetEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-            }
-            catch (Exception ignore)
-            {
-            }
-        }
-
-        Json.put(services, "loc", locgpsEnabled | locnetEnabled);
-
-        //
-        // Developer and ADB.
-        //
-
-        int devEnabled = Settings.Secure.getInt(Simple.getContentResolver(),
-                Settings.Global.DEVELOPMENT_SETTINGS_ENABLED , 0);
-
-        Json.put(services, "dev", devEnabled == 1);
-
-        haveExtStorage();
-
-        return services;
-    }
-
-    public static boolean haveExtStorage()
-    {
-        boolean have = false;
-
-        File storage = new File("/storage");
-        File[] mounts = storage.listFiles();
-
-        for (File mount : mounts)
-        {
-            if (! mount.canRead()) continue;
-            if (mount.getName().equals("emulated")) continue;
-            if (mount.getName().equals("enc_emulated")) continue;
-
-            have = true;
-        }
-
-        Log.d(LOGTAG, "haveUSBStick: have=" + have);
-
-        return have;
-    }
-
-    public static JSONObject getRequiredPermissions()
-    {
-        LocationManager locationManager = Simple.getLocationManager();
 
         boolean gpsIsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         boolean netIsEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-        JSONObject perms = new JSONObject();
-
-        JSONArray mic = new JSONArray();
-        Json.put(mic, Manifest.permission.RECORD_AUDIO);
-        Json.put(perms, "mic", mic);
-
-        JSONArray ble = new JSONArray();
-        Json.put(ble, Manifest.permission.BLUETOOTH);
-        Json.put(ble, Manifest.permission.BLUETOOTH_ADMIN);
-        Json.put(perms, "ble", ble);
 
         if (netIsEnabled || gpsIsEnabled)
         {
@@ -142,10 +100,18 @@ public class GUISetup
             Json.put(perms, "loc", loc);
         }
 
+        //
+        // External storage.
+        //
+
         JSONArray ext = new JSONArray();
         Json.put(ext, Manifest.permission.READ_EXTERNAL_STORAGE);
         Json.put(ext, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         Json.put(perms, "ext", ext);
+
+        //
+        // Camera.
+        //
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
         {
@@ -239,11 +205,107 @@ public class GUISetup
         return haveRights;
     }
 
+    private static boolean haveService(String service)
+    {
+        boolean enabled = false;
+
+        //
+        // Bluetooth.
+        //
+
+        if (service.equals("ble"))
+        {
+            BluetoothAdapter adapter = Simple.getBTAdapter();
+            enabled = (adapter != null) && adapter.isEnabled();
+        }
+
+        //
+        // Location.
+        //
+
+        if (service.equals("loc"))
+        {
+            LocationManager locationManager = Simple.getLocationManager();
+            boolean locmanEnabled = (locationManager != null);
+            boolean locgpsEnabled = false;
+            boolean locnetEnabled = false;
+
+            if (locmanEnabled)
+            {
+                try
+                {
+                    locgpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                }
+                catch (Exception ignore)
+                {
+                }
+
+                try
+                {
+                    locnetEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+                }
+                catch (Exception ignore)
+                {
+                }
+            }
+
+            enabled = locgpsEnabled || locnetEnabled;
+        }
+
+        //
+        // Developer.
+        //
+
+        if (service.equals("dev"))
+        {
+            int devEnabled = Settings.Secure.getInt(Simple.getContentResolver(),
+                    Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
+        }
+
+        //
+        // Services which are always activated.
+        //
+
+        if (service.equals("mic") || service.equals("cam") || service.equals("ext"))
+        {
+            enabled = true;
+        }
+
+        return enabled;
+    }
+
     private static boolean havePermission(Context context, String manifestperm)
     {
         int permission = ContextCompat.checkSelfPermission(context, manifestperm);
 
         return (permission == PackageManager.PERMISSION_GRANTED);
+    }
+
+    private static boolean haveExtStorage()
+    {
+        boolean have = false;
+
+        try
+        {
+            File storage = new File("/storage");
+            File[] mounts = storage.listFiles();
+
+            for (File mount : mounts)
+            {
+                if (!mount.canRead()) continue;
+                if (mount.getName().equals("emulated")) continue;
+                if (mount.getName().equals("enc_emulated")) continue;
+
+                have = true;
+            }
+        }
+        catch (Exception ignore)
+        {
+        }
+
+        Log.d(LOGTAG, "haveExtStorage: have=" + have);
+
+        return have;
     }
 
     public static int getTextServiceResid()
@@ -255,6 +317,9 @@ public class GUISetup
     {
         switch (service)
         {
+            case "mic": return R.string.setup_services_service_mic;
+            case "ext": return R.string.setup_services_service_ext;
+            case "cam": return R.string.setup_services_service_cam;
             case "ble": return R.string.setup_services_service_ble;
             case "loc": return R.string.setup_services_service_loc;
             case "dev": return R.string.setup_services_service_dev;
@@ -267,6 +332,9 @@ public class GUISetup
     {
         switch (service)
         {
+            case "mic": return R.drawable.mic_540;
+            case "ext": return R.drawable.read_write_340;
+            case "cam": return R.drawable.camera_shutter_820;
             case "ble": return R.drawable.bluetooth_450;
             case "loc": return R.drawable.gps_530;
             case "dev": return R.drawable.developer_512;
@@ -427,34 +495,6 @@ public class GUISetup
     public static int getTextPermissionResid()
     {
         return R.string.setup_permissions_permission;
-    }
-
-    public static int getTextForAreaResid(String area)
-    {
-        switch (area)
-        {
-            case "mic": return R.string.setup_permissions_area_mic;
-            case "ext": return R.string.setup_permissions_area_ext;
-            case "loc": return R.string.setup_permissions_area_loc;
-            case "ble": return R.string.setup_permissions_area_ble;
-            case "cam": return R.string.setup_permissions_area_cam;
-        }
-
-        return R.string.setup_permissions_area_ukn;
-    }
-
-    public static int getIconForAreaResid(String area)
-    {
-        switch (area)
-        {
-            case "mic": return R.drawable.mic_540;
-            case "ext": return R.drawable.read_write_340;
-            case "loc": return R.drawable.gps_530;
-            case "ble": return R.drawable.bluetooth_450;
-            case "cam": return R.drawable.camera_shutter_820;
-        }
-
-        return -1;
     }
 
     public static int getTextForPermissionResid(String manifestperm)
