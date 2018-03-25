@@ -88,7 +88,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
         while (keys.hasNext())
         {
             String service = keys.next();
-            boolean enabled = GUISetup.checkPermissions(listView.getContext(), service);
+            boolean enabled = GUISetup.haveAllPermissions(listView.getContext(), service);
             if (todo && enabled) continue;
 
             JSONArray perms = Json.getArray(services, service);

@@ -136,7 +136,7 @@ public class GUISetup
 
         if (Simple.isTV())
         {
-            Json.put(features, "usb", haveExtStorage());
+            Json.put(features, "usb", haveFeature("usb"));
         }
 
         //
@@ -145,37 +145,15 @@ public class GUISetup
 
         if (Simple.isTablet() && ! Simple.isTV())
         {
-            Json.put(features, "ssd", haveExtStorage());
+            Json.put(features, "ssd", haveFeature("ssd"));
         }
 
         return features;
     }
 
-    public static boolean checkPermissions(Context context, String area)
-    {
-        boolean haveRights = false;
-
-        JSONObject perms = getRequiredPermissions();
-        JSONArray list = Json.getArray(perms, area);
-
-        if (list != null)
-        {
-            haveRights = true;
-
-            for (int inx = 0; inx < list.length(); inx++)
-            {
-                String manifestperm = Json.getString(list, inx);
-
-                haveRights &= havePermission(context, manifestperm);
-            }
-        }
-
-        return haveRights;
-    }
-
     private static boolean haveService(String service)
     {
-        boolean enabled = false;
+        boolean have = false;
 
         //
         // Bluetooth.
@@ -184,7 +162,7 @@ public class GUISetup
         if (service.equals("ble"))
         {
             BluetoothAdapter adapter = Simple.getBTAdapter();
-            enabled = (adapter != null) && adapter.isEnabled();
+            have = (adapter != null) && adapter.isEnabled();
         }
 
         //
@@ -217,7 +195,7 @@ public class GUISetup
                 }
             }
 
-            enabled = locgpsEnabled || locnetEnabled;
+            have = locgpsEnabled || locnetEnabled;
         }
 
         //
@@ -236,10 +214,10 @@ public class GUISetup
 
         if (service.equals("mic") || service.equals("cam") || service.equals("ext"))
         {
-            enabled = true;
+            have = true;
         }
 
-        return enabled;
+        return have;
     }
 
     private static boolean havePermission(Context context, String manifestperm)
@@ -249,29 +227,57 @@ public class GUISetup
         return (permission == PackageManager.PERMISSION_GRANTED);
     }
 
-    private static boolean haveExtStorage()
+    public static boolean haveAllPermissions(Context context, String service)
+    {
+        boolean haveAll = false;
+
+        if (haveService(service))
+        {
+            JSONObject perms = getRequiredPermissions();
+            JSONArray list = Json.getArray(perms, service);
+
+            if (list != null)
+            {
+                haveAll = true;
+
+                for (int inx = 0; inx < list.length(); inx++)
+                {
+                    String manifestperm = Json.getString(list, inx);
+
+                    haveAll &= havePermission(context, manifestperm);
+                }
+            }
+        }
+
+        return haveAll;
+    }
+
+    private static boolean haveFeature(String feature)
     {
         boolean have = false;
 
-        try
+        if (feature.equals("usb") || feature.equals("ssd"))
         {
-            File storage = new File("/storage");
-            File[] mounts = storage.listFiles();
-
-            for (File mount : mounts)
+            try
             {
-                if (!mount.canRead()) continue;
-                if (mount.getName().equals("emulated")) continue;
-                if (mount.getName().equals("enc_emulated")) continue;
+                File storage = new File("/storage");
+                File[] mounts = storage.listFiles();
 
-                have = true;
+                for (File mount : mounts)
+                {
+                    if (!mount.canRead()) continue;
+                    if (mount.getName().equals("emulated")) continue;
+                    if (mount.getName().equals("enc_emulated")) continue;
+
+                    have = true;
+                }
+            }
+            catch (Exception ignore)
+            {
             }
         }
-        catch (Exception ignore)
-        {
-        }
 
-        Log.d(LOGTAG, "haveExtStorage: have=" + have);
+        Log.d(LOGTAG, "haveFeature: feature=" + feature + " have=" + have);
 
         return have;
     }
