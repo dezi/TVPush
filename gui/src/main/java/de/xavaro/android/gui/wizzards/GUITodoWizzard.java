@@ -23,7 +23,7 @@ public class GUITodoWizzard extends GUIPluginTitleList
     @Override
     public void onCollectEntries(GUIListView listView, boolean todo)
     {
-        GUIPermissionWizzard.collectEntries(listView, true);
+        GUISetupWizzard.collectEntries(listView, true);
         GUILocationsWizzard.collectEntries(listView, true);
     }
 }

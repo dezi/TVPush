@@ -30,6 +30,6 @@ public class ApplicationBase extends GUIApplication
 
         //AdbTest.testShell(this, "192.168.0.11", 5555);
 
-        AdbTest.testPullPush(this, "192.168.0.11", 5555);
+        //AdbTest.testPullPush(this, "192.168.0.11", 5555);
     }
 }

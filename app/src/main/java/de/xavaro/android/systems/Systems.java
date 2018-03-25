@@ -16,9 +16,10 @@ public class Systems
         iot = new SystemsIOT(application);
         gui = new SystemsGUI(application);
         iam = new SystemsIAM(application);
-        tpl = new SystemsTPL(application);
-        p2p = new SystemsP2P(application);
 
+        tpl = new SystemsTPL(application);
+
+        p2p = new SystemsP2P(application);
         p2p.login("dezi@kappa-mm.de", "blabla1234!");
 
         sny = new SystemsSNY(application);
