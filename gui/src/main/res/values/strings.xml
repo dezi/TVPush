@@ -42,4 +42,8 @@
     <string name="setup_features_feature_ssd_active">SD-Card is ready</string>
     <string name="setup_features_feature_ssd_inactive">No SD-Card visible</string>
 
+    <string name="setup_features_feature_adb">ADB-Access</string>
+    <string name="setup_features_feature_adb_active">ADB-Access is granted</string>
+    <string name="setup_features_feature_adb_inactive">ADB-Access is unconfigured</string>
+
 </resources>

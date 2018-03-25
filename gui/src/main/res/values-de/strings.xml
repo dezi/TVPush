@@ -42,4 +42,8 @@
     <string name="setup_features_feature_ssd_active">SD-Karte ist bereit</string>
     <string name="setup_features_feature_ssd_inactive">Keine SD-Karte sichtbar</string>
 
+    <string name="setup_features_feature_adb">ADB-Zugriff</string>
+    <string name="setup_features_feature_adb_active">ADB-Zugriff wird gewährt</string>
+    <string name="setup_features_feature_adb_inactive">ADB-Zugriff ist unkonfiguriert</string>
+
 </resources>

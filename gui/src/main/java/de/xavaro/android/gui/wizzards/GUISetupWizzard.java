@@ -88,6 +88,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
         while (keys.hasNext())
         {
             String service = keys.next();
+
             boolean enabled = GUISetup.haveAllPermissions(listView.getContext(), service);
             if (todo && enabled) continue;
 
@@ -95,7 +96,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
             if (perms == null) continue;
 
             GUIListEntry entry = new GUIListEntry(listView.getContext());
-            entry.setOnClickListener(onAreaPermissionClickListener);
+            entry.setOnClickListener(onPermissionRequestClickListener);
             entry.setTag(service);
 
             String infos = "";
@@ -168,13 +169,13 @@ public class GUISetupWizzard extends GUIPluginTitleList
         }
     };
 
-    private static final OnClickListener onAreaPermissionClickListener = new OnClickListener()
+    private static final OnClickListener onPermissionRequestClickListener = new OnClickListener()
     {
         @Override
         public void onClick(View view)
         {
-            String area = (String) view.getTag();
-            GUISetup.requestPermission((Activity) view.getContext(), area, 4711);
+            String service = (String) view.getTag();
+            GUISetup.requestPermission((Activity) view.getContext(), service, 4711);
         }
     };
 }

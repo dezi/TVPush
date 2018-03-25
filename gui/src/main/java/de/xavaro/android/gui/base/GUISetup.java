@@ -83,10 +83,10 @@ public class GUISetup
         boolean gpsIsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         boolean netIsEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
+        JSONArray loc = new JSONArray();
+
         if (netIsEnabled || gpsIsEnabled)
         {
-            JSONArray loc = new JSONArray();
-
             if (netIsEnabled)
             {
                 Json.put(loc, Manifest.permission.ACCESS_COARSE_LOCATION);
@@ -96,9 +96,19 @@ public class GUISetup
             {
                 Json.put(loc, Manifest.permission.ACCESS_FINE_LOCATION);
             }
-
-            Json.put(perms, "loc", loc);
         }
+        else
+        {
+            //
+            // None enabled. Put both into
+            // required permissions for now.
+            //
+
+            Json.put(loc, Manifest.permission.ACCESS_COARSE_LOCATION);
+            Json.put(loc, Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+
+        Json.put(perms, "loc", loc);
 
         //
         // External storage.
@@ -148,10 +158,16 @@ public class GUISetup
             Json.put(features, "ssd", haveFeature("ssd"));
         }
 
+        //
+        // ADB.
+        //
+
+        Json.put(features, "adb", haveFeature("adb"));
+
         return features;
     }
 
-    private static boolean haveService(String service)
+    public static boolean haveService(String service)
     {
         boolean have = false;
 
@@ -206,6 +222,8 @@ public class GUISetup
         {
             int devEnabled = Settings.Secure.getInt(Simple.getContentResolver(),
                     Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
+
+            have = (devEnabled == 1);
         }
 
         //
@@ -220,7 +238,7 @@ public class GUISetup
         return have;
     }
 
-    private static boolean havePermission(Context context, String manifestperm)
+    public static boolean havePermission(Context context, String manifestperm)
     {
         int permission = ContextCompat.checkSelfPermission(context, manifestperm);
 
@@ -252,7 +270,7 @@ public class GUISetup
         return haveAll;
     }
 
-    private static boolean haveFeature(String feature)
+    public static boolean haveFeature(String feature)
     {
         boolean have = false;
 
@@ -318,7 +336,7 @@ public class GUISetup
             case "dev": return R.drawable.developer_512;
         }
 
-        return -1;
+        return 0;
     }
 
     public static int getTextForServiceEnabledResid(String service, boolean enabled)
@@ -344,7 +362,7 @@ public class GUISetup
                     : R.string.setup_services_service_dev_inactive;
         }
 
-        return -1;
+        return 0;
     }
 
     //
@@ -396,6 +414,7 @@ public class GUISetup
         {
             case "usb": return R.string.setup_features_feature_usb;
             case "ssd": return R.string.setup_features_feature_ssd;
+            case "adb": return R.string.setup_features_feature_adb;
         }
 
         return R.string.setup_features_feature_ukn;
@@ -407,9 +426,10 @@ public class GUISetup
         {
             case "usb": return R.drawable.usb_stick_400;
             case "ssd": return R.drawable.ssd_120;
+            case "adb": return R.drawable.adb_220;
         }
 
-        return -1;
+        return 0;
     }
 
     public static int getTextForFeatureEnabledResid(String service, boolean enabled)
@@ -428,7 +448,14 @@ public class GUISetup
                     : R.string.setup_features_feature_ssd_inactive;
         }
 
-        return -1;
+        if (service.equals("adb"))
+        {
+            return enabled
+                    ? R.string.setup_features_feature_adb_active
+                    : R.string.setup_features_feature_adb_inactive;
+        }
+
+        return 0;
     }
 
     public static boolean startIntentForService(Context context, String service)
