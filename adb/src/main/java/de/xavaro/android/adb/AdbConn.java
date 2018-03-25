@@ -259,6 +259,7 @@ public class AdbConn implements Closeable
                                     + " cmd=" + msg.cmdstr
                                     + " locId=" + msg.arg1
                                     + " remId=" + msg.arg0
+                                    + " psize=" + msg.payloadLength
                                     + " stream=" + (stream != null)
                             );
 

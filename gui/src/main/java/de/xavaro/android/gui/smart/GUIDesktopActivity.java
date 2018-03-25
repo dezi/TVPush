@@ -21,7 +21,7 @@ import de.xavaro.android.gui.wizzards.GUIChannelWizzard;
 import de.xavaro.android.gui.wizzards.GUIGeomapWizzard;
 import de.xavaro.android.gui.wizzards.GUILocationsWizzard;
 import de.xavaro.android.gui.wizzards.GUIMenuWizzard;
-import de.xavaro.android.gui.wizzards.GUIPermissionWizzard;
+import de.xavaro.android.gui.wizzards.GUISetupWizzard;
 import de.xavaro.android.gui.wizzards.GUIPingWizzard;
 import de.xavaro.android.gui.wizzards.GUITodoWizzard;
 import de.xavaro.android.gui.plugin.GUIVideoSurface;
@@ -60,16 +60,16 @@ public class GUIDesktopActivity extends GUIActivity
         wizzards.put(GUIMenuWizzard.      class.getSimpleName(), new GUIMenuWizzard      (this));
         wizzards.put(GUIPingWizzard.      class.getSimpleName(), new GUIPingWizzard      (this));
         wizzards.put(GUITodoWizzard.      class.getSimpleName(), new GUITodoWizzard      (this));
+        wizzards.put(GUISetupWizzard.     class.getSimpleName(), new GUISetupWizzard     (this));
         wizzards.put(GUICameraWizzard.    class.getSimpleName(), new GUICameraWizzard    (this));
         wizzards.put(GUICamerasWizzard.   class.getSimpleName(), new GUICamerasWizzard   (this));
         wizzards.put(GUIChannelWizzard.   class.getSimpleName(), new GUIChannelWizzard   (this));
         wizzards.put(GUILocationsWizzard. class.getSimpleName(), new GUILocationsWizzard (this));
         wizzards.put(GUIGeomapWizzard.    class.getSimpleName(), new GUIGeomapWizzard    (this));
-        wizzards.put(GUIPermissionWizzard.class.getSimpleName(), new GUIPermissionWizzard(this));
 
         // @formatter:on
 
-        displayWizzard(GUICamerasWizzard.class.getSimpleName());
+        displayWizzard(GUISetupWizzard.class.getSimpleName());
 
         checkWindowSize();
    }
@@ -329,7 +329,7 @@ public class GUIDesktopActivity extends GUIActivity
 
         if (keyCode == KeyEvent.KEYCODE_PROG_RED) name = GUICamerasWizzard.class.getSimpleName();
         if (keyCode == KeyEvent.KEYCODE_PROG_GREEN) name = GUIPingWizzard.class.getSimpleName();
-        if (keyCode == KeyEvent.KEYCODE_PROG_YELLOW) name = GUIPermissionWizzard.class.getSimpleName();
+        if (keyCode == KeyEvent.KEYCODE_PROG_YELLOW) name = GUISetupWizzard.class.getSimpleName();
         if (keyCode == KeyEvent.KEYCODE_PROG_BLUE) name = GUIMenuWizzard.class.getSimpleName();
 
         GUIPlugin wizzard = getWizzard(name);

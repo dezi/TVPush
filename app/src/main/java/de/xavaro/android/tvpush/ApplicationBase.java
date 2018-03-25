@@ -17,8 +17,6 @@ public class ApplicationBase extends GUIApplication
 {
     private static final String LOGTAG = ApplicationBase.class.getSimpleName();
 
-    private AdbServicePull adbServicePull;
-
     @Override
     public void onCreate()
     {
@@ -32,36 +30,6 @@ public class ApplicationBase extends GUIApplication
 
         //AdbTest.testShell(this, "192.168.0.11", 5555);
 
-        //AdbServiceCheck adbServiceCheck = new AdbServiceCheck(this, "192.168.0.11", 5555);
-        //Log.d(LOGTAG, "onCreate: adbServiceCheck:" + adbServiceCheck.startSync());
-
-        /*
-        adbServicePull = new AdbServicePull(
-                this, "192.168.0.11", 5555,
-                "/storage/E06D-EF93/sdb.xml")
-        {
-            @Override
-            protected void onServiceSuccess()
-            {
-                Log.d(LOGTAG, "AdbServicePull: onServiceSuccess size=" + adbServicePull.outputStream.size());
-            }
-
-            @Override
-            protected void onServiceFailed()
-            {
-                Log.d(LOGTAG, "AdbServicePull: onServiceFailed.");
-            }
-        };
-        */
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-        adbServicePull = new AdbServicePull(this, "192.168.0.11", 5555,
-                "/storage/E06D-EF93/sdb.xml");
-        adbServicePull.setOutputStream(outputStream);
-        boolean success = adbServicePull.startSync();
-
-        Log.d(LOGTAG, "onCreate: AdbServicePull: startsync: success=" + success);
-        if (success ) Log.d(LOGTAG, "onCreate: AdbServicePull: startsync: size=" + adbServicePull.outputStream.size());
+        //AdbTest.testPullPush(this, "192.168.0.11", 5555);
     }
 }

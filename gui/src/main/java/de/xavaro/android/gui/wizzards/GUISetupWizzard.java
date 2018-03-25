@@ -19,11 +19,11 @@ import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUIListEntry;
 import de.xavaro.android.gui.views.GUIListView;
 
-public class GUIPermissionWizzard extends GUIPluginTitleList
+public class GUISetupWizzard extends GUIPluginTitleList
 {
-    private final static String LOGTAG = GUIPermissionWizzard.class.getSimpleName();
+    private final static String LOGTAG = GUISetupWizzard.class.getSimpleName();
 
-    public GUIPermissionWizzard(Context context)
+    public GUISetupWizzard(Context context)
     {
         super(context);
 

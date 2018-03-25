@@ -70,7 +70,6 @@ public class AdbMess
         return message.array();
     }
 
-
     private boolean readInputStream(InputStream inputStream, byte[] data)
     {
         if (data != null)

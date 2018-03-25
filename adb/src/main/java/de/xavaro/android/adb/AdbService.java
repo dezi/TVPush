@@ -3,6 +3,7 @@ package de.xavaro.android.adb;
 import android.content.Context;
 import android.util.Log;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 public abstract class AdbService
@@ -12,12 +13,15 @@ public abstract class AdbService
     protected Context context;
     protected String ipaddr;
     protected int ipport;
+    protected int maxdata;
 
     protected Thread thread;
     protected AdbConn adb;
 
     public boolean success;
     public String remoteFile;
+
+    public ByteArrayInputStream inputStream;
     public ByteArrayOutputStream outputStream;
 
     public AdbService(final Context context, final String ipaddr, final int ipport)
@@ -54,6 +58,11 @@ public abstract class AdbService
         this.outputStream = outputStream;
     }
 
+    public void setInputStream(ByteArrayInputStream inputStream)
+    {
+        this.inputStream = inputStream;
+    }
+
     private Runnable runner = new Runnable()
     {
         @Override
@@ -68,6 +77,8 @@ public abstract class AdbService
             if (adb.connect())
             {
                 Log.d(LOGTAG, "run: connected.");
+
+                maxdata = adb.getMaxData();
 
                 success = onStartService();
 

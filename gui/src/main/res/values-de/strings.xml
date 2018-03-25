@@ -13,7 +13,7 @@
 
     <string name="setup_services_service_dev">Entwickler</string>
     <string name="setup_services_service_dev_active">Entwickler-Status ist aktiv</string>
-    <string name="setup_services_service_dev_inactive">Entwickler-Status ist aktiv</string>
+    <string name="setup_services_service_dev_inactive">Entwickler-Status ist nicht aktiv</string>
 
     <string name="setup_permissions_permission">Berechtigung</string>
 

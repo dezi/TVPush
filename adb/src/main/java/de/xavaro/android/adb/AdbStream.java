@@ -114,6 +114,8 @@ public class AdbStream implements Closeable
         byte[] packet = AdbProtocol.buildWrite(localId, remoteId, payload);
 
         adbConn.writePacket(packet);
+
+        Log.d(LOGTAG, "write: locId=" + localId + " remId=" + remoteId + " size=" + payload.length);
     }
 
     @Override
