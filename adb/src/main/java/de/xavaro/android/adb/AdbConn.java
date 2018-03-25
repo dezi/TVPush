@@ -100,7 +100,7 @@ public class AdbConn implements Closeable
             attempted = true;
             connThread.start();
 
-            if (writePacket(AdbProtocol.generateConnect()))
+            if (writePacket(AdbProtocol.buildConnect()))
             {
                 synchronized (this)
                 {
@@ -277,7 +277,7 @@ public class AdbConn implements Closeable
                                 if (msg.command == AdbProtocol.CMD_WRTE)
                                 {
                                     stream.addPayload(msg.payload);
-                                    stream.sendReady();
+                                    stream.sendOkay();
                                 }
                             }
 
@@ -289,7 +289,7 @@ public class AdbConn implements Closeable
 
                             if (msg.arg0 == AdbProtocol.AUTH_TYPE_TOKEN)
                             {
-                                Log.d(LOGTAG, "connRun: AUTH TOKEN.");
+                                Log.d(LOGTAG, "connRun: AUTH type=token");
 
                                 byte[] packet;
 
@@ -297,14 +297,16 @@ public class AdbConn implements Closeable
                                 {
                                     Log.d(LOGTAG, "connRun: send RSA-KEY.");
 
-                                    packet = AdbProtocol.generateAuth(AdbProtocol.AUTH_TYPE_RSA_PUBLIC,
+                                    packet = AdbProtocol.buildAuth(
+                                            AdbProtocol.AUTH_TYPE_RSA_PUBLIC,
                                             conn.adbAuth.getAdbPublicKeyPayload());
                                 }
                                 else
                                 {
                                     Log.d(LOGTAG, "connRun: send SIGNATURE.");
 
-                                    packet = AdbProtocol.generateAuth(AdbProtocol.AUTH_TYPE_SIGNATURE,
+                                    packet = AdbProtocol.buildAuth(
+                                            AdbProtocol.AUTH_TYPE_SIGNATURE,
                                             conn.adbAuth.signAdbTokenPayload(msg.payload));
 
                                     conn.sentSignature = true;
@@ -413,7 +415,7 @@ public class AdbConn implements Closeable
                 openStreams.put(locId, stream);
             }
 
-            if (writePacket(AdbProtocol.generateOpen(locId, service)))
+            if (writePacket(AdbProtocol.buildOpen(locId, service)))
             {
                 synchronized (stream)
                 {

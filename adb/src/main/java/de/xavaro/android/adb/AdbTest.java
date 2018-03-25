@@ -19,7 +19,7 @@ public class AdbTest
         {
             Log.d(LOGTAG, "testShell: connected.");
 
-            AdbStream stream = adb.openService("shell:ls -al /storage");
+            AdbStream stream = adb.openService("shell:cat < /storage/E06D-EF93/yyy.txt");
 
             Log.d(LOGTAG, "testShell: open service.");
 

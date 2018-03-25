@@ -22,13 +22,13 @@ public class AdbProtocol
 
     public static final String CONNECT_SERVICE = "host::";
 
-    public static byte[] generateMessage(int command, int arg0, int arg1, byte[] payload)
+    public static byte[] buildMessage(int command, int arg0, int arg1, byte[] payload)
     {
         AdbMessage msg = new AdbMessage(command, arg0, arg1, payload);
         return msg.getMessageBytes();
    }
 
-    public static byte[] generateConnect()
+    public static byte[] buildConnect()
     {
         byte[] dest = CONNECT_SERVICE.getBytes();
 
@@ -37,15 +37,15 @@ public class AdbProtocol
         data.put(dest);
         data.put((byte) 0);
 
-        return generateMessage(CMD_CNXN, CONNECT_VERSION, CONNECT_MAXDATA, data.array());
+        return buildMessage(CMD_CNXN, CONNECT_VERSION, CONNECT_MAXDATA, data.array());
     }
 
-    public static byte[] generateAuth(int type, byte[] data)
+    public static byte[] buildAuth(int type, byte[] data)
     {
-        return generateMessage(CMD_AUTH, type, 0, data);
+        return buildMessage(CMD_AUTH, type, 0, data);
     }
 
-    public static byte[] generateOpen(int locId, String service)
+    public static byte[] buildOpen(int locId, String service)
     {
         byte[] servdata = service.getBytes();
 
@@ -54,21 +54,21 @@ public class AdbProtocol
         data.put(servdata);
         data.put((byte) 0);
 
-        return generateMessage(CMD_OPEN, locId, 0, data.array());
+        return buildMessage(CMD_OPEN, locId, 0, data.array());
     }
 
-    public static byte[] generateWrite(int locId, int remId, byte[] data)
+    public static byte[] buildWrite(int locId, int remId, byte[] data)
     {
-        return generateMessage(CMD_WRTE, locId, remId, data);
+        return buildMessage(CMD_WRTE, locId, remId, data);
     }
 
-    public static byte[] generateClose(int locId, int remId)
+    public static byte[] buildClose(int locId, int remId)
     {
-        return generateMessage(CMD_CLSE, locId, remId, null);
+        return buildMessage(CMD_CLSE, locId, remId, null);
     }
 
-    public static byte[] generateOkay(int locId, int remId)
+    public static byte[] buildOkay(int locId, int remId)
     {
-        return generateMessage(CMD_OKAY, locId, remId, null);
+        return buildMessage(CMD_OKAY, locId, remId, null);
     }
 }

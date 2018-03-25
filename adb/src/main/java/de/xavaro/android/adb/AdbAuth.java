@@ -26,6 +26,7 @@ import java.security.KeyPair;
 
 import javax.crypto.Cipher;
 
+@SuppressWarnings("WeakerAccess")
 public class AdbAuth
 {
     private final static String LOGTAG = AdbAuth.class.getSimpleName();
