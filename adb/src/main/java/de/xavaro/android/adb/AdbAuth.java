@@ -97,8 +97,6 @@ public class AdbAuth
         else
         {
             Log.d(LOGTAG, "createAdbAuth: RSA crypto loaded.");
-
-            adbAuth.saveKeyPair(context);
         }
 
         return adbAuth;

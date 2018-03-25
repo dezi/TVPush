@@ -24,7 +24,7 @@ public class AdbProtocol
 
     public static byte[] buildMessage(int command, int arg0, int arg1, byte[] payload)
     {
-        AdbMessage msg = new AdbMessage(command, arg0, arg1, payload);
+        AdbMess msg = new AdbMess(command, arg0, arg1, payload);
         return msg.getMessageBytes();
    }
 

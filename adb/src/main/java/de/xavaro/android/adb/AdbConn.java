@@ -68,6 +68,7 @@ public class AdbConn implements Closeable
 
                 socket = new Socket(ipaddr, ipport);
                 socket.setTcpNoDelay(true);
+                socket.setSoTimeout(3000);
 
                 Log.d(LOGTAG, "connect: open socket done.");
 
@@ -102,6 +103,8 @@ public class AdbConn implements Closeable
 
             if (writePacket(AdbProtocol.buildConnect()))
             {
+                Log.d(LOGTAG, "connect: wrote build connect.");
+
                 synchronized (this)
                 {
                     if (!connected)
@@ -128,8 +131,6 @@ public class AdbConn implements Closeable
     {
         synchronized (openStreams)
         {
-            Log.d(LOGTAG, "closeStreams: closing streams size=" + openStreams.size());
-
             for (int inx = 0; inx < openStreams.size(); inx++)
             {
                 try
@@ -217,7 +218,7 @@ public class AdbConn implements Closeable
             {
                 try
                 {
-                    AdbMessage msg = AdbMessage.readAdbMessage(inputStream);
+                    AdbMess msg = AdbMess.readAdbMessage(inputStream);
 
                     if (msg == null)
                     {

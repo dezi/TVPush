@@ -1,14 +1,18 @@
 package de.xavaro.android.adb;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.io.InputStream;
+import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 @SuppressWarnings("WeakerAccess")
-public class AdbMessage
+public class AdbMess
 {
+    private static final String LOGTAG = AdbMess.class.getSimpleName();
+
     public static final int ADB_HEADER_LENGTH = 24;
 
     public String cmdstr;
@@ -22,11 +26,11 @@ public class AdbMessage
 
     public byte[] payload;
 
-    public AdbMessage()
+    public AdbMess()
     {
     }
 
-    public AdbMessage(int command, int arg0, int arg1, byte[] payload)
+    public AdbMess(int command, int arg0, int arg1, byte[] payload)
     {
         //
         // From original adb implementation:
@@ -53,7 +57,7 @@ public class AdbMessage
     {
         ByteBuffer message;
 
-        message = ByteBuffer.allocate(AdbMessage.ADB_HEADER_LENGTH + payload.length).order(ByteOrder.LITTLE_ENDIAN);
+        message = ByteBuffer.allocate(AdbMess.ADB_HEADER_LENGTH + payload.length).order(ByteOrder.LITTLE_ENDIAN);
 
         message.putInt(command);
         message.putInt(arg0);
@@ -67,11 +71,11 @@ public class AdbMessage
     }
 
     @Nullable
-    public static AdbMessage readAdbMessage(InputStream inputStream)
+    public static AdbMess readAdbMessage(InputStream inputStream)
     {
         try
         {
-            AdbMessage msg = new AdbMessage();
+            AdbMess msg = new AdbMess();
 
             ByteBuffer packet = ByteBuffer.allocate(ADB_HEADER_LENGTH).order(ByteOrder.LITTLE_ENDIAN);
 
@@ -99,6 +103,10 @@ public class AdbMessage
             if (bytesRead != msg.payload.length) return null;
 
             return msg;
+        }
+        catch (SocketTimeoutException to)
+        {
+            Log.e(LOGTAG, "readAdbMessage: socket timed out!");
         }
         catch (Exception ex)
         {

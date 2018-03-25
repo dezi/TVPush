@@ -7,43 +7,52 @@ public class AdbTest
 {
     private static final String LOGTAG = AdbTest.class.getSimpleName();
 
-    public static void testShell(Context context)
+    public static void testShell(final Context context)
     {
-        Log.d(LOGTAG, "testShell: open.");
-
-        AdbConn adb = new AdbConn(context, "192.168.0.11", 5555);
-
-        Log.d(LOGTAG, "testShell: connect.");
-
-        if (adb.connect())
+        Thread test = new Thread(new Runnable()
         {
-            Log.d(LOGTAG, "testShell: connected.");
-
-            AdbStream stream = adb.openService("shell:cat < /storage/E06D-EF93/yyy.txt");
-
-            Log.d(LOGTAG, "testShell: open service.");
-
-            if (stream != null)
+            @Override
+            public void run()
             {
-                Log.d(LOGTAG, "testShell: service opened.");
+                Log.d(LOGTAG, "testShell: open.");
 
-                while (!stream.isClosed())
+                AdbConn adb = new AdbConn(context, "192.168.0.11", 5555);
+
+                Log.d(LOGTAG, "testShell: connect.");
+
+                if (adb.connect())
                 {
-                    byte[] data = stream.read();
+                    Log.d(LOGTAG, "testShell: connected.");
 
-                    Log.d(LOGTAG, "testShell: read=" + ((data == null) ? null : new String(data)));
+                    AdbStream stream = adb.openService("shell:cat < /storage/E06D-EF93/yyy.txt");
+
+                    Log.d(LOGTAG, "testShell: open service.");
+
+                    if (stream != null)
+                    {
+                        Log.d(LOGTAG, "testShell: service opened.");
+
+                        while (!stream.isClosed())
+                        {
+                            byte[] data = stream.read();
+
+                            Log.d(LOGTAG, "testShell: read=" + ((data == null) ? null : new String(data)));
+                        }
+
+                        Log.d(LOGTAG, "testShell: service closed.");
+                    }
+
+                    adb.close();
+
+                    Log.d(LOGTAG, "testShell: connection closed.");
                 }
-
-                Log.d(LOGTAG, "testShell: service closed.");
+                else
+                {
+                    Log.e(LOGTAG, "testShell: connection failed.");
+                }
             }
+        });
 
-            adb.close();
-
-            Log.d(LOGTAG, "testShell: connection closed.");
-        }
-        else
-        {
-            Log.d(LOGTAG, "testShell: connection failed.");
-        }
-   }
+        test.start();
+    }
 }
