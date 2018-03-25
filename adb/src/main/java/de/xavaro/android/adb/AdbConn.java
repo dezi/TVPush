@@ -46,7 +46,7 @@ public class AdbConn implements Closeable
 
     public boolean connect()
     {
-        Log.d(LOGTAG, "connect: start connect.");
+        Log.d(LOGTAG, "connect: start connect ip=" + ipaddr + " port=" + ipport);
 
         adbAuth = AdbAuth.createAdbAuth(context);
 

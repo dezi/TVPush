@@ -7,16 +7,16 @@ public class AdbTest
 {
     private static final String LOGTAG = AdbTest.class.getSimpleName();
 
-    public static void testShell(final Context context)
+    public static void testShell(final Context context, final String ipaddr, final int ipport)
     {
         Thread test = new Thread(new Runnable()
         {
             @Override
             public void run()
             {
-                Log.d(LOGTAG, "testShell: open.");
+                Log.d(LOGTAG, "testShell: ip=" + ipaddr + " port=" + ipport);
 
-                AdbConn adb = new AdbConn(context, "192.168.0.11", 5555);
+                AdbConn adb = new AdbConn(context, ipaddr, ipport);
 
                 Log.d(LOGTAG, "testShell: connect.");
 
@@ -24,7 +24,7 @@ public class AdbTest
                 {
                     Log.d(LOGTAG, "testShell: connected.");
 
-                    AdbStream stream = adb.openService("shell:cat < /storage/E06D-EF93/yyy.txt");
+                    AdbStream stream = adb.openService("shell:ls -al < /storage");
 
                     Log.d(LOGTAG, "testShell: open service.");
 

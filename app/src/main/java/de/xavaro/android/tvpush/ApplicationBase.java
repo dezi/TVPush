@@ -1,5 +1,6 @@
 package de.xavaro.android.tvpush;
 
+import de.xavaro.android.adb.AdbServiceCheck;
 import de.xavaro.android.adb.AdbTest;
 
 import de.xavaro.android.gui.base.GUIApplication;
@@ -22,6 +23,9 @@ public class ApplicationBase extends GUIApplication
 
         Systems.initialize(this);
 
-        AdbTest.testShell(this);
+        //AdbTest.testShell(this, "192.168.0.11", 5555);
+
+        AdbServiceCheck adbServiceCheck = new AdbServiceCheck(this, "192.168.0.11", 5555);
+        adbServiceCheck.start();
     }
 }
