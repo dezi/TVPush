@@ -14,6 +14,8 @@ public abstract class AdbService
     protected Thread thread;
     protected AdbConn adb;
 
+    protected boolean success;
+
     public AdbService(final Context context, final String ipaddr, final int ipport)
     {
         this.context = context;
@@ -25,6 +27,22 @@ public abstract class AdbService
     {
         thread = new Thread(runner);
         thread.start();
+    }
+
+    public boolean startSync()
+    {
+        start();
+
+        try
+        {
+            thread.join();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return success;
     }
 
     private Runnable runner = new Runnable()
@@ -42,7 +60,7 @@ public abstract class AdbService
             {
                 Log.d(LOGTAG, "run: connected.");
 
-                onStartService();
+                success = onStartService();
 
                 adb.close();
 
@@ -61,5 +79,5 @@ public abstract class AdbService
     {
     }
 
-    protected abstract void onStartService();
+    protected abstract boolean onStartService();
 }

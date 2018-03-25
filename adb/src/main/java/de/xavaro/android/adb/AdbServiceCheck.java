@@ -12,8 +12,11 @@ public class AdbServiceCheck extends AdbService
         super(context, ipaddr, ipport);
     }
 
-    protected void onStartService()
+    @Override
+    protected boolean onStartService()
     {
         Log.d(LOGTAG, "onStartService: connect is ok.");
-    };
+
+        return true;
+    }
 }

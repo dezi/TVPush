@@ -26,10 +26,10 @@ public class ApplicationBase extends GUIApplication
 
         Systems.initialize(this);
 
-        AdbTest.testShell(this, "192.168.0.11", 5555);
+        //AdbTest.testShell(this, "192.168.0.11", 5555);
 
-        //AdbServiceCheck adbServiceCheck = new AdbServiceCheck(this, "192.168.0.11", 5555);
-        //adbServiceCheck.start();
+        AdbServiceCheck adbServiceCheck = new AdbServiceCheck(this, "192.168.0.11", 5555);
+        Log.d(LOGTAG, "onCreate: adbServiceCheck:" + adbServiceCheck.startSync());
 
         /*
         AdbServicePull adbServicePull = new AdbServicePull(this, "192.168.0.11", 5555)

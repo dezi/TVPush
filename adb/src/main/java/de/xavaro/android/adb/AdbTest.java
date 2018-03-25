@@ -24,7 +24,7 @@ public class AdbTest
                 {
                     Log.d(LOGTAG, "testShell: connected.");
 
-                    AdbStream stream = adb.openService("shell:ls -al /storage");
+                    AdbStream stream = adb.openService("shell:ls -al /storage/E06D-EF93");
 
                     Log.d(LOGTAG, "testShell: open service.");
 
@@ -36,7 +36,8 @@ public class AdbTest
                         {
                             byte[] data = stream.read();
 
-                            Log.d(LOGTAG, "testShell: read=" + ((data == null) ? null : new String(data)));
+                            Log.d(LOGTAG, "testShell: read=\n"
+                                    + ((data == null) ? null : new String(data)));
                         }
 
                         Log.d(LOGTAG, "testShell: service closed.");

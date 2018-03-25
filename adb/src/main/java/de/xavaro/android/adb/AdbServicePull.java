@@ -12,7 +12,7 @@ public class AdbServicePull extends AdbService
         super(context, ipaddr, ipport);
     }
 
-    protected void onStartService()
+    protected boolean onStartService()
     {
         Log.d(LOGTAG, "onStartService: pull.");
 
@@ -40,10 +40,14 @@ public class AdbServicePull extends AdbService
             Log.d(LOGTAG, "onStartService: service closed.");
 
             onServiceSuccess();
+
+            return true;
         }
         else
         {
             onServiceFailed();
+
+            return false;
         }
     };
 
