@@ -12,6 +12,7 @@ public abstract class AdbService
     protected int ipport;
 
     protected Thread thread;
+    protected AdbConn adb;
 
     public AdbService(final Context context, final String ipaddr, final int ipport)
     {
@@ -33,7 +34,7 @@ public abstract class AdbService
         {
             Log.d(LOGTAG, "run: ip=" + ipaddr + " port=" + ipport);
 
-            AdbConn adb = new AdbConn(context, ipaddr, ipport);
+            adb = new AdbConn(context, ipaddr, ipport);
 
             Log.d(LOGTAG, "run: connect.");
 
@@ -50,9 +51,15 @@ public abstract class AdbService
             else
             {
                 Log.e(LOGTAG, "run: connection failed.");
+
+                onConnectFailed();
             }
         }
     };
+
+    protected void onConnectFailed()
+    {
+    }
 
     protected abstract void onStartService();
 }
