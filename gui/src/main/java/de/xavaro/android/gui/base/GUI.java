@@ -30,8 +30,8 @@ public class GUI implements
 
     public static GUI instance;
 
+    public GUISubSystems subSystems;
     public GUIApplication application;
-
     public GUISpeechListener speechListener;
     public GUIDesktopActivity desktopActivity;
 
@@ -47,6 +47,8 @@ public class GUI implements
 
                 this.speechListener = new GUISpeechListener(application);
                 this.speechListener.startListening();
+
+                this.subSystems = new GUISubSystems();
             }
             else
             {
