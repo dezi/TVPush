@@ -28,6 +28,8 @@ public class GUISetup
 {
     private final static String LOGTAG = GUISetup.class.getSimpleName();
 
+    //region Services.
+
     public static JSONObject getRequiredServices()
     {
         JSONObject services = new JSONObject();
@@ -52,6 +54,216 @@ public class GUISetup
 
         return services;
     }
+
+    public static boolean haveService(String service)
+    {
+        boolean have = false;
+
+        //
+        // Bluetooth.
+        //
+
+        if (service.equals("ble"))
+        {
+            BluetoothAdapter adapter = Simple.getBTAdapter();
+            have = (adapter != null) && adapter.isEnabled();
+        }
+
+        //
+        // Location.
+        //
+
+        if (service.equals("loc"))
+        {
+            LocationManager locationManager = Simple.getLocationManager();
+            boolean locmanEnabled = (locationManager != null);
+            boolean locgpsEnabled = false;
+            boolean locnetEnabled = false;
+
+            if (locmanEnabled)
+            {
+                try
+                {
+                    locgpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                }
+                catch (Exception ignore)
+                {
+                }
+
+                try
+                {
+                    locnetEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+                }
+                catch (Exception ignore)
+                {
+                }
+            }
+
+            have = locgpsEnabled || locnetEnabled;
+        }
+
+        //
+        // Developer.
+        //
+
+        if (service.equals("dev"))
+        {
+            int devEnabled = Settings.Secure.getInt(Simple.getContentResolver(),
+                    Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
+
+            have = (devEnabled == 1);
+        }
+
+        //
+        // Services which are always activated.
+        //
+
+        if (service.equals("mic") || service.equals("cam") || service.equals("ext"))
+        {
+            have = true;
+        }
+
+        return have;
+    }
+
+    public static int getTextServiceResid()
+    {
+        return R.string.setup_services_service;
+    }
+
+    public static int getTextForServiceResid(String service)
+    {
+        switch (service)
+        {
+            case "mic": return R.string.setup_services_service_mic;
+            case "ext": return R.string.setup_services_service_ext;
+            case "cam": return R.string.setup_services_service_cam;
+            case "ble": return R.string.setup_services_service_ble;
+            case "loc": return R.string.setup_services_service_loc;
+            case "dev": return R.string.setup_services_service_dev;
+        }
+
+        return R.string.setup_ukn;
+    }
+
+    public static int getIconForServiceResid(String service)
+    {
+        switch (service)
+        {
+            case "mic": return R.drawable.mic_540;
+            case "ext": return R.drawable.read_write_340;
+            case "cam": return R.drawable.camera_shutter_820;
+            case "ble": return R.drawable.bluetooth_450;
+            case "loc": return R.drawable.gps_530;
+            case "dev": return R.drawable.developer_512;
+        }
+
+        return R.drawable.unknown_550;
+    }
+
+    public static int getTextForServiceEnabledResid(String service, boolean enabled)
+    {
+        if (service.equals("ble"))
+        {
+            return enabled
+                    ? R.string.setup_services_service_ble_active
+                    : R.string.setup_services_service_ble_inactive;
+        }
+
+        if (service.equals("loc"))
+        {
+            return enabled
+                    ? R.string.setup_services_service_loc_active
+                    : R.string.setup_services_service_loc_inactive;
+        }
+
+        if (service.equals("dev"))
+        {
+            return enabled
+                    ? R.string.setup_services_service_dev_active
+                    : R.string.setup_services_service_dev_inactive;
+        }
+
+        return R.string.setup_ukn;
+    }
+
+    public static boolean startIntentForService(Context context, String service)
+    {
+        try
+        {
+            if (service.equals("loc"))
+            {
+                context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                return true;
+            }
+
+            if (service.equals("ble"))
+            {
+                if (Simple.isSony())
+                {
+                    //
+                    // Fuck dat. Sony engineers fucked it up.
+                    //
+
+                    String pkg = "com.android.tv.settings";
+                    String cls = "com.sony.dtv.settings.networkaccessories.bluetooth.BluetoothActivity";
+
+                    ComponentName cn = new ComponentName(pkg, cls);
+                    Intent intent = new Intent();
+                    intent.setComponent(cn);
+
+                    context.startActivity(intent);
+                }
+                else
+                {
+                    context.startActivity(new Intent(Settings.ACTION_BLUETOOTH_SETTINGS));
+                }
+
+                return true;
+            }
+
+            if (service.equals("dev"))
+            {
+                if (haveService("dev"))
+                {
+                    context.startActivity(new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
+                }
+                else
+                {
+                    if (Simple.isSony())
+                    {
+                        //
+                        // Fuck dat. Sony engineers fucked it up again.
+                        //
+
+                        String pkg = "com.android.tv.settings";
+                        String cls = "com.sony.dtv.settings.about.AboutActivity";
+
+                        ComponentName cn = new ComponentName(pkg, cls);
+                        Intent intent = new Intent();
+                        intent.setComponent(cn);
+
+                        context.startActivity(intent);
+                    }
+                    else
+                    {
+                        context.startActivity(new Intent(Settings.ACTION_DEVICE_INFO_SETTINGS));
+                    }
+                }
+
+                return true;
+            }
+        }
+        catch (Exception ignore)
+        {
+        }
+
+        return false;
+    }
+
+    //endregion Services.
+
+    //region Permissions.
 
     public static JSONObject getRequiredPermissions()
     {
@@ -136,108 +348,6 @@ public class GUISetup
         return perms;
     }
 
-    public static JSONObject getRequiredFeatures()
-    {
-        JSONObject features = new JSONObject();
-
-        //
-        // USB-Stick.
-        //
-
-        if (Simple.isTV())
-        {
-            Json.put(features, "usb", haveFeature("usb"));
-        }
-
-        //
-        // SD-Card.
-        //
-
-        if (Simple.isTablet() && ! Simple.isTV())
-        {
-            Json.put(features, "ssd", haveFeature("ssd"));
-        }
-
-        //
-        // ADB.
-        //
-
-        Json.put(features, "adb", haveFeature("adb"));
-
-        return features;
-    }
-
-    public static boolean haveService(String service)
-    {
-        boolean have = false;
-
-        //
-        // Bluetooth.
-        //
-
-        if (service.equals("ble"))
-        {
-            BluetoothAdapter adapter = Simple.getBTAdapter();
-            have = (adapter != null) && adapter.isEnabled();
-        }
-
-        //
-        // Location.
-        //
-
-        if (service.equals("loc"))
-        {
-            LocationManager locationManager = Simple.getLocationManager();
-            boolean locmanEnabled = (locationManager != null);
-            boolean locgpsEnabled = false;
-            boolean locnetEnabled = false;
-
-            if (locmanEnabled)
-            {
-                try
-                {
-                    locgpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-                }
-                catch (Exception ignore)
-                {
-                }
-
-                try
-                {
-                    locnetEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-                }
-                catch (Exception ignore)
-                {
-                }
-            }
-
-            have = locgpsEnabled || locnetEnabled;
-        }
-
-        //
-        // Developer.
-        //
-
-        if (service.equals("dev"))
-        {
-            int devEnabled = Settings.Secure.getInt(Simple.getContentResolver(),
-                    Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
-
-            have = (devEnabled == 1);
-        }
-
-        //
-        // Services which are always activated.
-        //
-
-        if (service.equals("mic") || service.equals("cam") || service.equals("ext"))
-        {
-            have = true;
-        }
-
-        return have;
-    }
-
     public static boolean havePermission(Context context, String manifestperm)
     {
         int permission = ContextCompat.checkSelfPermission(context, manifestperm);
@@ -270,105 +380,6 @@ public class GUISetup
         return haveAll;
     }
 
-    public static boolean haveFeature(String feature)
-    {
-        boolean have = false;
-
-        if (feature.equals("usb") || feature.equals("ssd"))
-        {
-            try
-            {
-                File storage = new File("/storage");
-                File[] mounts = storage.listFiles();
-
-                for (File mount : mounts)
-                {
-                    if (!mount.canRead()) continue;
-                    if (mount.getName().equals("emulated")) continue;
-                    if (mount.getName().equals("enc_emulated")) continue;
-
-                    have = true;
-                }
-            }
-            catch (Exception ignore)
-            {
-            }
-        }
-
-        Log.d(LOGTAG, "haveFeature: feature=" + feature + " have=" + have);
-
-        return have;
-    }
-
-    //
-    // Services.
-    //
-
-    public static int getTextServiceResid()
-    {
-        return R.string.setup_services_service;
-    }
-
-    public static int getTextForServiceResid(String service)
-    {
-        switch (service)
-        {
-            case "mic": return R.string.setup_services_service_mic;
-            case "ext": return R.string.setup_services_service_ext;
-            case "cam": return R.string.setup_services_service_cam;
-            case "ble": return R.string.setup_services_service_ble;
-            case "loc": return R.string.setup_services_service_loc;
-            case "dev": return R.string.setup_services_service_dev;
-        }
-
-        return R.string.setup_services_service_ukn;
-    }
-
-    public static int getIconForServiceResid(String service)
-    {
-        switch (service)
-        {
-            case "mic": return R.drawable.mic_540;
-            case "ext": return R.drawable.read_write_340;
-            case "cam": return R.drawable.camera_shutter_820;
-            case "ble": return R.drawable.bluetooth_450;
-            case "loc": return R.drawable.gps_530;
-            case "dev": return R.drawable.developer_512;
-        }
-
-        return 0;
-    }
-
-    public static int getTextForServiceEnabledResid(String service, boolean enabled)
-    {
-        if (service.equals("ble"))
-        {
-            return enabled
-                    ? R.string.setup_services_service_ble_active
-                    : R.string.setup_services_service_ble_inactive;
-        }
-
-        if (service.equals("loc"))
-        {
-            return enabled
-                    ? R.string.setup_services_service_loc_active
-                    : R.string.setup_services_service_loc_inactive;
-        }
-
-        if (service.equals("dev"))
-        {
-            return enabled
-                    ? R.string.setup_services_service_dev_active
-                    : R.string.setup_services_service_dev_inactive;
-        }
-
-        return 0;
-    }
-
-    //
-    // Permissions.
-    //
-
     public static int getTextPermissionResid()
     {
         return R.string.setup_permissions_permission;
@@ -396,150 +407,7 @@ public class GUISetup
                 return R.string.setup_permissions_perm_camera;
         }
 
-        return R.string.setup_permissions_perm_unknown;
-    }
-
-    //
-    // Features.
-    //
-
-    public static int getTextFeatureResid()
-    {
-        return R.string.setup_features_feature;
-    }
-
-    public static int getTextForFeatureResid(String service)
-    {
-        switch (service)
-        {
-            case "usb": return R.string.setup_features_feature_usb;
-            case "ssd": return R.string.setup_features_feature_ssd;
-            case "adb": return R.string.setup_features_feature_adb;
-        }
-
-        return R.string.setup_features_feature_ukn;
-    }
-
-    public static int getIconForFeatureResid(String service)
-    {
-        switch (service)
-        {
-            case "usb": return R.drawable.usb_stick_400;
-            case "ssd": return R.drawable.ssd_120;
-            case "adb": return R.drawable.adb_220;
-        }
-
-        return 0;
-    }
-
-    public static int getTextForFeatureEnabledResid(String service, boolean enabled)
-    {
-        if (service.equals("usb"))
-        {
-            return enabled
-                    ? R.string.setup_features_feature_usb_active
-                    : R.string.setup_features_feature_usb_inactive;
-        }
-
-        if (service.equals("ssd"))
-        {
-            return enabled
-                    ? R.string.setup_features_feature_ssd_active
-                    : R.string.setup_features_feature_ssd_inactive;
-        }
-
-        if (service.equals("adb"))
-        {
-            return enabled
-                    ? R.string.setup_features_feature_adb_active
-                    : R.string.setup_features_feature_adb_inactive;
-        }
-
-        return 0;
-    }
-
-    //
-    // Systems.
-    //
-
-
-
-    //
-    // General methods.
-    //
-
-    public static boolean startIntentForService(Context context, String service)
-    {
-        try
-        {
-            if (service.equals("loc"))
-            {
-                context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                return true;
-            }
-
-            if (service.equals("ble"))
-            {
-                if (Simple.isSony())
-                {
-                    //
-                    // Fuck dat. Sony engineers fucked it up.
-                    //
-
-                    String pkg = "com.android.tv.settings";
-                    String cls = "com.sony.dtv.settings.networkaccessories.bluetooth.BluetoothActivity";
-
-                    ComponentName cn = new ComponentName(pkg, cls);
-                    Intent intent = new Intent();
-                    intent.setComponent(cn);
-
-                    context.startActivity(intent);
-                }
-                else
-                {
-                    context.startActivity(new Intent(Settings.ACTION_BLUETOOTH_SETTINGS));
-                }
-
-                return true;
-            }
-
-            if (service.equals("dev"))
-            {
-                if (haveService("dev"))
-                {
-                    context.startActivity(new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
-                }
-                else
-                {
-                    if (Simple.isSony())
-                    {
-                        //
-                        // Fuck dat. Sony engineers fucked it up again.
-                        //
-
-                        String pkg = "com.android.tv.settings";
-                        String cls = "com.sony.dtv.settings.about.AboutActivity";
-
-                        ComponentName cn = new ComponentName(pkg, cls);
-                        Intent intent = new Intent();
-                        intent.setComponent(cn);
-
-                        context.startActivity(intent);
-                    }
-                    else
-                    {
-                        context.startActivity(new Intent(Settings.ACTION_DEVICE_INFO_SETTINGS));
-                    }
-                }
-
-                return true;
-            }
-        }
-        catch (Exception ignore)
-        {
-        }
-
-        return false;
+        return R.string.setup_ukn;
     }
 
     public static boolean requestPermission(Activity activity, String area, int requestCode)
@@ -573,4 +441,135 @@ public class GUISetup
 
         return false;
     }
+
+    //endregion Permissions.
+
+    //region Features.
+
+    public static JSONObject getRequiredFeatures()
+    {
+        JSONObject features = new JSONObject();
+
+        //
+        // USB-Stick.
+        //
+
+        if (Simple.isTV())
+        {
+            Json.put(features, "usb", haveFeature("usb"));
+        }
+
+        //
+        // SD-Card.
+        //
+
+        if (Simple.isTablet() && ! Simple.isTV())
+        {
+            Json.put(features, "ssd", haveFeature("ssd"));
+        }
+
+        //
+        // ADB.
+        //
+
+        Json.put(features, "adb", haveFeature("adb"));
+
+        return features;
+    }
+
+    public static boolean haveFeature(String feature)
+    {
+        boolean have = false;
+
+        if (feature.equals("usb") || feature.equals("ssd"))
+        {
+            try
+            {
+                File storage = new File("/storage");
+                File[] mounts = storage.listFiles();
+
+                for (File mount : mounts)
+                {
+                    if (!mount.canRead()) continue;
+                    if (mount.getName().equals("emulated")) continue;
+                    if (mount.getName().equals("enc_emulated")) continue;
+
+                    have = true;
+                }
+            }
+            catch (Exception ignore)
+            {
+            }
+        }
+
+        Log.d(LOGTAG, "haveFeature: feature=" + feature + " have=" + have);
+
+        return have;
+    }
+
+    public static int getTextFeatureResid()
+    {
+        return R.string.setup_features_feature;
+    }
+
+    public static int getTextForFeatureResid(String service)
+    {
+        switch (service)
+        {
+            case "usb": return R.string.setup_features_feature_usb;
+            case "ssd": return R.string.setup_features_feature_ssd;
+            case "adb": return R.string.setup_features_feature_adb;
+        }
+
+        return R.string.setup_ukn;
+    }
+
+    public static int getIconForFeatureResid(String service)
+    {
+        switch (service)
+        {
+            case "usb": return R.drawable.usb_stick_400;
+            case "ssd": return R.drawable.ssd_120;
+            case "adb": return R.drawable.adb_220;
+        }
+
+        return R.drawable.unknown_550;
+    }
+
+    public static int getTextForFeatureEnabledResid(String service, boolean enabled)
+    {
+        if (service.equals("usb"))
+        {
+            return enabled
+                    ? R.string.setup_features_feature_usb_active
+                    : R.string.setup_features_feature_usb_inactive;
+        }
+
+        if (service.equals("ssd"))
+        {
+            return enabled
+                    ? R.string.setup_features_feature_ssd_active
+                    : R.string.setup_features_feature_ssd_inactive;
+        }
+
+        if (service.equals("adb"))
+        {
+            return enabled
+                    ? R.string.setup_features_feature_adb_active
+                    : R.string.setup_features_feature_adb_inactive;
+        }
+
+        return R.string.setup_ukn;
+    }
+
+    //endregion Features.
+
+    //region Subsystems.
+
+    public static JSONArray getRequiredSubsystems()
+    {
+        return GUI.instance.subSystems.getRegisteredSubsystems();
+    }
+
+    //endregion Subsystems.
 }

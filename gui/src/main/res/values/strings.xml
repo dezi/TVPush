@@ -1,7 +1,11 @@
 <resources>
+
+    <string name="setup">Setup</string>
+
+    <string name="setup_ukn">Unknown</string>
+
     <string name="setup_services_service">Service</string>
 
-    <string name="setup_services_service_ukn">Unknown</string>
     <string name="setup_services_service_mic">Microfone</string>
     <string name="setup_services_service_ext">Storage</string>
     <string name="setup_services_service_cam">Camera</string>
@@ -20,7 +24,6 @@
 
     <string name="setup_permissions_permission">Permission</string>
 
-    <string name="setup_permissions_perm_unknown">Unknown</string>
     <string name="setup_permissions_perm_record_audio">Record</string>
     <string name="setup_permissions_perm_bluetooth">Bluetooth</string>
     <string name="setup_permissions_perm_bluetooth_admin">Bluetooth Admin</string>
@@ -31,8 +34,6 @@
     <string name="setup_permissions_perm_camera">Camera-Access</string>
 
     <string name="setup_features_feature">Feature</string>
-
-    <string name="setup_features_feature_ukn">Unknown</string>
 
     <string name="setup_features_feature_usb">USB-Stick</string>
     <string name="setup_features_feature_usb_active">USB-Stick is plugged in</string>
