@@ -10,11 +10,11 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 import de.xavaro.android.gui.R;
-import de.xavaro.android.gui.base.GUIPluginTitleList;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUISetup;
+import de.xavaro.android.gui.base.GUIPluginTitleList;
 import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUIListEntry;
 import de.xavaro.android.gui.views.GUIListView;
@@ -30,7 +30,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
         setIsWizzard(true, false);
 
         setTitleIcon(R.drawable.permissions_240);
-        setTitleText("Services and Permissions");
+        setTitleText("System Setup");
     }
 
     @Override
