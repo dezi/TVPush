@@ -2,6 +2,8 @@ package de.xavaro.android.tvpush;
 
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
+
 import de.xavaro.android.adb.AdbServiceCheck;
 
 import de.xavaro.android.adb.AdbServicePull;
@@ -33,7 +35,7 @@ public class ApplicationBase extends GUIApplication
         //AdbServiceCheck adbServiceCheck = new AdbServiceCheck(this, "192.168.0.11", 5555);
         //Log.d(LOGTAG, "onCreate: adbServiceCheck:" + adbServiceCheck.startSync());
 
-
+        /*
         adbServicePull = new AdbServicePull(
                 this, "192.168.0.11", 5555,
                 "/storage/E06D-EF93/sdb.xml")
@@ -50,7 +52,13 @@ public class ApplicationBase extends GUIApplication
                 Log.d(LOGTAG, "AdbServicePull: onServiceFailed.");
             }
         };
+        */
 
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        adbServicePull = new AdbServicePull(this, "192.168.0.11", 5555,
+                "/storage/E06D-EF93/sdb.xml");
+        adbServicePull.setOutputStream(outputStream);
         boolean success = adbServicePull.startSync();
 
         Log.d(LOGTAG, "onCreate: AdbServicePull: startsync: success=" + success);

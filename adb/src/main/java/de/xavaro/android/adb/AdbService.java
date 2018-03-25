@@ -3,6 +3,8 @@ package de.xavaro.android.adb;
 import android.content.Context;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
+
 public abstract class AdbService
 {
     private static final String LOGTAG = AdbService.class.getSimpleName();
@@ -14,7 +16,9 @@ public abstract class AdbService
     protected Thread thread;
     protected AdbConn adb;
 
-    protected boolean success;
+    public boolean success;
+    public String remoteFile;
+    public ByteArrayOutputStream outputStream;
 
     public AdbService(final Context context, final String ipaddr, final int ipport)
     {
@@ -45,6 +49,11 @@ public abstract class AdbService
         return success;
     }
 
+    public void setOutputStream(ByteArrayOutputStream outputStream)
+    {
+        this.outputStream = outputStream;
+    }
+
     private Runnable runner = new Runnable()
     {
         @Override
@@ -62,6 +71,15 @@ public abstract class AdbService
 
                 success = onStartService();
 
+                if (success)
+                {
+                    onServiceSuccess();
+                }
+                else
+                {
+                    onServiceFailed();
+                }
+
                 adb.close();
 
                 Log.d(LOGTAG, "run: connection closed.");
@@ -75,9 +93,25 @@ public abstract class AdbService
         }
     };
 
+    protected abstract boolean onStartService();
+
     protected void onConnectFailed()
     {
     }
 
-    protected abstract boolean onStartService();
+    protected void onRemoteServiceOpen()
+    {
+    }
+
+    protected void onRemoteServiceClose()
+    {
+
+    }
+    protected void onServiceSuccess()
+    {
+    }
+
+    protected void onServiceFailed()
+    {
+    }
 }

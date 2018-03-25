@@ -9,9 +9,6 @@ public class AdbServicePull extends AdbService
 {
     private static final String LOGTAG = AdbServicePull.class.getSimpleName();
 
-    public String remoteFile;
-    public ByteArrayOutputStream outputStream;
-
     public AdbServicePull(Context context, String ipaddr, int ipport, String remoteFile)
     {
         super(context, ipaddr, ipport);
@@ -35,27 +32,30 @@ public class AdbServicePull extends AdbService
 
             onRemoteServiceOpen();
 
-            outputStream = new ByteArrayOutputStream();
-
             while (!stream.isClosed())
             {
                 byte[] data = stream.read();
 
                 if (data != null)
                 {
-                    try
+                    if (outputStream != null)
                     {
-                        outputStream.write(data);
+                        try
+                        {
+                            outputStream.write(data);
+                        }
+                        catch (Exception ex)
+                        {
+                            ex.printStackTrace();
+
+                            success = false;
+                            break;
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        ex.printStackTrace();
-
-                        success = false;
-                        break;
+                        onRemoteDataReceived(data);
                     }
-
-                    onRemoteDataReceived(data);
                 }
             }
 
@@ -63,36 +63,14 @@ public class AdbServicePull extends AdbService
 
             Log.d(LOGTAG, "onStartService: service closed.");
 
-            onServiceSuccess();
-
             return success;
         }
-        else
-        {
-            onServiceFailed();
 
-            return false;
-        }
+        return false;
     };
-
-    protected void onRemoteServiceOpen()
-    {
-    }
 
     protected void onRemoteDataReceived(byte[] data)
     {
         Log.d(LOGTAG, "onRemoteDataReceived: size=" + data.length);
-    }
-
-    protected void onRemoteServiceClose()
-    {
-
-    }
-    protected void onServiceSuccess()
-    {
-    }
-
-    protected void onServiceFailed()
-    {
     }
 }
