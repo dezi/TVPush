@@ -7,18 +7,20 @@ public class AdbServicePull extends AdbService
 {
     private static final String LOGTAG = AdbServicePull.class.getSimpleName();
 
-    public AdbServicePull(Context context, String ipaddr, int ipport)
+    protected String remoteFile;
+
+    public AdbServicePull(Context context, String ipaddr, int ipport, String remoteFile)
     {
         super(context, ipaddr, ipport);
+
+        this.remoteFile = remoteFile;
     }
 
     protected boolean onStartService()
     {
         Log.d(LOGTAG, "onStartService: pull.");
 
-        String remoteFile = onGetRemoteFileName();
-
-        AdbStream stream = adb.openService("shell:cat < " + remoteFile);
+        AdbStream stream = adb.openService("shell:cat " + remoteFile);
 
         Log.d(LOGTAG, "onStartService: open service.");
 
@@ -50,13 +52,6 @@ public class AdbServicePull extends AdbService
             return false;
         }
     };
-
-    protected String onGetRemoteFileName()
-    {
-        Log.e(LOGTAG, "STUB!");
-
-        return null;
-    }
 
     protected void onRemoteServiceOpen()
     {

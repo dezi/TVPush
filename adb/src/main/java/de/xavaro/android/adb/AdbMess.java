@@ -70,6 +70,35 @@ public class AdbMess
         return message.array();
     }
 
+
+    private boolean readInputStream(InputStream inputStream, byte[] data)
+    {
+        if (data != null)
+        {
+            try
+            {
+                int total = 0;
+                int xfer = 0;
+
+                while ((xfer = inputStream.read(data, total, data.length - total)) > 0)
+                {
+                    total += xfer;
+
+                    if (total == data.length)
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
+        }
+
+        return false;
+    }
+
     @Nullable
     public static AdbMess readAdbMessage(InputStream inputStream)
     {
@@ -78,9 +107,13 @@ public class AdbMess
             AdbMess msg = new AdbMess();
 
             ByteBuffer packet = ByteBuffer.allocate(ADB_HEADER_LENGTH).order(ByteOrder.LITTLE_ENDIAN);
+            boolean headok = msg.readInputStream(inputStream, packet.array());
 
-            int bytesRead = inputStream.read(packet.array(), 0, ADB_HEADER_LENGTH);
-            if (bytesRead != ADB_HEADER_LENGTH) return null;
+            if (! headok)
+            {
+                Log.e(LOGTAG, "readAdbMessage: header fail.");
+                return null;
+            }
 
             msg.command = packet.getInt();
             msg.arg0 = packet.getInt();
@@ -99,14 +132,19 @@ public class AdbMess
             msg.cmdstr = new String(cmdstr);
 
             msg.payload = new byte[msg.payloadLength];
-            bytesRead = inputStream.read(msg.payload);
-            if (bytesRead != msg.payload.length) return null;
+
+            if (msg.payloadLength > 0)
+            {
+                boolean dataok = msg.readInputStream(inputStream, msg.payload);
+
+                if (!dataok)
+                {
+                    Log.e(LOGTAG, "readAdbMessage: data fail.");
+                    return null;
+                }
+            }
 
             return msg;
-        }
-        catch (SocketTimeoutException ignore)
-        {
-            //Log.e(LOGTAG, "readAdbMessage: socket timed out!");
         }
         catch (Exception ex)
         {

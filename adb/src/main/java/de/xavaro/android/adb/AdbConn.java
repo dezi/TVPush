@@ -71,7 +71,7 @@ public class AdbConn implements Closeable
 
                 socket = new Socket(ipaddr, ipport);
                 socket.setTcpNoDelay(true);
-                socket.setSoTimeout(3000);
+                //socket.setSoTimeout(3000);
 
                 Log.d(LOGTAG, "connect: open socket done.");
 
@@ -415,6 +415,15 @@ public class AdbConn implements Closeable
 
         if (checkConnected())
         {
+            try
+            {
+                //socket.setSoTimeout(10000);
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
+
             int locId = ++lastlocId;
 
             stream = new AdbStream(this, locId);
@@ -423,6 +432,8 @@ public class AdbConn implements Closeable
             {
                 openStreams.put(locId, stream);
             }
+
+            Log.d(LOGTAG, "openService: open service=" + service);
 
             if (writePacket(AdbProtocol.buildOpen(locId, service)))
             {

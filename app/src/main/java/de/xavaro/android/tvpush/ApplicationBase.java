@@ -15,6 +15,8 @@ public class ApplicationBase extends GUIApplication
 {
     private static final String LOGTAG = ApplicationBase.class.getSimpleName();
 
+    private AdbServicePull adbServicePull;
+
     @Override
     public void onCreate()
     {
@@ -28,29 +30,24 @@ public class ApplicationBase extends GUIApplication
 
         //AdbTest.testShell(this, "192.168.0.11", 5555);
 
-        AdbServiceCheck adbServiceCheck = new AdbServiceCheck(this, "192.168.0.11", 5555);
-        Log.d(LOGTAG, "onCreate: adbServiceCheck:" + adbServiceCheck.startSync());
+        //AdbServiceCheck adbServiceCheck = new AdbServiceCheck(this, "192.168.0.11", 5555);
+        //Log.d(LOGTAG, "onCreate: adbServiceCheck:" + adbServiceCheck.startSync());
 
-        /*
-        AdbServicePull adbServicePull = new AdbServicePull(this, "192.168.0.11", 5555)
+        adbServicePull = new AdbServicePull(
+                this, "192.168.0.11", 5555,
+                "/storage/E06D-EF93/sdb.xml")
         {
-            protected String onGetRemoteFileName()
-            {
-                return "/storage/E06D-EF93/sdb.xml";
-            }
-
+            @Override
             protected void onServiceSuccess()
             {
-
             }
 
+            @Override
             protected void onServiceFailed()
             {
-
             }
         };
 
         adbServicePull.start();
-        */
     }
 }
