@@ -48,6 +48,7 @@ public class GUIDefs
     public final static int TEXT_COLOR_HEADERS = Color.BLACK;
     public final static int TEXT_COLOR_INFOS   = Color.BLACK;
     public final static int TEXT_COLOR_ALERTS  = Color.RED;
+    public final static int TEXT_COLOR_SPECIAL = Color.BLUE;
 
     public final static int STATUS_COLOR_RED   = 0xaaaa0000;
     public final static int STATUS_COLOR_GREEN = 0xaa00aa00;

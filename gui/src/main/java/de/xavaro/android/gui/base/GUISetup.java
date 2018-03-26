@@ -589,9 +589,14 @@ public class GUISetup
         return R.drawable.unknown_550;
     }
 
-    public static String getTextForSubsystemEnabled(String subsystem, boolean enabled)
+    public static int getSubsystemState(String subsystem)
     {
-        if (enabled)
+        return GUISubSystems.getSubsystemState(subsystem);
+    }
+
+    public static String getTextForSubsystemEnabled(String subsystem, int state)
+    {
+        if (state == GUISubSystems.SUBSYSTEM_STATE_ACTIVATED)
         {
             return Simple.getTrans(R.string.setup_subysystems_subsystem_active, subsystem);
         }

@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 import de.xavaro.android.gui.R;
+import de.xavaro.android.gui.base.GUISubSystems;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.base.GUIDefs;
@@ -172,9 +173,9 @@ public class GUISetupWizzard extends GUIPluginTitleList
             String drv = Json.getString(subsystem, "drv");
             String name = Json.getString(subsystem, "name");
 
-            boolean enabled = false;
+            int state = GUISetup.getSubsystemState(drv);
 
-            if (todo && enabled) continue;
+            if (todo && (state != GUISubSystems.SUBSYSTEM_STATE_INACTIVE)) continue;
 
             GUIListEntry entry = new GUIListEntry(listView.getContext());
             entry.setOnClickListener(onSubsystemStartClickListener);
@@ -187,11 +188,15 @@ public class GUISetupWizzard extends GUIPluginTitleList
             entry.iconView.setImageResource(GUISetup.getIconForSubsystemResid(drv));
             entry.headerViev.setText(head);
 
-            entry.infoView.setText(GUISetup.getTextForSubsystemEnabled(name, enabled));
+            entry.infoView.setText(GUISetup.getTextForSubsystemEnabled(name, state));
 
-            entry.infoView.setTextColor(enabled
-                    ? GUIDefs.TEXT_COLOR_INFOS
-                    : GUIDefs.TEXT_COLOR_ALERTS);
+            int color = (state == GUISubSystems.SUBSYSTEM_STATE_INACTIVE)
+                    ? GUIDefs.TEXT_COLOR_ALERTS
+                    : (state == GUISubSystems.SUBSYSTEM_STATE_DISABLED)
+                    ? GUIDefs.TEXT_COLOR_SPECIAL
+                    : GUIDefs.TEXT_COLOR_INFOS;
+
+            entry.infoView.setTextColor(color);
 
             listView.addView(entry);
         }
