@@ -1,15 +1,15 @@
 package de.xavaro.android.gui.views;
 
-import android.app.Activity;
+import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Build;
-import android.util.Log;
+import android.app.Activity;
+import android.view.ViewGroup;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.os.Build;
+import android.util.Log;
 
 import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.base.GUIActivity;
@@ -126,12 +126,7 @@ public class GUIDialogView extends GUIRelativeLayout
                         (positiveButton.getVisibility() == GONE) &&
                         (closeButton.getVisibility() != GONE))
                 {
-                    ViewGroup parent = (ViewGroup) GUIDialogView.this.getParent();
-
-                    if (parent != null)
-                    {
-                        parent.removeView(GUIDialogView.this);
-                    }
+                    dismissDialog();
                 }
             }
         });
@@ -182,12 +177,7 @@ public class GUIDialogView extends GUIRelativeLayout
                     closeButtonOnClick.onClick(GUIDialogView.this);
                 }
 
-                ViewGroup parent = (ViewGroup) GUIDialogView.this.getParent();
-
-                if (parent != null)
-                {
-                    parent.removeView(GUIDialogView.this);
-                }
+                dismissDialog();
             }
         });
 
@@ -242,12 +232,7 @@ public class GUIDialogView extends GUIRelativeLayout
             @Override
             public void onClick(View view)
             {
-                ViewGroup parent = (ViewGroup) GUIDialogView.this.getParent();
-
-                if (parent != null)
-                {
-                    parent.removeView(GUIDialogView.this);
-                }
+                dismissDialog();
 
                 if (negativeButtonOnClick != null)
                 {
@@ -267,12 +252,7 @@ public class GUIDialogView extends GUIRelativeLayout
             @Override
             public void onClick(View view)
             {
-                ViewGroup parent = (ViewGroup) GUIDialogView.this.getParent();
-
-                if (parent != null)
-                {
-                    parent.removeView(GUIDialogView.this);
-                }
+                dismissDialog();
 
                 if (positiveButtonOnClick != null)
                 {
@@ -312,6 +292,13 @@ public class GUIDialogView extends GUIRelativeLayout
 
             ((GUIActivity) activity).restoreFocusableViews();
         }
+    }
+
+    public boolean onBackPressed()
+    {
+        dismissDialog();
+
+        return true;
     }
 
     public void setButtonsVertical(boolean set)

@@ -135,8 +135,9 @@ public class GUIPlugin extends GUIFrameLayout
     {
     }
 
-    public void onBackPressed()
+    public boolean onBackPressed()
     {
+        return false;
     }
 
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)

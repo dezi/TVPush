@@ -15,6 +15,7 @@ import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIActivity;
 import de.xavaro.android.gui.base.GUIPlugin;
 import de.xavaro.android.gui.base.GUIPluginTitleIOT;
+import de.xavaro.android.gui.views.GUIDialogView;
 import de.xavaro.android.gui.wizzards.GUICameraWizzard;
 import de.xavaro.android.gui.wizzards.GUICamerasWizzard;
 import de.xavaro.android.gui.wizzards.GUIChannelWizzard;
@@ -128,29 +129,41 @@ public class GUIDesktopActivity extends GUIActivity
     {
         Log.d(LOGTAG, "onBackPressed:");
 
-        boolean didwas = false;
+        //
+        // Check for dialogs.
+        //
+
+        for (int inx = 0; inx < topframe.getChildCount(); inx++)
+        {
+            View plugin = topframe.getChildAt(inx);
+            if (plugin == speechRecognition) continue;
+
+            if (topframe.getChildAt(inx) instanceof GUIDialogView)
+            {
+                Log.d(LOGTAG, "onBackPressed: dialog dismiss=" + plugin.getClass().getSimpleName());
+
+                ((GUIDialogView) plugin).dismissDialog();
+
+                return;
+            }
+        }
 
         //
         // Check for wizzard helpers.
         //
 
-        if (! didwas)
+        for (int inx = 0; inx < topframe.getChildCount(); inx++)
         {
-            for (int inx = 0; inx < topframe.getChildCount(); inx++)
+            View plugin = topframe.getChildAt(inx);
+            if (plugin == speechRecognition) continue;
+
+            if ((plugin instanceof GUIPlugin) && ((GUIPlugin) plugin).isHelper())
             {
-                View plugin = topframe.getChildAt(inx);
-                if (plugin == speechRecognition) continue;
+                Log.d(LOGTAG, "onBackPressed: helper hide=" + plugin.getClass().getSimpleName());
 
-                if ((plugin instanceof GUIPlugin) && ((GUIPlugin) plugin).isHelper())
-                {
-                    Log.d(LOGTAG, "onBackPressed: helper hide=" + plugin.getClass().getSimpleName());
+                hidePlugin((GUIPlugin) plugin);
 
-                    hidePlugin((GUIPlugin) plugin);
-
-                    didwas = true;
-
-                    inx--;
-                }
+                return;
             }
         }
 
@@ -158,27 +171,22 @@ public class GUIDesktopActivity extends GUIActivity
         // Check for wizzards.
         //
 
-        if (! didwas)
+        for (int inx = 0; inx < topframe.getChildCount(); inx++)
         {
-            for (int inx = 0; inx < topframe.getChildCount(); inx++)
+            View plugin = topframe.getChildAt(inx);
+            if (plugin == speechRecognition) continue;
+
+            if ((plugin instanceof GUIPlugin) && ((GUIPlugin) plugin).isWizzard())
             {
-                View plugin = topframe.getChildAt(inx);
-                if (plugin == speechRecognition) continue;
+                Log.d(LOGTAG, "onBackPressed: wizzard hide=" + plugin.getClass().getSimpleName());
 
-                if ((plugin instanceof GUIPlugin) && ((GUIPlugin) plugin).isWizzard())
-                {
-                    Log.d(LOGTAG, "onBackPressed: wizzard hide=" + plugin.getClass().getSimpleName());
+                hidePlugin((GUIPlugin) plugin);
 
-                    hidePlugin((GUIPlugin) plugin);
-
-                    didwas = true;
-
-                    inx--;
-                }
+                return;
             }
         }
 
-        if (! didwas) super.onBackPressed();
+        super.onBackPressed();
     }
 
     private void showPlugin(GUIPlugin plugin)

@@ -213,15 +213,24 @@ public class GUILinearLayout extends LinearLayout implements
     //region CanFocus implementation.
 
     private boolean focus;
+    private boolean focusable;
     private boolean highlight;
     private boolean highlightable;
 
     @Override
     public void setFocusable(boolean focusable)
     {
+        this.focusable = focusable;
+
         super.setFocusable(focusable);
 
         GUICanFocusDelegate.setupOnFocusChangeListener(this, focusable);
+    }
+
+    @Override
+    public boolean getIsFocusable()
+    {
+        return focusable;
     }
 
     @Override

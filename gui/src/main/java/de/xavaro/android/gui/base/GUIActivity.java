@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.skills.GUICanFocus;
+import de.xavaro.android.gui.views.GUIDialogView;
 
 @SuppressLint("Registered")
 public class GUIActivity extends AppCompatActivity
@@ -273,10 +274,25 @@ public class GUIActivity extends AppCompatActivity
 
         for (int inx = 0; inx < topframe.getChildCount(); inx++)
         {
+            if (topframe.getChildAt(inx) instanceof GUIDialogView)
+            {
+                if (((GUIDialogView) topframe.getChildAt(inx)).onBackPressed())
+                {
+                    return;
+                }
+            }
+        }
+
+        for (int inx = 0; inx < topframe.getChildCount(); inx++)
+        {
             if (topframe.getChildAt(inx) instanceof GUIPlugin)
             {
-                ((GUIPlugin) topframe.getChildAt(inx)).onBackPressed();
+                if (((GUIPlugin) topframe.getChildAt(inx)).onBackPressed())
+                {
+                    return;
+                }
             }
+
         }
 
         super.onBackPressed();
@@ -401,8 +417,11 @@ public class GUIActivity extends AppCompatActivity
 
                 if (child instanceof GUICanFocus)
                 {
-                    focusableViews.add(child);
-                    child.setFocusable(false);
+                    if (((GUICanFocus) child).getIsFocusable())
+                    {
+                        focusableViews.add(child);
+                        child.setFocusable(false);
+                    }
                 }
 
                 saveFocusableViewsRecurse(child);

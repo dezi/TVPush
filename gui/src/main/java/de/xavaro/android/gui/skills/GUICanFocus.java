@@ -6,6 +6,7 @@ import android.view.View;
 public interface GUICanFocus extends GUICanRoundedCorners
 {
     void setFocusable(boolean focusable);
+    boolean getIsFocusable();
 
     void setHasFocus(boolean hasfocus);
     boolean getHasFocus();

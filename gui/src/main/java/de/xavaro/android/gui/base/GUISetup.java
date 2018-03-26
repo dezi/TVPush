@@ -163,28 +163,9 @@ public class GUISetup
 
     public static int getTextForServiceEnabledResid(String service, boolean enabled)
     {
-        if (service.equals("ble"))
-        {
-            return enabled
-                    ? R.string.setup_services_service_ble_active
-                    : R.string.setup_services_service_ble_inactive;
-        }
-
-        if (service.equals("loc"))
-        {
-            return enabled
-                    ? R.string.setup_services_service_loc_active
-                    : R.string.setup_services_service_loc_inactive;
-        }
-
-        if (service.equals("dev"))
-        {
-            return enabled
-                    ? R.string.setup_services_service_dev_active
-                    : R.string.setup_services_service_dev_inactive;
-        }
-
-        return R.string.setup_ukn;
+        return enabled
+                ? R.string.setup_services_service_active
+                : R.string.setup_services_service_inactive;
     }
 
     public static boolean startIntentForService(Context context, String service)

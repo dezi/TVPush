@@ -11,22 +11,15 @@
     <string name="setup_ukn">Unknown</string>
 
     <string name="setup_services_service">Service</string>
+    <string name="setup_services_service_active">Activated</string>
+    <string name="setup_services_service_inactive">Not activated</string>
 
     <string name="setup_services_service_mic">Microfone</string>
     <string name="setup_services_service_ext">Storage</string>
     <string name="setup_services_service_cam">Camera</string>
-
     <string name="setup_services_service_ble">Bluetooth</string>
-    <string name="setup_services_service_ble_active">Bluetooth is active</string>
-    <string name="setup_services_service_ble_inactive">Bluetooth is inactive</string>
-
     <string name="setup_services_service_loc">Geolocation</string>
-    <string name="setup_services_service_loc_active">Geolocation status is active</string>
-    <string name="setup_services_service_loc_inactive">Geolocation status is inactive</string>
-
     <string name="setup_services_service_dev">Developer</string>
-    <string name="setup_services_service_dev_active">Developer status is active</string>
-    <string name="setup_services_service_dev_inactive">Developer status is inactive</string>
 
     <string name="setup_permissions_permission">Permission</string>
 
@@ -42,21 +35,21 @@
     <string name="setup_features_feature">Feature</string>
 
     <string name="setup_features_feature_usb">USB-Stick</string>
-    <string name="setup_features_feature_usb_active">USB-Stick is plugged in</string>
-    <string name="setup_features_feature_usb_inactive">No USB-Stick visible</string>
+    <string name="setup_features_feature_usb_active">Plugged in</string>
+    <string name="setup_features_feature_usb_inactive">Not visible</string>
 
     <string name="setup_features_feature_ssd">SD-Card</string>
-    <string name="setup_features_feature_ssd_active">SD-Card is ready</string>
-    <string name="setup_features_feature_ssd_inactive">No SD-Card visible</string>
+    <string name="setup_features_feature_ssd_active">Ready</string>
+    <string name="setup_features_feature_ssd_inactive">Not visible</string>
 
     <string name="setup_features_feature_adb">ADB-Access</string>
-    <string name="setup_features_feature_adb_active">ADB-Access is granted</string>
-    <string name="setup_features_feature_adb_inactive">ADB-Access is unconfigured</string>
+    <string name="setup_features_feature_adb_active">Granted</string>
+    <string name="setup_features_feature_adb_inactive">Not configured</string>
 
     <string name="setup_subysystems_subsystem">Sub-System</string>
 
-    <string name="setup_subysystems_subsystem_active">Sub-System is activated</string>
-    <string name="setup_subysystems_subsystem_inactive">Sub-System is not activated</string>
+    <string name="setup_subysystems_subsystem_active">Activated</string>
+    <string name="setup_subysystems_subsystem_inactive">Not activated</string>
 
     <string name="setup_subysystems_subsystem_ukn_title">Unknown sub-system</string>
     <string name="setup_subysystems_subsystem_ukn_info">No further information available.</string>
