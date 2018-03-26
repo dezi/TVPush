@@ -47,11 +47,13 @@ public class GUIButtonView extends GUITextView
         if (isDefaultButton)
         {
             setTextColor(Color.WHITE);
+            setBackgroundColor(Color.BLACK);
             setRoundedCorners(GUIDefs.ROUNDED_ZERO, Color.BLACK, Color.BLACK);
         }
         else
         {
             setTextColor(Color.BLACK);
+            setBackgroundColor(Color.WHITE);
             setRoundedCorners(GUIDefs.ROUNDED_ZERO, Color.WHITE, Color.BLACK);
         }
     }

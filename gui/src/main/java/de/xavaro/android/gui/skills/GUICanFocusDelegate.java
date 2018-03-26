@@ -181,7 +181,20 @@ public class GUICanFocusDelegate
     {
         while ((view != null) && !(view instanceof GUIPlugin))
         {
-            view = (View) view.getParent();
+            if (view.getParent() instanceof View)
+            {
+                view = (View) view.getParent();
+            }
+            else
+            {
+                //
+                // We have reached the top decor view
+                // and did not find anythinmg so far.
+                //
+
+                view = null;
+                break;
+            }
         }
 
         return (GUIPlugin) view;

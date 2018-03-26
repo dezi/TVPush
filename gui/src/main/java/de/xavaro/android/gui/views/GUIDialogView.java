@@ -3,7 +3,6 @@ package de.xavaro.android.gui.views;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.hardware.camera2.params.ColorSpaceTransform;
 import android.os.Build;
 import android.util.Log;
 import android.view.Gravity;
@@ -50,15 +49,6 @@ public class GUIDialogView extends GUIRelativeLayout
 
         dialogView.setPositiveButton(R.string.basic_ok, onokclick);
 
-        Simple.getHandler().post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                dialogView.positiveButton.requestFocus();
-            }
-        });
-
         if (Simple.isUIThread())
         {
             rootView.addView(dialogView);
@@ -91,15 +81,6 @@ public class GUIDialogView extends GUIRelativeLayout
 
         dialogView.setPositiveButton(R.string.basic_ok, onyesclick);
         dialogView.setNegativeButton(R.string.basic_cancel, onnoclick);
-
-        Simple.getHandler().post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                dialogView.positiveButton.requestFocus();
-            }
-        });
 
         if (Simple.isUIThread())
         {
@@ -136,11 +117,6 @@ public class GUIDialogView extends GUIRelativeLayout
     {
         super(context);
 
-        setFocusable(false);
-        setGravity(Gravity.CENTER_HORIZONTAL + Gravity.CENTER_VERTICAL);
-        setBackgroundColor(GUIDefs.COLOR_BACKGROUND_DIM);
-        setSizeDip(Simple.MP, Simple.MP);
-
         setOnClickListener(new OnClickListener()
         {
             @Override
@@ -159,6 +135,11 @@ public class GUIDialogView extends GUIRelativeLayout
                 }
             }
         });
+
+        setFocusable(false);
+        setGravity(Gravity.CENTER_HORIZONTAL + Gravity.CENTER_VERTICAL);
+        setBackgroundColor(GUIDefs.COLOR_BACKGROUND_DIM);
+        setSizeDip(Simple.MP, Simple.MP);
 
         marginView = new GUIRelativeLayout(context);
         marginView.setSizeDip(Simple.WC, Simple.WC);
@@ -235,7 +216,6 @@ public class GUIDialogView extends GUIRelativeLayout
         infoView.setMaxEms(GUIDefs.MAX_EMS_DIALOGS);
         infoView.setSizeDip(Simple.WC, Simple.WC);
         infoView.setTextSizeDip(GUIDefs.FONTSIZE_INFOS);
-        infoView.setAllCaps(true);
         infoView.setGravity(Gravity.START + Gravity.CENTER_VERTICAL);
         infoView.setMarginTopDip(GUIDefs.PADDING_SMALL);
 
@@ -250,13 +230,12 @@ public class GUIDialogView extends GUIRelativeLayout
         buttonFrame = new GUILinearLayout(context);
         buttonFrame.setOrientation(LinearLayout.HORIZONTAL);
         buttonFrame.setSizeDip(Simple.MP, Simple.WC);
-        buttonFrame.setMarginTopDip(GUIDefs.PADDING_SMALL);
+        buttonFrame.setMarginTopDip(GUIDefs.PADDING_MEDIUM);
 
         padView.addView(buttonFrame);
 
         negativeButton = new GUIDialogButtonView(context);
         negativeButton.setVisibility(GONE);
-        negativeButton.setFocusable(false);
 
         negativeButton.setOnClickListener(new OnClickListener()
         {
@@ -282,7 +261,6 @@ public class GUIDialogView extends GUIRelativeLayout
         positiveButton = new GUIDialogButtonView(context);
         positiveButton.setDefaultButton(true);
         positiveButton.setVisibility(GONE);
-        positiveButton.setFocusable(false);
 
         positiveButton.setOnClickListener(new OnClickListener()
         {
@@ -402,6 +380,15 @@ public class GUIDialogView extends GUIRelativeLayout
             negativeButton.setMarginRightDip(GUIDefs.PADDING_MEDIUM);
             positiveButton.setMarginLeftDip(GUIDefs.PADDING_MEDIUM);
         }
+
+        Simple.getHandler().post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                positiveButton.requestFocus();
+            }
+        });
     }
 
     public void setNegativeButton(int resid)

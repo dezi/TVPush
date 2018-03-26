@@ -502,8 +502,6 @@ public class GUISetup
             }
         }
 
-        Log.d(LOGTAG, "haveFeature: feature=" + feature + " have=" + have);
-
         return have;
     }
 
@@ -605,6 +603,27 @@ public class GUISetup
             return Simple.getTrans(R.string.setup_subysystems_subsystem_inactive, subsystem);
         }
     }
+
+    public static int getTitleForSubsystemResid(String subsystem)
+    {
+        switch (subsystem)
+        {
+            case "iam": return R.string.setup_subysystems_subsystem_iam_title;
+        }
+
+        return R.string.setup_subysystems_subsystem_ukn_title;
+    }
+
+    public static int getInfoForSubsystemResid(String subsystem)
+    {
+        switch (subsystem)
+        {
+            case "iam": return R.string.setup_subysystems_subsystem_iam_info;
+        }
+
+        return R.string.setup_subysystems_subsystem_ukn_info;
+    }
+
 
     //endregion Subsystems.
 }

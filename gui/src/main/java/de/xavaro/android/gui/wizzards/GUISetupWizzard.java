@@ -237,26 +237,53 @@ public class GUISetupWizzard extends GUIPluginTitleList
         @Override
         public void onClick(View view)
         {
+            JSONObject subsystem = (JSONObject) view.getTag();
+            String drv = Json.getString(subsystem, "drv");
+
             GUIDialogView dialog = new GUIDialogView(view.getContext());
 
-            dialog.setTitleText("Titel...");
-            dialog.setInfoText("Info...");
+            dialog.setTitleText(GUISetup.getTitleForSubsystemResid(drv));
+            dialog.setInfoText(GUISetup.getInfoForSubsystemResid(drv));
 
-            dialog.setPositiveButton(R.string.basic_ok, new OnClickListener()
+            if (GUISetup.getSubsystemState(drv) == GUISubSystems.SUBSYSTEM_STATE_ACTIVATED)
             {
-                @Override
-                public void onClick(View view)
+                dialog.setPositiveButton(R.string.basic_deactiviate, new OnClickListener()
                 {
-                }
-            });
+                    @Override
+                    public void onClick(View view)
+                    {
+                    }
+                });
 
-            dialog.setNegativeButton(R.string.basic_cancel, new OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
+                dialog.setNegativeButton(R.string.basic_cancel, new OnClickListener()
                 {
-                }
-            });
+                    @Override
+                    public void onClick(View view)
+                    {
+
+                    }
+                });
+            }
+            else
+            {
+                dialog.setPositiveButton(R.string.basic_activiate, new OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                    }
+                });
+
+                dialog.setNegativeButton(R.string.basic_postpone, new OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+
+                    }
+                });
+            }
+
 
             GUI.instance.desktopActivity.topframe.addView(dialog);
         }

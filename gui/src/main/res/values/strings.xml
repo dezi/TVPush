@@ -2,6 +2,9 @@
 
     <string name="basic_ok">OK</string>
     <string name="basic_cancel">Cancel</string>
+    <string name="basic_activiate">Activate</string>
+    <string name="basic_deactiviate">De-activate</string>
+    <string name="basic_postpone">Postpone</string>
 
     <string name="setup">Setup</string>
 
@@ -54,5 +57,17 @@
 
     <string name="setup_subysystems_subsystem_active">Sub-System is activated</string>
     <string name="setup_subysystems_subsystem_inactive">Sub-System is not activated</string>
+
+    <string name="setup_subysystems_subsystem_ukn_title">Unknown sub-system</string>
+    <string name="setup_subysystems_subsystem_ukn_info">No further information available.</string>
+
+    <string name="setup_subysystems_subsystem_iam_title">I.A.M Sprachinterpretation</string>
+    <string name="setup_subysystems_subsystem_iam_info">
+        Dieses System wertet die Spracheingaben aus und setzt diese
+        in Steuerungsinformation für die Smart-Home App um.
+
+        \n\nWenn dises System aktiviert ist, können sie intelligente Steckdosen
+        und Glühbirnen mit Sprachsteuerung an- und ausschalten.
+    </string>
 
 </resources>
