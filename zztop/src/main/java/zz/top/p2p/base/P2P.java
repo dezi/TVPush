@@ -33,11 +33,7 @@ public class P2P implements
 
     public P2P(Application application)
     {
-        instance = this;
-
         Simple.initialize(application);
-
-        cloud = new P2PCloud(this);
     }
 
     @Override
@@ -54,11 +50,25 @@ public class P2P implements
     @Override
     public void startSubsystem()
     {
+        if (cloud == null)
+        {
+            cloud = new P2PCloud(this);
+
+            cloud.login("dezi@kappa-mm.de", "blabla1234!");
+        }
+
+        onSubsystemStarted("p2p", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
     }
 
     @Override
     public void stopSubsystem()
     {
+        if (cloud != null)
+        {
+            cloud = null;
+        }
+
+        onSubsystemStopped("p2p", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
     }
 
     @Override
