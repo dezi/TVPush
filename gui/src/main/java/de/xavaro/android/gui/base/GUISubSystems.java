@@ -8,10 +8,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.xavaro.android.gui.simple.Json;
+import de.xavaro.android.gui.simple.Log;
 import de.xavaro.android.gui.simple.Simple;
 
 public class GUISubSystems
 {
+    private final static String LOGTAG = GUISetup.class.getSimpleName();
+
     public final static int SUBSYSTEM_STATE_DEACTIVATED = 0;
     public final static int SUBSYSTEM_STATE_ACTIVATED = 1;
     public final static int SUBSYSTEM_STATE_DISABLED = 2;
@@ -31,11 +34,11 @@ public class GUISubSystems
         }
     }
 
-    public void registerSubsystemRunstate(String subsystem, int state)
+    public void registerSubsystemRunstate(String subsystem, int runstate)
     {
         synchronized (subSystemsRunstates)
         {
-            subSystemsRunstates.put(subsystem, state);
+            subSystemsRunstates.put(subsystem, runstate);
         }
     }
 

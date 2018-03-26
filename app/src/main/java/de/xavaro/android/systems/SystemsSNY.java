@@ -5,7 +5,6 @@ import android.app.Application;
 import org.json.JSONObject;
 
 import de.xavaro.android.gui.base.GUI;
-import de.xavaro.android.gui.base.GUISubSystems;
 import de.xavaro.android.gui.simple.Simple;
 
 import zz.top.sny.base.SNY;
@@ -20,12 +19,6 @@ public class SystemsSNY extends SNY
         super(application);
 
         GUI.instance.subSystems.registerSubsystem(getSubsystemInfo());
-
-        if (GUI.instance.subSystems.getSubsystemState("sny")
-                == GUISubSystems.SUBSYSTEM_STATE_ACTIVATED)
-        {
-            startSubsystem();
-        }
     }
 
     @Override

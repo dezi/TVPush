@@ -29,11 +29,7 @@ public class SNY implements
 
     public SNY(Application application)
     {
-        instance = this;
-
         Simple.initialize(application);
-
-        SNYDiscover.discover(10);
     }
 
     @Override
@@ -50,11 +46,19 @@ public class SNY implements
     @Override
     public void startSubsystem()
     {
+        Log.d(LOGTAG, "startSubsystem: ######");
+
+        SNYDiscover.discover(10);
+
+        onSubsystemStarted("sny", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
     }
 
     @Override
     public void stopSubsystem()
     {
+        Log.d(LOGTAG, "stopSubsystem: ######");
+
+        onSubsystemStopped("sny", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
     }
 
     @Override

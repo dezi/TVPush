@@ -12,6 +12,8 @@ import de.xavaro.android.iam.base.IAM;
 import pub.android.interfaces.drv.Camera;
 import pub.android.interfaces.drv.SmartBulb;
 import pub.android.interfaces.drv.SmartPlug;
+import zz.top.p2p.base.P2P;
+import zz.top.sny.base.SNY;
 import zz.top.tpl.base.TPL;
 
 public class SystemsGUI extends GUI
@@ -39,12 +41,30 @@ public class SystemsGUI extends GUI
             }
         }
 
+        if (drv.equals("sny"))
+        {
+            if (SNY.instance == null)
+            {
+                SNY.instance = new SystemsSNY(appcontext);
+                SNY.instance.startSubsystem();
+            }
+        }
+
         if (drv.equals("tpl"))
         {
             if (TPL.instance == null)
             {
                 TPL.instance = new SystemsTPL(appcontext);
                 TPL.instance.startSubsystem();
+            }
+        }
+
+        if (drv.equals("p2p"))
+        {
+            if (P2P.instance == null)
+            {
+                P2P.instance = new SystemsP2P(appcontext);
+                P2P.instance.startSubsystem();
             }
         }
     }
@@ -61,12 +81,30 @@ public class SystemsGUI extends GUI
             }
         }
 
+        if (drv.equals("sny"))
+        {
+            if (SNY.instance != null)
+            {
+                SNY.instance.stopSubsystem();
+                SNY.instance = null;
+            }
+        }
+
         if (drv.equals("tpl"))
         {
             if (TPL.instance != null)
             {
                 TPL.instance.stopSubsystem();
                 TPL.instance = null;
+            }
+        }
+
+        if (drv.equals("p2p"))
+        {
+            if (P2P.instance != null)
+            {
+                P2P.instance.stopSubsystem();
+                P2P.instance = null;
             }
         }
 

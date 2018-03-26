@@ -9,20 +9,6 @@ public class SNYActions
 {
     public static Map<String, String > actions;
 
-    @Nullable
-    public static String getAction(String action)
-    {
-        try
-        {
-            return actions.get(action);
-        }
-        catch (Exception ignore)
-        {
-        }
-
-        return null;
-    }
-
     static
     {
         actions = new HashMap<>();
@@ -142,5 +128,19 @@ public class SNYActions
         actions.put("Help", "AAAAAgAAAMQAAABNAw==");
         actions.put("TvSatellite", "AAAAAgAAAMQAAABOAw==");
         actions.put("WirelessSubwoofer", "AAAAAgAAAMQAAAB+Aw==");
+    }
+
+    @Nullable
+    public static String getAction(String action)
+    {
+        try
+        {
+            return actions.get(action);
+        }
+        catch (Exception ignore)
+        {
+        }
+
+        return null;
     }
 }
