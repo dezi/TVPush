@@ -9,8 +9,6 @@ public class TPLMessageService extends Thread
 {
     private static final String LOGTAG = TPLMessageService.class.getSimpleName();
 
-    private static TPLMessageService receiver;
-
     public static void sendMessage(JSONObject json)
     {
         TPLUDPSender.sendMessage(json);
@@ -18,32 +16,28 @@ public class TPLMessageService extends Thread
 
     public static void startService()
     {
-        if (receiver == null)
+        if (TPL.instance.receiver == null)
         {
             Log.d(LOGTAG, "startService: starting.");
 
-            receiver = new TPLMessageService();
-            receiver.start();
+            TPL.instance.receiver = new TPLMessageService();
+            TPL.instance.receiver.start();
         }
         else
         {
             Log.d(LOGTAG, "startService: already started.");
         }
-
-        TPLUDP.startService();
     }
 
     public static void stopService()
     {
-        TPLUDP.stopService();
-
-        if (receiver != null)
+        if (TPL.instance.receiver != null)
         {
             Log.d(LOGTAG, "stopService: stopping");
 
-            receiver.stopRunning();
-            receiver.interrupt();
-            receiver = null;
+            TPL.instance.receiver.stopRunning();
+            TPL.instance.receiver.interrupt();
+            TPL.instance.receiver = null;
         }
         else
         {

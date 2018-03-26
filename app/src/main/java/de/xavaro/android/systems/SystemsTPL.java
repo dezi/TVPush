@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import de.xavaro.android.gui.base.GUI;
 
+import de.xavaro.android.gui.base.GUISubSystems;
 import zz.top.tpl.base.TPL;
 
 public class SystemsTPL extends TPL
@@ -17,6 +18,12 @@ public class SystemsTPL extends TPL
         super(application);
 
         GUI.instance.subSystems.registerSubsystem(getSubsystemInfo());
+
+        if (GUI.instance.subSystems.getSubsystemState("tpl")
+                == GUISubSystems.SUBSYSTEM_STATE_ACTIVATED)
+        {
+            startSubsystem();
+        }
     }
 
     @Override

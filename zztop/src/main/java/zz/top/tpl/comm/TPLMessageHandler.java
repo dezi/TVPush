@@ -16,13 +16,25 @@ public class TPLMessageHandler
 {
     private static final String LOGTAG = TPLMessageHandler.class.getSimpleName();
 
-    public static void initialize()
+    private final Map<String, ArrayList<TPLHandler>> subscribers = new HashMap<>();
+
+    public static void startService()
     {
-        TPL.instance.message = new TPLMessageHandler();
-        TPL.instance.message.initializeBasicSubscribers();
+        if (TPL.instance.message == null)
+        {
+            TPL.instance.message = new TPLMessageHandler();
+        }
     }
 
-    private final Map<String, ArrayList<TPLHandler>> subscribers = new HashMap<>();
+    public static void stopService()
+    {
+        TPL.instance.message = null;
+    }
+
+    public TPLMessageHandler()
+    {
+        initializeBasicSubscribers();
+    }
 
     private void initializeBasicSubscribers()
     {

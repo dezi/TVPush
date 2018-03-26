@@ -28,6 +28,12 @@ public class SystemsIAM extends IAM
         super(application);
 
         GUI.instance.subSystems.registerSubsystem(getSubsystemInfo());
+
+        if (GUI.instance.subSystems.getSubsystemState("iam")
+                == GUISubSystems.SUBSYSTEM_STATE_ACTIVATED)
+        {
+            startSubsystem();
+        }
     }
 
     @Override

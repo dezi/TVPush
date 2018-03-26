@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import de.xavaro.android.gui.base.GUI;
 
+import de.xavaro.android.gui.base.GUISubSystems;
 import zz.top.p2p.base.P2P;
 
 public class SystemsP2P extends P2P
@@ -17,6 +18,12 @@ public class SystemsP2P extends P2P
         super(application);
 
         GUI.instance.subSystems.registerSubsystem(getSubsystemInfo());
+
+        if (GUI.instance.subSystems.getSubsystemState("p2p")
+                == GUISubSystems.SUBSYSTEM_STATE_ACTIVATED)
+        {
+            startSubsystem();
+        }
     }
 
     @Override

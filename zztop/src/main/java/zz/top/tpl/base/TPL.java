@@ -13,6 +13,7 @@ import pub.android.interfaces.ext.GetSmartPlugHandler;
 
 import zz.top.tpl.comm.TPLMessageHandler;
 import zz.top.tpl.comm.TPLMessageService;
+import zz.top.tpl.comm.TPLUDP;
 import zz.top.tpl.handler.TPLHandlerSmartBulb;
 import zz.top.tpl.handler.TPLHandlerSmartPlug;
 import zz.top.tpl.handler.TPLHandlerSysInfo;
@@ -39,6 +40,7 @@ public class TPL implements
     public static TPL instance;
 
     public TPLMessageHandler message;
+    public TPLMessageService receiver;
 
     public TPL(Application application)
     {
@@ -47,11 +49,6 @@ public class TPL implements
             instance = this;
 
             Simple.initialize(application);
-
-            TPLMessageHandler.initialize();
-            TPLMessageService.startService();
-
-            TPLHandlerSysInfo.sendAllGetSysinfo();
         }
         else
         {
@@ -73,11 +70,19 @@ public class TPL implements
     @Override
     public void startSubsystem()
     {
+        TPLMessageHandler.startService();
+        TPLMessageService.startService();
+        TPLUDP.startService();
+
+        TPLHandlerSysInfo.sendAllGetSysinfo();
     }
 
     @Override
     public void stopSubsystem()
     {
+        TPLUDP.stopService();
+        TPLMessageService.stopService();
+        TPLMessageHandler.stopService();
     }
 
     @Override
