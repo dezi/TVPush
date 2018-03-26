@@ -22,6 +22,7 @@ public class GUIListEntryIOT extends GUIListEntry
     private final static String LOGTAG = GUIListEntryIOT.class.getSimpleName();
 
     public String uuid;
+
     public IOTDevice device;
     public IOTStatus status;
     public IOTCredential credential;

@@ -9,7 +9,7 @@ import de.xavaro.android.gui.simple.Json;
 
 public class GUISubSystems
 {
-    public final static int SUBSYSTEM_STATE_INACTIVE = 0;
+    public final static int SUBSYSTEM_STATE_DEACTIVATED = 0;
     public final static int SUBSYSTEM_STATE_ACTIVATED = 1;
     public final static int SUBSYSTEM_STATE_DISABLED = 2;
 

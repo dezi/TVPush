@@ -18,7 +18,6 @@ import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUISetup;
 import de.xavaro.android.gui.base.GUIPluginTitleList;
 import de.xavaro.android.gui.views.GUIDialogView;
-import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUIListEntry;
 import de.xavaro.android.gui.views.GUIListView;
 
@@ -42,7 +41,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
         collectEntries(listView, todo);
     }
 
-    public static void collectEntries(GUILinearLayout listView, boolean todo)
+    public void collectEntries(GUIListView listView, boolean todo)
     {
         collectServices(listView, todo);
         collectPermissions(listView, todo);
@@ -50,7 +49,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
         collectSubsystems(listView, todo);
     }
 
-    private static void collectServices(GUILinearLayout listView, boolean todo)
+    private void collectServices(GUIListView listView, boolean todo)
     {
         JSONObject services = GUISetup.getRequiredServices();
 
@@ -62,8 +61,10 @@ public class GUISetupWizzard extends GUIPluginTitleList
             boolean enabled = Json.getBoolean(services, service);
             if (todo && enabled) continue;
 
-            GUIListEntry entry = new GUIListEntry(listView.getContext());
+            String idtag = "service:" + service;
+            GUIListEntry entry = listView.findGUIListEntryOrCreate(idtag);
             entry.setOnClickListener(onServiceStartClickListener);
+            entry.setIDTag(idtag);
             entry.setTag(service);
 
             String head = Simple.getTrans(GUISetup.getTextServiceResid())
@@ -78,12 +79,11 @@ public class GUISetupWizzard extends GUIPluginTitleList
             entry.infoView.setTextColor(enabled
                     ? GUIDefs.TEXT_COLOR_INFOS
                     : GUIDefs.TEXT_COLOR_ALERTS);
-
-            listView.addView(entry);
         }
     }
 
-    private static void collectPermissions(GUILinearLayout listView, boolean todo)
+    @SuppressWarnings("StringConcatenationInLoop")
+    private void collectPermissions(GUIListView listView, boolean todo)
     {
         JSONObject services = GUISetup.getRequiredPermissions();
 
@@ -99,8 +99,10 @@ public class GUISetupWizzard extends GUIPluginTitleList
             JSONArray perms = Json.getArray(services, service);
             if (perms == null) continue;
 
-            GUIListEntry entry = new GUIListEntry(listView.getContext());
+            String idtag = "permission:" + service;
+            GUIListEntry entry = listView.findGUIListEntryOrCreate(idtag);
             entry.setOnClickListener(onPermissionRequestClickListener);
+            entry.setIDTag(idtag);
             entry.setTag(service);
 
             String infos = "";
@@ -125,12 +127,10 @@ public class GUISetupWizzard extends GUIPluginTitleList
             entry.infoView.setTextColor(enabled
                     ? GUIDefs.TEXT_COLOR_INFOS
                     : GUIDefs.TEXT_COLOR_ALERTS);
-
-            listView.addView(entry);
         }
     }
 
-    private static void collectFeatures(GUILinearLayout listView, boolean todo)
+    private void collectFeatures(GUIListView listView, boolean todo)
     {
         JSONObject features = GUISetup.getRequiredFeatures();
 
@@ -142,8 +142,10 @@ public class GUISetupWizzard extends GUIPluginTitleList
             boolean enabled = Json.getBoolean(features, feature);
             if (todo && enabled) continue;
 
-            GUIListEntry entry = new GUIListEntry(listView.getContext());
+            String idtag = "feature:" + feature;
+            GUIListEntry entry = listView.findGUIListEntryOrCreate(idtag);
             entry.setOnClickListener(onFeatureStartClickListener);
+            entry.setIDTag(idtag);
             entry.setTag(feature);
 
             String head = Simple.getTrans(GUISetup.getTextFeatureResid())
@@ -158,12 +160,10 @@ public class GUISetupWizzard extends GUIPluginTitleList
             entry.infoView.setTextColor(enabled
                     ? GUIDefs.TEXT_COLOR_INFOS
                     : GUIDefs.TEXT_COLOR_ALERTS);
-
-            listView.addView(entry);
         }
     }
 
-    private static void collectSubsystems(GUILinearLayout listView, boolean todo)
+    private void collectSubsystems(GUIListView listView, boolean todo)
     {
         JSONArray subsystems = GUISetup.getAvailableSubsystems();
 
@@ -177,10 +177,12 @@ public class GUISetupWizzard extends GUIPluginTitleList
 
             int state = GUISetup.getSubsystemState(drv);
 
-            if (todo && (state != GUISubSystems.SUBSYSTEM_STATE_INACTIVE)) continue;
+            if (todo && (state != GUISubSystems.SUBSYSTEM_STATE_DEACTIVATED)) continue;
 
-            GUIListEntry entry = new GUIListEntry(listView.getContext());
+            String idtag = "subsystem:" + subsystem;
+            GUIListEntry entry = listView.findGUIListEntryOrCreate(idtag);
             entry.setOnClickListener(onSubsystemStartClickListener);
+            entry.setIDTag(idtag);
             entry.setTag(subsystem);
 
             String head = Simple.getTrans(GUISetup.getTextSubsystemResid())
@@ -192,19 +194,17 @@ public class GUISetupWizzard extends GUIPluginTitleList
 
             entry.infoView.setText(GUISetup.getTextForSubsystemEnabled(name, state));
 
-            int color = (state == GUISubSystems.SUBSYSTEM_STATE_INACTIVE)
+            int color = (state == GUISubSystems.SUBSYSTEM_STATE_DEACTIVATED)
                     ? GUIDefs.TEXT_COLOR_ALERTS
                     : (state == GUISubSystems.SUBSYSTEM_STATE_DISABLED)
                     ? GUIDefs.TEXT_COLOR_SPECIAL
                     : GUIDefs.TEXT_COLOR_INFOS;
 
             entry.infoView.setTextColor(color);
-
-            listView.addView(entry);
         }
     }
 
-    private static final OnClickListener onServiceStartClickListener = new OnClickListener()
+    private final OnClickListener onServiceStartClickListener = new OnClickListener()
     {
         @Override
         public void onClick(View view)
@@ -214,7 +214,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
         }
     };
 
-    private static final OnClickListener onPermissionRequestClickListener = new OnClickListener()
+    private final OnClickListener onPermissionRequestClickListener = new OnClickListener()
     {
         @Override
         public void onClick(View view)
@@ -224,7 +224,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
         }
     };
 
-    private static final OnClickListener onFeatureStartClickListener = new OnClickListener()
+    private final OnClickListener onFeatureStartClickListener = new OnClickListener()
     {
         @Override
         public void onClick(View view)
@@ -232,15 +232,16 @@ public class GUISetupWizzard extends GUIPluginTitleList
         }
     };
 
-    private static final OnClickListener onSubsystemStartClickListener = new OnClickListener()
+    private final OnClickListener onSubsystemStartClickListener = new OnClickListener()
     {
         @Override
-        public void onClick(View view)
+        public void onClick(final View entry)
         {
-            JSONObject subsystem = (JSONObject) view.getTag();
-            String drv = Json.getString(subsystem, "drv");
+            JSONObject subsystem = (JSONObject) entry.getTag();
 
-            GUIDialogView dialog = new GUIDialogView(view.getContext());
+            final String drv = Json.getString(subsystem, "drv");
+
+            GUIDialogView dialog = new GUIDialogView(entry.getContext());
 
             dialog.setTitleText(GUISetup.getTitleForSubsystemResid(drv));
             dialog.setInfoText(GUISetup.getInfoForSubsystemResid(drv));
@@ -252,17 +253,12 @@ public class GUISetupWizzard extends GUIPluginTitleList
                     @Override
                     public void onClick(View view)
                     {
+                        GUISubSystems.setSubsystemState(drv, GUISubSystems.SUBSYSTEM_STATE_DEACTIVATED);
+                        GUIPluginTitleList.updateContentinParentPlugin(entry);
                     }
                 });
 
-                dialog.setNegativeButton(R.string.basic_cancel, new OnClickListener()
-                {
-                    @Override
-                    public void onClick(View view)
-                    {
-
-                    }
-                });
+                dialog.setNegativeButton(R.string.basic_cancel);
             }
             else
             {
@@ -271,6 +267,8 @@ public class GUISetupWizzard extends GUIPluginTitleList
                     @Override
                     public void onClick(View view)
                     {
+                        GUISubSystems.setSubsystemState(drv, GUISubSystems.SUBSYSTEM_STATE_ACTIVATED);
+                        GUIPluginTitleList.updateContentinParentPlugin(entry);
                     }
                 });
 
@@ -279,7 +277,8 @@ public class GUISetupWizzard extends GUIPluginTitleList
                     @Override
                     public void onClick(View view)
                     {
-
+                        GUISubSystems.setSubsystemState(drv, GUISubSystems.SUBSYSTEM_STATE_DISABLED);
+                        GUIPluginTitleList.updateContentinParentPlugin(entry);
                     }
                 });
             }

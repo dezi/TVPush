@@ -1,13 +1,17 @@
 package de.xavaro.android.gui.views;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.LinearLayout;
 
 public class GUIListView extends  GUILinearLayout
 {
     public GUIListView(Context context)
     {
         super(context);
+
+        setOrientation(LinearLayout.VERTICAL);
     }
 
     private int focusedIndex;
@@ -50,6 +54,36 @@ public class GUIListView extends  GUILinearLayout
         super.removeAllViews();
     }
 
+    public void markAllViewsUnused()
+    {
+        for (int inx = 0; inx < getChildCount(); inx++)
+        {
+            View child = getChildAt(inx);
+
+            if (child instanceof GUIListEntry)
+            {
+                ((GUIListEntry) child).isinuse = false;
+            }
+        }
+    }
+
+    public void removeAllUnusedViews()
+    {
+        for (int inx = 0; inx < getChildCount(); inx++)
+        {
+            View child = getChildAt(inx);
+
+            if (child instanceof GUIListEntry)
+            {
+                if (! ((GUIListEntry) child).isinuse)
+                {
+                    removeView(child);
+                    inx--;
+                }
+            }
+        }
+    }
+
     @Override
     public void addView(View view)
     {
@@ -64,5 +98,25 @@ public class GUIListView extends  GUILinearLayout
         {
             view.requestFocus();
         }
+    }
+
+    public GUIListEntry findGUIListEntryOrCreate(String idtag)
+    {
+        for (int inx = 0; inx < getChildCount(); inx++)
+        {
+            View child = getChildAt(inx);
+
+            if ((child instanceof GUIListEntry)
+                    && (((GUIListEntry) child).idtag != null)
+                    && (((GUIListEntry) child).idtag.equals(idtag)))
+            {
+                return (GUIListEntry) child;
+            }
+        }
+
+        GUIListEntry entry = new GUIListEntry(getContext());
+        addView(entry);
+
+        return entry;
     }
 }

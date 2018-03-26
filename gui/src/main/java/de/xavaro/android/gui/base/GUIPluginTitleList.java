@@ -3,6 +3,7 @@ package de.xavaro.android.gui.base;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import de.xavaro.android.gui.simple.Simple;
@@ -27,7 +28,6 @@ public class GUIPluginTitleList extends GUIPluginTitle
         contentFrame.addView(scrollView);
 
         listView = new GUIListView(context);
-        listView.setOrientation(LinearLayout.VERTICAL);
 
         scrollView.addView(listView);
     }
@@ -66,9 +66,11 @@ public class GUIPluginTitleList extends GUIPluginTitle
         @Override
         public void run()
         {
-            listView.removeAllViews();
+            listView.markAllViewsUnused();
 
             onCollectEntries(listView, false);
+
+            listView.removeAllUnusedViews();
 
             Simple.getHandler().postDelayed(makeEntryList, 10 * 1000);
         }
@@ -91,5 +93,22 @@ public class GUIPluginTitleList extends GUIPluginTitle
                 Log.d(LOGTAG, "onRequestPermissionsResult: boo=" + permissions[ 0 ]);
             }
         }
+    }
+
+    public static void updateContentinParentPlugin(View view)
+    {
+        while (! (view instanceof GUIPluginTitleList))
+        {
+            if (view.getParent() instanceof View)
+            {
+                view = (View) view.getParent();
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        ((GUIPluginTitleList) view).updateContent();
     }
 }

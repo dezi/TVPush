@@ -181,12 +181,12 @@ public class GUIDialogView extends GUIRelativeLayout
             @Override
             public void onClick(View view)
             {
+                dismissDialog();
+
                 if (closeButtonOnClick != null)
                 {
                     closeButtonOnClick.onClick(GUIDialogView.this);
                 }
-
-                dismissDialog();
             }
         });
 
@@ -423,7 +423,7 @@ public class GUIDialogView extends GUIRelativeLayout
 
         if (parent != null)
         {
-            parent.removeView(GUIDialogView.this);
+            parent.removeView(this);
         }
 
         return parent;

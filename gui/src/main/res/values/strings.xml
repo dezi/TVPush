@@ -59,8 +59,37 @@
         Dieses System wertet die Spracheingaben aus und setzt diese
         in Steuerungsinformation für die Smart-Home App um.
 
-        \n\nWenn dises System aktiviert ist, können sie intelligente Steckdosen
+        \n\nWenn dieses System aktiviert ist, können sie intelligente Steckdosen
         und Glühbirnen mit Sprachsteuerung an- und ausschalten.
+    </string>
+
+    <string name="setup_subysystems_subsystem_sny_title">Sony Android TV</string>
+    <string name="setup_subysystems_subsystem_sny_info">
+        Dieses System enthält verschiedene speziell auf Sony Android TVs
+        zugeschnittene Dienste, wie z.B. das bearbeiten der Programmliste
+        und das Fernsteuern des Geräts über das lokale Wifi und Internet.
+
+        \n\nWenn dieses System und die Sprachsteuerung aktiviert ist, können
+        Sie Sender per Sprachbefehl umschalten.
+    </string>
+
+    <string name="setup_subysystems_subsystem_tpl_title">TP-Link Smart Home</string>
+    <string name="setup_subysystems_subsystem_tpl_info">
+        Dieses System enthält eine Schnittstelle zu intelligenten Steckdosen und
+        Glühbirnen des Herstellers TP-Link.
+
+        \n\nWenn dieses System und die Sprachsteuerung aktiviert ist, können
+        Sie diese Geräte per Sprachbefehl bedienen.
+    </string>
+
+    <string name="setup_subysystems_subsystem_p2p_title">YI Home Cameras</string>
+    <string name="setup_subysystems_subsystem_p2p_info">
+        Dieses System enthält eine Schnittstelle zu allen Kameramodellen
+        des Herstellers Yi-Home.
+
+        \n\nWenn dieses System und die Sprachsteuerung aktiviert ist, können
+        Sie diese Geräte per Sprachbefehl bedienen und alle Kamaras auf dem
+        TV-Schirm anzeigen lassen.
     </string>
 
 </resources>

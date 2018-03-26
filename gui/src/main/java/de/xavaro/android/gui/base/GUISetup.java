@@ -590,6 +590,9 @@ public class GUISetup
         switch (subsystem)
         {
             case "iam": return R.string.setup_subysystems_subsystem_iam_title;
+            case "sny": return R.string.setup_subysystems_subsystem_sny_title;
+            case "tpl": return R.string.setup_subysystems_subsystem_tpl_title;
+            case "p2p": return R.string.setup_subysystems_subsystem_p2p_title;
         }
 
         return R.string.setup_subysystems_subsystem_ukn_title;
@@ -600,6 +603,9 @@ public class GUISetup
         switch (subsystem)
         {
             case "iam": return R.string.setup_subysystems_subsystem_iam_info;
+            case "sny": return R.string.setup_subysystems_subsystem_sny_info;
+            case "tpl": return R.string.setup_subysystems_subsystem_tpl_info;
+            case "p2p": return R.string.setup_subysystems_subsystem_p2p_info;
         }
 
         return R.string.setup_subysystems_subsystem_ukn_info;

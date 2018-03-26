@@ -9,6 +9,9 @@ import de.xavaro.android.gui.simple.Simple;
 
 public class GUIListEntry extends GUILinearLayout
 {
+    public String idtag;
+    public boolean isinuse;
+
     public GUIIconView iconView;
     public GUITextView headerViev;
     public GUITextView infoView;
@@ -68,6 +71,12 @@ public class GUIListEntry extends GUILinearLayout
     public void setStatusColor(int color)
     {
         bulletView.setRoundedCornersDip(GUIDefs.PADDING_MEDIUM / 2, color);
+    }
+
+    public void setIDTag(String idtag)
+    {
+        this.idtag = idtag;
+        this.isinuse = true;
     }
 }
 
