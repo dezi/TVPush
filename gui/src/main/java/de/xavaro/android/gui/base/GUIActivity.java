@@ -1,24 +1,20 @@
 package de.xavaro.android.gui.base;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.StrictMode;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.PixelFormat;
 import android.graphics.Color;
+import android.widget.FrameLayout;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.view.WindowManager;
+import android.view.ViewGroup;
+import android.view.KeyEvent;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.view.WindowManager;
-import android.view.KeyEvent;
+import android.os.StrictMode;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -26,6 +22,7 @@ import java.util.ArrayList;
 
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.skills.GUICanFocus;
+import de.xavaro.android.gui.skills.GUICanFocusDelegate;
 import de.xavaro.android.gui.views.GUIDialogView;
 
 @SuppressLint("Registered")
@@ -351,59 +348,67 @@ public class GUIActivity extends AppCompatActivity
         decorView.setSystemUiVisibility(uiOptions);
     }
 
-    private ArrayList<View> focusableViews;
-    private View excludeView;
-    private View focusedView;
+    private View savedFocusedView;
+    private ArrayList<View> savedFocusableViews;
 
-    public void saveFocusedView(View focusedView)
+    public void saveFocusedView()
     {
-        this.focusedView = focusedView;
+        this.savedFocusedView = GUICanFocusDelegate.getFocusedView();
 
-        Log.d(LOGTAG, "saveFocusedView: view=" + focusedView);
+        Log.d(LOGTAG, "saveFocusedView: view=" + this.savedFocusedView);
     }
 
     public void restoreFocusedView()
     {
-        if ((focusedView != null) && (focusedView.getParent() != null))
+        if (savedFocusedView != null)
         {
-            final View focusme = this.focusedView;
-
-            Simple.getHandler().postDelayed(new Runnable()
+            if (savedFocusedView.getParent() == null)
             {
-                @Override
-                public void run()
-                {
-                    focusme.requestFocus();
-                }
-            }, 200);
+                Log.d(LOGTAG, "restoreFocusedView: gone=" + savedFocusedView);
+            }
+            else
+            {
+                final View focusme = savedFocusedView;
 
-            Log.d(LOGTAG, "restoreFocusedView: view=" + focusme);
+                Simple.getHandler().post(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        focusme.requestFocus();
+                    }
+                });
+
+                Log.d(LOGTAG, "restoreFocusedView: view=" + focusme);
+            }
         }
     }
 
-    public void saveFocusableViews(View exclude)
+    public void saveFocusState()
     {
-        excludeView = exclude;
+        savedFocusedView = null;
+        savedFocusableViews = new ArrayList<>();
 
-        focusableViews = new ArrayList<>();
-
-        saveFocusableViewsRecurse(topframe);
+        saveFocusedView();
+        saveFocusStateRecurse(topframe);
     }
 
-    public void restoreFocusableViews()
+    public void restoreFocusState()
     {
-        if (focusableViews != null)
+        if (savedFocusableViews != null)
         {
-            for (View view : focusableViews)
+            for (View view : savedFocusableViews)
             {
                 view.setFocusable(true);
             }
 
-            focusableViews = null;
+            savedFocusableViews = null;
         }
+
+        restoreFocusedView();
     }
 
-    private void saveFocusableViewsRecurse(View view)
+    private void saveFocusStateRecurse(View view)
     {
         if (view instanceof ViewGroup)
         {
@@ -413,18 +418,16 @@ public class GUIActivity extends AppCompatActivity
             {
                 View child = vg.getChildAt(inx);
 
-                if (child == excludeView) continue;
-
                 if (child instanceof GUICanFocus)
                 {
                     if (((GUICanFocus) child).getIsFocusable())
                     {
-                        focusableViews.add(child);
+                        savedFocusableViews.add(child);
                         child.setFocusable(false);
                     }
                 }
 
-                saveFocusableViewsRecurse(child);
+                saveFocusStateRecurse(child);
             }
         }
     }

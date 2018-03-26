@@ -30,7 +30,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
     {
         super(context);
 
-        setIsWizzard(true, false);
+        setIsWizzard(true, false, 2);
 
         setTitleIcon(R.drawable.permissions_240);
         setTitleText("System Setup");
@@ -283,7 +283,6 @@ public class GUISetupWizzard extends GUIPluginTitleList
                     }
                 });
             }
-
 
             GUI.instance.desktopActivity.topframe.addView(dialog);
         }

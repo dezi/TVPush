@@ -117,6 +117,15 @@ public class GUIDialogView extends GUIRelativeLayout
     {
         super(context);
 
+        Activity activity = GUIApplication.getCurrentActivity(getContext());
+
+        if (activity instanceof GUIActivity)
+        {
+            Log.d(LOGTAG, "Constructor: saveFocusState.");
+
+            ((GUIActivity) activity).saveFocusState();
+        }
+
         setOnClickListener(new OnClickListener()
         {
             @Override
@@ -268,15 +277,6 @@ public class GUIDialogView extends GUIRelativeLayout
     public void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-
-        Activity activity = GUIApplication.getCurrentActivity(getContext());
-
-        if (activity instanceof GUIActivity)
-        {
-            Log.d(LOGTAG, "onAttachedToWindow: saveFocusableViews.");
-
-            ((GUIActivity) activity).saveFocusableViews(this);
-        }
     }
 
     @Override
@@ -288,9 +288,9 @@ public class GUIDialogView extends GUIRelativeLayout
 
         if (activity instanceof GUIActivity)
         {
-            Log.d(LOGTAG, "onDetachedFromWindow: restoreFocusableViews.");
+            Log.d(LOGTAG, "onDetachedFromWindow: restoreFocusState.");
 
-            ((GUIActivity) activity).restoreFocusableViews();
+            ((GUIActivity) activity).restoreFocusState();
         }
     }
 

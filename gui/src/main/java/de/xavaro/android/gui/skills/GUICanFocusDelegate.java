@@ -1,10 +1,11 @@
 package de.xavaro.android.gui.skills;
 
 import android.support.annotation.Nullable;
+
 import android.text.InputType;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.util.Log;
 
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUIPlugin;
@@ -15,11 +16,37 @@ public class GUICanFocusDelegate
 {
     private final static String LOGTAG = GUICanFocusDelegate.class.getSimpleName();
 
+    private static View focusedView;
+
+    @Nullable
+    public static View getFocusedView()
+    {
+        return focusedView;
+    }
+
+    @Nullable
+    public static void setFocusedView(View view, boolean hasFocus)
+    {
+        if (hasFocus)
+        {
+            focusedView = view;
+        }
+        else
+        {
+            if (focusedView == view)
+            {
+                focusedView = null;
+            }
+        }
+    }
+
     public final static View.OnFocusChangeListener genericOnFocusChangeListener = new View.OnFocusChangeListener()
     {
         @Override
         public void onFocusChange(View view, boolean hasFocus)
         {
+            setFocusedView(view, hasFocus);
+
             GUICanFocus gf = view instanceof GUICanFocus ? (GUICanFocus) view : null;
             GUICanToast gt = view instanceof GUICanToast ? (GUICanToast) view : null;
 
