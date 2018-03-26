@@ -115,6 +115,8 @@ public class GUIListView extends  GUILinearLayout
         }
 
         GUIListEntry entry = new GUIListEntry(getContext());
+        entry.setFocusable(true);
+
         addView(entry);
 
         return entry;

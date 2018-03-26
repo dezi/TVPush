@@ -99,6 +99,9 @@ public class GUIDialogView extends GUIRelativeLayout
         }
     }
 
+    public GUIDialogButtonView positiveButton;
+    public GUIDialogButtonView negativeButton;
+
     protected GUIRelativeLayout marginView;
     protected GUIImageView closeButton;
     protected GUILinearLayout padView;
@@ -106,8 +109,6 @@ public class GUIDialogView extends GUIRelativeLayout
     protected GUITextView infoView;
     protected GUIRelativeLayout customView;
     protected GUILinearLayout buttonFrame;
-    protected GUIDialogButtonView positiveButton;
-    protected GUIDialogButtonView negativeButton;
 
     protected OnClickListener positiveButtonOnClick;
     protected OnClickListener negativeButtonOnClick;
@@ -372,15 +373,6 @@ public class GUIDialogView extends GUIRelativeLayout
             negativeButton.setMarginRightDip(GUIDefs.PADDING_MEDIUM);
             positiveButton.setMarginLeftDip(GUIDefs.PADDING_MEDIUM);
         }
-
-        Simple.getHandler().post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                positiveButton.requestFocus();
-            }
-        });
     }
 
     public void setNegativeButton(int resid)

@@ -291,8 +291,6 @@ public class GUITextView extends AppCompatTextView implements
     public void setOnClickListener(View.OnClickListener onClickListener)
     {
         super.setOnClickListener(onClickListener);
-
-        setFocusable(onClickListener != null);
     }
 
     public void onHighlightChanged(View view, boolean highlight)

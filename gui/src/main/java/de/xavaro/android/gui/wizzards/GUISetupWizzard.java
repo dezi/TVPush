@@ -254,9 +254,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
 
             if (GUISetup.getSubsystemState(drv) == GUISubSystems.SUBSYSTEM_STATE_ACTIVATED)
             {
-                dialog.setPositiveButton(R.string.basic_cancel);
-
-                dialog.setNegativeButton(R.string.basic_deactiviate, new OnClickListener()
+                dialog.setPositiveButton(R.string.basic_deactiviate, new OnClickListener()
                 {
                     @Override
                     public void onClick(View view)
@@ -266,6 +264,10 @@ public class GUISetupWizzard extends GUIPluginTitleList
                         GUI.instance.onStopSubsystemRequest(drv);
                     }
                 });
+
+                dialog.setNegativeButton(R.string.basic_cancel);
+
+                dialog.negativeButton.requestFocus();
             }
             else
             {
@@ -289,6 +291,8 @@ public class GUISetupWizzard extends GUIPluginTitleList
                         GUIPluginTitleList.updateContentinParentPlugin(entry);
                     }
                 });
+
+                dialog.positiveButton.requestFocus();
             }
 
             GUI.instance.desktopActivity.topframe.addView(dialog);
