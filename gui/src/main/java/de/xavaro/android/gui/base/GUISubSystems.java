@@ -4,8 +4,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.xavaro.android.gui.simple.Json;
+import de.xavaro.android.gui.simple.Simple;
 
 public class GUISubSystems
 {
@@ -13,13 +16,26 @@ public class GUISubSystems
     public final static int SUBSYSTEM_STATE_ACTIVATED = 1;
     public final static int SUBSYSTEM_STATE_DISABLED = 2;
 
-    private final ArrayList<JSONObject> subSystems = new ArrayList<>();
+    private final ArrayList<JSONObject> subSystemsInfos = new ArrayList<>();
+
+    private final Map<String, Integer> subSystemsRunstates = new HashMap<>();
 
     public void registerSubsystem(JSONObject driverInfo)
     {
-        if (! subSystems.contains(driverInfo))
+        synchronized (subSystemsInfos)
         {
-            subSystems.add(driverInfo);
+            if (!subSystemsInfos.contains(driverInfo))
+            {
+                subSystemsInfos.add(driverInfo);
+            }
+        }
+    }
+
+    public void registerSubsystemRunstate(String subsystem, int state)
+    {
+        synchronized (subSystemsRunstates)
+        {
+            subSystemsRunstates.put(subsystem, state);
         }
     }
 
@@ -27,7 +43,7 @@ public class GUISubSystems
     {
         JSONArray subsys = new JSONArray();
 
-        for (JSONObject subSystem : subSystems)
+        for (JSONObject subSystem : subSystemsInfos)
         {
             subsys.put(subSystem);
         }
@@ -35,7 +51,14 @@ public class GUISubSystems
         return subsys;
     }
 
-    public static int getSubsystemState(String drv)
+    public int getSubsystemsRunState(String subsystem)
+    {
+        Integer val = Simple.getMapInteger(subSystemsRunstates, subsystem);
+
+        return (val != null) ? val : 0;
+    }
+
+    public int getSubsystemState(String drv)
     {
         String key = "subsystem." + drv;
 
@@ -44,7 +67,7 @@ public class GUISubSystems
         return Json.getInt(pref, "state");
     }
 
-    public static void setSubsystemState(String drv, int state)
+    public void setSubsystemState(String drv, int state)
     {
         String key = "subsystem." + drv;
 

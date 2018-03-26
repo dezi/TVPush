@@ -176,6 +176,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
             String name = Json.getString(subsystem, "name");
 
             int state = GUISetup.getSubsystemState(drv);
+            int runstate = GUISetup.getSubsystemRunState(drv);
 
             if (todo && (state != GUISubSystems.SUBSYSTEM_STATE_DEACTIVATED)) continue;
 
@@ -189,10 +190,14 @@ public class GUISetupWizzard extends GUIPluginTitleList
                     + ": "
                     + name;
 
+            String info = GUISetup.getTextForSubsystemEnabled(name, state)
+                    + " - "
+                    + Simple.getTrans(GUISetup.getTextForSubsystemRunstateResid(runstate));
+
             entry.iconView.setImageResource(GUISetup.getIconForSubsystemResid(drv));
             entry.headerViev.setText(head);
 
-            entry.infoView.setText(GUISetup.getTextForSubsystemEnabled(name, state));
+            entry.infoView.setText(info);
 
             int color = (state == GUISubSystems.SUBSYSTEM_STATE_DEACTIVATED)
                     ? GUIDefs.TEXT_COLOR_ALERTS
@@ -255,12 +260,11 @@ public class GUISetupWizzard extends GUIPluginTitleList
                     @Override
                     public void onClick(View view)
                     {
-                        GUISubSystems.setSubsystemState(drv, GUISubSystems.SUBSYSTEM_STATE_DEACTIVATED);
+                        GUI.instance.subSystems.setSubsystemState(drv, GUISubSystems.SUBSYSTEM_STATE_DEACTIVATED);
                         GUIPluginTitleList.updateContentinParentPlugin(entry);
                         GUI.instance.onStopSubsystemRequest(drv);
                     }
                 });
-
             }
             else
             {
@@ -269,7 +273,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
                     @Override
                     public void onClick(View view)
                     {
-                        GUISubSystems.setSubsystemState(drv, GUISubSystems.SUBSYSTEM_STATE_ACTIVATED);
+                        GUI.instance.subSystems.setSubsystemState(drv, GUISubSystems.SUBSYSTEM_STATE_ACTIVATED);
                         GUIPluginTitleList.updateContentinParentPlugin(entry);
                         GUI.instance.onStartSubsystemRequest(drv);
                     }
@@ -280,7 +284,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
                     @Override
                     public void onClick(View view)
                     {
-                        GUISubSystems.setSubsystemState(drv, GUISubSystems.SUBSYSTEM_STATE_DISABLED);
+                        GUI.instance.subSystems.setSubsystemState(drv, GUISubSystems.SUBSYSTEM_STATE_DISABLED);
                         GUIPluginTitleList.updateContentinParentPlugin(entry);
                     }
                 });

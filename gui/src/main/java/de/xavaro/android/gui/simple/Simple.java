@@ -640,6 +640,27 @@ public class Simple
     }
 
     @Nullable
+    public static Integer getMapInteger(Map<String, Integer> map, String key)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        {
+            return map.getOrDefault(key, null);
+        }
+        else
+        {
+            try
+            {
+                return map.get(key);
+            }
+            catch (Exception ignore)
+            {
+                return null;
+            }
+        }
+    }
+
+
+    @Nullable
     public static String getMapString(Map<String, String> map, String key)
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)

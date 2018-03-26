@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import de.xavaro.android.gui.base.GUI;
 
+import de.xavaro.android.gui.base.GUISubSystems;
 import de.xavaro.android.iam.base.IAM;
 import de.xavaro.android.iam.eval.IAMEvalChannels;
 
@@ -61,6 +62,18 @@ public class SystemsIAM extends IAM
     public void stopSubsystem()
     {
         super.stopSubsystem();
+    }
+
+    @Override
+    public void onSubsystemStarted(String subsystem, int state)
+    {
+        GUI.instance.subSystems.registerSubsystemRunstate(subsystem, state);
+    }
+
+    @Override
+    public void onSubsystemStopped(String subsystem, int state)
+    {
+        GUI.instance.subSystems.registerSubsystemRunstate(subsystem, state);
     }
 
     @Override

@@ -58,6 +58,18 @@ public class SNY implements
     }
 
     @Override
+    public void onSubsystemStarted(String subsystem, int state)
+    {
+        android.util.Log.d(LOGTAG, "onSubsystemStarted: STUB! state=" + state);
+    }
+
+    @Override
+    public void onSubsystemStopped(String subsystem, int state)
+    {
+        android.util.Log.d(LOGTAG, "onSubsystemStopped: STUB! state=" + state);
+    }
+
+    @Override
     public JSONObject getDeviceCredentials(String uuid)
     {
         Log.d(LOGTAG, "getDeviceCredentials: STUB!");

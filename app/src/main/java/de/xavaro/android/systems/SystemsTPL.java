@@ -20,6 +20,18 @@ public class SystemsTPL extends TPL
     }
 
     @Override
+    public void onSubsystemStarted(String subsystem, int state)
+    {
+        GUI.instance.subSystems.registerSubsystemRunstate(subsystem, state);
+    }
+
+    @Override
+    public void onSubsystemStopped(String subsystem, int state)
+    {
+        GUI.instance.subSystems.registerSubsystemRunstate(subsystem, state);
+    }
+
+    @Override
     public void onDeviceFound(JSONObject device)
     {
         Log.d(LOGTAG, "onDeviceFound:");

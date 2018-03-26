@@ -81,6 +81,18 @@ public class TPL implements
     }
 
     @Override
+    public void onSubsystemStarted(String subsystem, int state)
+    {
+        android.util.Log.d(LOGTAG, "onSubsystemStarted: STUB! state=" + state);
+    }
+
+    @Override
+    public void onSubsystemStopped(String subsystem, int state)
+    {
+        android.util.Log.d(LOGTAG, "onSubsystemStopped: STUB! state=" + state);
+    }
+
+    @Override
     public void onDeviceFound(JSONObject device)
     {
         Log.d(LOGTAG, "onDeviceFound: STUB!");

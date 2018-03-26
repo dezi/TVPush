@@ -48,6 +48,11 @@
 
     <string name="setup_subysystems_subsystem">Subsystem</string>
 
+    <string name="setup_subysystems_runstates_stopped">Gestoppt</string>
+    <string name="setup_subysystems_runstates_started">Gestartet</string>
+    <string name="setup_subysystems_runstates_failed">Fehler</string>
+    <string name="setup_subysystems_runstates_zombie">Zombie</string>
+
     <string name="setup_subysystems_subsystem_active">Aktiviert</string>
     <string name="setup_subysystems_subsystem_inactive">Nicht aktiviert</string>
 

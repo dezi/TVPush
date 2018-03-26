@@ -61,6 +61,18 @@ public class P2P implements
     {
     }
 
+    @Override
+    public void onSubsystemStarted(String subsystem, int state)
+    {
+        Log.d(LOGTAG, "onSubsystemStarted: STUB! state=" + state);
+    }
+
+    @Override
+    public void onSubsystemStopped(String subsystem, int state)
+    {
+        Log.d(LOGTAG, "onSubsystemStopped: STUB! state=" + state);
+    }
+
     public void login(String email, String password)
     {
         cloud.login(email, password);

@@ -13,7 +13,6 @@ import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,6 +22,7 @@ import java.io.File;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.R;
+import pub.android.interfaces.all.SubSystemHandler;
 
 public class GUISetup
 {
@@ -570,7 +570,12 @@ public class GUISetup
 
     public static int getSubsystemState(String subsystem)
     {
-        return GUISubSystems.getSubsystemState(subsystem);
+        return GUI.instance.subSystems.getSubsystemState(subsystem);
+    }
+
+    public static int getSubsystemRunState(String subsystem)
+    {
+        return GUI.instance.subSystems.getSubsystemsRunState(subsystem);
     }
 
     public static String getTextForSubsystemEnabled(String subsystem, int state)
@@ -583,6 +588,19 @@ public class GUISetup
         {
             return Simple.getTrans(R.string.setup_subysystems_subsystem_inactive, subsystem);
         }
+    }
+
+    public static int getTextForSubsystemRunstateResid(int runstate)
+    {
+        switch (runstate)
+        {
+            case SubSystemHandler.SUBSYSTEM_RUN_STARTED: return R.string.setup_subysystems_runstates_started;
+            case SubSystemHandler.SUBSYSTEM_RUN_STOPPED: return R.string.setup_subysystems_runstates_stopped;
+            case SubSystemHandler.SUBSYSTEM_RUN_FAILED: return R.string.setup_subysystems_runstates_failed;
+            case SubSystemHandler.SUBSYSTEM_RUN_ZOMBIE: return R.string.setup_subysystems_runstates_zombie;
+        }
+
+        return R.string.setup_ukn;
     }
 
     public static int getTitleForSubsystemResid(String subsystem)

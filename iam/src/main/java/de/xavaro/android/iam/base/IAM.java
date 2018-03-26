@@ -47,12 +47,28 @@ public class IAM implements
     public void startSubsystem()
     {
         Log.d(LOGTAG, "Subsystem started...");
+
+        onSubsystemStarted("iam", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
     }
 
     @Override
     public void stopSubsystem()
     {
         Log.d(LOGTAG, "Subsystem stopped...");
+
+        onSubsystemStopped("iam", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
+    }
+
+    @Override
+    public void onSubsystemStarted(String subsystem, int state)
+    {
+        Log.d(LOGTAG, "onSubsystemStarted: STUB! state=" + state);
+    }
+
+    @Override
+    public void onSubsystemStopped(String subsystem, int state)
+    {
+        Log.d(LOGTAG, "onSubsystemStopped: STUB! state=" + state);
     }
 
     @Override
