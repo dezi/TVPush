@@ -22,6 +22,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.net.ConnectivityManager;
@@ -667,6 +668,11 @@ public class Simple
         catch (Exception ignore)
         {
         }
+    }
+
+    public static boolean isUIThread()
+    {
+        return (Looper.getMainLooper().getThread() == Thread.currentThread());
     }
 
     //endregion Smart helpers.

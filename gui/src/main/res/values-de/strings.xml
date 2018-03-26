@@ -1,4 +1,8 @@
 <resources>
+
+    <string name="basic_ok">OK</string>
+    <string name="basic_cancel">Abbrechen</string>
+
     <string name="setup">Setup</string>
 
     <string name="setup_ukn">Unbekannt</string>
@@ -46,9 +50,9 @@
     <string name="setup_features_feature_adb_active">ADB-Zugriff wird gewährt</string>
     <string name="setup_features_feature_adb_inactive">ADB-Zugriff ist unkonfiguriert</string>
 
-    <string name="setup_subysystems_subsystem">Sub-System</string>
+    <string name="setup_subysystems_subsystem">Subsystem</string>
 
-    <string name="setup_subysystems_subsystem_active">%1$s ist aktiviert</string>
-    <string name="setup_subysystems_subsystem_inactive">%1$s ist nicht aktiviert</string>
+    <string name="setup_subysystems_subsystem_active">Subsystem ist aktiviert</string>
+    <string name="setup_subysystems_subsystem_inactive">Subsystem ist nicht aktiviert</string>
 
 </resources>

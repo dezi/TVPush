@@ -2,13 +2,14 @@ package de.xavaro.android.gui.views;
 
 import android.support.v7.widget.AppCompatEditText;
 import android.graphics.drawable.Drawable;
-import android.content.Context;
 import android.util.TypedValue;
+import android.widget.LinearLayout;
+import android.content.Context;
 import android.text.InputType;
 import android.graphics.Color;
+import android.view.ViewGroup;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.skills.GUICanDip;
@@ -39,34 +40,71 @@ public class GUIEditText extends AppCompatEditText implements
         setTextColor(Color.BLACK);
     }
 
+    public void setTextSizeDip(int textSizeDip)
+    {
+        float real = textSizeDip / getContext().getResources().getConfiguration().fontScale;
+
+        setTextSize(TypedValue.COMPLEX_UNIT_DIP, real);
+    }
+
     //region CanDip implementation.
 
+    @Override
     public void setSizeDip(int width, int height)
     {
         if (getLayoutParams() == null)
         {
-            setLayoutParams(new ViewGroup.MarginLayoutParams(Simple.WC, Simple.WC));
+            setLayoutParams(new LinearLayout.LayoutParams(Simple.WC, Simple.WC));
         }
 
         getLayoutParams().width = width > 0 ? Simple.dipToPx(width) : width;
         getLayoutParams().height = height > 0 ? Simple.dipToPx(height) : height;
     }
 
+    @Override
+    public void setSizeDip(int width, int height, float weight)
+    {
+        if (getLayoutParams() == null)
+        {
+            setLayoutParams(new LinearLayout.LayoutParams(Simple.WC, Simple.WC, weight));
+        }
+
+        getLayoutParams().width = width > 0 ? Simple.dipToPx(width) : width;
+        getLayoutParams().height = height > 0 ? Simple.dipToPx(height) : height;
+    }
+
+    @Override
     public void setPaddingDip(int pad)
     {
         setPadding(Simple.dipToPx(pad), Simple.dipToPx(pad), Simple.dipToPx(pad), Simple.dipToPx(pad));
     }
 
+    @Override
     public void setPaddingDip(int left, int top, int right, int bottom)
     {
         setPadding(Simple.dipToPx(left), Simple.dipToPx(top), Simple.dipToPx(right), Simple.dipToPx(bottom));
     }
 
-    public void setTextSizeDip(int textSizeDip)
+    @Override
+    public void setMarginLeftDip(int margin)
     {
-        float real = textSizeDip / getContext().getResources().getConfiguration().fontScale;
+        if (getLayoutParams() == null)
+        {
+            setLayoutParams(new LinearLayout.LayoutParams(Simple.WC, Simple.WC));
+        }
 
-        setTextSize(TypedValue.COMPLEX_UNIT_DIP, real);
+        ((ViewGroup.MarginLayoutParams) getLayoutParams()).leftMargin = Simple.dipToPx(margin);
+    }
+
+    @Override
+    public void setMarginTopDip(int margin)
+    {
+        if (getLayoutParams() == null)
+        {
+            setLayoutParams(new LinearLayout.LayoutParams(Simple.WC, Simple.WC));
+        }
+
+        ((ViewGroup.MarginLayoutParams) getLayoutParams()).topMargin = Simple.dipToPx(margin);
     }
 
     //endregion CanDip implementation.

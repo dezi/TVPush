@@ -35,17 +35,19 @@ public class GUILinearLayout extends LinearLayout implements
 
     //region CanDip implementation.
 
+    @Override
     public void setSizeDip(int width, int height)
     {
         if (getLayoutParams() == null)
         {
-            setLayoutParams(new ViewGroup.MarginLayoutParams(Simple.WC, Simple.WC));
+            setLayoutParams(new LinearLayout.LayoutParams(Simple.WC, Simple.WC));
         }
 
         getLayoutParams().width = width > 0 ? Simple.dipToPx(width) : width;
         getLayoutParams().height = height > 0 ? Simple.dipToPx(height) : height;
     }
 
+    @Override
     public void setSizeDip(int width, int height, float weight)
     {
         if (getLayoutParams() == null)
@@ -57,14 +59,38 @@ public class GUILinearLayout extends LinearLayout implements
         getLayoutParams().height = height > 0 ? Simple.dipToPx(height) : height;
     }
 
+    @Override
     public void setPaddingDip(int pad)
     {
         setPadding(Simple.dipToPx(pad), Simple.dipToPx(pad), Simple.dipToPx(pad), Simple.dipToPx(pad));
     }
 
+    @Override
     public void setPaddingDip(int left, int top, int right, int bottom)
     {
         setPadding(Simple.dipToPx(left), Simple.dipToPx(top), Simple.dipToPx(right), Simple.dipToPx(bottom));
+    }
+
+    @Override
+    public void setMarginLeftDip(int margin)
+    {
+        if (getLayoutParams() == null)
+        {
+            setLayoutParams(new LinearLayout.LayoutParams(Simple.WC, Simple.WC));
+        }
+
+        ((MarginLayoutParams) getLayoutParams()).leftMargin = Simple.dipToPx(margin);
+    }
+
+    @Override
+    public void setMarginTopDip(int margin)
+    {
+        if (getLayoutParams() == null)
+        {
+            setLayoutParams(new LinearLayout.LayoutParams(Simple.WC, Simple.WC));
+        }
+
+        ((MarginLayoutParams) getLayoutParams()).topMargin = Simple.dipToPx(margin);
     }
 
     //endregion CanDip implementation.
