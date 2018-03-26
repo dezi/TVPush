@@ -13,7 +13,6 @@ import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUISubSystems;
 import de.xavaro.android.gui.simple.Json;
-import de.xavaro.android.gui.simple.Log;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUISetup;

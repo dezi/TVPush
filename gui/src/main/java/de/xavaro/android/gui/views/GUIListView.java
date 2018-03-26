@@ -5,6 +5,9 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import de.xavaro.android.iot.status.IOTStatus;
+import de.xavaro.android.iot.things.IOTDevice;
+
 public class GUIListView extends  GUILinearLayout
 {
     public GUIListView(Context context)
@@ -116,6 +119,32 @@ public class GUIListView extends  GUILinearLayout
 
         GUIListEntry entry = new GUIListEntry(getContext());
         entry.setFocusable(true);
+
+        addView(entry);
+
+        return entry;
+    }
+
+    public GUIListEntryIOT findGUIListEntryIOTOrCreate(String uuid, IOTDevice device, IOTStatus status)
+    {
+        for (int inx = 0; inx < getChildCount(); inx++)
+        {
+            View child = getChildAt(inx);
+
+            if ((child instanceof GUIListEntry)
+                    && (((GUIListEntry) child).idtag != null)
+                    && (((GUIListEntry) child).idtag.equals(uuid)))
+            {
+                return (GUIListEntryIOT) child;
+            }
+        }
+
+        GUIListEntryIOT entry = new GUIListEntryIOT(getContext());
+        entry.setFocusable(true);
+
+        entry.uuid = uuid;
+        entry.device = device;
+        entry.status = status;
 
         addView(entry);
 

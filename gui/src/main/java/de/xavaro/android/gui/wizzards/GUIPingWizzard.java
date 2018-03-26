@@ -2,17 +2,17 @@ package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
 import android.util.Log;
-import android.view.View;
 
 import org.json.JSONArray;
 
 import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.base.GUIPluginTitleListIOT;
-import de.xavaro.android.gui.simple.Json;
-import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.views.GUIListView;
+import de.xavaro.android.gui.simple.Json;
+
 import de.xavaro.android.iot.status.IOTStatus;
+import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 
@@ -36,7 +36,7 @@ public class GUIPingWizzard extends GUIPluginTitleListIOT
         collectEntries(listView, todo);
     }
 
-    public static void collectEntries(GUILinearLayout listView, boolean todo)
+    public void collectEntries(GUIListView listView, boolean todo)
     {
         JSONArray list = IOTDevices.instance.getListUUIDs();
 
@@ -48,21 +48,15 @@ public class GUIPingWizzard extends GUIPluginTitleListIOT
             if (device == null) continue;
             if (todo) continue;
 
-            IOTStatus status = new IOTStatus(device.uuid);//IOTStatusses.getEntry(device.uuid);
+            IOTStatus status = IOTStatusses.getEntry(uuid);
             if (status == null) continue;
 
             String connect = (status.ipaddr != null) ? status.ipaddr : status.macaddr;
             if (connect == null) continue;
 
-            GUIListEntryIOT entry = new GUIListEntryIOT(listView.getContext());
-
-            entry.uuid = uuid;
-            entry.device = device;
-            entry.status = status;
-
+            GUIListEntryIOT entry = listView.findGUIListEntryIOTOrCreate(uuid, device, status);
+            entry.setIDTag(uuid);
             entry.updateContent();
-
-            listView.addView(entry);
         }
     }
 }
