@@ -181,7 +181,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
 
             String idtag = "subsystem:" + subsystem;
             GUIListEntry entry = listView.findGUIListEntryOrCreate(idtag);
-            entry.setOnClickListener(onSubsystemStartClickListener);
+            entry.setOnClickListener(onSubsystemClickListener);
             entry.setIDTag(idtag);
             entry.setTag(subsystem);
 
@@ -232,7 +232,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
         }
     };
 
-    private final OnClickListener onSubsystemStartClickListener = new OnClickListener()
+    private final OnClickListener onSubsystemClickListener = new OnClickListener()
     {
         @Override
         public void onClick(final View entry)
@@ -248,17 +248,19 @@ public class GUISetupWizzard extends GUIPluginTitleList
 
             if (GUISetup.getSubsystemState(drv) == GUISubSystems.SUBSYSTEM_STATE_ACTIVATED)
             {
-                dialog.setPositiveButton(R.string.basic_deactiviate, new OnClickListener()
+                dialog.setPositiveButton(R.string.basic_cancel);
+
+                dialog.setNegativeButton(R.string.basic_deactiviate, new OnClickListener()
                 {
                     @Override
                     public void onClick(View view)
                     {
                         GUISubSystems.setSubsystemState(drv, GUISubSystems.SUBSYSTEM_STATE_DEACTIVATED);
                         GUIPluginTitleList.updateContentinParentPlugin(entry);
+                        GUI.instance.onStopSubsystemRequest(drv);
                     }
                 });
 
-                dialog.setNegativeButton(R.string.basic_cancel);
             }
             else
             {
@@ -269,6 +271,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
                     {
                         GUISubSystems.setSubsystemState(drv, GUISubSystems.SUBSYSTEM_STATE_ACTIVATED);
                         GUIPluginTitleList.updateContentinParentPlugin(entry);
+                        GUI.instance.onStartSubsystemRequest(drv);
                     }
                 });
 

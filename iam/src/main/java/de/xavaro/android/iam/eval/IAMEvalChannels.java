@@ -11,7 +11,6 @@ import de.xavaro.android.iam.simple.Json;
 
 public class IAMEvalChannels
 {
-
     @Nullable
     public static JSONObject isChannel(String word)
     {

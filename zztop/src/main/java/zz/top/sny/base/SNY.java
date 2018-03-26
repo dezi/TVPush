@@ -4,7 +4,7 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
-import pub.android.interfaces.all.SubSystem;
+import pub.android.interfaces.all.SubSystemHandler;
 import pub.android.interfaces.ext.GetDeviceCredentials;
 import pub.android.interfaces.ext.OnBackgroundRequest;
 import pub.android.interfaces.ext.OnDeviceHandler;
@@ -16,7 +16,7 @@ import zz.top.utl.Json;
 import zz.top.utl.Log;
 
 public class SNY implements
-        SubSystem,
+        SubSystemHandler,
         OnDeviceHandler,
         GetDeviceCredentials,
         DoSomethingHandler,
@@ -37,7 +37,7 @@ public class SNY implements
     }
 
     @Override
-    public JSONObject getDriverInfo()
+    public JSONObject getSubsystemInfo()
     {
         JSONObject info = new JSONObject();
 
@@ -45,6 +45,16 @@ public class SNY implements
         Json.put(info, "name", "Sony Android TV");
 
         return info;
+    }
+
+    @Override
+    public void startSubsystem()
+    {
+    }
+
+    @Override
+    public void stopSubsystem()
+    {
     }
 
     @Override

@@ -9,11 +9,11 @@ import org.json.JSONObject;
 import de.xavaro.android.iam.eval.IAMEval;
 import de.xavaro.android.iam.simple.Json;
 
-import pub.android.interfaces.all.SubSystem;
+import pub.android.interfaces.all.SubSystemHandler;
 import pub.android.interfaces.iam.ArtificialIntelligenceHandler;
 
 public class IAM implements
-        SubSystem,
+        SubSystemHandler,
         ArtificialIntelligenceHandler
 {
     private static final String LOGTAG = IAM.class.getSimpleName();
@@ -33,7 +33,7 @@ public class IAM implements
     }
 
     @Override
-    public JSONObject getDriverInfo()
+    public JSONObject getSubsystemInfo()
     {
         JSONObject info = new JSONObject();
 
@@ -41,6 +41,18 @@ public class IAM implements
         Json.put(info, "name", "I.A.M");
 
         return info;
+    }
+
+    @Override
+    public void startSubsystem()
+    {
+        Log.d(LOGTAG, "Subsystem started...");
+    }
+
+    @Override
+    public void stopSubsystem()
+    {
+        Log.d(LOGTAG, "Subsystem stopped...");
     }
 
     @Override

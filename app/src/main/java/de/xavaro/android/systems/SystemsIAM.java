@@ -26,7 +26,13 @@ public class SystemsIAM extends IAM
     {
         super(application);
 
-        GUI.instance.subSystems.registerSubsystem(getDriverInfo());
+        GUI.instance.subSystems.registerSubsystem(getSubsystemInfo());
+    }
+
+    @Override
+    public void startSubsystem()
+    {
+        super.startSubsystem();
 
         JSONObject channelsForDevices = new JSONObject();
 
@@ -47,6 +53,14 @@ public class SystemsIAM extends IAM
         }
 
         IAMEvalChannels.setChannelsForDevices(channelsForDevices);
+
+        Log.d(LOGTAG, "startSubsystem: TV-Channels exported.");
+    }
+
+    @Override
+    public void stopSubsystem()
+    {
+        super.stopSubsystem();
     }
 
     @Override

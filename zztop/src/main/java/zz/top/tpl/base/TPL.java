@@ -5,7 +5,7 @@ import android.graphics.Color;
 
 import org.json.JSONObject;
 
-import pub.android.interfaces.all.SubSystem;
+import pub.android.interfaces.all.SubSystemHandler;
 import pub.android.interfaces.drv.SmartBulb;
 import pub.android.interfaces.drv.SmartPlug;
 import pub.android.interfaces.ext.GetSmartBulbHandler;
@@ -27,7 +27,7 @@ import pub.android.interfaces.ext.PutStatusRequest;
 import pub.android.interfaces.all.DoSomethingHandler;
 
 public class TPL implements
-        SubSystem,
+        SubSystemHandler,
         OnDeviceHandler,
         PutStatusRequest,
         DoSomethingHandler,
@@ -60,7 +60,7 @@ public class TPL implements
     }
 
     @Override
-    public JSONObject getDriverInfo()
+    public JSONObject getSubsystemInfo()
     {
         JSONObject info = new JSONObject();
 
@@ -68,6 +68,16 @@ public class TPL implements
         Json.put(info, "name", "TP-Link Smart Home");
 
         return info;
+    }
+
+    @Override
+    public void startSubsystem()
+    {
+    }
+
+    @Override
+    public void stopSubsystem()
+    {
     }
 
     @Override

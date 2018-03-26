@@ -355,6 +355,11 @@ public class GUIDialogView extends GUIRelativeLayout
         customView.setVisibility(VISIBLE);
     }
 
+    public void setPositiveButton(int resid)
+    {
+        setPositiveButton(resid, null);
+    }
+
     public void setPositiveButton(int resid, OnClickListener onClickListener)
     {
         positiveButton.setText(resid);

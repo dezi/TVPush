@@ -5,13 +5,13 @@ import android.app.Application;
 import org.json.JSONObject;
 
 import de.xavaro.android.gui.base.GUI;
+import de.xavaro.android.gui.simple.Json;
 
 import de.xavaro.android.iam.base.IAM;
+
 import pub.android.interfaces.drv.Camera;
 import pub.android.interfaces.drv.SmartBulb;
 import pub.android.interfaces.drv.SmartPlug;
-import zz.top.cam.Cameras;
-import zz.top.utl.Json;
 
 public class SystemsGUI extends GUI
 {
@@ -20,6 +20,24 @@ public class SystemsGUI extends GUI
     public SystemsGUI(Application application)
     {
         super(application);
+    }
+
+    @Override
+    public void onStartSubsystemRequest(String drv)
+    {
+        if (drv.equals("iam"))
+        {
+            SystemsIAM.instance.startSubsystem();
+        }
+    }
+
+    @Override
+    public void onStopSubsystemRequest(String drv)
+    {
+        if (drv.equals("iam"))
+        {
+            SystemsIAM.instance.stopSubsystem();
+        }
     }
 
     @Override

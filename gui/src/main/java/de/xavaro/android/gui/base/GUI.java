@@ -1,7 +1,5 @@
 package de.xavaro.android.gui.base;
 
-import android.support.annotation.Nullable;
-
 import android.app.Application;
 import android.util.Log;
 
@@ -11,18 +9,20 @@ import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.smart.GUIDesktopActivity;
 import de.xavaro.android.gui.smart.GUISpeechListener;
 
-import pub.android.interfaces.all.SubSystem;
+import pub.android.interfaces.all.SubSystemHandler;
 import pub.android.interfaces.drv.Camera;
 import pub.android.interfaces.drv.SmartBulb;
 import pub.android.interfaces.drv.SmartPlug;
 import pub.android.interfaces.gui.DesktopHandler;
+import pub.android.interfaces.gui.OnSubsystemRequest;
 import pub.android.interfaces.gui.OnCameraHandlerRequest;
 import pub.android.interfaces.gui.OnSmartBulbHandlerRequest;
 import pub.android.interfaces.gui.OnSmartPlugHandlerRequest;
 
 public class GUI implements
-        SubSystem,
+        SubSystemHandler,
         DesktopHandler,
+        OnSubsystemRequest,
         OnCameraHandlerRequest,
         OnSmartPlugHandlerRequest,
         OnSmartBulbHandlerRequest
@@ -63,7 +63,7 @@ public class GUI implements
     }
 
     @Override
-    public JSONObject getDriverInfo()
+    public JSONObject getSubsystemInfo()
     {
         JSONObject info = new JSONObject();
 
@@ -71,6 +71,28 @@ public class GUI implements
         Json.put(info, "name", "G.U.I");
 
         return info;
+    }
+
+    @Override
+    public void startSubsystem()
+    {
+    }
+
+    @Override
+    public void stopSubsystem()
+    {
+    }
+
+    @Override
+    public void onStartSubsystemRequest(String drv)
+    {
+        Log.d(LOGTAG, "onStartSubsystemRequest: STUB!");
+    }
+
+    @Override
+    public void onStopSubsystemRequest(String drv)
+    {
+        Log.d(LOGTAG, "onStopSubsystemRequest: STUB!");
     }
 
     @Override

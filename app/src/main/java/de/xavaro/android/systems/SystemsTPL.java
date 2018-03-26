@@ -16,7 +16,7 @@ public class SystemsTPL extends TPL
     {
         super(application);
 
-        GUI.instance.subSystems.registerSubsystem(getDriverInfo());
+        GUI.instance.subSystems.registerSubsystem(getSubsystemInfo());
     }
 
     @Override

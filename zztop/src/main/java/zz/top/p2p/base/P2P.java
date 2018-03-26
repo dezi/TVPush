@@ -5,7 +5,7 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
-import pub.android.interfaces.all.SubSystem;
+import pub.android.interfaces.all.SubSystemHandler;
 import pub.android.interfaces.drv.Camera;
 import pub.android.interfaces.ext.GetCameraHandler;
 import pub.android.interfaces.ext.OnDeviceHandler;
@@ -20,7 +20,7 @@ import zz.top.utl.Json;
 import zz.top.utl.Simple;
 
 public class P2P implements
-        SubSystem,
+        SubSystemHandler,
         OnDeviceHandler,
         DoSomethingHandler,
         GetCameraHandler
@@ -41,7 +41,7 @@ public class P2P implements
     }
 
     @Override
-    public JSONObject getDriverInfo()
+    public JSONObject getSubsystemInfo()
     {
         JSONObject info = new JSONObject();
 
@@ -49,6 +49,16 @@ public class P2P implements
         Json.put(info, "name", "YI Home Cameras");
 
         return info;
+    }
+
+    @Override
+    public void startSubsystem()
+    {
+    }
+
+    @Override
+    public void stopSubsystem()
+    {
     }
 
     public void login(String email, String password)
