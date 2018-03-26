@@ -10,12 +10,14 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 import de.xavaro.android.gui.R;
+import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUISubSystems;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUISetup;
 import de.xavaro.android.gui.base.GUIPluginTitleList;
+import de.xavaro.android.gui.views.GUIDialogView;
 import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUIListEntry;
 import de.xavaro.android.gui.views.GUIListView;
@@ -235,6 +237,30 @@ public class GUISetupWizzard extends GUIPluginTitleList
         @Override
         public void onClick(View view)
         {
+            GUIDialogView dialog = new GUIDialogView(view.getContext());
+
+            dialog.setCloseButton(true);
+
+            dialog.setPositiveButton(R.string.basic_ok, new OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                }
+            });
+
+            dialog.setNegativeButton(R.string.basic_cancel, new OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                }
+            });
+
+            dialog.setTitleText("Titel...");
+            dialog.setInfoText("Info...");
+
+            GUI.instance.desktopActivity.topframe.addView(dialog);
         }
     };
 }

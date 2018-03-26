@@ -40,6 +40,9 @@ public class GUIApplication extends Application implements Application.ActivityL
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+
+        System.setProperty("log.tag.TextView", "WARN");
+        System.setProperty("log.tag.ScanRecord", "WARN");
     }
 
     @Override

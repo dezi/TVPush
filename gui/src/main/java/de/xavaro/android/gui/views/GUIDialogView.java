@@ -162,7 +162,7 @@ public class GUIDialogView extends GUIRelativeLayout
         marginView = new GUIRelativeLayout(context);
         marginView.setSizeDip(Simple.WC, Simple.WC);
         marginView.setPaddingDip(GUIDefs.PADDING_TINY);
-        marginView.setRoundedCorners(GUIDefs.ROUNDED_MEDIUM, 0x88880000, Color.BLACK);
+        marginView.setRoundedCorners(GUIDefs.ROUNDED_MEDIUM, Color.WHITE, Color.BLACK);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
@@ -187,10 +187,11 @@ public class GUIDialogView extends GUIRelativeLayout
 
         closeButton = new GUIImageView(context);
         closeButton.setVisibility(GONE);
-        //closeButton.setImageResource(####);
-        closeButton.setScaleType(ImageView.ScaleType.FIT_END);
+        closeButton.setImageResource(R.drawable.dialog_close_28);
+        closeButton.setScaleType(ImageView.ScaleType.FIT_XY);
         closeButton.setSizeDip(size, size);
         closeButton.setPaddingDip(GUIDefs.PADDING_MEDIUM);
+        closeButton.setBackgroundColor(0x88880000);
 
         closeButton.setOnClickListener(new OnClickListener()
         {
@@ -217,6 +218,7 @@ public class GUIDialogView extends GUIRelativeLayout
         padView.setOrientation(LinearLayout.VERTICAL);
         padView.setSizeDip(Simple.WC, Simple.WC);
         padView.setPaddingDip(padSize);
+        padView.setBackgroundColor(0x88888800);
 
         boxView.addView(padView);
 
@@ -226,7 +228,6 @@ public class GUIDialogView extends GUIRelativeLayout
         titleView.setSizeDip(Simple.WC, Simple.WC);
         titleView.setTextSizeDip(GUIDefs.FONTSIZE_TITLE);
         titleView.setGravity(Gravity.START);
-        infoView.setGravity(Gravity.START + Gravity.CENTER_VERTICAL);
 
         padView.addView(titleView);
 
@@ -237,8 +238,9 @@ public class GUIDialogView extends GUIRelativeLayout
         infoView.setMaxEms(GUIDefs.MAX_EMS_DIALOGS);
         infoView.setSizeDip(Simple.WC, Simple.WC);
         infoView.setTextSizeDip(GUIDefs.FONTSIZE_INFOS);
-        infoView.setMarginTopDip(GUIDefs.PADDING_SMALL);
         infoView.setAllCaps(true);
+        infoView.setGravity(Gravity.START + Gravity.CENTER_VERTICAL);
+        infoView.setMarginTopDip(GUIDefs.PADDING_SMALL);
 
         padView.addView(infoView);
 
@@ -250,7 +252,8 @@ public class GUIDialogView extends GUIRelativeLayout
 
         buttonFrame = new GUILinearLayout(context);
         buttonFrame.setOrientation(LinearLayout.HORIZONTAL);
-        buttonFrame.setSizeDip(Simple.MP, Simple.WC);
+        buttonFrame.setSizeDip(Simple.MP, Simple.MP);
+        buttonFrame.setBackgroundColor(0x88880000);
 
         padView.addView(buttonFrame);
 

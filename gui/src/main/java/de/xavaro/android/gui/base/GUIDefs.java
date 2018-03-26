@@ -23,6 +23,7 @@ public class GUIDefs
     public static final int PADDING_LARGE    = Simple.isTablet() ? 32 : 26;
     public static final int PADDING_XLARGE   = Simple.isTablet() ? 40 : 30;
 
+    public static final int ROUNDED_ZERO     = Simple.isTablet() ?  0 :  0;
     public static final int ROUNDED_SMALL    = Simple.isTablet() ?  8 :  4;
     public static final int ROUNDED_MEDIUM   = Simple.isTablet() ? 16 : 12;
     public static final int ROUNDED_NORMAL   = Simple.isTablet() ? 20 : 18;

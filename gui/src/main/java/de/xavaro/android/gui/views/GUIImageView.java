@@ -221,54 +221,57 @@ public class GUIImageView extends AppCompatImageView implements
         InputStream is = getResources().openRawResource(+resid);
         Bitmap bitmap = BitmapFactory.decodeStream(is);
 
-        int nettoWidth = getLayoutParams().width - getPaddingLeft() - getPaddingRight();
-        int nettoHeight = getLayoutParams().height - getPaddingTop() - getPaddingBottom();
-
-        int targetWidth = nettoWidth * 2;
-        int targetHeight = nettoHeight * 2;
-
-        if ((targetWidth > 0) && (targetHeight > 0))
+        if (getLayoutParams() != null)
         {
-            Bitmap geil = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(geil);
+            int nettoWidth = getLayoutParams().width - getPaddingLeft() - getPaddingRight();
+            int nettoHeight = getLayoutParams().height - getPaddingTop() - getPaddingBottom();
 
-            Paint paint = new Paint();
-            paint.setAntiAlias(true);
-            paint.setFilterBitmap(true);
+            int targetWidth = nettoWidth * 2;
+            int targetHeight = nettoHeight * 2;
 
-            Rect srcrect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-            Rect dstrect = new Rect(0, 0, targetWidth, targetHeight);
-
-            canvas.drawBitmap(bitmap, srcrect, dstrect, paint);
-
-            if (color != 0)
+            if ((targetWidth > 0) && (targetHeight > 0))
             {
-                //
-                // Second draw. Changes every pixel which is white
-                // in the canvas to the desired color while
-                // black stayes black.
-                //
+                Bitmap geil = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(geil);
 
-                paint.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
+                Paint paint = new Paint();
+                paint.setAntiAlias(true);
+                paint.setFilterBitmap(true);
+
+                Rect srcrect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+                Rect dstrect = new Rect(0, 0, targetWidth, targetHeight);
 
                 canvas.drawBitmap(bitmap, srcrect, dstrect, paint);
+
+                if (color != 0)
+                {
+                    //
+                    // Second draw. Changes every pixel which is white
+                    // in the canvas to the desired color while
+                    // black stayes black.
+                    //
+
+                    paint.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
+
+                    canvas.drawBitmap(bitmap, srcrect, dstrect, paint);
+                }
+
+                bitmap.recycle();
+
+
+                setImageBitmap(geil);
+
+                return;
             }
-
-            bitmap.recycle();
-
-
-            setImageBitmap(geil);
         }
-        else
+        
+        Drawable drawable = new BitmapDrawable(getResources(), bitmap);
+
+        if (color != 0)
         {
-            Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-
-            if (color != 0)
-            {
-                drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
-            }
-
-            setImageDrawable(drawable);
+            drawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
         }
+
+        setImageDrawable(drawable);
     }
 }
