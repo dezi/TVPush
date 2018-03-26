@@ -16,6 +16,6 @@ public class GUIDialogButtonView extends GUIButtonView
         // is meaningsless.
         //
 
-        setSizeDip(Simple.WC, Simple.WC, 0.5f);
+        setSizeDip(Simple.MP, Simple.WC, 0.5f);
     }
 }

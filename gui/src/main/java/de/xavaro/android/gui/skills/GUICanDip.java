@@ -9,5 +9,6 @@ public interface GUICanDip
     void setPaddingDip(int left, int top, int right, int bottom);
 
     void setMarginLeftDip(int margin);
+    void setMarginRightDip(int margin);
     void setMarginTopDip(int margin);
 }

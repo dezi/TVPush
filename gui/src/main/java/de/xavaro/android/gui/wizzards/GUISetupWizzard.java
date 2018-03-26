@@ -239,7 +239,8 @@ public class GUISetupWizzard extends GUIPluginTitleList
         {
             GUIDialogView dialog = new GUIDialogView(view.getContext());
 
-            dialog.setCloseButton(true);
+            dialog.setTitleText("Titel...");
+            dialog.setInfoText("Info...");
 
             dialog.setPositiveButton(R.string.basic_ok, new OnClickListener()
             {
@@ -256,9 +257,6 @@ public class GUISetupWizzard extends GUIPluginTitleList
                 {
                 }
             });
-
-            dialog.setTitleText("Titel...");
-            dialog.setInfoText("Info...");
 
             GUI.instance.desktopActivity.topframe.addView(dialog);
         }

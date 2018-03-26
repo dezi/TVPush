@@ -108,7 +108,7 @@ public class GUISetup
 
         if (service.equals("dev"))
         {
-            int devEnabled = Settings.Secure.getInt(Simple.getContentResolver(),
+            int devEnabled = Settings.Global.getInt(Simple.getContentResolver(),
                     Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
 
             have = (devEnabled == 1);

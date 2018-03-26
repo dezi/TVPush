@@ -41,6 +41,7 @@ public class GUIDefs
     public final static int COLOR_NORMAL_TRANSPARENT = 0x66000000;
     public final static int COLOR_DARK_TRANSPARENT   = 0x88000000;
     public static final int COLOR_BACKGROUND_DIM     = 0x77000000;
+    public static final int COLOR_LIGHT_GRAY         = 0xffcccccc;
 
     public final static int COLOR_PLUGIN_INNER_TRANSPARENT = 0x88888888;
     public final static int COLOR_PLUGIN_FRAME_NORMAL      = 0xffffffff;
@@ -59,7 +60,7 @@ public class GUIDefs
     public final static int STATUS_COLOR_BLUE  = 0xaa0000aa;
     public final static int STATUS_COLOR_INACT = 0xff666666;
 
-    public static final int MIN_EMS_DIALOGS = Simple.isTablet() ? 12 :  8;
+    public static final int MIN_EMS_DIALOGS = Simple.isTablet() ? 20 : 12;
     public static final int MAX_EMS_DIALOGS = Simple.isTablet() ? 20 : 12;
 
     public static final int ICON_SIZE = Simple.isTablet() ? 50 : 50;

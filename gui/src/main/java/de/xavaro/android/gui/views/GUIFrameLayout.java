@@ -59,11 +59,13 @@ public class GUIFrameLayout extends FrameLayout implements
     {
         if (getLayoutParams() == null)
         {
-            setLayoutParams(new LinearLayout.LayoutParams(Simple.WC, Simple.WC, weight));
+            setLayoutParams(new LinearLayout.LayoutParams(Simple.WC, Simple.WC));
         }
 
         getLayoutParams().width = width > 0 ? Simple.dipToPx(width) : width;
         getLayoutParams().height = height > 0 ? Simple.dipToPx(height) : height;
+
+        ((LinearLayout.LayoutParams) getLayoutParams()).weight = weight;
     }
 
     @Override
@@ -98,6 +100,17 @@ public class GUIFrameLayout extends FrameLayout implements
         }
 
         ((ViewGroup.MarginLayoutParams) getLayoutParams()).topMargin = Simple.dipToPx(margin);
+    }
+
+    @Override
+    public void setMarginRightDip(int margin)
+    {
+        if (getLayoutParams() == null)
+        {
+            setLayoutParams(new LinearLayout.LayoutParams(Simple.WC, Simple.WC));
+        }
+
+        ((MarginLayoutParams) getLayoutParams()).rightMargin = Simple.dipToPx(margin);
     }
 
     //endregion CanDip implementation.

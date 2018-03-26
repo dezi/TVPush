@@ -3,6 +3,7 @@ package de.xavaro.android.gui.views;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.hardware.camera2.params.ColorSpaceTransform;
 import android.os.Build;
 import android.util.Log;
 import android.view.Gravity;
@@ -42,7 +43,7 @@ public class GUIDialogView extends GUIRelativeLayout
     {
         final GUIDialogView dialogView = new GUIDialogView(rootView.getContext());
 
-        dialogView.marginView.setRoundedCorners(GUIDefs.ROUNDED_MEDIUM, GUIDefs.COLOR_LIGHT_TRANSPARENT, 0x88880000);
+        dialogView.marginView.setRoundedCorners(GUIDefs.ROUNDED_MEDIUM, GUIDefs.COLOR_LIGHT_TRANSPARENT, Color.RED);
 
         dialogView.setTitleText(titleres);
         dialogView.setInfoText(msgstr);
@@ -83,7 +84,7 @@ public class GUIDialogView extends GUIRelativeLayout
 
         dialogView.setCloseButton(true, onnoclick);
 
-        dialogView.marginView.setRoundedCorners(GUIDefs.ROUNDED_MEDIUM, GUIDefs.COLOR_LIGHT_TRANSPARENT, 0x88008800);
+        dialogView.marginView.setRoundedCorners(GUIDefs.ROUNDED_MEDIUM, GUIDefs.COLOR_LIGHT_TRANSPARENT, Color.BLACK);
 
         dialogView.setTitleText(titleres);
         dialogView.setInfoText(msgstr);
@@ -162,7 +163,7 @@ public class GUIDialogView extends GUIRelativeLayout
         marginView = new GUIRelativeLayout(context);
         marginView.setSizeDip(Simple.WC, Simple.WC);
         marginView.setPaddingDip(GUIDefs.PADDING_TINY);
-        marginView.setRoundedCorners(GUIDefs.ROUNDED_MEDIUM, Color.WHITE, Color.BLACK);
+        marginView.setRoundedCorners(GUIDefs.ROUNDED_MEDIUM, GUIDefs.COLOR_LIGHT_GRAY, Color.BLACK);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
@@ -183,15 +184,12 @@ public class GUIDialogView extends GUIRelativeLayout
 
         boxView.addView(closeButtonBox);
 
-        int size = 32;
-
         closeButton = new GUIImageView(context);
         closeButton.setVisibility(GONE);
-        closeButton.setImageResource(R.drawable.dialog_close_28);
         closeButton.setScaleType(ImageView.ScaleType.FIT_XY);
-        closeButton.setSizeDip(size, size);
-        closeButton.setPaddingDip(GUIDefs.PADDING_MEDIUM);
-        closeButton.setBackgroundColor(0x88880000);
+        closeButton.setSizeDip(30, 30);
+        closeButton.setPaddingDip(GUIDefs.PADDING_SMALL);
+        closeButton.setImageResource(R.drawable.dialog_close_28);
 
         closeButton.setOnClickListener(new OnClickListener()
         {
@@ -218,7 +216,6 @@ public class GUIDialogView extends GUIRelativeLayout
         padView.setOrientation(LinearLayout.VERTICAL);
         padView.setSizeDip(Simple.WC, Simple.WC);
         padView.setPaddingDip(padSize);
-        padView.setBackgroundColor(0x88888800);
 
         boxView.addView(padView);
 
@@ -252,8 +249,8 @@ public class GUIDialogView extends GUIRelativeLayout
 
         buttonFrame = new GUILinearLayout(context);
         buttonFrame.setOrientation(LinearLayout.HORIZONTAL);
-        buttonFrame.setSizeDip(Simple.MP, Simple.MP);
-        buttonFrame.setBackgroundColor(0x88880000);
+        buttonFrame.setSizeDip(Simple.MP, Simple.WC);
+        buttonFrame.setMarginTopDip(GUIDefs.PADDING_SMALL);
 
         padView.addView(buttonFrame);
 
@@ -352,7 +349,8 @@ public class GUIDialogView extends GUIRelativeLayout
         {
             buttonFrame.setOrientation(LinearLayout.HORIZONTAL);
 
-            positiveButton.setMarginLeftDip(GUIDefs.PADDING_ZERO);
+            positiveButton.setMarginLeftDip(GUIDefs.PADDING_SMALL);
+            positiveButton.setMarginTopDip(GUIDefs.PADDING_ZERO);
         }
     }
 
@@ -401,7 +399,8 @@ public class GUIDialogView extends GUIRelativeLayout
 
         if ((positiveButton.getVisibility() == VISIBLE) && (negativeButton.getVisibility() == VISIBLE))
         {
-            positiveButton.setMarginLeftDip(GUIDefs.PADDING_NORMAL);
+            negativeButton.setMarginRightDip(GUIDefs.PADDING_MEDIUM);
+            positiveButton.setMarginLeftDip(GUIDefs.PADDING_MEDIUM);
         }
     }
 
@@ -419,7 +418,8 @@ public class GUIDialogView extends GUIRelativeLayout
 
         if ((positiveButton.getVisibility() == VISIBLE) && (negativeButton.getVisibility() == VISIBLE))
         {
-            positiveButton.setMarginLeftDip(GUIDefs.PADDING_NORMAL);
+            negativeButton.setMarginRightDip(GUIDefs.PADDING_MEDIUM);
+            positiveButton.setMarginLeftDip(GUIDefs.PADDING_MEDIUM);
         }
     }
 

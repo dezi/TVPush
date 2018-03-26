@@ -61,14 +61,4 @@ public class GUIButtonView extends GUITextView
         ViewGroup.LayoutParams lp = getLayoutParams();
         setSizeDip(set ? Simple.MP : Simple.WC, (lp == null) ? Simple.WC : lp.height);
     }
-
-    public void setMarginLeftDip(int margin)
-    {
-        //Simple.setMarginLeftDip(this, margin);
-    }
-
-    public void setMarginTopDip(int margin)
-    {
-        //Simple.setMarginTopDip(this, margin);
-    }
 }
