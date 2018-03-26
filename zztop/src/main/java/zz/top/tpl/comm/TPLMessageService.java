@@ -47,7 +47,7 @@ public class TPLMessageService extends Thread
 
     private boolean running;
 
-    public void stopRunning()
+    private void stopRunning()
     {
         running = false;
     }
@@ -63,9 +63,7 @@ public class TPLMessageService extends Thread
         {
             try
             {
-                JSONObject message = null;
-
-                message = TPLUDPReceiver.receiveMessage();
+                JSONObject message = TPLUDPReceiver.receiveMessage();
 
                 if (message == null)
                 {
@@ -75,6 +73,13 @@ public class TPLMessageService extends Thread
                 }
 
                 TPL.instance.message.receiveMessage(message);
+            }
+            catch (InterruptedException ex)
+            {
+                if (running)
+                {
+                    ex.printStackTrace();
+                }
             }
             catch (Exception ex)
             {

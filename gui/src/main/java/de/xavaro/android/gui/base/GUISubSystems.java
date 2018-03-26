@@ -75,4 +75,13 @@ public class GUISubSystems
         Json.put(pref, "state", state);
         GUIPrefs.savePref(key, pref);
     }
+
+    public boolean isSubsystemActivated(String drv)
+    {
+        String key = "subsystem." + drv;
+
+        JSONObject pref = GUIPrefs.readPref(key);
+
+        return (Json.getInt(pref, "state") == SUBSYSTEM_STATE_ACTIVATED);
+    }
 }

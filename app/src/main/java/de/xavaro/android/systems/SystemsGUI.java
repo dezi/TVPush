@@ -12,14 +12,19 @@ import de.xavaro.android.iam.base.IAM;
 import pub.android.interfaces.drv.Camera;
 import pub.android.interfaces.drv.SmartBulb;
 import pub.android.interfaces.drv.SmartPlug;
+import zz.top.tpl.base.TPL;
 
 public class SystemsGUI extends GUI
 {
     private static final String LOGTAG = SystemsGUI.class.getSimpleName();
 
-    public SystemsGUI(Application application)
+    Application appcontext;
+
+    public SystemsGUI(Application appcontext)
     {
-        super(application);
+        super(appcontext);
+
+        this.appcontext = appcontext;
     }
 
     @Override
@@ -27,7 +32,20 @@ public class SystemsGUI extends GUI
     {
         if (drv.equals("iam"))
         {
-            SystemsIAM.instance.startSubsystem();
+            if (IAM.instance == null)
+            {
+                IAM.instance = new SystemsIAM(appcontext);
+                IAM.instance.startSubsystem();
+            }
+        }
+
+        if (drv.equals("tpl"))
+        {
+            if (TPL.instance == null)
+            {
+                TPL.instance = new SystemsTPL(appcontext);
+                TPL.instance.startSubsystem();
+            }
         }
     }
 
@@ -36,8 +54,22 @@ public class SystemsGUI extends GUI
     {
         if (drv.equals("iam"))
         {
-            SystemsIAM.instance.stopSubsystem();
+            if (IAM.instance != null)
+            {
+                IAM.instance.stopSubsystem();
+                IAM.instance = null;
+            }
         }
+
+        if (drv.equals("tpl"))
+        {
+            if (TPL.instance != null)
+            {
+                TPL.instance.stopSubsystem();
+                TPL.instance = null;
+            }
+        }
+
     }
 
     @Override

@@ -18,12 +18,6 @@ public class SystemsTPL extends TPL
         super(application);
 
         GUI.instance.subSystems.registerSubsystem(getSubsystemInfo());
-
-        if (GUI.instance.subSystems.getSubsystemState("tpl")
-                == GUISubSystems.SUBSYSTEM_STATE_ACTIVATED)
-        {
-            startSubsystem();
-        }
     }
 
     @Override

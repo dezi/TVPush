@@ -7,7 +7,6 @@ import org.json.JSONObject;
 
 import de.xavaro.android.gui.base.GUI;
 
-import de.xavaro.android.gui.base.GUISubSystems;
 import de.xavaro.android.iam.base.IAM;
 import de.xavaro.android.iam.eval.IAMEvalChannels;
 
@@ -17,6 +16,9 @@ import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 
+import zz.top.p2p.base.P2P;
+import zz.top.sny.base.SNY;
+import zz.top.tpl.base.TPL;
 import zz.top.utl.Json;
 
 public class SystemsIAM extends IAM
@@ -28,12 +30,6 @@ public class SystemsIAM extends IAM
         super(application);
 
         GUI.instance.subSystems.registerSubsystem(getSubsystemInfo());
-
-        if (GUI.instance.subSystems.getSubsystemState("iam")
-                == GUISubSystems.SUBSYSTEM_STATE_ACTIVATED)
-        {
-            startSubsystem();
-        }
     }
 
     @Override
@@ -165,21 +161,21 @@ public class SystemsIAM extends IAM
                     Json.put(todo, "metadata", metadata);
                     Json.put(todo, "credentials", credentials);
 
-                    if (device.driver.equals("p2p"))
+                    if (device.driver.equals("p2p") && (P2P.instance != null))
                     {
-                        Systems.p2p.doSomething(doaction, device.toJson(), status, credentials);
+                        P2P.instance.doSomething(doaction, device.toJson(), status, credentials);
                         continue;
                     }
 
-                    if (device.driver.equals("tpl"))
+                    if (device.driver.equals("tpl") && (TPL.instance != null))
                     {
-                        Systems.tpl.doSomething(doaction, device.toJson(), status, credentials);
+                        TPL.instance.doSomething(doaction, device.toJson(), status, credentials);
                         continue;
                     }
 
-                    if (device.driver.equals("sny"))
+                    if (device.driver.equals("sny") && (SNY.instance != null))
                     {
-                        Systems.sny.doSomething(doaction, device.toJson(), status, credentials);
+                        SNY.instance.doSomething(doaction, device.toJson(), status, credentials);
                         continue;
                     }
                 }

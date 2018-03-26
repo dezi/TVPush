@@ -97,6 +97,13 @@ public class TPLUDPSender extends Thread
 
                 TPLUDP.socket.send(txpack);
             }
+            catch (InterruptedException ex)
+            {
+                if (running)
+                {
+                    ex.printStackTrace();
+                }
+            }
             catch (Exception ex)
             {
                 ex.printStackTrace();

@@ -79,18 +79,6 @@ public class TPLUDP
 
     public static void stopService()
     {
-        if (socket != null)
-        {
-            Log.d(LOGTAG, "stopService: socket: stopping.");
-
-            socket.close();
-            socket = null;
-        }
-        else
-        {
-            Log.d(LOGTAG, "stopService: socket: already stopped.");
-        }
-
         if (sender != null)
         {
             Log.d(LOGTAG, "stopService: sender: stopping.");
@@ -115,6 +103,18 @@ public class TPLUDP
         else
         {
             Log.d(LOGTAG, "stopService: receiver: already stopped.");
+        }
+
+        if (socket != null)
+        {
+            Log.d(LOGTAG, "stopService: socket: stopping.");
+
+            socket.close();
+            socket = null;
+        }
+        else
+        {
+            Log.d(LOGTAG, "stopService: socket: already stopped.");
         }
     }
 

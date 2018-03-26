@@ -44,16 +44,7 @@ public class TPL implements
 
     public TPL(Application application)
     {
-        if (instance == null)
-        {
-            instance = this;
-
-            Simple.initialize(application);
-        }
-        else
-        {
-            throw new RuntimeException("TPL system already initialized.");
-        }
+        Simple.initialize(application);
     }
 
     @Override
@@ -75,6 +66,8 @@ public class TPL implements
         TPLUDP.startService();
 
         TPLHandlerSysInfo.sendAllGetSysinfo();
+
+        onSubsystemStarted("tpl", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
     }
 
     @Override
@@ -83,6 +76,8 @@ public class TPL implements
         TPLUDP.stopService();
         TPLMessageService.stopService();
         TPLMessageHandler.stopService();
+
+        onSubsystemStopped("tpl", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
     }
 
     @Override
@@ -124,24 +119,10 @@ public class TPL implements
     @Override
     public boolean putDeviceStatusRequest(JSONObject iotDevice)
     {
-        //
-        // Collect some requests and then make broadcast.
-        //
-
-        Simple.getHandler().removeCallbacks(putDeviceStatusRequestRunner);
-        Simple.getHandler().postDelayed(putDeviceStatusRequestRunner, 2000);
+        TPLHandlerSysInfo.sendAllGetSysinfo();
 
         return true;
     }
-
-    private final Runnable putDeviceStatusRequestRunner = new Runnable()
-    {
-        @Override
-        public void run()
-        {
-            TPLHandlerSysInfo.sendAllGetSysinfo();
-        }
-    };
 
     @Override
     public SmartPlug getSmartPlugHandler(JSONObject device, JSONObject status, JSONObject credentials)

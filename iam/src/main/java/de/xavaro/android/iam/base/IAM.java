@@ -22,14 +22,6 @@ public class IAM implements
 
     public IAM(Application appcontext)
     {
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else
-        {
-            throw new RuntimeException("IAM system already initialized.");
-        }
     }
 
     @Override

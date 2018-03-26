@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import org.json.JSONObject;
 
 import java.net.DatagramPacket;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
@@ -91,6 +92,13 @@ public class TPLUDPReceiver extends Thread
                 //
                 // Do nothing.
                 //
+            }
+            catch (SocketException ex)
+            {
+                if (running)
+                {
+                    ex.printStackTrace();
+                }
             }
             catch (Exception ex)
             {

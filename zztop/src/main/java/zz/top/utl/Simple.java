@@ -29,7 +29,6 @@ public class Simple
     public static void initialize(Application app)
     {
         handler = new Handler();
-
         wifiManager = (WifiManager) app.getSystemService(Context.WIFI_SERVICE);
         contentResolver = app.getContentResolver();
     }
