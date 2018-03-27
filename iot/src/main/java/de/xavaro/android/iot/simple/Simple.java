@@ -620,4 +620,33 @@ public class Simple
         {
         }
     }
+
+    public static String padLeft(String str, int pad)
+    {
+        while (str.length() < pad) str = " " + str;
+
+        return str;
+    }
+
+    public static String padRight(String str, int pad)
+    {
+        while (str.length() < pad) str = str + " ";
+
+        return str;
+    }
+
+    public static String padLeft(int val, int pad)
+    {
+        return padLeft(Integer.valueOf(val).toString(), pad);
+    }
+
+    public static String padLeft(long val, int pad)
+    {
+        return padLeft(Long.valueOf(val).toString(), pad);
+    }
+
+    public static String padRight(float val, int pad)
+    {
+        return padRight(Float.valueOf(val).toString(), pad);
+    }
 }

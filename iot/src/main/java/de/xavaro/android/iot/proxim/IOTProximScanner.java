@@ -318,6 +318,9 @@ public class IOTProximScanner
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private boolean evalIOTAdver(ScanResult result, byte[] bytes)
     {
+        String macAddr = result.getDevice().getAddress();
+        int rssi = result.getRssi();
+
         ByteBuffer bb = ByteBuffer.wrap(bytes);
 
         int type = bb.get();
@@ -337,6 +340,24 @@ public class IOTProximScanner
             alt = (double) bb.getFloat();
 
             display = lat + " - " + lon + " - " + alt;
+
+            String mode = (type == IOTProxim.ADVERTISE_GPS_FINE) ? "fine" : "coarse";
+
+            JSONObject locmeasurement = new JSONObject();
+            Json.put(locmeasurement, "akey", macAddr);
+            Json.put(locmeasurement, "prov", "iotproxim");
+            Json.put(locmeasurement, "time", System.currentTimeMillis());
+            Json.put(locmeasurement, "mode", mode);
+            Json.put(locmeasurement, "txpo", txpo);
+            Json.put(locmeasurement, "rssi", rssi);
+            Json.put(locmeasurement, "lat", lat);
+            Json.put(locmeasurement, "lon", lon);
+            Json.put(locmeasurement, "alt", alt);
+
+            JSONObject measurement = new JSONObject();
+            Json.put(measurement, "LOCMeasurement", locmeasurement);
+
+            IOT.instance.proximLocationListener.addLocationMeasurement(measurement);
         }
 
         if ((type == IOTProxim.ADVERTISE_IOT_HUMAN)
@@ -361,8 +382,6 @@ public class IOTProximScanner
 
             display = new String(devbytes);
         }
-
-        int rssi = result.getRssi();
 
         Log.d(LOGTAG, "evalIOTAdver: IOT"
                 + " rssi=" + rssi

@@ -17,6 +17,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.simple.Json;
@@ -32,6 +35,8 @@ public class IOTProximLocation implements LocationListener
 
     private boolean gpsIsEnabled;
     private boolean networkIsEnabled;
+
+    private final JSONObject lastLocations = new JSONObject();
 
     public static void startService(Context appcontext)
     {
@@ -66,7 +71,7 @@ public class IOTProximLocation implements LocationListener
             {
                 locationManager.requestLocationUpdates(
                         LocationManager.NETWORK_PROVIDER,
-                        5000l, 0f,
+                        5000l, 1f,
                         IOT.instance.proximLocationListener);
 
                 Log.d(LOGTAG, "startService: NETWORK_PROVIDER installed.");
@@ -91,7 +96,7 @@ public class IOTProximLocation implements LocationListener
             {
                 locationManager.requestLocationUpdates(
                         LocationManager.GPS_PROVIDER,
-                        5000l, 0f,
+                        5000l, 1f,
                         IOT.instance.proximLocationListener);
 
                 Log.d(LOGTAG, "startService: GPS_PROVIDER installed.");
@@ -163,6 +168,20 @@ public class IOTProximLocation implements LocationListener
             IOTStatusses.addEntry(status, false);
 
             IOT.instance.proximServer.advertiseGPSCoarse();
+
+            JSONObject locmeasurement = new JSONObject();
+            Json.put(locmeasurement, "akey", IOT.device.uuid);
+            Json.put(locmeasurement, "prov", location.getProvider());
+            Json.put(locmeasurement, "time", System.currentTimeMillis());
+            Json.put(locmeasurement, "mode", "coarse");
+            Json.put(locmeasurement, "lat", location.getLatitude());
+            Json.put(locmeasurement, "lon", location.getLongitude());
+            Json.put(locmeasurement, "alt", location.getAltitude());
+
+            JSONObject measurement = new JSONObject();
+            Json.put(measurement, "LOCMeasurement", locmeasurement);
+
+            addLocationMeasurement(measurement);
         }
 
         Log.d(LOGTAG, "onLocationChanged:"
@@ -255,5 +274,60 @@ public class IOTProximLocation implements LocationListener
         }
 
         return altitude;
+    }
+
+    public void addLocationMeasurement(JSONObject measurement)
+    {
+        //Log.d(LOGTAG, "addLocationMeasurement: measurement=" + Json.toPretty(measurement));
+
+        if (Json.has(measurement, "LOCMeasurement"))
+        {
+            measurement = Json.getObject(measurement, "LOCMeasurement");
+        }
+
+        String akey = Json.getString(measurement, "akey");
+        if (akey == null) return;
+
+        Json.put(lastLocations, akey, measurement);
+
+        Iterator<String> keys = lastLocations.keys();
+
+        Log.d(LOGTAG, "addLocationMeasurement: ------------");
+
+        while (keys.hasNext())
+        {
+            akey = keys.next();
+
+            measurement = Json.getObject(lastLocations, akey);
+
+            String prov = Json.getString(measurement, "prov");
+            long time = Json.getLong(measurement, "time");
+
+            int txpo = 100 + Json.getInt(measurement, "txpo");
+            int rssi = 100 + Json.getInt(measurement, "rssi");
+
+            txpo = (txpo < 0) ? 0 : (txpo > 100) ? 100 : txpo;
+            rssi = (rssi < 0) ? 0 : (rssi > 100) ? 100 : rssi;
+
+            double lat = Json.getDouble(measurement, "lat");
+            double lon = Json.getDouble(measurement, "lon");
+            double alt = Json.getDouble(measurement, "alt");
+
+            int ages = (int) ((System.currentTimeMillis() - time) / 1000);
+
+            int dist = (txpo - rssi) * 10;
+            dist = (dist < 0) ? 0 : (dist > 1000) ? 1000 : dist;
+            float weight = 1f - (dist / 1000f);
+
+            Log.d(LOGTAG, "addLocationMeasurement:"
+                    + " ages=" + Simple.padLeft(ages, 3)
+                    + " txpo=" + Simple.padLeft(txpo, 3)
+                    + " rssi=" + Simple.padLeft(rssi, 3)
+                    + " dist=" + Simple.padLeft(dist, 4)
+                    + " weight=" + Simple.padRight(weight, 12)
+                    + " prov=" + prov
+                    + " akey=" + akey
+            );
+        }
     }
 }
