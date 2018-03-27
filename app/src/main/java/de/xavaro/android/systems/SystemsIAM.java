@@ -107,13 +107,13 @@ public class SystemsIAM extends IAM
                 {
                     if (action.equals("open"))
                     {
-                        Systems.gui.displaySpeechRecognition(true);
+                        if (GUI.instance != null) GUI.instance.displaySpeechRecognition(true);
                         continue;
                     }
 
                     if (action.equals("close"))
                     {
-                        Systems.gui.displaySpeechRecognition(false);
+                        if (GUI.instance != null) GUI.instance.displaySpeechRecognition(false);
                         continue;
                     }
                 }
@@ -139,13 +139,13 @@ public class SystemsIAM extends IAM
                     {
                         if (action.equals("open"))
                         {
-                            Systems.gui.displayCamera(true, uuid);
+                            if (GUI.instance != null) GUI.instance.displayCamera(true, uuid);
                             continue;
                         }
 
                         if (action.equals("close"))
                         {
-                            Systems.gui.displayCamera(false, uuid);
+                            if (GUI.instance != null) GUI.instance.displayCamera(false, uuid);
                             continue;
                         }
                     }

@@ -70,14 +70,17 @@ public class SystemsSNY extends SNY
     {
         Log.d(LOGTAG, "onPincodeRequest: uuid=" + uuid);
 
-        Simple.getHandler().postDelayed(new Runnable()
+        if (GUI.instance != null)
         {
-            @Override
-            public void run()
+            Simple.getHandler().postDelayed(new Runnable()
             {
-                Systems.gui.displayPinCodeMessage(60);
-            }
-        }, 1000);
+                @Override
+                public void run()
+                {
+                    GUI.instance.displayPinCodeMessage(60);
+                }
+            }, 1000);
+        }
     }
 
     @Override

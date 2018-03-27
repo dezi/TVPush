@@ -38,27 +38,13 @@ public class GUI implements
 
     public GUI(Application application)
     {
-        if (instance == null)
+        if (application instanceof GUIApplication)
         {
-            instance = this;
-
-            if (application instanceof GUIApplication)
-            {
-                this.application = (GUIApplication) application;
-
-                this.speechListener = new GUISpeechListener(application);
-                this.speechListener.startListening();
-
-                this.subSystems = new GUISubSystems();
-            }
-            else
-            {
-                throw new RuntimeException("Application does not extend GUIApplication.");
-            }
+            this.application = (GUIApplication) application;
         }
         else
         {
-            throw new RuntimeException("GUI system already initialized.");
+            throw new RuntimeException("Application does not extend GUIApplication.");
         }
     }
 
@@ -76,6 +62,10 @@ public class GUI implements
     @Override
     public void startSubsystem()
     {
+        this.subSystems = new GUISubSystems();
+
+        this.speechListener = new GUISpeechListener(application);
+        this.speechListener.startListening();
     }
 
     @Override

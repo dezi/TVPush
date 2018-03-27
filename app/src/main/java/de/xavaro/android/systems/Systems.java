@@ -12,13 +12,13 @@ import zz.top.tpl.base.TPL;
 public class Systems
 {
     public static SystemsIOT iot;
-    public static SystemsGUI gui;
 
     public static void initialize(Application application)
     {
         iot = new SystemsIOT(application);
 
-        gui = new SystemsGUI(application);
+        GUI.instance = new SystemsGUI(application);
+        GUI.instance.startSubsystem();
 
         SystemsIAM iam = new SystemsIAM(application);
 
