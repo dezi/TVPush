@@ -324,9 +324,8 @@ public class IOTProximLocation implements LocationListener
             int dist = (txpo - rssi) * 10;
             dist = (dist < 0) ? 0 : (dist > 1000) ? 1000 : dist;
 
-            float weight = 1f - (dist / 1000f);
-
-            weight = weight * (prov.equals("network") ? 0.5f : (mode.equals("coarse") ? 0.75f : 1.0f));
+            float fact = 1f - (dist / 1000f);
+            fact = fact * (prov.equals("network") ? 0.5f : (mode.equals("coarse") ? 0.75f : 1.0f));
 
             //
             // Dezi's display asperger.
@@ -335,15 +334,15 @@ public class IOTProximLocation implements LocationListener
             txpo = (txpo >= 100) ? 99 : txpo;
             rssi = (rssi >= 100) ? 99: rssi;
             dist = (dist >= 1000) ? 999: dist;
-            weight = Math.round(weight * 100f) / 100f;
+            fact = Math.round(fact * 100f) / 100f;
 
             Log.d(LOGTAG, "addLocationMeasurement:"
                     + " ages=" + Simple.padLeft(ages, 3)
                     + " txpo=" + Simple.padLeft(txpo, 2)
                     + " rssi=" + Simple.padLeft(rssi, 2)
                     + " dist=" + Simple.padLeft(dist, 3)
-                    + " weight=" + Simple.padRight(weight, 4)
-                    + " prov=" + Simple.padLeft(prov, 9)
+                    + " fact=" + Simple.padRight(fact, 4)
+                    + " prov=" + Simple.padRight(prov, 9)
                     + " lkey=" + lkey
             );
         }
