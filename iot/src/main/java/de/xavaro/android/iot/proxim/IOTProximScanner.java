@@ -529,16 +529,44 @@ public class IOTProximScanner
             JSONObject status = new JSONObject();
 
             Json.put(status, "uuid", uuid);
-            Json.put(status, "rssi", rssi);
             Json.put(status, "txpower", txpo);
             Json.put(status, "macaddr", macAddr);
 
             IOTStatusses.addEntry(new IOTStatus(status), false);
         }
 
+        addLocationMeasurement(uuid, rssi, txpo, macAddr);
+
         IOTAlive.setAliveNetwork(uuid);
 
         return true;
+    }
+
+    private void addLocationMeasurement(String uuid, int rssi, int txpo, String macAddr)
+    {
+        IOTDevice device = IOTDevices.getEntry(uuid);
+
+        if ((device != null)
+                && (device.fixedLatFine != null)
+                && (device.fixedLonFine != null)
+                && (device.fixedAltFine != null))
+        {
+            JSONObject locmeasurement = new JSONObject();
+            Json.put(locmeasurement, "akey", macAddr);
+            Json.put(locmeasurement, "prov", device.type);
+            Json.put(locmeasurement, "time", System.currentTimeMillis());
+            Json.put(locmeasurement, "mode", "fine");
+            Json.put(locmeasurement, "txpo", txpo);
+            Json.put(locmeasurement, "rssi", rssi);
+            Json.put(locmeasurement, "lat", device.fixedLatFine);
+            Json.put(locmeasurement, "lon", device.fixedLonFine);
+            Json.put(locmeasurement, "alt", device.fixedAltFine);
+
+            JSONObject measurement = new JSONObject();
+            Json.put(measurement, "LOCMeasurement", locmeasurement);
+
+            IOT.instance.proximLocationListener.addLocationMeasurement(measurement);
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -557,11 +585,11 @@ public class IOTProximScanner
         String macAddr = result.getDevice().getAddress();
         String uuid = IOTSimple.hmacSha1UUID(name, macAddr);
 
+        int rssi = result.getRssi();
+        int txpo = -20;
+
         if (shouldUpdate(uuid))
         {
-            int rssi = result.getRssi();
-            int txpo = -20;
-
             if ((result.getScanRecord() != null)
                     && (result.getScanRecord().getTxPowerLevel() < 0)
                     && (result.getScanRecord().getTxPowerLevel() > -100))
@@ -599,12 +627,13 @@ public class IOTProximScanner
             JSONObject status = new JSONObject();
 
             Json.put(status, "uuid", uuid);
-            Json.put(status, "rssi", rssi);
             Json.put(status, "txpower", txpo);
             Json.put(status, "macaddr", macAddr);
 
             IOTStatusses.addEntry(new IOTStatus(status), false);
         }
+
+        addLocationMeasurement(uuid, rssi, txpo, macAddr);
 
         IOTAlive.setAliveNetwork(uuid);
 
@@ -723,12 +752,13 @@ public class IOTProximScanner
             JSONObject status = new JSONObject();
 
             Json.put(status, "uuid", uuid);
-            Json.put(status, "rssi", rssi);
             Json.put(status, "txpower", txpo);
             Json.put(status, "macaddr", macAddr);
 
             IOTStatusses.addEntry(new IOTStatus(status), false);
         }
+
+        addLocationMeasurement(uuid, rssi, txpo, macAddr);
 
         IOTAlive.setAliveNetwork(uuid);
 
