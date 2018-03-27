@@ -55,7 +55,12 @@ public class IOTDevices extends IOTList
 
             result = oldDevice.checkAndMergeContent(newDevice, external);
 
-            if (result > 0) instance.putEntry(oldDevice);
+            if (result > 0)
+            {
+                Log.d(LOGTAG, "addEntry: diff=" + oldDevice.getChangedDiff());
+
+                instance.putEntry(oldDevice);
+            }
         }
 
         if (result > 0) IOTDevices.instance.broadcast(newDevice.uuid);

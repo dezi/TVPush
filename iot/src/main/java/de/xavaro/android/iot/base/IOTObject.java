@@ -239,10 +239,25 @@ public abstract class IOTObject
         return ok;
     }
 
+    private String changedDiff = "";
+
+    private void makeDiff(Object orig, Object check)
+    {
+        if (! changed) changedDiff = "";
+
+        changedDiff += orig + " <=> " + check + "\n";
+    }
+
+    public String getChangedDiff()
+    {
+        return changedDiff;
+    }
+
     public boolean nequals(String orig, String check)
     {
         if ((check != null) && ! IOTSimple.equals(orig, check))
         {
+            makeDiff(orig, check);
             return changed = true;
         }
 
@@ -253,6 +268,7 @@ public abstract class IOTObject
     {
         if ((check != null) && ! IOTSimple.equals(orig, check))
         {
+            makeDiff(orig, check);
             return changed = true;
         }
 
@@ -263,6 +279,7 @@ public abstract class IOTObject
     {
         if ((check != null) && ! IOTSimple.equals(orig, check))
         {
+            makeDiff(orig, check);
             return changed = true;
         }
 
@@ -273,6 +290,7 @@ public abstract class IOTObject
     {
         if ((check != null) && ! IOTSimple.equals(orig, check))
         {
+            makeDiff(orig, check);
             return changed = true;
         }
 
@@ -283,6 +301,7 @@ public abstract class IOTObject
     {
         if ((check != null) && ! IOTSimple.equals(orig, check))
         {
+            makeDiff(orig, check);
             return changed = true;
         }
 
@@ -293,6 +312,7 @@ public abstract class IOTObject
     {
         if ((check != null) && ! IOTSimple.equals(orig, check))
         {
+            makeDiff(orig, check);
             return changed = true;
         }
 
@@ -303,6 +323,7 @@ public abstract class IOTObject
     {
         if ((check != null) && ! IOTSimple.equals(orig, check))
         {
+            makeDiff(orig, check);
             return changed = true;
         }
 
@@ -325,7 +346,7 @@ public abstract class IOTObject
             state |= IOTDefs.IOT_SAVE_USRCHANGED;
         }
 
-        if (changedSys || changedUsr)
+        if (state != IOTDefs.IOT_SAVE_UNCHANGED)
         {
             if (! saveToStorage()) state = IOTDefs.IOT_SAVE_FAILED;
         }

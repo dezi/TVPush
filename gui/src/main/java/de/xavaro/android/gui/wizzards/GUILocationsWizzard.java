@@ -18,6 +18,8 @@ import de.xavaro.android.gui.views.GUIListEntry;
 import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.views.GUIListView;
 import de.xavaro.android.iot.base.IOTObject;
+import de.xavaro.android.iot.status.IOTStatus;
+import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 
@@ -60,12 +62,12 @@ public class GUILocationsWizzard extends GUIPluginTitleList
 
             if (todo && isnice) continue;
 
-            GUIListEntryIOT entry = listView.findGUIListEntryIOTOrCreate(uuid, device, null);
+            IOTStatus status = IOTStatusses.getEntry(uuid);
+
+            GUIListEntryIOT entry = listView.findGUIListEntryIOTOrCreate(uuid, device, status);
 
             entry.setOnUpdateContentListener(onUpdateContentListener);
             entry.setOnClickListener(onClickListener);
-
-
         }
     }
 

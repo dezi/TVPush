@@ -54,7 +54,12 @@ public class IOTStatusses extends IOTList
 
             result = oldStatus.checkAndMergeContent(newStatus, external);
 
-            if (result > 0) instance.putEntry(oldStatus);
+            if (result > 0)
+            {
+                Log.d(LOGTAG, "addEntry: diff=" + oldStatus.getChangedDiff());
+
+                instance.putEntry(oldStatus);
+            }
         }
 
         if (result > 0) IOTStatusses.instance.broadcast(newStatus.uuid);

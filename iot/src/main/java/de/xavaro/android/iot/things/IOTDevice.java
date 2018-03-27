@@ -111,6 +111,9 @@ public class IOTDevice extends IOTObject
     {
         // @formatter:off
 
+        changedSys = false;
+        changedUsr = false;
+
         changed = false;
 
         if (nequals(did,          check.did         )) did          = check.did;

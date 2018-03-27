@@ -69,8 +69,10 @@ public class IOTStatus extends IOTObject
     {
         // @formatter:off
 
-        changed = false;
+        changedSys = false;
         changedUsr = false;
+
+        changed = false;
 
         if (nequals(wifi,       check.wifi      )) wifi       = check.wifi;
         if (nequals(ipaddr,     check.ipaddr    )) ipaddr     = check.ipaddr;

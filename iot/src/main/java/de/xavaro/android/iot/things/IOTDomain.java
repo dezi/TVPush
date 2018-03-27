@@ -40,6 +40,9 @@ public class IOTDomain extends IOTObject
     {
         // @formatter:off
 
+        changedSys = false;
+        changedUsr = false;
+
         changed = false;
 
         if (nequals(fixedwifi, check.fixedwifi)) fixedwifi = check.fixedwifi;

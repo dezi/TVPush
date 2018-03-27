@@ -34,8 +34,10 @@ public class IOTMetadata extends IOTObject
 
     public int checkAndMergeContent(IOTMetadata check, boolean external)
     {
-        changed = false;
+        changedSys = false;
         changedUsr = false;
+
+        changed = false;
 
         if (nequals(metadata, check.metadata)) metadata = check.metadata;
 

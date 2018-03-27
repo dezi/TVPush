@@ -30,7 +30,9 @@ public class Log
 
         for (String check : checks)
         {
-            if (check.endsWith("*") && logtag.startsWith(check.substring(0, check.length() -2 )))
+            check = check.toLowerCase();
+
+            if (check.endsWith("*") && logtag.startsWith(check.substring(0, check.length() - 2)))
             {
                 return true;
             }

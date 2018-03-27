@@ -37,6 +37,7 @@ public class IOTLocation extends IOTObject
     public int checkAndMergeContent(IOTLocation check, boolean external)
     {
         changedSys = false;
+        changedUsr = false;
 
         if (external)
         {

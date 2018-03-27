@@ -83,13 +83,13 @@ public class TPL implements
     @Override
     public void onSubsystemStarted(String subsystem, int state)
     {
-        android.util.Log.d(LOGTAG, "onSubsystemStarted: STUB! state=" + state);
+        android.util.Log.d(LOGTAG, "onSubsystemStarted: STUB!");
     }
 
     @Override
     public void onSubsystemStopped(String subsystem, int state)
     {
-        android.util.Log.d(LOGTAG, "onSubsystemStopped: STUB! state=" + state);
+        android.util.Log.d(LOGTAG, "onSubsystemStopped: STUB!");
     }
 
     @Override

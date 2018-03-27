@@ -34,8 +34,10 @@ public class IOTCredential extends IOTObject
 
     public int checkAndMergeContent(IOTCredential check, boolean external)
     {
-        changed = false;
+        changedSys = false;
         changedUsr = false;
+
+        changed = false;
 
         if (nequals(credentials, check.credentials)) credentials = check.credentials;
 
