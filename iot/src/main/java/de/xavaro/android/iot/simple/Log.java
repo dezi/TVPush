@@ -6,8 +6,9 @@ public class Log
 
     public static String[] allow = new String[]
             {
-                    "IOTStatus*",
-                    "IOTDevice*"
+                    "IOTProxim*-",
+                    "IOTStatus*-",
+                    "IOTDevice*-"
             };
 
     public static void d(String logtag, String message)

@@ -15,7 +15,6 @@ import android.content.Intent;
 import android.os.ParcelUuid;
 import android.os.Build;
 import android.util.SparseArray;
-import android.util.Log;
 
 import org.json.JSONObject;
 
@@ -29,6 +28,7 @@ import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.base.IOTAlive;
 import de.xavaro.android.iot.base.IOTSimple;
 import de.xavaro.android.iot.simple.Json;
+import de.xavaro.android.iot.simple.Log;
 import de.xavaro.android.iot.simple.Simple;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.status.IOTStatusses;

@@ -38,7 +38,7 @@ public class GUICamerasWizzard extends GUIPluginTitleListIOT
         collectEntries(listView, todo);
     }
 
-    public static void collectEntries(GUILinearLayout listView, boolean todo)
+    public void collectEntries(GUIListView listView, boolean todo)
     {
         JSONArray list = IOTDevices.instance.getListUUIDs();
 
@@ -53,22 +53,14 @@ public class GUICamerasWizzard extends GUIPluginTitleListIOT
 
             if (todo) continue;
 
-            IOTStatus status = IOTStatusses.getEntry(device.uuid);
+            IOTStatus status = IOTStatusses.getEntry(uuid);
 
-            GUIListEntryIOT entry = new GUIListEntryIOT(listView.getContext());
+            GUIListEntryIOT entry = listView.findGUIListEntryIOTOrCreate(uuid, device, status);
             entry.setOnClickListener(onClickListener);
-
-            entry.uuid = uuid;
-            entry.device = device;
-            entry.status = status;
-
-            entry.updateContent();
-
-            listView.addView(entry);
         }
     }
 
-    private static final View.OnClickListener onClickListener = new View.OnClickListener()
+    private final View.OnClickListener onClickListener = new View.OnClickListener()
     {
         @Override
         public void onClick(View view)
