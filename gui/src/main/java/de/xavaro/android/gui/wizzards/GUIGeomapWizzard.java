@@ -16,12 +16,14 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
+import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.views.GUIFrameLayout;
 import de.xavaro.android.gui.base.GUIPluginTitleIOT;
 import de.xavaro.android.gui.base.GUIDefs;
 
 import de.xavaro.android.gui.simple.Simple;
 
+import de.xavaro.android.gui.views.GUIImageView;
 import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.base.IOTObject;
@@ -32,6 +34,7 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
     private final static String LOGTAG = GUIGeomapWizzard.class.getSimpleName();
 
     private GUIFrameLayout mapFrame;
+    private GUIImageView crosshair;
     private MapView mapView;
     private GoogleMap map;
     private Marker marker;
@@ -58,10 +61,28 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
             @Override
             public void onHighlightChanged(View view, boolean highlight)
             {
-                if (! highlight)
+                if (!highlight)
                 {
                     saveLocation();
                 }
+            }
+
+            @Override
+            protected void onLayout(boolean changed, int l, int t, int r, int b)
+            {
+                super.onLayout(changed, l, t, r, b);
+
+                int width = (r - l);
+                int height = (b - t);
+
+                int nettoWidth = width - getPaddingLeft() - getPaddingRight();
+                int nettoHeight = height - getPaddingTop() - getPaddingLeft();
+
+                Log.d(LOGTAG, "onLayout: nettoWidth=" + nettoWidth + " nettoHeight=" + nettoHeight);
+
+                crosshair.setMarginLeftDip(Simple.pxToDip(nettoWidth / 2) - (GUIDefs.CROSSHAIR_SIZE / 2));
+                crosshair.setMarginTopDip(Simple.pxToDip(nettoHeight / 2) - (GUIDefs.CROSSHAIR_SIZE / 2));
+                crosshair.setVisibility(VISIBLE);
             }
         };
 
@@ -88,6 +109,13 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
         mapView.onCreate(null);
 
         mapFrame.addView(mapView);
+
+        crosshair = new GUIImageView(getContext());
+        crosshair.setImageResource(R.drawable.crosshair_500);
+        crosshair.setSizeDip(GUIDefs.CROSSHAIR_SIZE,GUIDefs.CROSSHAIR_SIZE);
+        crosshair.setVisibility(GONE);
+
+        mapFrame.addView(crosshair);
     }
 
     private boolean onKeyDownDoit(int keyCode, KeyEvent event)

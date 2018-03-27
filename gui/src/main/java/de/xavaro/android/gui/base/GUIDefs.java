@@ -66,6 +66,8 @@ public class GUIDefs
     public static final int ICON_SIZE = Simple.isTablet() ? 50 : 50;
     public static final int ICON_PADD = PADDING_SMALL;
 
+    public static final int CROSSHAIR_SIZE = Simple.isTablet() ? 150 : 150;
+
     //
     // Nice characters.
     //
