@@ -156,7 +156,10 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
             {
                 Log.d(LOGTAG, "onClick: clickFrame.");
 
-                mapFrame.setHighlight(true);
+                if (coordinates != null)
+                {
+                    mapFrame.setHighlight(true);
+                }
             }
         });
 
@@ -167,7 +170,10 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
             {
                 Log.d(LOGTAG, "onClick: crosshair.");
 
-                mapFrame.setHighlight(false);
+                if (coordinates != null)
+                {
+                    mapFrame.setHighlight(false);
+                }
             }
         });
     }

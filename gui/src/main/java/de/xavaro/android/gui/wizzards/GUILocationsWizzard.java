@@ -15,6 +15,7 @@ import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUIListEntry;
+import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.views.GUIListView;
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTDevice;
@@ -59,41 +60,58 @@ public class GUILocationsWizzard extends GUIPluginTitleList
 
             if (todo && isnice) continue;
 
-            GUIListEntry entry = listView.findGUIListEntryIOTOrCreate(uuid, device, null);
-            entry.setOnClickListener(onClickListener);
-            entry.setTag(device);
+            GUIListEntryIOT entry = listView.findGUIListEntryIOTOrCreate(uuid, device, null);
 
+            entry.setOnUpdateContentListener(onUpdateContentListener);
+            entry.setOnClickListener(onClickListener);
+
+
+        }
+    }
+
+    private final GUIListEntryIOT.OnUpdateContentListener onUpdateContentListener =
+            new GUIListEntryIOT.OnUpdateContentListener()
+    {
+        @Override
+        public void onUpdateContent(GUIListEntryIOT entry)
+        {
             String info = "Keine Geo-Position";
 
-            if (isnice)
+            boolean isnice = false;
+
+            if (entry.device != null)
             {
-                info = ""
-                        + Simple.getRounded3(device.fixedLatFine)
-                        + " "
-                        + Simple.getRounded3(device.fixedLonFine)
-                        + " "
-                        + Simple.getRounded3(device.fixedAltFine)
-                        + " m";
+                isnice = (entry.device.fixedLatFine != null)
+                        && (entry.device.fixedLonFine != null)
+                        && (entry.device.fixedAltFine != null);
+
+                if (isnice)
+                {
+                    info = ""
+                            + Simple.getRounded3(entry.device.fixedLatFine)
+                            + " "
+                            + Simple.getRounded3(entry.device.fixedLonFine)
+                            + " "
+                            + Simple.getRounded3(entry.device.fixedAltFine)
+                            + " m";
+                }
             }
 
-            entry.iconView.setImageResource(GUIIcons.getImageResid(device));
-            entry.headerViev.setText(device.name);
             entry.infoView.setText(info);
 
             entry.infoView.setTextColor(isnice
                     ? GUIDefs.TEXT_COLOR_INFOS
                     : GUIDefs.TEXT_COLOR_ALERTS);
         }
-    }
+    };
 
     private final OnClickListener onClickListener = new OnClickListener()
     {
         @Override
         public void onClick(View view)
         {
-            IOTObject iotobject = (IOTObject) view.getTag();
-
-            GUI.instance.desktopActivity.displayWizzard(GUIGeomapWizzard.class.getSimpleName(), iotobject);
+            IOTDevice device = ((GUIListEntryIOT) view).device;
+            GUI.instance.desktopActivity.displayWizzard(GUIGeomapWizzard.class.getSimpleName(), device);
         }
     };
 }

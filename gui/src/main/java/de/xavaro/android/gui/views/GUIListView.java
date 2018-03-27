@@ -131,29 +131,37 @@ public class GUIListView extends  GUILinearLayout
 
     public GUIListEntryIOT findGUIListEntryIOTOrCreate(String uuid, IOTDevice device, IOTStatus status)
     {
+        GUIListEntryIOT entry = null;
+
         for (int inx = 0; inx < getChildCount(); inx++)
         {
             View child = getChildAt(inx);
 
-            if ((child instanceof GUIListEntryIOT)
-                    && (((GUIListEntryIOT) child).uuid != null)
-                    && (((GUIListEntryIOT) child).uuid.equals(uuid)))
+            if (child instanceof GUIListEntryIOT)
             {
-                ((GUIListEntryIOT) child).isinuse = true;
-
-                return (GUIListEntryIOT) child;
+                entry = (GUIListEntryIOT) child;
+                if ((entry.uuid != null) && entry.uuid.equals(uuid)) break;
+                entry = null;
             }
         }
 
-        GUIListEntryIOT entry = new GUIListEntryIOT(getContext());
-        entry.setFocusable(true);
+        if (entry == null)
+        {
+            entry = new GUIListEntryIOT(getContext());
+            entry.setFocusable(true);
+        }
 
         entry.uuid = uuid;
         entry.device = device;
         entry.status = status;
         entry.isinuse = true;
 
-        addView(entry);
+        entry.updateContent();
+
+        if (entry.getParent() == null)
+        {
+            addView(entry);
+        }
 
         return entry;
     }

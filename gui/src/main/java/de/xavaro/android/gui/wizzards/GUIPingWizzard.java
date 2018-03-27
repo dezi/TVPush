@@ -55,7 +55,8 @@ public class GUIPingWizzard extends GUIPluginTitleListIOT
             if (connect == null) continue;
 
             GUIListEntryIOT entry = listView.findGUIListEntryIOTOrCreate(uuid, device, status);
-            entry.updateContent();
+
+            entry.infoView.setText(connect);
         }
     }
 }

@@ -4,11 +4,13 @@ import android.util.Log;
 
 import org.json.JSONArray;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Prefs;
+import de.xavaro.android.iot.simple.Simple;
 import de.xavaro.android.iot.status.IOTCredential;
 
 public abstract class IOTList
@@ -62,4 +64,70 @@ public abstract class IOTList
     {
         list.put(object.uuid, object);
     }
+
+    //region Subscriptions implementation.
+
+    private final Map<String, ArrayList<Runnable>> subscriber = new HashMap<>();
+
+    public void subscribe(String uuid, Runnable runnable)
+    {
+        if (uuid != null)
+        {
+            synchronized (subscriber)
+            {
+                ArrayList<Runnable> runners = Simple.getMapRunnables(subscriber, uuid);
+
+                if (runners == null)
+                {
+                    runners = new ArrayList<>();
+                    subscriber.put(uuid, runners);
+                }
+
+                if (!runners.contains(runnable))
+                {
+                    runners.add(runnable);
+                }
+            }
+        }
+    }
+
+    public void unsubscribe(String uuid, Runnable runnable)
+    {
+        if (uuid != null)
+        {
+            synchronized (subscriber)
+            {
+                ArrayList<Runnable> runners = Simple.getMapRunnables(subscriber, uuid);
+
+                if (runners != null)
+                {
+                    if (runners.contains(runnable))
+                    {
+                        runners.remove(runnable);
+                    }
+
+                    if (runners.size() == 0)
+                    {
+                        subscriber.remove(uuid);
+                    }
+                }
+            }
+        }
+    }
+
+    public void broadcast(String uuid)
+    {
+        synchronized (subscriber)
+        {
+            ArrayList<Runnable> runners = Simple.getMapRunnables(subscriber, uuid);
+            if (runners == null) return;
+
+            for (Runnable runner : runners)
+            {
+                Simple.getHandler().post(runner);
+            }
+        }
+    }
+
+    //endregion Subscriptions implementation.
 }

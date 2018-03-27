@@ -13,6 +13,7 @@ import de.xavaro.android.iot.status.IOTCredential;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
+import de.xavaro.android.iot.things.IOTDevices;
 import pub.android.interfaces.drv.Camera;
 import pub.android.interfaces.drv.SmartBulb;
 import pub.android.interfaces.drv.SmartPlug;
@@ -28,6 +29,7 @@ public class GUIListEntryIOT extends GUIListEntry
     public IOTCredential credential;
 
     private View.OnClickListener onClickListener;
+    private OnUpdateContentListener onUpdateContentListener;
 
     public GUIListEntryIOT(Context context)
     {
@@ -39,6 +41,7 @@ public class GUIListEntryIOT extends GUIListEntry
     {
         super.onAttachedToWindow();
 
+        IOTDevices.instance.subscribe(device.uuid, onDeviceUpdated);
         IOTStatusses.instance.subscribe(device.uuid, onStatusUpdated);
     }
 
@@ -47,6 +50,7 @@ public class GUIListEntryIOT extends GUIListEntry
     {
         super.onDetachedFromWindow();
 
+        IOTDevices.instance.unsubscribe(device.uuid, onDeviceUpdated);
         IOTStatusses.instance.unsubscribe(device.uuid, onStatusUpdated);
     }
 
@@ -61,7 +65,8 @@ public class GUIListEntryIOT extends GUIListEntry
         {
             int color = GUIDefs.STATUS_COLOR_INACT;
 
-            if ((status.hue != null)
+            if ((status != null)
+                    && (status.hue != null)
                     && (status.saturation != null)
                     && (status.brightness != null)
                     && (status.bulbstate != null))
@@ -83,7 +88,7 @@ public class GUIListEntryIOT extends GUIListEntry
 
         if (device.type.equals("smartplug"))
         {
-            int color = ((status.plugstate == null) || (status.plugstate == 0))
+            int color = ((status == null) || (status.plugstate == null) || (status.plugstate == 0))
                     ? GUIDefs.STATUS_COLOR_INACT
                     : GUIDefs.STATUS_COLOR_GREEN;
 
@@ -97,7 +102,7 @@ public class GUIListEntryIOT extends GUIListEntry
 
         if (device.type.equals("camera"))
         {
-            int color = ((status.ledstate == null) || (status.ledstate == 0))
+            int color = ((status == null) || (status.ledstate == null) || (status.ledstate == 0))
                     ? GUIDefs.STATUS_COLOR_INACT
                     : GUIDefs.STATUS_COLOR_BLUE;
 
@@ -109,10 +114,7 @@ public class GUIListEntryIOT extends GUIListEntry
             }
         }
 
-        String connect = (status.ipaddr != null) ? status.ipaddr : status.macaddr;
-
         headerViev.setText(device.name);
-        infoView.setText(connect);
 
         Long lastPing = IOTAlive.getAliveNetwork(uuid);
 
@@ -121,7 +123,25 @@ public class GUIListEntryIOT extends GUIListEntry
             boolean pingt = (System.currentTimeMillis() - lastPing) < (60 * 1000);
             setStatusColor(pingt ? GUIDefs.STATUS_COLOR_GREEN : GUIDefs.STATUS_COLOR_RED);
         }
+
+        if (onUpdateContentListener != null)
+        {
+            onUpdateContentListener.onUpdateContent(this);
+        }
     }
+
+    private final Runnable onDeviceUpdated = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            Log.d(LOGTAG, "onDeviceUpdated: name=" + device.name);
+
+            device = IOTDevices.getEntry(uuid);
+
+            updateContent();
+        }
+    };
 
     private final Runnable onStatusUpdated = new Runnable()
     {
@@ -207,5 +227,17 @@ public class GUIListEntryIOT extends GUIListEntry
     {
         this.onClickListener = onClickListener;
         super.setOnClickListener(onClickListener);
+    }
+
+    public void setOnUpdateContentListener(OnUpdateContentListener onUpdateContentListener)
+    {
+        this.onUpdateContentListener = onUpdateContentListener;
+
+        updateContent();
+    }
+
+    public interface OnUpdateContentListener
+    {
+        void onUpdateContent(GUIListEntryIOT entry);
     }
 }

@@ -4,6 +4,7 @@ import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.base.IOTList;
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.simple.Log;
+import de.xavaro.android.iot.status.IOTStatusses;
 
 public class IOTDevices extends IOTList
 {
@@ -56,6 +57,8 @@ public class IOTDevices extends IOTList
 
             if (result > 0) instance.putEntry(oldDevice);
         }
+
+        if (result > 0) IOTDevices.instance.broadcast(newDevice.uuid);
 
         return result;
     }
