@@ -1,6 +1,5 @@
 package de.xavaro.android.gui.skills;
 
-import android.view.KeyEvent;
 import android.view.View;
 
 public interface GUICanFocus extends GUICanRoundedCorners
