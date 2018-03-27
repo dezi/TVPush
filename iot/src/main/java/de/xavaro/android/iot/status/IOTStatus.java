@@ -22,7 +22,6 @@ public class IOTStatus extends IOTObject
     public String ipaddr;
     public Integer ipport;
 
-    public Integer rssi;
     public Integer txpower;
     public String macaddr;
 
@@ -78,7 +77,6 @@ public class IOTStatus extends IOTObject
         if (nequals(ipaddr,     check.ipaddr    )) ipaddr     = check.ipaddr;
         if (nequals(ipport,     check.ipport    )) ipport     = check.ipport;
 
-        if (nequals(rssi,       check.rssi      )) rssi       = check.rssi;
         if (nequals(txpower,    check.txpower   )) txpower    = check.txpower;
         if (nequals(macaddr,    check.macaddr   )) macaddr    = check.macaddr;
 
