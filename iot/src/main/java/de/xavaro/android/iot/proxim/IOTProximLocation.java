@@ -286,9 +286,13 @@ public class IOTProximLocation implements LocationListener
         }
 
         String akey = Json.getString(measurement, "akey");
-        if (akey == null) return;
+        String pkey = Json.getString(measurement, "prov");
 
-        Json.put(lastLocations, akey, measurement);
+        if ((akey == null) || (pkey == null)) return;
+
+        String lkey = akey + ":" + pkey;
+
+        Json.put(lastLocations, lkey, measurement);
 
         Iterator<String> keys = lastLocations.keys();
 
@@ -296,9 +300,9 @@ public class IOTProximLocation implements LocationListener
 
         while (keys.hasNext())
         {
-            akey = keys.next();
+            lkey = keys.next();
 
-            measurement = Json.getObject(lastLocations, akey);
+            measurement = Json.getObject(lastLocations, lkey);
             String prov = Json.getString(measurement, "prov");
             String mode = Json.getString(measurement, "mode");
             if ((prov == null) || (mode == null)) continue;
@@ -339,8 +343,8 @@ public class IOTProximLocation implements LocationListener
                     + " rssi=" + Simple.padLeft(rssi, 2)
                     + " dist=" + Simple.padLeft(dist, 3)
                     + " weight=" + Simple.padRight(weight, 4)
-                    + " prov=" + prov
-                    + " akey=" + akey
+                    + " prov=" + Simple.padLeft(prov, 9)
+                    + " lkey=" + lkey
             );
         }
     }
