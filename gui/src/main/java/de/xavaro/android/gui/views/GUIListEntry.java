@@ -72,11 +72,5 @@ public class GUIListEntry extends GUILinearLayout
     {
         bulletView.setRoundedCornersDip(GUIDefs.PADDING_MEDIUM / 2, color);
     }
-
-    public void setIDTag(String idtag)
-    {
-        this.idtag = idtag;
-        this.isinuse = true;
-    }
 }
 

@@ -61,7 +61,6 @@ public class GUILocationsWizzard extends GUIPluginTitleList
 
             GUIListEntry entry = listView.findGUIListEntryIOTOrCreate(uuid, device, null);
             entry.setOnClickListener(onClickListener);
-            entry.setIDTag(uuid);
             entry.setTag(device);
 
             String info = "Keine Geo-Position";

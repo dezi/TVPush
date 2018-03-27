@@ -61,7 +61,6 @@ public class GUIMenuWizzard extends GUIPluginTitleList
 
             GUIListEntry entry = listView.findGUIListEntryOrCreate(name);
             entry.setOnClickListener(onClickListener);
-            entry.setIDTag(name);
             entry.setTag(name);
 
             entry.iconView.setImageResource(((GUIPluginTitle) wizzard).getTitleIconResid());

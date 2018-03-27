@@ -113,12 +113,16 @@ public class GUIListView extends  GUILinearLayout
                     && (((GUIListEntry) child).idtag != null)
                     && (((GUIListEntry) child).idtag.equals(idtag)))
             {
+                ((GUIListEntry) child).isinuse = true;
+
                 return (GUIListEntry) child;
             }
         }
 
         GUIListEntry entry = new GUIListEntry(getContext());
         entry.setFocusable(true);
+        entry.isinuse = true;
+        entry.idtag = idtag;
 
         addView(entry);
 
@@ -131,10 +135,12 @@ public class GUIListView extends  GUILinearLayout
         {
             View child = getChildAt(inx);
 
-            if ((child instanceof GUIListEntry)
-                    && (((GUIListEntry) child).idtag != null)
-                    && (((GUIListEntry) child).idtag.equals(uuid)))
+            if ((child instanceof GUIListEntryIOT)
+                    && (((GUIListEntryIOT) child).uuid != null)
+                    && (((GUIListEntryIOT) child).uuid.equals(uuid)))
             {
+                ((GUIListEntryIOT) child).isinuse = true;
+
                 return (GUIListEntryIOT) child;
             }
         }
@@ -145,6 +151,7 @@ public class GUIListView extends  GUILinearLayout
         entry.uuid = uuid;
         entry.device = device;
         entry.status = status;
+        entry.isinuse = true;
 
         addView(entry);
 

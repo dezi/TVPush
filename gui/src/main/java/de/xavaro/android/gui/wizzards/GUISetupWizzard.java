@@ -64,7 +64,6 @@ public class GUISetupWizzard extends GUIPluginTitleList
             String idtag = "service:" + service;
             GUIListEntry entry = listView.findGUIListEntryOrCreate(idtag);
             entry.setOnClickListener(onServiceStartClickListener);
-            entry.setIDTag(idtag);
             entry.setTag(service);
 
             String head = Simple.getTrans(GUISetup.getTextServiceResid())
@@ -102,7 +101,6 @@ public class GUISetupWizzard extends GUIPluginTitleList
             String idtag = "permission:" + service;
             GUIListEntry entry = listView.findGUIListEntryOrCreate(idtag);
             entry.setOnClickListener(onPermissionRequestClickListener);
-            entry.setIDTag(idtag);
             entry.setTag(service);
 
             String infos = "";
@@ -145,7 +143,6 @@ public class GUISetupWizzard extends GUIPluginTitleList
             String idtag = "feature:" + feature;
             GUIListEntry entry = listView.findGUIListEntryOrCreate(idtag);
             entry.setOnClickListener(onFeatureStartClickListener);
-            entry.setIDTag(idtag);
             entry.setTag(feature);
 
             String head = Simple.getTrans(GUISetup.getTextFeatureResid())
@@ -183,7 +180,6 @@ public class GUISetupWizzard extends GUIPluginTitleList
             String idtag = "subsystem:" + subsystem;
             GUIListEntry entry = listView.findGUIListEntryOrCreate(idtag);
             entry.setOnClickListener(onSubsystemClickListener);
-            entry.setIDTag(idtag);
             entry.setTag(subsystem);
 
             String head = Simple.getTrans(GUISetup.getTextSubsystemResid())

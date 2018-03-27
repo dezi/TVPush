@@ -17,6 +17,7 @@ public class Systems
     public static void initialize(Application application)
     {
         iot = new SystemsIOT(application);
+
         gui = new SystemsGUI(application);
 
         SystemsIAM iam = new SystemsIAM(application);

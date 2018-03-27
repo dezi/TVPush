@@ -9,9 +9,11 @@ import de.xavaro.android.gui.simple.Json;
 
 import de.xavaro.android.iam.base.IAM;
 
+import de.xavaro.android.iam.eval.IAMEval;
 import pub.android.interfaces.drv.Camera;
 import pub.android.interfaces.drv.SmartBulb;
 import pub.android.interfaces.drv.SmartPlug;
+
 import zz.top.p2p.base.P2P;
 import zz.top.sny.base.SNY;
 import zz.top.tpl.base.TPL;
@@ -115,7 +117,10 @@ public class SystemsGUI extends GUI
     {
         Log.d(LOGTAG, "onSpeechResults: speech=" + speech.toString());
 
-        IAM.instance.evaluateSpeech(speech);
+        if (IAM.instance != null)
+        {
+            IAM.instance.evaluateSpeech(speech);
+        }
     }
 
     @Override
