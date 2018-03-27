@@ -133,9 +133,9 @@ public class SystemsGUI extends GUI
 
         if ((uuid == null) || (driver == null)) return null;
 
-        if (driver.equals("p2p"))
+        if (driver.equals("p2p") && (P2P.instance != null))
         {
-            return SystemsP2P.instance.getCameraHandler(device, status, credentials);
+            return P2P.instance.getCameraHandler(device, status, credentials);
         }
 
         return null;
@@ -153,7 +153,7 @@ public class SystemsGUI extends GUI
 
         if (driver.equals("tpl"))
         {
-            return SystemsTPL.instance.getSmartPlugHandler(device, status, credentials);
+            return TPL.instance.getSmartPlugHandler(device, status, credentials);
         }
 
         return null;
@@ -171,7 +171,7 @@ public class SystemsGUI extends GUI
 
         if (driver.equals("tpl"))
         {
-            return SystemsTPL.instance.getSmartBulbHandler(device, status, credentials);
+            return TPL.instance.getSmartBulbHandler(device, status, credentials);
         }
 
         return null;

@@ -296,7 +296,7 @@ public class IOTProximLocation implements LocationListener
 
         Iterator<String> keys = lastLocations.keys();
 
-        Log.d(LOGTAG, "addLocationMeasurement: ------------");
+        //Log.d(LOGTAG, "addLocationMeasurement: ------------");
 
         while (keys.hasNext())
         {
@@ -336,6 +336,7 @@ public class IOTProximLocation implements LocationListener
             dist = (dist >= 1000) ? 999: dist;
             fact = Math.round(fact * 100f) / 100f;
 
+            /*
             Log.d(LOGTAG, "addLocationMeasurement:"
                     + " ages=" + Simple.padLeft(ages, 3)
                     + " txpo=" + Simple.padLeft(txpo, 2)
@@ -345,6 +346,7 @@ public class IOTProximLocation implements LocationListener
                     + " prov=" + Simple.padRight(prov, 9)
                     + " lkey=" + lkey
             );
+            */
         }
     }
 }
