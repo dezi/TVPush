@@ -299,15 +299,17 @@ public class IOTProximLocation implements LocationListener
             akey = keys.next();
 
             measurement = Json.getObject(lastLocations, akey);
-
             String prov = Json.getString(measurement, "prov");
+            String mode = Json.getString(measurement, "mode");
+            if ((prov == null) || (mode == null)) continue;
+
             long time = Json.getLong(measurement, "time");
 
             int txpo = 100 + Json.getInt(measurement, "txpo");
             int rssi = 100 + Json.getInt(measurement, "rssi");
 
-            txpo = (txpo < 0) ? 0 : (txpo > 100) ? 100 : txpo;
-            rssi = (rssi < 0) ? 0 : (rssi > 100) ? 100 : rssi;
+            txpo = (txpo < 0) ? 0 : (txpo >= 100) ? 100 : txpo;
+            rssi = (rssi < 0) ? 0 : (rssi >= 100) ? 100: rssi;
 
             double lat = Json.getDouble(measurement, "lat");
             double lon = Json.getDouble(measurement, "lon");
@@ -317,14 +319,26 @@ public class IOTProximLocation implements LocationListener
 
             int dist = (txpo - rssi) * 10;
             dist = (dist < 0) ? 0 : (dist > 1000) ? 1000 : dist;
+
             float weight = 1f - (dist / 1000f);
+
+            weight = weight * (prov.equals("network") ? 0.5f : (mode.equals("coarse") ? 0.75f : 1.0f));
+
+            //
+            // Dezi's display asperger.
+            //
+
+            txpo = (txpo >= 100) ? 99 : txpo;
+            rssi = (rssi >= 100) ? 99: rssi;
+            dist = (dist >= 1000) ? 999: dist;
+            weight = Math.round(weight * 100f) / 100f;
 
             Log.d(LOGTAG, "addLocationMeasurement:"
                     + " ages=" + Simple.padLeft(ages, 3)
-                    + " txpo=" + Simple.padLeft(txpo, 3)
-                    + " rssi=" + Simple.padLeft(rssi, 3)
-                    + " dist=" + Simple.padLeft(dist, 4)
-                    + " weight=" + Simple.padRight(weight, 12)
+                    + " txpo=" + Simple.padLeft(txpo, 2)
+                    + " rssi=" + Simple.padLeft(rssi, 2)
+                    + " dist=" + Simple.padLeft(dist, 3)
+                    + " weight=" + Simple.padRight(weight, 4)
                     + " prov=" + prov
                     + " akey=" + akey
             );
