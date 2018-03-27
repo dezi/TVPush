@@ -63,10 +63,9 @@ public class GUIDefs
     public static final int MIN_EMS_DIALOGS = Simple.isTablet() ? 20 : 12;
     public static final int MAX_EMS_DIALOGS = Simple.isTablet() ? 20 : 12;
 
-    public static final int ICON_SIZE = Simple.isTablet() ? 50 : 50;
-    public static final int ICON_PADD = PADDING_SMALL;
-
-    public static final int CROSSHAIR_SIZE = Simple.isTablet() ? 150 : 150;
+    public static final int CROSSHAIR_SIZE  = Simple.isTablet() ? 150 : 150;
+    public static final int ICON_SIZE       = Simple.isTablet() ? 50 : 50;
+    public static final int ICON_PADD       = PADDING_SMALL;
 
     //
     // Nice characters.
