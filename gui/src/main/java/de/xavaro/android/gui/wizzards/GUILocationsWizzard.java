@@ -40,7 +40,7 @@ public class GUILocationsWizzard extends GUIPluginTitleList
         collectEntries(listView, todo);
     }
 
-    public static void collectEntries(GUILinearLayout listView, boolean todo)
+    public void collectEntries(GUIListView listView, boolean todo)
     {
         JSONArray list = IOTDevices.instance.getListUUIDs();
 
@@ -59,8 +59,9 @@ public class GUILocationsWizzard extends GUIPluginTitleList
 
             if (todo && isnice) continue;
 
-            GUIListEntry entry = new GUIListEntry(listView.getContext());
+            GUIListEntry entry = listView.findGUIListEntryIOTOrCreate(uuid, device, null);
             entry.setOnClickListener(onClickListener);
+            entry.setIDTag(uuid);
             entry.setTag(device);
 
             String info = "Keine Geo-Position";
@@ -83,12 +84,10 @@ public class GUILocationsWizzard extends GUIPluginTitleList
             entry.infoView.setTextColor(isnice
                     ? GUIDefs.TEXT_COLOR_INFOS
                     : GUIDefs.TEXT_COLOR_ALERTS);
-
-            listView.addView(entry);
         }
     }
 
-    private static final OnClickListener onClickListener = new OnClickListener()
+    private final OnClickListener onClickListener = new OnClickListener()
     {
         @Override
         public void onClick(View view)

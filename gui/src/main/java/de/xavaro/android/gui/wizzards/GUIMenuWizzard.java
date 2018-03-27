@@ -1,6 +1,7 @@
 package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 
@@ -43,7 +44,7 @@ public class GUIMenuWizzard extends GUIPluginTitleList
         collectEntries(listView, todo);
     }
 
-    public static void collectEntries(GUILinearLayout listView, boolean todo)
+    public void collectEntries(GUIListView listView, boolean todo)
     {
         Map<String,GUIPlugin> wizzards = GUI.instance.desktopActivity.getWizzards();
 
@@ -58,18 +59,18 @@ public class GUIMenuWizzard extends GUIPluginTitleList
             if (! (wizzard instanceof GUIPluginTitle)) continue;
             if (wizzard.isHelper()) continue;
 
-            GUIListEntry entry = new GUIListEntry(listView.getContext());
+            GUIListEntry entry = listView.findGUIListEntryOrCreate(name);
             entry.setOnClickListener(onClickListener);
+            entry.setIDTag(name);
             entry.setTag(name);
 
             entry.iconView.setImageResource(((GUIPluginTitle) wizzard).getTitleIconResid());
             entry.headerViev.setText(((GUIPluginTitle) wizzard).getTitleText());
-
-            listView.addView(entry);
+            entry.infoView.setVisibility(GONE);
         }
     }
 
-    private static final OnClickListener onClickListener = new OnClickListener()
+    private final OnClickListener onClickListener = new OnClickListener()
     {
         @Override
         public void onClick(View view)
