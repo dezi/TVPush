@@ -5,17 +5,17 @@ import android.app.Application;
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.iam.base.IAM;
 
+import de.xavaro.android.iot.base.IOT;
 import zz.top.p2p.base.P2P;
 import zz.top.sny.base.SNY;
 import zz.top.tpl.base.TPL;
 
 public class Systems
 {
-    public static SystemsIOT iot;
-
     public static void initialize(Application application)
     {
-        iot = new SystemsIOT(application);
+        IOT.instance = new SystemsIOT(application);
+        IOT.instance.startSubsystem();
 
         GUI.instance = new SystemsGUI(application);
         GUI.instance.startSubsystem();

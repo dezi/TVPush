@@ -71,10 +71,6 @@ public class IOTMessageHandler
 
         if (type == null) return;
 
-        //
-        // Call type handlers.
-        //
-
         ArrayList<IOTHandle> typeHandlers = subscribers.get(type);
         if (typeHandlers == null) return;
 

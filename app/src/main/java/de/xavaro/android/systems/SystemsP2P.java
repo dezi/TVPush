@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import de.xavaro.android.gui.base.GUI;
 
 import de.xavaro.android.gui.base.GUISubSystems;
+import de.xavaro.android.iot.base.IOT;
 import zz.top.p2p.base.P2P;
 
 public class SystemsP2P extends P2P
@@ -43,7 +44,7 @@ public class SystemsP2P extends P2P
     {
         Log.d(LOGTAG, "onDeviceFound:");
 
-        Systems.iot.register.registerDevice(device);
+        IOT.instance.register.registerDevice(device);
     }
 
     @Override
@@ -51,7 +52,7 @@ public class SystemsP2P extends P2P
     {
         Log.d(LOGTAG, "onDeviceStatus:");
 
-        Systems.iot.register.registerDeviceStatus(status);
+        IOT.instance.register.registerDeviceStatus(status);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class SystemsP2P extends P2P
     {
         Log.d(LOGTAG, "onDeviceMetadata:");
 
-        Systems.iot.register.registerDeviceMetadata(metatdata);
+        IOT.instance.register.registerDeviceMetadata(metatdata);
     }
 
     @Override
@@ -67,6 +68,6 @@ public class SystemsP2P extends P2P
     {
         Log.d(LOGTAG, "onDeviceCredentials:");
 
-        Systems.iot.register.registerDeviceCredentials(credentials);
+        IOT.instance.register.registerDeviceCredentials(credentials);
     }
 }

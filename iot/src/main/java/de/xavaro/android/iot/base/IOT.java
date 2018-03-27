@@ -49,11 +49,9 @@ public class IOT implements
     {
         if (instance == null)
         {
-            IOT.instance = this;
+            Simple.initialize(appcontext);
 
             register = new IOTRegister();
-
-            Simple.initialize(appcontext);
 
             IOTBoot.initialize();
 

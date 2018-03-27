@@ -5,8 +5,8 @@ import android.app.Application;
 import org.json.JSONObject;
 
 import de.xavaro.android.gui.base.GUI;
+import de.xavaro.android.iot.base.IOT;
 
-import de.xavaro.android.gui.base.GUISubSystems;
 import zz.top.tpl.base.TPL;
 
 public class SystemsTPL extends TPL
@@ -37,7 +37,7 @@ public class SystemsTPL extends TPL
     {
         Log.d(LOGTAG, "onDeviceFound:");
 
-        Systems.iot.register.registerDevice(device);
+        IOT.instance.register.registerDevice(device);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class SystemsTPL extends TPL
     {
         Log.d(LOGTAG, "onDeviceStatus:");
 
-        Systems.iot.register.registerDeviceStatus(status);
+        IOT.instance.register.registerDeviceStatus(status);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class SystemsTPL extends TPL
     {
         Log.d(LOGTAG, "onDeviceMetadata:");
 
-        Systems.iot.register.registerDeviceMetadata(metatdata);
+        IOT.instance.register.registerDeviceMetadata(metatdata);
     }
 
     @Override
@@ -61,6 +61,6 @@ public class SystemsTPL extends TPL
     {
         Log.d(LOGTAG, "onDeviceCredentials:");
 
-        Systems.iot.register.registerDeviceCredentials(credentials);
+        IOT.instance.register.registerDeviceCredentials(credentials);
     }
 }

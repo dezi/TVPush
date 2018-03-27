@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.simple.Simple;
 
+import de.xavaro.android.iot.base.IOT;
 import zz.top.sny.base.SNY;
 import zz.top.utl.Json;
 
@@ -38,7 +39,7 @@ public class SystemsSNY extends SNY
     {
         Log.d(LOGTAG, "onDeviceFound:" + Json.toPretty(device));
 
-        Systems.iot.register.registerDevice(device);
+        IOT.instance.register.registerDevice(device);
     }
 
     @Override
@@ -46,7 +47,7 @@ public class SystemsSNY extends SNY
     {
         Log.d(LOGTAG, "onDeviceStatus:" + Json.toPretty(status));
 
-        Systems.iot.register.registerDeviceStatus(status);
+        IOT.instance.register.registerDeviceStatus(status);
     }
 
     @Override
@@ -54,7 +55,7 @@ public class SystemsSNY extends SNY
     {
         Log.d(LOGTAG, "onDeviceMetadata:");
 
-        Systems.iot.register.registerDeviceMetadata(metatdata);
+        IOT.instance.register.registerDeviceMetadata(metatdata);
     }
 
     @Override
@@ -62,7 +63,7 @@ public class SystemsSNY extends SNY
     {
         Log.d(LOGTAG, "onDeviceCredentials:" + Json.toPretty(credentials));
 
-        Systems.iot.register.registerDeviceCredentials(credentials);
+        IOT.instance.register.registerDeviceCredentials(credentials);
     }
 
     @Override
