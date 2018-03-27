@@ -37,7 +37,7 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
     private Marker marker;
 
     private LatLng coordinates;
-    private Float altitude;
+    private Double altitude;
 
     private int zoom;
 
@@ -104,7 +104,7 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
         return usedKey;
     }
 
-    public void setCoordinates(Double lat, Double lon, Float alt)
+    public void setCoordinates(Double lat, Double lon, Double alt)
     {
         coordinates = new LatLng(lat, lon);
         altitude = alt;
@@ -207,15 +207,18 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
 
     private int saveLocation()
     {
-        if (iotObject instanceof IOTDevice)
+        if (coordinates != null)
         {
-            IOTDevice saveme = new IOTDevice(iotObject.uuid);
+            if (iotObject instanceof IOTDevice)
+            {
+                IOTDevice saveme = new IOTDevice(iotObject.uuid);
 
-            saveme.fixedLatFine = coordinates.latitude;
-            saveme.fixedLonFine = coordinates.longitude;
-            saveme.fixedAltFine = altitude;
+                saveme.fixedLatFine = coordinates.latitude;
+                saveme.fixedLonFine = coordinates.longitude;
+                saveme.fixedAltFine = altitude;
 
-            return saveIOTObject(saveme);
+                return saveIOTObject(saveme);
+            }
         }
 
         return IOTDefs.IOT_SAVE_FAILED;

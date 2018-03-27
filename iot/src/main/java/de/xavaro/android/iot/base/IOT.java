@@ -8,7 +8,6 @@ import org.json.JSONObject;
 
 import de.xavaro.android.iot.comm.IOTMessageHandler;
 import de.xavaro.android.iot.handler.IOTHandleHelo;
-import de.xavaro.android.iot.proxim.IOTProxim;
 import de.xavaro.android.iot.proxim.IOTProximLocation;
 import de.xavaro.android.iot.proxim.IOTProximScanner;
 import de.xavaro.android.iot.proxim.IOTProximServer;
@@ -45,31 +44,16 @@ public class IOT implements
     public IOTProximScanner proximScanner;
     public IOTProximLocation proximLocationListener;
 
+    private Application appcontext;
+
     public IOT(Application appcontext)
     {
         if (instance == null)
         {
             instance = this;
 
+            this.appcontext = appcontext;
             Simple.initialize(appcontext);
-
-            register = new IOTRegister();
-
-            IOTBoot.initialize();
-
-            IOTService.startService(appcontext);
-
-            IOTMessageHandler.initialize();
-
-            IOTHandleHelo.sendHELO();
-
-            IOTProximServer.startService(appcontext);
-
-            IOTProximScanner.startService(appcontext);
-
-            IOTProximLocation.startLocationListener(appcontext);
-
-            IOTAlive.startService();
         }
         else
         {
@@ -91,11 +75,33 @@ public class IOT implements
     @Override
     public void startSubsystem()
     {
+        register = new IOTRegister();
+
+        IOTBoot.initialize();
+
+        IOTService.startService(appcontext);
+
+        IOTMessageHandler.initialize();
+
+        IOTProximServer.startService(appcontext);
+
+        IOTProximScanner.startService(appcontext);
+
+        IOTProximLocation.startService(appcontext);
+        IOTAlive.startService();
+
+        IOTHandleHelo.sendHELO();
+
+        onSubsystemStarted("iot", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
     }
 
     @Override
     public void stopSubsystem()
     {
+        IOTAlive.stopService();
+        IOTProximLocation.stopService();
+
+        onSubsystemStopped("iot", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
     }
 
     @Override

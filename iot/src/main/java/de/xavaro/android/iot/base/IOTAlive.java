@@ -1,6 +1,7 @@
 package de.xavaro.android.iot.base;
 
 import android.support.annotation.Nullable;
+
 import android.util.Log;
 
 import org.json.JSONArray;

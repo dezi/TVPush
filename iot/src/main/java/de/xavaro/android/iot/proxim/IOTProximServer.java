@@ -143,7 +143,7 @@ public class IOTProximServer
 
             Double lat = null;
             Double lon = null;
-            Float alt = null;
+            Double alt = null;
 
             if (IOT.device != null)
             {
@@ -174,7 +174,7 @@ public class IOTProximServer
                         .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
                         .putDouble(lat)
                         .putDouble(lon)
-                        .putFloat(alt)
+                        .putFloat((float) (double) alt)
                         .array();
 
                 callbackGPSFine = advertiseDat(bytes);
@@ -206,26 +206,18 @@ public class IOTProximServer
 
             Double lat = null;
             Double lon = null;
-            Float alt = null;
+            Double alt = null;
 
             if (IOT.device != null)
             {
-                if ((IOT.device.fixedLatCoarse != null) && (IOT.device.fixedLonCoarse != null))
-                {
-                    lat = IOT.device.fixedLatCoarse;
-                    lon = IOT.device.fixedLonCoarse;
-                    alt = IOT.device.fixedAltCoarse;
-                }
-                else
-                {
-                    IOTStatus status = new IOTStatus(IOT.device.uuid);
 
-                    if ((status.positionLatCoarse != null) && (status.positionLonCoarse != null))
-                    {
-                        lat = status.positionLatCoarse;
-                        lon = status.positionLonCoarse;
-                        alt = status.positionAltCoarse;
-                    }
+                IOTStatus status = new IOTStatus(IOT.device.uuid);
+
+                if ((status.positionLatCoarse != null) && (status.positionLonCoarse != null))
+                {
+                    lat = status.positionLatCoarse;
+                    lon = status.positionLonCoarse;
+                    alt = status.positionAltCoarse;
                 }
             }
 
@@ -237,7 +229,7 @@ public class IOTProximServer
                         .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
                         .putDouble(lat)
                         .putDouble(lon)
-                        .putFloat(alt)
+                        .putFloat((float) (double) alt)
                         .array();
 
                 callbackGPSCoarse = advertiseDat(bytes);

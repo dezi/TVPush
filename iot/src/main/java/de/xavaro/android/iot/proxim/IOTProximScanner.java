@@ -327,14 +327,14 @@ public class IOTProximScanner
         String uuid = null;
         Double lat = null;
         Double lon = null;
-        Float alt = null;
+        Double alt = null;
 
         if ((type == IOTProxim.ADVERTISE_GPS_FINE)
                 || (type == IOTProxim.ADVERTISE_GPS_COARSE))
         {
             lat = bb.getDouble();
             lon = bb.getDouble();
-            alt = bb.getFloat();
+            alt = (double) bb.getFloat();
 
             display = lat + " - " + lon + " - " + alt;
         }
@@ -387,7 +387,7 @@ public class IOTProximScanner
                     && (IOT.device.fixedLonCoarse == null)
                     && (IOT.device.fixedAltCoarse == null)))
             {
-                Float googlealt = IOTProximLocation.getAltitude(lat, lon);
+                Double googlealt = IOTProximLocation.getAltitude(lat, lon);
 
                 Log.d(LOGTAG, "evalIOTAdver: Bootstrap altitude googlealt=" + googlealt);
 
