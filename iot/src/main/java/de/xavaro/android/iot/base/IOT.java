@@ -49,6 +49,8 @@ public class IOT implements
     {
         if (instance == null)
         {
+            instance = this;
+
             Simple.initialize(appcontext);
 
             register = new IOTRegister();

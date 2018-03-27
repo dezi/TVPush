@@ -40,6 +40,8 @@ public class GUI implements
     {
         if (application instanceof GUIApplication)
         {
+            instance = this;
+
             this.application = (GUIApplication) application;
         }
         else

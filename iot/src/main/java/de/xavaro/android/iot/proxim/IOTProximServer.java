@@ -86,12 +86,11 @@ public class IOTProximServer
                     .setTimeout(0)
                     .build();
 
-            advertiseGPSCoarse();
             advertiseGPSFine();
-
-            advertiseIOTHuman();
+            advertiseGPSCoarse();
             advertiseIOTDevice();
 
+            //advertiseIOTHuman();
             //advertiseIOTDevname();
         }
     }
@@ -101,28 +100,28 @@ public class IOTProximServer
     {
         if (btLEAdvertiser == null) return;
 
-        if (callbackGPSCoarse != null)
-        {
-            btLEAdvertiser.stopAdvertising(callbackGPSCoarse);
-            callbackGPSCoarse = null;
-        }
-
         if (callbackGPSFine != null)
         {
             btLEAdvertiser.stopAdvertising(callbackGPSFine);
             callbackGPSFine = null;
         }
 
-        if (callbackIOTHuman != null)
+        if (callbackGPSCoarse != null)
         {
-            btLEAdvertiser.stopAdvertising(callbackIOTHuman);
-            callbackIOTHuman = null;
+            btLEAdvertiser.stopAdvertising(callbackGPSCoarse);
+            callbackGPSCoarse = null;
         }
 
         if (callbackIOTDevice != null)
         {
             btLEAdvertiser.stopAdvertising(callbackIOTDevice);
             callbackIOTDevice = null;
+        }
+
+        if (callbackIOTHuman != null)
+        {
+            btLEAdvertiser.stopAdvertising(callbackIOTHuman);
+            callbackIOTHuman = null;
         }
 
         if (callbackIOTDevname != null)

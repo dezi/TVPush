@@ -638,12 +638,14 @@ public class IOTProximScanner
                 long msb = bb.getLong();
                 long lsb = bb.getLong();
 
-                uuid = (new UUID(msb, lsb)).toString();
-
-                name = uuid + " (" + major + "/" + minor + ")";
-                caps = "beacon|ibeacon|fixed|stupid|gpsfine";
-                type = IOTDevice.TYPE_BEACON;
-                model = "iBeacon";
+                if ((msb != 0) && (lsb != 0))
+                {
+                    uuid = (new UUID(msb, lsb)).toString();
+                    name = uuid + " (" + major + "/" + minor + ")";
+                    caps = "beacon|ibeacon|fixed|stupid|gpsfine";
+                    type = IOTDevice.TYPE_BEACON;
+                    model = "iBeacon";
+                }
             }
         }
         else
