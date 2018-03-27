@@ -82,7 +82,7 @@ public class IOTProximServer
             settings = new AdvertiseSettings.Builder()
                     .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
                     .setTxPowerLevel(powerLevel)
-                    .setConnectable(true)
+                    .setConnectable(false)
                     .setTimeout(0)
                     .build();
 
