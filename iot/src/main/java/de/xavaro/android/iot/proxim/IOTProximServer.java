@@ -131,59 +131,6 @@ public class IOTProximServer
         }
     }
 
-    public void advertiseGPSCoarse()
-    {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        {
-            if (callbackGPSCoarse != null)
-            {
-                btLEAdvertiser.stopAdvertising(callbackGPSCoarse);
-                callbackGPSCoarse = null;
-            }
-
-            Double lat = null;
-            Double lon = null;
-            Float alt = null;
-
-            if (IOT.device != null)
-            {
-                if ((IOT.device.fixedLatCoarse != null) && (IOT.device.fixedLonCoarse != null))
-                {
-                    lat = IOT.device.fixedLatCoarse;
-                    lon = IOT.device.fixedLonCoarse;
-                    alt = IOT.device.fixedAltCoarse;
-                }
-                else
-                {
-                    IOTStatus status = new IOTStatus(IOT.device.uuid);
-
-                    if ((status.positionLatCoarse != null) && (status.positionLonCoarse != null))
-                    {
-                        lat = status.positionLatCoarse;
-                        lon = status.positionLonCoarse;
-                        alt = status.positionAltCoarse;
-                    }
-                }
-            }
-
-            if ((lat != null) && (lon != null))
-            {
-                byte[] bytes = ByteBuffer
-                        .allocate(1 + 1 + 8 + 8 + 4)
-                        .put(IOTProxim.ADVERTISE_GPS_COARSE)
-                        .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
-                        .putDouble(lat)
-                        .putDouble(lon)
-                        .putFloat(alt)
-                        .array();
-
-                callbackGPSCoarse = advertiseDat(bytes);
-
-                Log.d(LOGTAG, "advertiseGPSCoarse: lat=" + lat + " lon=" + lon + " alt=" + alt);
-            }
-        }
-    }
-
     public void advertiseGPSFine()
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
@@ -233,6 +180,69 @@ public class IOTProximServer
                 callbackGPSFine = advertiseDat(bytes);
 
                 Log.d(LOGTAG, "advertiseGPSFine: lat=" + lat + " lon=" + lon + " alt=" + alt);
+            }
+        }
+    }
+
+    public void advertiseGPSCoarse()
+    {
+        if (callbackGPSFine != null)
+        {
+            //
+            // No need to publish a coarse location
+            // if we have a fine location.
+            //
+
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            if (callbackGPSCoarse != null)
+            {
+                btLEAdvertiser.stopAdvertising(callbackGPSCoarse);
+                callbackGPSCoarse = null;
+            }
+
+            Double lat = null;
+            Double lon = null;
+            Float alt = null;
+
+            if (IOT.device != null)
+            {
+                if ((IOT.device.fixedLatCoarse != null) && (IOT.device.fixedLonCoarse != null))
+                {
+                    lat = IOT.device.fixedLatCoarse;
+                    lon = IOT.device.fixedLonCoarse;
+                    alt = IOT.device.fixedAltCoarse;
+                }
+                else
+                {
+                    IOTStatus status = new IOTStatus(IOT.device.uuid);
+
+                    if ((status.positionLatCoarse != null) && (status.positionLonCoarse != null))
+                    {
+                        lat = status.positionLatCoarse;
+                        lon = status.positionLonCoarse;
+                        alt = status.positionAltCoarse;
+                    }
+                }
+            }
+
+            if ((lat != null) && (lon != null))
+            {
+                byte[] bytes = ByteBuffer
+                        .allocate(1 + 1 + 8 + 8 + 4)
+                        .put(IOTProxim.ADVERTISE_GPS_COARSE)
+                        .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
+                        .putDouble(lat)
+                        .putDouble(lon)
+                        .putFloat(alt)
+                        .array();
+
+                callbackGPSCoarse = advertiseDat(bytes);
+
+                Log.d(LOGTAG, "advertiseGPSCoarse: lat=" + lat + " lon=" + lon + " alt=" + alt);
             }
         }
     }
