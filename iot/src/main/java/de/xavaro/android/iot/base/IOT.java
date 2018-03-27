@@ -54,7 +54,6 @@ public class IOT implements
             register = new IOTRegister();
 
             Simple.initialize(appcontext);
-            Simple.checkBTFeatures(appcontext);
 
             IOTBoot.initialize();
 
@@ -63,8 +62,6 @@ public class IOT implements
             IOTMessageHandler.initialize();
 
             IOTHandleHelo.sendHELO();
-
-            IOTProxim.checkBTPermissions(appcontext);
 
             IOTProximServer.startService(appcontext);
 
