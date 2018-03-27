@@ -63,27 +63,27 @@ public class GUIDefs
     public static final int MIN_EMS_DIALOGS = Simple.isTablet() ? 20 : 12;
     public static final int MAX_EMS_DIALOGS = Simple.isTablet() ? 20 : 12;
 
-    public static final int CROSSHAIR_SIZE  = Simple.isTablet() ? 150 : 150;
-    public static final int ICON_SIZE       = Simple.isTablet() ? 50 : 50;
     public static final int ICON_PADD       = PADDING_SMALL;
+    public static final int ICON_SIZE       = Simple.isTablet() ?  50 :  50;
+    public static final int CROSSHAIR_SIZE  = Simple.isTablet() ? 150 : 150;
 
     //
     // Nice characters.
     //
 
-    public static final Character UTF_OK        = 0x2316;
+    public static final Character UTF_OK           = 0x2316;
 
-    public static final Character UTF_LEFT      = 0x25c0;
-    public static final Character UTF_RIGHT     = 0x25b6;
-    public static final Character UTF_UP        = 0x25b2;
-    public static final Character UTF_DOWN      = 0x25bc;
+    public static final Character UTF_LEFT         = 0x27A1; // 0x25c0;
+    public static final Character UTF_RIGHT        = 0x2B05; // 0x25b6;
+    public static final Character UTF_UP           = 0x2B06; // 0x25b2;
+    public static final Character UTF_DOWN         = 0x2B07; // 0x25bc;
 
-    public static final String UTF_REWIND       = "" + UTF_LEFT + UTF_LEFT;
-    public static final String UTF_FAST_FORWARD = "" + UTF_RIGHT + UTF_RIGHT;
-    public static final String UTF_MOVE         = "" + UTF_LEFT + UTF_RIGHT + UTF_UP + UTF_DOWN;
+    public static final Character UTF_REWIND       = 0x23EA; // "" + UTF_LEFT + UTF_LEFT;
+    public static final Character UTF_FAST_FORWARD = 0x23E9; // "" + UTF_RIGHT + UTF_RIGHT;
 
-    public static final String UTF_ZOOMIN       = UTF_REWIND;
-    public static final String UTF_ZOOMOUT      = UTF_FAST_FORWARD;
+    public static final String UTF_MOVE            = "" + UTF_LEFT + UTF_RIGHT + UTF_UP + UTF_DOWN;
+    public static final String UTF_ZOOMIN          = "" + UTF_REWIND;
+    public static final String UTF_ZOOMOUT         = "" + UTF_FAST_FORWARD;
 
     // @formatter:on
 }

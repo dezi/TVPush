@@ -115,10 +115,12 @@ public class GUICanFocusDelegate
         {
             if (gf.getHighlight())
             {
-                if (gf.getHasFocus())
+                if (! gf.getHasFocus())
                 {
-                    gf.setRoundedCorners(0, gf.getBackgroundColor(), GUIDefs.COLOR_TV_FOCUS_HIGHLIGHT);
+                    gf.saveBackground();
                 }
+
+                gf.setRoundedCorners(0, gf.getBackgroundColor(), GUIDefs.COLOR_TV_FOCUS_HIGHLIGHT);
 
                 if (gt != null)
                 {
@@ -133,6 +135,10 @@ public class GUICanFocusDelegate
                 {
                     gf.setRoundedCorners(0, gf.getBackgroundColor(), GUIDefs.COLOR_TV_FOCUS);
                 }
+                else
+                {
+                    gf.restoreBackground();
+                }
 
                 Log.d(LOGTAG, "adjustHighlightState: onHighlightFinished.");
             }
@@ -143,29 +149,32 @@ public class GUICanFocusDelegate
 
     public static void setupOnFocusChangeListener(View view, boolean focusable)
     {
-        if (Simple.isTV() && (view instanceof GUICanFocus))
+        //if (Simple.isTV())
         {
-            if (focusable)
+            if (view instanceof GUICanFocus)
             {
-                int padneed = Simple.dipToPx(2);
+                if (focusable)
+                {
+                    int padneed = Simple.dipToPx(2);
 
-                int padleft = view.getPaddingLeft();
-                int padtop = view.getPaddingTop();
-                int padright = view.getPaddingRight();
-                int padbottom = view.getPaddingBottom();
+                    int padleft = view.getPaddingLeft();
+                    int padtop = view.getPaddingTop();
+                    int padright = view.getPaddingRight();
+                    int padbottom = view.getPaddingBottom();
 
-                if (padleft < padneed) padleft = padneed;
-                if (padtop < padneed) padtop = padneed;
-                if (padright < padneed) padright = padneed;
-                if (padbottom < padneed) padbottom = padneed;
+                    if (padleft < padneed) padleft = padneed;
+                    if (padtop < padneed) padtop = padneed;
+                    if (padright < padneed) padright = padneed;
+                    if (padbottom < padneed) padbottom = padneed;
 
-                view.setPadding(padleft, padtop, padright, padbottom);
+                    view.setPadding(padleft, padtop, padright, padbottom);
 
-                view.setOnFocusChangeListener(genericOnFocusChangeListener);
-            }
-            else
-            {
-                view.setOnFocusChangeListener(null);
+                    view.setOnFocusChangeListener(genericOnFocusChangeListener);
+                }
+                else
+                {
+                    view.setOnFocusChangeListener(null);
+                }
             }
         }
     }
