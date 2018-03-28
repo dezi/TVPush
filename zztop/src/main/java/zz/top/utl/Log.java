@@ -6,6 +6,7 @@ public class Log
 
     public static String[] allow = new String[]
             {
+                    "GLSRenderer",
                     "p2p*",
                     "gls*+"
             };
@@ -20,9 +21,8 @@ public class Log
 
     public static void e(String logtag, String message)
     {
-        android.util.Log.d(logtag, message);
+        android.util.Log.e(logtag, message);
     }
-
 
     public static boolean checkLog(String[] checks, String logtag)
     {

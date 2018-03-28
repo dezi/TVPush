@@ -35,6 +35,12 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
 
         setIsWizzard(true, true, 2, Gravity.RIGHT);
 
+        GUIFrameLayout padFrame = new GUIFrameLayout(context);
+        padFrame.setPaddingDip(GUIDefs.PADDING_SMALL);
+
+        contentFrame.addView(padFrame);
+
+
         mainFrame = new GUIFrameLayout(context)
         {
             @Override
@@ -64,13 +70,23 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
                 + " und" + " " + GUIDefs.UTF_ZOOMOUT;
 
         mainFrame.setSizeDip(Simple.MP, Simple.MP);
-        mainFrame.setPaddingDip(GUIDefs.PADDING_SMALL);
         mainFrame.setHighlightable(true);
         mainFrame.setFocusable(true);
         mainFrame.setToastFocus(toastFocus);
         mainFrame.setToastHighlight(toastHighlight);
 
-        contentFrame.addView(mainFrame);
+        padFrame.addView(mainFrame);
+
+        mainFrame.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Log.d(LOGTAG, "onClick: mainFrame.");
+
+                mainFrame.setHighlight(! mainFrame.getHighlight());
+            }
+        });
     }
 
     @Override

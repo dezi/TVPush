@@ -1,10 +1,9 @@
 package zz.top.gls;
 
+import android.opengl.GLSurfaceView;
+import android.util.SparseArray;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.opengl.GLSurfaceView;
-import android.os.AsyncTask;
-import android.util.SparseArray;
 
 import com.google.android.gms.vision.face.Face;
 
@@ -21,8 +20,6 @@ import zz.top.utl.Log;
 public class GLSRenderer implements GLSurfaceView.Renderer
 {
     private final static String LOGTAG = GLSRenderer.class.getSimpleName();
-
-    private final static int IFRAME_LAG_FUCK = 8;
 
     private GLSShaderRGB2SUR rgbShader;
     private GLSShaderYUV2RGB yuvShader;
@@ -50,8 +47,9 @@ public class GLSRenderer implements GLSurfaceView.Renderer
     private int lastframes;
     private long lasttimems;
 
-    public final ArrayList<Buffer> facesQueue = new ArrayList<>();
-    public final ArrayList<GLSFrame> frameQueue = new ArrayList<>();
+    private final ArrayList<Buffer> facesQueue = new ArrayList<>();
+    private final ArrayList<GLSFrame> frameQueue = new ArrayList<>();
+    private final ArrayList<GLSFrame> renderQueue = new ArrayList<>();
 
     public GLSRenderer(Context context)
     {
@@ -163,33 +161,61 @@ public class GLSRenderer implements GLSurfaceView.Renderer
     {
         synchronized (frameQueue)
         {
-            if (avFrame.isIFrame())
-            {
-                //
-                // Fuck this. I-Frames take longer to
-                // compress and therefore come out of order.
-                // They are usually 4 - 5 frames late.
-                // If they come, insert into the right
-                // spot.
-                //
-
-                int index;
-
-                for (index = 0; index < frameQueue.size(); index++)
-                {
-                    GLSFrame frame = frameQueue.get(index);
-
-                    if (frame.getFrameNo() > avFrame.getFrameNo())
-                    {
-                        break;
-                    }
-                }
-
-                frameQueue.add(index, avFrame);
-            }
-            else
+            if (frameQueue.size() == 0)
             {
                 frameQueue.add(avFrame);
+
+                return;
+            }
+
+            int frst = frameQueue.get(0).getFrameNo();;
+            int last = frameQueue.get(frameQueue.size() - 1).getFrameNo();
+            int curr = avFrame.getFrameNo();
+
+            //
+            // Fuck this. I-Frames take longer to
+            // compress and therefore come out of order.
+            // They are usually 4 - 5 frames late.
+            // All frames must be inserted in the
+            // right slot in the list.
+            //
+
+            int index;
+
+            for (index = 0; index < frameQueue.size(); index++)
+            {
+                GLSFrame frame = frameQueue.get(index);
+
+                if (frame.getFrameNo() > curr)
+                {
+                    break;
+                }
+            }
+
+            frameQueue.add(index, avFrame);
+
+            while (frameQueue.size() > 1)
+            {
+                if ((frameQueue.get(0).getFrameNo() + 1) == frameQueue.get(1).getFrameNo())
+                {
+                    renderQueue.add(frameQueue.remove(0));
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (avFrame.isIFrame())
+            {
+                if (curr > (last + 2))
+                {
+                    Log.e(LOGTAG, "renderFrame: iframe"
+                            + " curr=" + curr
+                            + " frst=" + frst
+                            + " last=" + last
+                    );
+                }
             }
         }
     }
@@ -236,12 +262,11 @@ public class GLSRenderer implements GLSurfaceView.Renderer
 
         GLSFrame avFrame = null;
 
-        while (frameQueue.size() > IFRAME_LAG_FUCK)
+        while (renderQueue.size() > 0)
         {
-
-            synchronized (frameQueue)
+            synchronized (renderQueue)
             {
-                avFrame = frameQueue.remove(0);
+                avFrame = renderQueue.remove(0);
             }
 
             //
@@ -276,6 +301,8 @@ public class GLSRenderer implements GLSurfaceView.Renderer
                 framesCorrupt = 0;
 
                 Log.d(LOGTAG, "renderFrame: createDecoder codec=" + avFrame.getCodecId());
+
+                Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
             }
 
             if (videoDecoder.decodeDecoder(avFrame.getFrameData(), avFrame.getFrameSize(), avFrame.getTimeStamp()))
@@ -324,15 +351,17 @@ public class GLSRenderer implements GLSurfaceView.Renderer
 
             if (diffmillis >= 1000)
             {
-                    Log.d(LOGTAG, "onDrawFrame:"
-                            + " fps=" + lastframes
-                            + " back=" + frameQueue.size()
-                            + " width=" + sourceWidth
-                            + " height=" + sourceHeight
-                            + " fno=" + avFrame.getFrameNo()
-                            + " dec=" + framesDecoded
-                            + " bad=" + framesCorrupt
-                    );
+                int back = renderQueue.size() + frameQueue.size();
+
+                Log.d(LOGTAG, "onDrawFrame:"
+                        + " fps=" + lastframes
+                        + " back=" + back
+                        + " width=" + sourceWidth
+                        + " height=" + sourceHeight
+                        + " fno=" + avFrame.getFrameNo()
+                        + " dec=" + framesDecoded
+                        + " bad=" + framesCorrupt
+                );
 
                 lastframes = 0;
                 lasttimems = System.currentTimeMillis();
@@ -355,15 +384,6 @@ public class GLSRenderer implements GLSurfaceView.Renderer
                     facesQueue.add(faceBuffer);
                 }
             }
-        }
-    }
-
-    private class GLSFaceAsync extends AsyncTask<Buffer , Integer, Long>
-    {
-        protected Long doInBackground(Buffer... buffer)
-        {
-
-            return 0L;
         }
     }
 
