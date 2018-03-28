@@ -30,7 +30,7 @@ public class IOTLocations extends IOTList
 
     public static IOTLocation getEntry(String uuid)
     {
-        return (IOTLocation) instance.list.get(uuid);
+        return (IOTLocation) instance.getEntryInternal(uuid);
     }
     
     public static int addEntry(IOTLocation newLocation, boolean external)

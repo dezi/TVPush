@@ -28,7 +28,7 @@ public class IOTCredentials extends IOTList
 
     public static IOTCredential getEntry(String uuid)
     {
-        return (IOTCredential) instance.list.get(uuid);
+        return (IOTCredential) instance.getEntryInternal(uuid);
     }
 
     public static void addEntry(IOTCredential newCredential, boolean external)

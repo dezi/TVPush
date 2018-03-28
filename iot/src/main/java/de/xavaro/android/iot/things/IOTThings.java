@@ -13,10 +13,10 @@ public class IOTThings
     {
         IOTThing thing;
 
-        if ((thing = (IOTThing) IOTHumans.instance.list.get(uuid)) != null) return thing;
-        if ((thing = (IOTThing) IOTDevices.instance.list.get(uuid)) != null) return thing;
-        if ((thing = (IOTThing) IOTDomains.instance.list.get(uuid)) != null) return thing;
-        if ((thing = (IOTThing) IOTLocations.instance.list.get(uuid)) != null) return thing;
+        if ((thing = IOTHumans.getEntry(uuid)) != null) return thing;
+        if ((thing = IOTDevices.getEntry(uuid)) != null) return thing;
+        if ((thing = IOTDomains.getEntry(uuid)) != null) return thing;
+        if ((thing = IOTLocations.getEntry(uuid)) != null) return thing;
 
         return null;
     }

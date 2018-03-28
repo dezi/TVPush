@@ -30,7 +30,7 @@ public class IOTHumans extends IOTList
 
     public static IOTHuman getEntry(String uuid)
     {
-        return (IOTHuman) instance.list.get(uuid);
+        return (IOTHuman) instance.getEntryInternal(uuid);
     }
 
     public static int addEntry(IOTHuman newHuman, boolean external)

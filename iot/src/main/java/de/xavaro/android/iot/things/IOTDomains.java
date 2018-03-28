@@ -30,7 +30,7 @@ public class IOTDomains extends IOTList
 
     public static IOTDomain getEntry(String uuid)
     {
-        return (IOTDomain) instance.list.get(uuid);
+        return (IOTDomain) instance.getEntryInternal(uuid);
     }
 
     public static int addEntry(IOTDomain newDomain, boolean external)

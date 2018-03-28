@@ -29,7 +29,7 @@ public class IOTStatusses extends IOTList
 
     public static IOTStatus getEntry(String uuid)
     {
-        return (IOTStatus) instance.list.get(uuid);
+        return (IOTStatus) instance.getEntryInternal(uuid);
     }
 
     public static int addEntry(IOTStatus newStatus, boolean external)

@@ -29,7 +29,7 @@ public class IOTMetadatas extends IOTList
 
     public static IOTMetadata getEntry(String uuid)
     {
-        return (IOTMetadata) instance.list.get(uuid);
+        return (IOTMetadata) instance.getEntryInternal(uuid);
     }
 
     public static void addEntry(IOTMetadata newMetadata, boolean external)

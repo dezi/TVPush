@@ -38,6 +38,11 @@ public class GUIListEntryIOT extends GUIListEntry
 
     private OnUpdateContentListener onUpdateContentListener;
 
+    public GUIListEntryIOT(Context context)
+    {
+        super(context);
+    }
+
     public GUIListEntryIOT(Context context, String uuid)
     {
         super(context);
@@ -115,24 +120,27 @@ public class GUIListEntryIOT extends GUIListEntry
             }
         }
 
-        headerViev.setText(iotThing.name);
-
-        Long lastPing = IOTAlive.getAliveNetwork(uuid);
-
-        if (lastPing != null)
+        if (iotThing != null)
         {
-            boolean pingt = (System.currentTimeMillis() - lastPing) < (60 * 1000);
-            setStatusColor(pingt ? GUIDefs.STATUS_COLOR_GREEN : GUIDefs.STATUS_COLOR_RED);
-        }
+            headerViev.setText(iotThing.name);
 
-        if (onLongClickListener == null)
-        {
-            setOnLongClickListener(onThingLongClickListener);
-        }
+            Long lastPing = IOTAlive.getAliveNetwork(uuid);
 
-        if (onUpdateContentListener != null)
-        {
-            onUpdateContentListener.onUpdateContent(this);
+            if (lastPing != null)
+            {
+                boolean pingt = (System.currentTimeMillis() - lastPing) < (60 * 1000);
+                setStatusColor(pingt ? GUIDefs.STATUS_COLOR_GREEN : GUIDefs.STATUS_COLOR_RED);
+            }
+
+            if (onLongClickListener == null)
+            {
+                setOnLongClickListener(onThingLongClickListener);
+            }
+
+            if (onUpdateContentListener != null)
+            {
+                onUpdateContentListener.onUpdateContent(this);
+            }
         }
     }
 
@@ -201,8 +209,6 @@ public class GUIListEntryIOT extends GUIListEntry
         @Override
         public void onClick(View view)
         {
-            GUIListEntryIOT entry = (GUIListEntryIOT) view;
-
             IOTDevice device = IOTDevices.getEntry(uuid);
             IOTStatus status = IOTStatusses.getEntry(uuid);
             IOTCredential credential = IOTCredentials.getEntry(uuid);

@@ -10,21 +10,21 @@ import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Prefs;
 import de.xavaro.android.iot.simple.Simple;
 
-public abstract class IOTList
+public abstract class IOTListGeneric<T>
 {
-    private final static String LOGTAG = IOTList.class.getSimpleName();
+    private final static String LOGTAG = IOTListGeneric.class.getSimpleName();
 
     private String classKey;
-    private Map<String, IOTObject> list = new HashMap<>();
+    private Map<String, T> list = new HashMap<>();
 
-    public IOTList(String classKey)
+    public IOTListGeneric(String classKey)
     {
         this.classKey = classKey;
 
         loadAllFromStorage();
     }
 
-    public abstract IOTObject loadFromJson(String json);
+    public abstract T loadFromJson(String json);
 
     public int getListSize()
     {
@@ -35,7 +35,7 @@ public abstract class IOTList
     {
         JSONArray result = new JSONArray();
 
-        for (Map.Entry<String, IOTObject> entry : list.entrySet())
+        for (Map.Entry<String, T> entry : list.entrySet())
         {
             Json.put(result, entry.getKey());
         }
@@ -43,9 +43,9 @@ public abstract class IOTList
         return result;
     }
 
-    public void putEntry(IOTObject object)
+    public void putEntry(T object)
     {
-        list.put(object.uuid, object);
+        list.put(((IOTObject) object).uuid, object);
     }
 
     public void removeEntry(String uuid)
@@ -55,7 +55,7 @@ public abstract class IOTList
         Prefs.removePref(classKey + "." + uuid);
     }
 
-    public IOTObject getEntryInternal(String uuid)
+    public T getEntryInternal(String uuid)
     {
         return list.get(uuid);
     }
@@ -70,10 +70,10 @@ public abstract class IOTList
 
             String json = Prefs.getString(prefkey);
 
-            IOTObject iotObject = loadFromJson(json);
+            T iotObject = loadFromJson(json);
             if (iotObject == null) continue;
 
-            list.put(iotObject.uuid, iotObject);
+            list.put(((IOTObject) iotObject).uuid, iotObject);
         }
     }
 
