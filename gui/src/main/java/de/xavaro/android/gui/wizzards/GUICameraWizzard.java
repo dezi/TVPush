@@ -20,6 +20,7 @@ import de.xavaro.android.gui.simple.Simple;
 import pub.android.interfaces.pub.PUBCamera;
 import pub.android.interfaces.pub.PUBSurface;
 
+@SuppressWarnings("CanBeFinal")
 public class GUICameraWizzard extends GUIPluginTitleIOT
 {
     private final static String LOGTAG = GUICameraWizzard.class.getSimpleName();
