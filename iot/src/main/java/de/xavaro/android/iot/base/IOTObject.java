@@ -48,11 +48,6 @@ public abstract class IOTObject
         loadFromStorage();
     }
 
-    public IOTObject(String jsonstr, boolean dummy)
-    {
-        fromJsonString(jsonstr);
-    }
-
     public IOTObject(JSONObject json)
     {
         fromJson(json);

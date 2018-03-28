@@ -163,9 +163,9 @@ public class GUIListEntryIOT extends GUIListEntry
         @Override
         public void onClick(View view)
         {
-            IOTDevice device = IOTDevice.list.getEntryInternal(uuid);
-            IOTStatus status = IOTStatus.list.getEntryInternal(uuid);
-            IOTCredential credential = IOTCredential.list.getEntryInternal(uuid);
+            IOTDevice device = IOTDevice.list.getEntry(uuid);
+            IOTStatus status = IOTStatus.list.getEntry(uuid);
+            IOTCredential credential = IOTCredential.list.getEntry(uuid);
 
             PUBSmartPlug handler = GUI.instance.onSmartPlugHandlerRequest(
                     device.toJson(),
@@ -184,9 +184,9 @@ public class GUIListEntryIOT extends GUIListEntry
         @Override
         public void onClick(View view)
         {
-            IOTDevice device = IOTDevice.list.getEntryInternal(uuid);
-            IOTStatus status = IOTStatus.list.getEntryInternal(uuid);
-            IOTCredential credential = IOTCredential.list.getEntryInternal(uuid);
+            IOTDevice device = IOTDevice.list.getEntry(uuid);
+            IOTStatus status = IOTStatus.list.getEntry(uuid);
+            IOTCredential credential = IOTCredential.list.getEntry(uuid);
 
             PUBSmartBulb handler = GUI.instance.onSmartBulbHandlerRequest(
                     device.toJson(),
@@ -205,9 +205,9 @@ public class GUIListEntryIOT extends GUIListEntry
         @Override
         public void onClick(View view)
         {
-            IOTDevice device = IOTDevice.list.getEntryInternal(uuid);
-            IOTStatus status = IOTStatus.list.getEntryInternal(uuid);
-            IOTCredential credential = IOTCredential.list.getEntryInternal(uuid);
+            IOTDevice device = IOTDevice.list.getEntry(uuid);
+            IOTStatus status = IOTStatus.list.getEntry(uuid);
+            IOTCredential credential = IOTCredential.list.getEntry(uuid);
 
             PUBCamera handler = GUI.instance.onCameraHandlerRequest(
                     device.toJson(),

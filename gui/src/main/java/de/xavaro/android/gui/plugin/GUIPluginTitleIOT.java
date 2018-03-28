@@ -54,22 +54,22 @@ public class GUIPluginTitleIOT extends GUIPluginTitle
 
         if (iotObjectChanged instanceof IOTHuman)
         {
-            saved = IOTHuman.list.addEntryInternal((IOTHuman) iotObjectChanged, true);
+            saved = IOTHuman.list.addEntry((IOTHuman) iotObjectChanged, true);
         }
 
         if (iotObjectChanged instanceof IOTDevice)
         {
-            saved = IOTDevice.list.addEntryInternal((IOTDevice) iotObjectChanged, true);
+            saved = IOTDevice.list.addEntry((IOTDevice) iotObjectChanged, true);
         }
 
         if (iotObjectChanged instanceof IOTDomain)
         {
-            saved = IOTDomain.list.addEntryInternal((IOTDomain) iotObjectChanged, true);
+            saved = IOTDomain.list.addEntry((IOTDomain) iotObjectChanged, true);
         }
 
         if (iotObjectChanged instanceof IOTLocation)
         {
-            saved = IOTLocation.list.addEntryInternal((IOTLocation) iotObjectChanged, true);
+            saved = IOTLocation.list.addEntry((IOTLocation) iotObjectChanged, true);
         }
 
         if (saved != IOTDefs.IOT_SAVE_UNCHANGED)

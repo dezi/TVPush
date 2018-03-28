@@ -35,17 +35,17 @@ public class GUIPingWizzard extends GUIPluginTitleListIOT
 
     public void collectEntries(GUIListView listView, boolean todo)
     {
-        JSONArray list = IOTDevice.list.getListUUIDs();
+        JSONArray list = IOTDevice.list.getUUIDList();
 
         for (int inx = 0; inx < list.length(); inx++)
         {
             String uuid = Json.getString(list, inx);
-            IOTDevice device = IOTDevice.list.getEntryInternal(uuid);
+            IOTDevice device = IOTDevice.list.getEntry(uuid);
 
             if (device == null) continue;
             if (todo) continue;
 
-            IOTStatus status = IOTStatus.list.getEntryInternal(uuid);
+            IOTStatus status = IOTStatus.list.getEntry(uuid);
             if (status == null) continue;
 
             String connect = (status.ipaddr != null) ? status.ipaddr : status.macaddr;

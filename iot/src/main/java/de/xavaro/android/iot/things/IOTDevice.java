@@ -63,11 +63,6 @@ public class IOTDevice extends IOTThing
         super(json);
     }
 
-    public IOTDevice(String jsonstr, boolean dummy)
-    {
-        super(jsonstr, dummy);
-    }
-
     public boolean hasCapability(String capability)
     {
         if (capabilities != null)

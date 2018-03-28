@@ -48,7 +48,7 @@ public class GUIPluginTitleListIOT extends GUIPluginTitleList
                 if (! (listView.getChildAt(inx) instanceof GUIListEntryIOT)) continue;
 
                 GUIListEntryIOT entry = (GUIListEntryIOT) listView.getChildAt(inx);
-                IOTDevice device = IOTDevice.list.getEntryInternal(entry.uuid);
+                IOTDevice device = IOTDevice.list.getEntry(entry.uuid);
 
                 if (device == null) continue;
                 if (device.uuid == null) continue;

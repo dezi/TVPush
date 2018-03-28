@@ -157,14 +157,14 @@ public class IOT implements
     {
         JSONArray result = new JSONArray();
 
-        JSONArray list = IOTDevice.list.getListUUIDs();
+        JSONArray list = IOTDevice.list.getUUIDList();
 
         for (int inx = 0; inx < list.length(); inx++)
         {
             String uuid = Json.getString(list, inx);
             if (uuid == null) continue;
 
-            IOTDevice device = IOTDevice.list.getEntryInternal(uuid);
+            IOTDevice device = IOTDevice.list.getEntry(uuid);
             if (device == null) continue;
 
             if (device.hasCapability(capability))

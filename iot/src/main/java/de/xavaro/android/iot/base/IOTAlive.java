@@ -110,13 +110,13 @@ public class IOTAlive
                 if ((list == null) || (index >= list.length()))
                 {
                     index = 0;
-                    list = IOTDevice.list.getListUUIDs();
+                    list = IOTDevice.list.getUUIDList();
                 }
 
                 String uuid = Json.getString(list, index++);
                 if (uuid == null) continue;
 
-                IOTStatus status = IOTStatus.list.getEntryInternal(uuid);
+                IOTStatus status = IOTStatus.list.getEntry(uuid);
                 if (status == null) continue;
 
                 if (status.ipaddr != null) performPing(uuid, status.ipaddr);
@@ -160,7 +160,7 @@ public class IOTAlive
 
         setRequested(uuid);
 
-        IOTDevice device = IOTDevice.list.getEntryInternal(uuid);
+        IOTDevice device = IOTDevice.list.getEntry(uuid);
         if (device == null) return;
 
         if (! device.driver.equals("tpl")) return;

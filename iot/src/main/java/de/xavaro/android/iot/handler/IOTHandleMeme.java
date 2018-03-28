@@ -48,7 +48,7 @@ public class IOTHandleMeme extends IOTHandle
 
         IOTDevice newDevice = new IOTDevice(device);
 
-        if (IOTDevice.list.addEntryInternal(newDevice, true) >= 0)
+        if (IOTDevice.list.addEntry(newDevice, true) >= 0)
         {
             //
             // Collect status.
@@ -59,7 +59,7 @@ public class IOTHandleMeme extends IOTHandle
             newStatus.ipaddr = Json.getString(origin, "ipaddr");
             newStatus.ipport = Json.getInt(origin, "ipport");
 
-            if (IOTStatus.list.addEntryInternal(newStatus, false) >= 0)
+            if (IOTStatus.list.addEntry(newStatus, false) >= 0)
             {
                 //
                 // Reply with own identity.

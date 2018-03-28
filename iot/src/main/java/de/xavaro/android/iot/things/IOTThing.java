@@ -30,20 +30,15 @@ public abstract class IOTThing extends IOTObject
         super(json);
     }
 
-    public IOTThing(String jsonstr, boolean dummy)
-    {
-        super(jsonstr, dummy);
-    }
-
     @Nullable
     public static IOTThing getEntry(String uuid)
     {
         IOTThing thing;
 
-        if ((thing = IOTHuman.list.getEntryInternal(uuid)) != null) return thing;
-        if ((thing = IOTDevice.list.getEntryInternal(uuid)) != null) return thing;
-        if ((thing = IOTDomain.list.getEntryInternal(uuid)) != null) return thing;
-        if ((thing = IOTLocation.list.getEntryInternal(uuid)) != null) return thing;
+        if ((thing = IOTHuman.list.getEntry(uuid)) != null) return thing;
+        if ((thing = IOTDevice.list.getEntry(uuid)) != null) return thing;
+        if ((thing = IOTDomain.list.getEntry(uuid)) != null) return thing;
+        if ((thing = IOTLocation.list.getEntry(uuid)) != null) return thing;
 
         return null;
     }

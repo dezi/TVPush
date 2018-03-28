@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.xavaro.android.iot.simple.Log;
 import de.xavaro.android.iot.things.IOTHuman;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDomain;
@@ -20,13 +19,14 @@ import de.xavaro.android.iot.status.IOTCredential;
 import de.xavaro.android.iot.simple.Simple;
 import de.xavaro.android.iot.simple.Prefs;
 import de.xavaro.android.iot.simple.Json;
+import de.xavaro.android.iot.simple.Log;
 
 public class IOTList<T>
 {
     private final static String LOGTAG = IOTList.class.getSimpleName();
 
-    private String classKey;
-    private Map<String, T> list = new HashMap<>();
+    private final String classKey;
+    private final Map<String, T> list = new HashMap<>();
 
     public IOTList(String classKey)
     {
@@ -45,7 +45,7 @@ public class IOTList<T>
         }
     }
 
-    public JSONArray getListUUIDs()
+    public JSONArray getUUIDList()
     {
         JSONArray result = new JSONArray();
 
@@ -60,12 +60,53 @@ public class IOTList<T>
         return result;
     }
 
+    public T getEntry(String uuid)
+    {
+        synchronized (list)
+        {
+            return list.get(uuid);
+        }
+    }
+
     public void putEntry(T iotObject)
     {
         synchronized (list)
         {
             list.put(((IOTObject) iotObject).uuid, iotObject);
         }
+    }
+
+    public int addEntry(T newEntry, boolean external)
+    {
+        String uuid = ((IOTObject) newEntry).uuid;
+
+        int result;
+
+        T oldEntry = getEntry(uuid);
+
+        if (oldEntry == null)
+        {
+            Log.d(LOGTAG, "addEntry: new uuid=" + uuid);
+
+            result = ((IOTObject) newEntry).saveToStorage()
+                    ? IOTDefs.IOT_SAVE_ALLCHANGED
+                    : IOTDefs.IOT_SAVE_FAILED;
+        }
+        else
+        {
+            Log.d(LOGTAG, "addEntry: old uuid=" + uuid);
+
+            result = ((IOTObject) oldEntry).checkAndMergeContent((IOTObject) newEntry, external);
+
+            if (result > 0)
+            {
+                Log.d(LOGTAG, "addEntry: diff=" + ((IOTObject) oldEntry).getChangedDiff());
+            }
+        }
+
+        if (result > 0) broadcast(uuid);
+
+        return result;
     }
 
     public void removeEntry(String uuid)
@@ -76,14 +117,6 @@ public class IOTList<T>
         }
 
         Prefs.removePref(classKey + uuid);
-    }
-
-    public T getEntryInternal(String uuid)
-    {
-        synchronized (list)
-        {
-            return list.get(uuid);
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -121,43 +154,6 @@ public class IOTList<T>
         }
 
         Log.d(LOGTAG, "loadAllFromStorage: classKey=" + classKey + " loaded=" + list.size());
-    }
-
-    public int addEntryInternal(T newEntry, boolean external)
-    {
-        String uuid = ((IOTObject) newEntry).uuid;
-
-        int result;
-
-        T oldEntry = getEntryInternal(uuid);
-
-        if (oldEntry == null)
-        {
-            Log.d(LOGTAG, "addEntry: new uuid=" + uuid);
-
-            result = ((IOTObject) newEntry).saveToStorage()
-                    ? IOTDefs.IOT_SAVE_ALLCHANGED
-                    : IOTDefs.IOT_SAVE_FAILED;
-
-            if (result > 0) putEntry(newEntry);
-        }
-        else
-        {
-            Log.d(LOGTAG, "addEntry: old uuid=" + uuid);
-
-            result = ((IOTObject) oldEntry).checkAndMergeContent((IOTObject) newEntry, external);
-
-            if (result > 0)
-            {
-                Log.d(LOGTAG, "addEntry: diff=" + ((IOTObject) oldEntry).getChangedDiff());
-
-                putEntry(oldEntry);
-            }
-        }
-
-        if (result > 0) broadcast(uuid);
-
-        return result;
     }
 
     //region Subscriptions implementation.

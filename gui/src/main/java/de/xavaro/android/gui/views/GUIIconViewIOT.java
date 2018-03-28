@@ -80,7 +80,7 @@ public class GUIIconViewIOT extends GUIIconView
         if (iotThing instanceof IOTDevice)
         {
             IOTDevice device = (IOTDevice) iotThing;
-            IOTStatus status = IOTStatus.list.getEntryInternal(uuid);
+            IOTStatus status = IOTStatus.list.getEntry(uuid);
 
             int residplain = GUIIcons.getImageResid(device, false);
             int residcolor = GUIIcons.getImageResid(device, true);
@@ -140,7 +140,7 @@ public class GUIIconViewIOT extends GUIIconView
         @Override
         public void run()
         {
-            IOTDevice device = IOTDevice.list.getEntryInternal(uuid);
+            IOTDevice device = IOTDevice.list.getEntry(uuid);
 
             if ((device != null)
                 && (device.uuid != null)

@@ -44,7 +44,7 @@ public class IOTRegister
         Json.put(device, "capabilities", capabilities);
 
         IOTDevice newDevice = new IOTDevice(device);
-        IOTDevice.list.addEntryInternal(newDevice, false);
+        IOTDevice.list.addEntry(newDevice, false);
 
         if (credentials != null)
         {
@@ -54,7 +54,7 @@ public class IOTRegister
             Json.put(crendital, "credentials", credentials);
 
             IOTCredential newCredential = new IOTCredential(crendital);
-            IOTCredential.list.addEntryInternal(newCredential, false);
+            IOTCredential.list.addEntry(newCredential, false);
         }
     }
 
@@ -70,7 +70,7 @@ public class IOTRegister
             Log.d(LOGTAG, "registerDeviceStatus: uuid=" + uuid + " ipaddr=" + ipaddr);
 
             IOTStatus newStatus = new IOTStatus(status);
-            IOTStatus.list.addEntryInternal(newStatus, false);
+            IOTStatus.list.addEntry(newStatus, false);
         }
         else
         {
@@ -93,7 +93,7 @@ public class IOTRegister
 
             IOTMetadata newMetatdata = new IOTMetadata(internal);
 
-            IOTMetadata.list.addEntryInternal(newMetatdata, false);
+            IOTMetadata.list.addEntry(newMetatdata, false);
         }
         else
         {
@@ -116,7 +116,7 @@ public class IOTRegister
 
             IOTCredential newCredential = new IOTCredential(internal);
 
-            IOTCredential.list.addEntryInternal(newCredential, false);
+            IOTCredential.list.addEntry(newCredential, false);
         }
         else
         {

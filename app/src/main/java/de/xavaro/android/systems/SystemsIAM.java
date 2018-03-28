@@ -127,7 +127,7 @@ public class SystemsIAM extends IAM
                     String uuid = Json.getString(devices, dinx);
                     if ((uuid == null) || uuid.isEmpty()) continue;
 
-                    IOTDevice device = IOTDevice.list.getEntryInternal(uuid);
+                    IOTDevice device = IOTDevice.list.getEntry(uuid);
                     if ((device == null) || (device.type == null)) continue;
 
                     JSONObject doaction = Json.clone(jaction);

@@ -487,12 +487,12 @@ public class IAMEval
 
         JSONArray devices = new JSONArray();
 
-        JSONArray list = IOTDevice.list.getListUUIDs();
+        JSONArray list = IOTDevice.list.getUUIDList();
 
         for (int dinx = 0; dinx < list.length(); dinx++)
         {
             String uuid = Json.getString(list, dinx);
-            IOTDevice device = IOTDevice.list.getEntryInternal(uuid);
+            IOTDevice device = IOTDevice.list.getEntry(uuid);
             if ((device == null) || (device.capabilities == null)) continue;
 
             for (int cinx = 0; cinx < device.capabilities.length(); cinx++)
@@ -517,12 +517,12 @@ public class IAMEval
     {
         JSONObject names = new JSONObject();
 
-        JSONArray list = IOTDevice.list.getListUUIDs();
+        JSONArray list = IOTDevice.list.getUUIDList();
 
         for (int inx = 0; inx < list.length(); inx++)
         {
             String uuid = Json.getString(list, inx);
-            IOTDevice device = IOTDevice.list.getEntryInternal(uuid);
+            IOTDevice device = IOTDevice.list.getEntry(uuid);
 
             if (ifContains(device.name))
             {

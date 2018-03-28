@@ -60,11 +60,6 @@ public class IOTStatus extends IOTObject
         super(json);
     }
 
-    public IOTStatus(String jsonstr, boolean dummy)
-    {
-        super(jsonstr, dummy);
-    }
-
     @Override
     public int checkAndMergeContent(IOTObject iotCheck, boolean external)
     {

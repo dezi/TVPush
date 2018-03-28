@@ -28,11 +28,6 @@ public class IOTCredential extends IOTObject
         super(json);
     }
 
-    public IOTCredential(String jsonstr, boolean dummy)
-    {
-        super(jsonstr, dummy);
-    }
-
     @Override
     public int checkAndMergeContent(IOTObject iotCheck, boolean external)
     {

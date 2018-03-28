@@ -31,11 +31,6 @@ public class IOTDomain extends IOTThing
         super(json);
     }
 
-    public IOTDomain(String jsonstr, boolean dummy)
-    {
-        super(jsonstr, dummy);
-    }
-
     @Override
     public int checkAndMergeContent(IOTObject iotObject, boolean external)
     {

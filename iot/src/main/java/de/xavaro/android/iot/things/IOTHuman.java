@@ -31,11 +31,6 @@ public class IOTHuman extends IOTThing
         super(json);
     }
 
-    public IOTHuman(String jsonstr, boolean dummy)
-    {
-        super(jsonstr, dummy);
-    }
-
     public static IOTHuman buildLocalHuman()
     {
         IOTHuman local = new IOTHuman();
@@ -52,7 +47,7 @@ public class IOTHuman extends IOTThing
         String humanUUID = Json.getString(check, "uuid");
         if (humanUUID == null) return;
 
-        IOTHuman oldHuman = IOTHuman.list.getEntryInternal(humanUUID);
+        IOTHuman oldHuman = IOTHuman.list.getEntry(humanUUID);
 
         if (oldHuman == null)
         {

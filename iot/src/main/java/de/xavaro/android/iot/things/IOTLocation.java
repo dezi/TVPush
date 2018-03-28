@@ -32,11 +32,6 @@ public class IOTLocation extends IOTThing
         super(json);
     }
 
-    public IOTLocation(String jsonstr, boolean dummy)
-    {
-        super(jsonstr, dummy);
-    }
-
     @Override
     public int checkAndMergeContent(IOTObject iotObject, boolean external)
     {
