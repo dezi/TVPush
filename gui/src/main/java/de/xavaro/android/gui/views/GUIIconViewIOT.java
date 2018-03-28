@@ -1,7 +1,9 @@
 package de.xavaro.android.gui.views;
 
 import android.content.Context;
+import android.graphics.Color;
 
+import de.xavaro.android.iot.base.IOTAlive;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 import de.xavaro.android.iot.things.IOTThing;
@@ -33,6 +35,8 @@ public class GUIIconViewIOT extends GUIIconView
 
         IOTDevices.instance.subscribe(uuid, onDeviceUpdated);
         IOTStatusses.instance.subscribe(uuid, onStatusUpdated);
+
+        Simple.getHandler().postDelayed(onBeaconBlink, 100);
     }
 
     @Override
@@ -42,6 +46,8 @@ public class GUIIconViewIOT extends GUIIconView
 
         IOTDevices.instance.unsubscribe(uuid, onDeviceUpdated);
         IOTStatusses.instance.unsubscribe(uuid, onStatusUpdated);
+
+        Simple.getHandler().removeCallbacks(onBeaconBlink);
     }
 
     public void setIOTThing(String uuid)
@@ -128,4 +134,43 @@ public class GUIIconViewIOT extends GUIIconView
             setImageResource(residplain);
         }
     }
+
+    private final Runnable onBeaconBlink = new Runnable()
+    {
+        private boolean blink;
+
+        @Override
+        public void run()
+        {
+            IOTDevice device = IOTDevices.getEntry(uuid);
+
+            if ((device != null)
+                && (device.uuid != null)
+                && (device.type != null)
+                && device.type.equals("beacon"))
+            {
+                Long lastPing = IOTAlive.getAliveNetwork(device.uuid);
+
+                if (lastPing != null)
+                {
+                    long age = (System.currentTimeMillis() - lastPing) / 1000;
+
+                    if ((age > 15) || !blink)
+                    {
+                        int residplain = GUIIcons.getImageResid(device, false);
+                        setImageResource(residplain);
+                    }
+                    else
+                    {
+                        int residcolor = GUIIcons.getImageResid(device, true);
+                        setImageResource(residcolor, Color.RED);
+                    }
+                }
+            }
+
+            blink = !blink;
+
+            Simple.getHandler().postDelayed(onBeaconBlink, 300);
+        }
+    };
 }

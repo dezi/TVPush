@@ -5,20 +5,20 @@ import android.view.View;
 
 import org.json.JSONArray;
 
-import de.xavaro.android.gui.R;
-import de.xavaro.android.gui.base.GUI;
-import de.xavaro.android.gui.base.GUIDefs;
-import de.xavaro.android.gui.plugin.GUIPluginTitleList;
-import de.xavaro.android.gui.simple.Json;
-import de.xavaro.android.gui.simple.Simple;
+import de.xavaro.android.gui.plugin.GUIPluginTitleListIOT;
 import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.views.GUIListView;
-import de.xavaro.android.iot.status.IOTStatus;
-import de.xavaro.android.iot.status.IOTStatusses;
+import de.xavaro.android.gui.base.GUIDefs;
+import de.xavaro.android.gui.base.GUI;
+import de.xavaro.android.gui.R;
+
+import de.xavaro.android.gui.simple.Simple;
+import de.xavaro.android.gui.simple.Json;
+
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 
-public class GUILocationsWizzard extends GUIPluginTitleList
+public class GUILocationsWizzard extends GUIPluginTitleListIOT
 {
     private final static String LOGTAG = GUILocationsWizzard.class.getSimpleName();
 

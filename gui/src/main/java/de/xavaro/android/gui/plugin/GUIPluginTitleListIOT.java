@@ -3,6 +3,7 @@ package de.xavaro.android.gui.plugin;
 import android.content.Context;
 import android.graphics.Color;
 
+import de.xavaro.android.gui.simple.Log;
 import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.base.GUIIcons;
 import de.xavaro.android.gui.simple.Simple;
@@ -26,7 +27,7 @@ public class GUIPluginTitleListIOT extends GUIPluginTitleList
     {
         super.onAttachedToWindow();
 
-        Simple.getHandler().postDelayed(onBeaconFade, 100);
+        Simple.getHandler().postDelayed(onBeaconBlink, 100);
     }
 
     @Override
@@ -34,12 +35,12 @@ public class GUIPluginTitleListIOT extends GUIPluginTitleList
     {
         super.onDetachedFromWindow();
 
-        Simple.getHandler().removeCallbacks(onBeaconFade);
+        Simple.getHandler().removeCallbacks(onBeaconBlink);
     }
 
-    private final Runnable onBeaconFade = new Runnable()
+    private final Runnable onBeaconBlink = new Runnable()
     {
-        boolean blink;
+        private boolean blink;
 
         @Override
         public void run()
@@ -76,7 +77,7 @@ public class GUIPluginTitleListIOT extends GUIPluginTitleList
 
             blink = ! blink;
 
-            Simple.getHandler().postDelayed(onBeaconFade, 300);
+            Simple.getHandler().postDelayed(onBeaconBlink, 300);
         }
     };
 }

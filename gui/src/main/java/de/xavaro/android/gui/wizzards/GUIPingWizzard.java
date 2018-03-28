@@ -4,11 +4,11 @@ import android.content.Context;
 
 import org.json.JSONArray;
 
-import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.plugin.GUIPluginTitleListIOT;
 import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.views.GUIListView;
 import de.xavaro.android.gui.simple.Json;
+import de.xavaro.android.gui.R;
 
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.status.IOTStatusses;
@@ -54,6 +54,7 @@ public class GUIPingWizzard extends GUIPluginTitleListIOT
             if (connect == null) continue;
 
             GUIListEntryIOT entry = listView.findGUIListEntryIOTOrCreate(uuid);
+
             entry.infoView.setText(connect);
         }
     }
