@@ -18,7 +18,7 @@ import com.google.android.gms.maps.model.Marker;
 
 import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.views.GUIFrameLayout;
-import de.xavaro.android.gui.base.GUIPluginTitleIOT;
+import de.xavaro.android.gui.plugin.GUIPluginTitleIOT;
 import de.xavaro.android.gui.base.GUIDefs;
 
 import de.xavaro.android.gui.simple.Simple;

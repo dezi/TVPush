@@ -16,7 +16,7 @@ import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUISetup;
-import de.xavaro.android.gui.base.GUIPluginTitleList;
+import de.xavaro.android.gui.plugin.GUIPluginTitleList;
 import de.xavaro.android.gui.views.GUIDialogView;
 import de.xavaro.android.gui.views.GUIListEntry;
 import de.xavaro.android.gui.views.GUIListView;

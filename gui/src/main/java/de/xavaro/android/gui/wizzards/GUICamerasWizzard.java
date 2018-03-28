@@ -12,8 +12,7 @@ import de.xavaro.android.iot.things.IOTDevices;
 
 import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.base.GUI;
-import de.xavaro.android.gui.base.GUIPluginTitleListIOT;
-import de.xavaro.android.gui.views.GUILinearLayout;
+import de.xavaro.android.gui.plugin.GUIPluginTitleListIOT;
 import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.views.GUIListView;
 import de.xavaro.android.gui.simple.Json;

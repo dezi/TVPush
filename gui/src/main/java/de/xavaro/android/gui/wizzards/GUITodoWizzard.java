@@ -4,7 +4,7 @@ import android.content.Context;
 
 import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.views.GUIListView;
-import de.xavaro.android.gui.base.GUIPluginTitleList;
+import de.xavaro.android.gui.plugin.GUIPluginTitleList;
 
 public class GUITodoWizzard extends GUIPluginTitleList
 {

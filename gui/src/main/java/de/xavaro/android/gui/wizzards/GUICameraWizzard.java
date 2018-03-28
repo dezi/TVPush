@@ -10,7 +10,7 @@ import android.widget.FrameLayout;
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.iot.base.IOTObject;
-import de.xavaro.android.gui.base.GUIPluginTitleIOT;
+import de.xavaro.android.gui.plugin.GUIPluginTitleIOT;
 import de.xavaro.android.gui.views.GUIFrameLayout;
 import de.xavaro.android.iot.status.IOTCredential;
 import de.xavaro.android.iot.status.IOTStatus;

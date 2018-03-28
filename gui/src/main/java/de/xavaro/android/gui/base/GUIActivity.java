@@ -20,6 +20,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import de.xavaro.android.gui.plugin.GUIPlugin;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.skills.GUICanFocus;
 import de.xavaro.android.gui.skills.GUICanFocusDelegate;

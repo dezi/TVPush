@@ -1,19 +1,23 @@
 package de.xavaro.android.gui.views;
 
 import android.content.Context;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.util.Log;
 
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUIIcons;
-import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.iot.base.IOTAlive;
+
 import de.xavaro.android.iot.status.IOTCredential;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
+
+import de.xavaro.android.gui.simple.Simple;
+
 import pub.android.interfaces.pub.PUBCamera;
 import pub.android.interfaces.pub.PUBSmartBulb;
 import pub.android.interfaces.pub.PUBSmartPlug;
@@ -23,6 +27,8 @@ public class GUIListEntryIOT extends GUIListEntry
     private final static String LOGTAG = GUIListEntryIOT.class.getSimpleName();
 
     public String uuid;
+
+    public GUIRelativeLayout bulletView;
 
     public IOTDevice device;
     public IOTStatus status;
@@ -34,6 +40,18 @@ public class GUIListEntryIOT extends GUIListEntry
     public GUIListEntryIOT(Context context)
     {
         super(context);
+
+        GUIRelativeLayout statusBox = new GUIRelativeLayout(context);
+        statusBox.setGravity(Gravity.CENTER);
+        statusBox.setSizeDip(Simple.WC, Simple.MP);
+        statusBox.setPaddingDip(GUIDefs.PADDING_TINY);
+
+        addView(statusBox);
+
+        bulletView = new GUIRelativeLayout(context);
+        bulletView.setSizeDip(GUIDefs.PADDING_MEDIUM,GUIDefs.PADDING_MEDIUM);
+
+        statusBox.addView(bulletView);
     }
 
     @Override
@@ -54,32 +72,17 @@ public class GUIListEntryIOT extends GUIListEntry
         IOTStatusses.instance.unsubscribe(device.uuid, onStatusUpdated);
     }
 
+    public void setStatusColor(int color)
+    {
+        bulletView.setRoundedCornersDip(GUIDefs.PADDING_MEDIUM / 2, color);
+    }
+
     public void updateContent()
     {
-        int residplain = GUIIcons.getImageResid(device, false);
-        int residcolor = GUIIcons.getImageResid(device, true);
-
-        iconView.setImageResource(residplain);
+        iconView.setIOTObject(device);
 
         if (device.type.equals("smartbulb"))
         {
-            int color = GUIDefs.STATUS_COLOR_INACT;
-
-            if ((status != null)
-                    && (status.hue != null)
-                    && (status.saturation != null)
-                    && (status.brightness != null)
-                    && (status.bulbstate != null))
-            {
-                if (status.bulbstate != 0)
-                {
-                    color = Simple.colorRGB(status.hue, status.saturation, 100);
-                    color = Simple.setRGBAlpha(color, status.brightness + 155);
-                }
-            }
-
-            iconView.setImageResource(residcolor, color);
-
             if (onClickListener == null)
             {
                 setOnClickListener(onSmartBulbClickListener);
@@ -88,12 +91,6 @@ public class GUIListEntryIOT extends GUIListEntry
 
         if (device.type.equals("smartplug"))
         {
-            int color = ((status == null) || (status.plugstate == null) || (status.plugstate == 0))
-                    ? GUIDefs.STATUS_COLOR_INACT
-                    : GUIDefs.STATUS_COLOR_GREEN;
-
-            iconView.setImageResource(residcolor, color);
-
             if (onClickListener == null)
             {
                 setOnClickListener(onSmartPlugClickListener);
@@ -102,12 +99,6 @@ public class GUIListEntryIOT extends GUIListEntry
 
         if (device.type.equals("camera"))
         {
-            int color = ((status == null) || (status.ledstate == null) || (status.ledstate == 0))
-                    ? GUIDefs.STATUS_COLOR_INACT
-                    : GUIDefs.STATUS_COLOR_BLUE;
-
-            iconView.setImageResource(residcolor, color);
-
             if (onClickListener == null)
             {
                 setOnClickListener(onCameraClickListener);

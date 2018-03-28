@@ -1,12 +1,11 @@
 package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
-import android.util.Log;
 
 import org.json.JSONArray;
 
 import de.xavaro.android.gui.R;
-import de.xavaro.android.gui.base.GUIPluginTitleListIOT;
+import de.xavaro.android.gui.plugin.GUIPluginTitleListIOT;
 import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.views.GUIListView;
 import de.xavaro.android.gui.simple.Json;

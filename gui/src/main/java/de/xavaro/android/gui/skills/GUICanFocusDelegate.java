@@ -8,7 +8,7 @@ import android.view.View;
 import android.util.Log;
 
 import de.xavaro.android.gui.base.GUIDefs;
-import de.xavaro.android.gui.base.GUIPlugin;
+import de.xavaro.android.gui.plugin.GUIPlugin;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUIEditText;
 

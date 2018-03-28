@@ -1,28 +1,18 @@
 package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-
-import org.json.JSONArray;
 
 import java.util.Map;
 
 import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.base.GUI;
-import de.xavaro.android.gui.base.GUIIcons;
-import de.xavaro.android.gui.base.GUIPlugin;
-import de.xavaro.android.gui.base.GUIPluginTitle;
-import de.xavaro.android.gui.base.GUIPluginTitleList;
-import de.xavaro.android.gui.simple.Json;
-import de.xavaro.android.gui.views.GUILinearLayout;
+import de.xavaro.android.gui.plugin.GUIPlugin;
+import de.xavaro.android.gui.plugin.GUIPluginTitle;
+import de.xavaro.android.gui.plugin.GUIPluginTitleList;
 import de.xavaro.android.gui.views.GUIListEntry;
 import de.xavaro.android.gui.views.GUIListView;
-import de.xavaro.android.iot.things.IOTDevice;
-import de.xavaro.android.iot.things.IOTDevices;
-
-import static de.xavaro.android.gui.base.GUI.instance;
 
 public class GUIMenuWizzard extends GUIPluginTitleList
 {

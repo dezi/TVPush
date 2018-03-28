@@ -1,32 +1,35 @@
 package de.xavaro.android.gui.smart;
 
+import android.support.annotation.Nullable;
+
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.util.Log;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import de.xavaro.android.gui.base.GUI;
-import de.xavaro.android.gui.base.GUIActivity;
-import de.xavaro.android.gui.base.GUIPlugin;
-import de.xavaro.android.gui.base.GUIPluginTitleIOT;
-import de.xavaro.android.gui.views.GUIDialogView;
-import de.xavaro.android.gui.wizzards.GUICameraWizzard;
+import de.xavaro.android.gui.wizzards.GUILocationsWizzard;
 import de.xavaro.android.gui.wizzards.GUICamerasWizzard;
 import de.xavaro.android.gui.wizzards.GUIChannelWizzard;
 import de.xavaro.android.gui.wizzards.GUIGeomapWizzard;
-import de.xavaro.android.gui.wizzards.GUILocationsWizzard;
-import de.xavaro.android.gui.wizzards.GUIMenuWizzard;
+import de.xavaro.android.gui.wizzards.GUICameraWizzard;
 import de.xavaro.android.gui.wizzards.GUISetupWizzard;
+import de.xavaro.android.gui.wizzards.GUIMenuWizzard;
 import de.xavaro.android.gui.wizzards.GUIPingWizzard;
 import de.xavaro.android.gui.wizzards.GUITodoWizzard;
-import de.xavaro.android.gui.plugin.GUIVideoSurface;
+
+import de.xavaro.android.gui.plugin.GUIPluginTitleIOT;
+import de.xavaro.android.gui.plugin.GUIPlugin;
 import de.xavaro.android.gui.plugin.GUIToastBar;
+
+import de.xavaro.android.gui.views.GUIDialogView;
+
+import de.xavaro.android.gui.base.GUIActivity;
+import de.xavaro.android.gui.base.GUI;
 
 import de.xavaro.android.iot.base.IOTObject;
 
@@ -35,11 +38,6 @@ public class GUIDesktopActivity extends GUIActivity
     private final static String LOGTAG = GUIDesktopActivity.class.getSimpleName();
 
     private GUIToastBar speechRecognition;
-
-    private GUIVideoSurface videoSurface1;
-    private GUIVideoSurface videoSurface2;
-    private GUIVideoSurface videoSurface3;
-    private GUIVideoSurface videoSurface4;
 
     private Map<String,GUIPlugin> wizzards;
 

@@ -17,7 +17,7 @@ import java.util.HashMap;
 import de.xavaro.android.iot.base.IOT;
 
 import de.xavaro.android.gui.R;
-import de.xavaro.android.gui.base.GUIPluginTitle;
+import de.xavaro.android.gui.plugin.GUIPluginTitle;
 import de.xavaro.android.gui.views.GUIFrameLayout;
 import de.xavaro.android.gui.views.GUIScrollView;
 import de.xavaro.android.gui.views.GUITextView;

@@ -1,7 +1,6 @@
 package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 
 import org.json.JSONArray;
@@ -9,15 +8,11 @@ import org.json.JSONArray;
 import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIDefs;
-import de.xavaro.android.gui.base.GUIIcons;
-import de.xavaro.android.gui.base.GUIPluginTitleList;
+import de.xavaro.android.gui.plugin.GUIPluginTitleList;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
-import de.xavaro.android.gui.views.GUILinearLayout;
-import de.xavaro.android.gui.views.GUIListEntry;
 import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.views.GUIListView;
-import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
