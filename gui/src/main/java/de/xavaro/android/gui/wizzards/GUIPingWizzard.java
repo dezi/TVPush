@@ -10,9 +10,7 @@ import de.xavaro.android.gui.views.GUIListView;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.R;
 
-import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.status.IOTStatus;
-import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 

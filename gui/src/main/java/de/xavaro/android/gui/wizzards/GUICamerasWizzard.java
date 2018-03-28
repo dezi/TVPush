@@ -5,8 +5,6 @@ import android.view.View;
 
 import org.json.JSONArray;
 
-import de.xavaro.android.iot.status.IOTStatus;
-import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 

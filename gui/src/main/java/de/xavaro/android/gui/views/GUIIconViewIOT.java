@@ -3,15 +3,14 @@ package de.xavaro.android.gui.views;
 import android.content.Context;
 import android.graphics.Color;
 
-import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.base.IOTAlive;
+
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 import de.xavaro.android.iot.things.IOTThing;
 import de.xavaro.android.iot.things.IOTThings;
 
 import de.xavaro.android.iot.status.IOTStatus;
-import de.xavaro.android.iot.status.IOTStatusses;
 
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUIIcons;
