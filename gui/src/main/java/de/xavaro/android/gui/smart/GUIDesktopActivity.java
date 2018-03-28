@@ -110,14 +110,14 @@ public class GUIDesktopActivity extends GUIActivity
         showPlugin(wizzard);
     }
 
-    public void displayWizzard(String name, IOTObject iotobject)
+    public void displayWizzard(String name, String uuid)
     {
         GUIPlugin wizzard = wizzards.get(name);
         if (wizzard == null) return;
 
         if (wizzard instanceof GUIPluginTitleIOT)
         {
-            ((GUIPluginTitleIOT) wizzard).setIOTObject(iotobject);
+            ((GUIPluginTitleIOT) wizzard).setIOTObject(uuid);
         }
 
         showPlugin(wizzard);

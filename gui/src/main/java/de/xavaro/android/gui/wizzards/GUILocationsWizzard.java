@@ -106,8 +106,8 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
         @Override
         public void onClick(View view)
         {
-            IOTDevice device = IOTDevice.list.getEntry(((GUIListEntryIOT) view).uuid);
-            GUI.instance.desktopActivity.displayWizzard(GUIGeomapWizzard.class.getSimpleName(), device);
+            String uuid = ((GUIListEntryIOT) view).uuid;
+            GUI.instance.desktopActivity.displayWizzard(GUIGeomapWizzard.class.getSimpleName(), uuid);
         }
     };
 }

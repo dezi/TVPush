@@ -5,6 +5,7 @@ import android.util.Log;
 import org.json.JSONObject;
 
 import de.xavaro.android.iot.base.IOT;
+import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.base.IOTObject;
 
 import de.xavaro.android.iot.base.IOTSimple;
@@ -33,25 +34,17 @@ public class IOTHandleUpda extends IOTHandle
     @Override
     public void onMessageReived(JSONObject message)
     {
-        Log.d(LOGTAG, "onMessageReived: mess=" + Json.toPretty(message));
-
-        JSONObject device = Json.getObject(message, "device");
-
         String kind = Json.getString(message, "kind");
         JSONObject data = Json.getObject(message, "data");
         if ((kind == null) || (data == null)) return;
 
-        IOTObject newObject = null;
-        IOTObject oldObject = null;
+        int saved = IOTDefs.IOT_SAVE_FAILED;
 
         if (kind.equals("IOTDevice"))
         {
-            newObject = new IOTDevice(data);
-            oldObject = IOTDevice.list.getEntry(newObject.uuid);
-
-            int saved = oldObject.checkAndMergeContent(newObject, true, false);
-
-            Log.d(LOGTAG, "onMessageReived: saved=" + saved);
+            saved = IOTDevice.list.addEntry(new IOTDevice(data), true, false);
         }
+
+        Log.d(LOGTAG, "onMessageReived: saved=" + saved);
     }
 }

@@ -27,7 +27,9 @@ import de.xavaro.android.gui.views.GUIImageView;
 import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.base.IOTObject;
+import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
+import de.xavaro.android.iot.things.IOTThing;
 
 public class GUIGeomapWizzard extends GUIPluginTitleIOT
 {
@@ -177,6 +179,30 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
             }
         });
     }
+    @Override
+    public void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+
+        IOTDevice.list.subscribe(uuid, onDeviceUpdated);
+    }
+
+    @Override
+    public void onDetachedFromWindow()
+    {
+        super.onDetachedFromWindow();
+
+        IOTDevice.list.unsubscribe(uuid, onDeviceUpdated);
+    }
+
+    private final Runnable onDeviceUpdated = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            setIOTObject(uuid);
+        }
+    };
 
     private boolean onKeyDownDoit(int keyCode, KeyEvent event)
     {
@@ -225,13 +251,15 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
     }
 
     @Override
-    public void setIOTObject(IOTObject iotObject)
+    public void setIOTObject(String uuid)
     {
-        super.setIOTObject(iotObject);
+        super.setIOTObject(uuid);
 
-        if (iotObject instanceof IOTDevice)
+        IOTThing iotThing = IOTThing.getEntry(uuid);
+
+        if (iotThing instanceof IOTDevice)
         {
-            IOTDevice device = (IOTDevice) iotObject;
+            IOTDevice device = (IOTDevice) iotThing;
 
             if (device.hasCapability("fixed"))
             {
@@ -297,9 +325,11 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
     {
         if (coordinates != null)
         {
-            if (iotObject instanceof IOTDevice)
+            IOTThing iotThing = IOTThing.getEntry(uuid);
+
+            if (iotThing instanceof IOTDevice)
             {
-                IOTDevice saveme = new IOTDevice(iotObject.uuid);
+                IOTDevice saveme = new IOTDevice(iotThing.uuid);
 
                 saveme.fixedLatFine = coordinates.latitude;
                 saveme.fixedLonFine = coordinates.longitude;

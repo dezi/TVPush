@@ -15,37 +15,37 @@ import de.xavaro.android.iot.things.IOTLocation;
 
 import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.base.IOTObject;
+import de.xavaro.android.iot.things.IOTThing;
 
 public class GUIPluginTitleIOT extends GUIPluginTitle
 {
     private final static String LOGTAG = GUIPluginTitleIOT.class.getSimpleName();
 
-    public IOTObject iotObject;
+    public String uuid;
 
     public GUIPluginTitleIOT(Context context)
     {
         super(context);
     }
 
-    public void setIOTObject(IOTObject iotObject)
+    public void setIOTObject(String uuid)
     {
-        this.iotObject = iotObject;
+        this.uuid = uuid;
 
-        titleIcon.setIOTThing(this.iotObject.uuid);
+        titleIcon.setIOTThing(uuid);
 
-        if (iotObject instanceof IOTDevice)
-        {
-            String hint = "Bitte Nicknamen hier eintragen";
+        IOTThing iotThing = IOTThing.getEntry(uuid);
 
-            String toast = ""
-                    + "Sprechen Sie jetzt die Nicknamen ein"
-                    + " oder drücken Sie "
-                    + GUIDefs.UTF_OK
-                    + " zum Bearbeiten";
+        String hint = "Bitte Nicknamen hier eintragen";
 
-            setTitleText(((IOTDevice) iotObject).name);
-            setTitleEdit(((IOTDevice) iotObject).nick, hint, toast);
-        }
+        String toast = ""
+                + "Sprechen Sie jetzt die Nicknamen ein"
+                + " oder drücken Sie "
+                + GUIDefs.UTF_OK
+                + " zum Bearbeiten";
+
+        setTitleText(iotThing.name);
+        setTitleEdit(iotThing.nick, hint, toast);
     }
 
     public int saveIOTObject(IOTObject iotObjectChanged)
@@ -93,16 +93,11 @@ public class GUIPluginTitleIOT extends GUIPluginTitle
 
     private int saveNick(String newNick)
     {
-        if (iotObject instanceof IOTDevice)
-        {
-            IOTDevice saveme = new IOTDevice(iotObject.uuid);
+        IOTDevice saveme = new IOTDevice(uuid);
 
-            saveme.nick = newNick;
+        saveme.nick = newNick;
 
-            return saveIOTObject(saveme);
-        }
-
-        return IOTDefs.IOT_SAVE_FAILED;
+        return saveIOTObject(saveme);
     }
 
     @Override

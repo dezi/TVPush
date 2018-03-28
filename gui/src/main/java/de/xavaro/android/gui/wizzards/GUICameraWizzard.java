@@ -17,6 +17,7 @@ import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.gui.simple.Simple;
 
+import de.xavaro.android.iot.things.IOTThing;
 import pub.android.interfaces.pub.PUBCamera;
 import pub.android.interfaces.pub.PUBSurface;
 
@@ -92,11 +93,12 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
     {
         if (camera == null)
         {
-            IOTStatus status = new IOTStatus(iotObject.uuid);
-            IOTCredential credential = new IOTCredential(iotObject.uuid);
+            IOTDevice device = new IOTDevice(uuid);
+            IOTStatus status = new IOTStatus(uuid);
+            IOTCredential credential = new IOTCredential(uuid);
 
             camera = GUI.instance.onCameraHandlerRequest(
-                    iotObject.toJson(),
+                    device.toJson(),
                     status.toJson(),
                     credential.toJson());
 
@@ -149,16 +151,18 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
     }
 
     @Override
-    public void setIOTObject(IOTObject iotObject)
+    public void setIOTObject(String uuid)
     {
-        super.setIOTObject(iotObject);
+        super.setIOTObject(uuid);
 
-        if (iotObject instanceof IOTDevice)
+        IOTThing iotThing = IOTThing.getEntry(uuid);
+
+        if (iotThing instanceof IOTDevice)
         {
+            IOTDevice device = (IOTDevice) iotThing;
+
             releaseCamera();
             connectCamera();
-
-            IOTDevice device = (IOTDevice) iotObject;
 
             String toastHighlight = ""
                     + "Zoomen mit" + " " + GUIDefs.UTF_ZOOMIN
