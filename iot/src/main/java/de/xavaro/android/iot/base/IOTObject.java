@@ -12,17 +12,16 @@ import java.util.UUID;
 
 import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Prefs;
-import de.xavaro.android.iot.status.IOTCredential;
-import de.xavaro.android.iot.status.IOTCredentials;
-import de.xavaro.android.iot.status.IOTMetadata;
-import de.xavaro.android.iot.status.IOTMetadatas;
-import de.xavaro.android.iot.status.IOTStatus;
-import de.xavaro.android.iot.things.IOTDevice;
-import de.xavaro.android.iot.things.IOTDevices;
-import de.xavaro.android.iot.things.IOTDomain;
-import de.xavaro.android.iot.things.IOTDomains;
+
 import de.xavaro.android.iot.things.IOTHuman;
-import de.xavaro.android.iot.things.IOTHumans;
+import de.xavaro.android.iot.things.IOTDevice;
+import de.xavaro.android.iot.things.IOTDomain;
+
+import de.xavaro.android.iot.status.IOTStatus;
+import de.xavaro.android.iot.status.IOTMetadata;
+import de.xavaro.android.iot.status.IOTCredential;
+import de.xavaro.android.iot.things.IOTLocation;
+
 
 @SuppressWarnings("WeakerAccess")
 public abstract class IOTObject
@@ -192,7 +191,7 @@ public abstract class IOTObject
                 IOT.device = (IOTDevice) this;
             }
 
-            IOTDevices.instance.putEntry(this);
+            IOTDevice.list.putEntry((IOTDevice) this);
         }
 
         if (this instanceof IOTHuman)
@@ -202,7 +201,7 @@ public abstract class IOTObject
                 IOT.human = (IOTHuman) this;
             }
 
-            IOTHumans.instance.putEntry(this);
+            IOTHuman.list.putEntry((IOTHuman) this);
         }
 
         if (this instanceof IOTDomain)
@@ -212,12 +211,14 @@ public abstract class IOTObject
                 IOT.domain = (IOTDomain) this;
             }
 
-            IOTDomains.instance.putEntry(this);
+            IOTDomain.list.putEntry((IOTDomain) this);
         }
 
+        if (this instanceof IOTLocation) IOTLocation.list.putEntry((IOTLocation) this);
+
         if (this instanceof IOTStatus) IOTStatus.list.putEntry((IOTStatus) this);
-        if (this instanceof IOTMetadata) IOTMetadatas.instance.putEntry(this);
-        if (this instanceof IOTCredential) IOTCredentials.instance.putEntry(this);
+        if (this instanceof IOTMetadata) IOTMetadata.list.putEntry((IOTMetadata) this);
+        if (this instanceof IOTCredential) IOTCredential.list.putEntry((IOTCredential) this);
 
         return ok;
     }

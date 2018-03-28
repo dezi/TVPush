@@ -1,8 +1,6 @@
 package de.xavaro.android.iam.eval;
 
 import android.support.annotation.Nullable;
-import android.graphics.Color;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -11,7 +9,6 @@ import java.util.Iterator;
 
 import de.xavaro.android.iam.simple.Json;
 import de.xavaro.android.iot.things.IOTDevice;
-import de.xavaro.android.iot.things.IOTDevices;
 
 public class IAMEval
 {
@@ -490,12 +487,12 @@ public class IAMEval
 
         JSONArray devices = new JSONArray();
 
-        JSONArray list = IOTDevices.instance.getListUUIDs();
+        JSONArray list = IOTDevice.list.getListUUIDs();
 
         for (int dinx = 0; dinx < list.length(); dinx++)
         {
             String uuid = Json.getString(list, dinx);
-            IOTDevice device = IOTDevices.getEntry(uuid);
+            IOTDevice device = IOTDevice.list.getEntryInternal(uuid);
             if ((device == null) || (device.capabilities == null)) continue;
 
             for (int cinx = 0; cinx < device.capabilities.length(); cinx++)
@@ -520,12 +517,12 @@ public class IAMEval
     {
         JSONObject names = new JSONObject();
 
-        JSONArray list = IOTDevices.instance.getListUUIDs();
+        JSONArray list = IOTDevice.list.getListUUIDs();
 
         for (int inx = 0; inx < list.length(); inx++)
         {
             String uuid = Json.getString(list, inx);
-            IOTDevice device = IOTDevices.getEntry(uuid);
+            IOTDevice device = IOTDevice.list.getEntryInternal(uuid);
 
             if (ifContains(device.name))
             {

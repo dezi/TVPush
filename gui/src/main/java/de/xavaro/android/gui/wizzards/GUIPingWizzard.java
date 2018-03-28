@@ -12,7 +12,6 @@ import de.xavaro.android.gui.R;
 
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
-import de.xavaro.android.iot.things.IOTDevices;
 
 public class GUIPingWizzard extends GUIPluginTitleListIOT
 {
@@ -36,12 +35,12 @@ public class GUIPingWizzard extends GUIPluginTitleListIOT
 
     public void collectEntries(GUIListView listView, boolean todo)
     {
-        JSONArray list = IOTDevices.instance.getListUUIDs();
+        JSONArray list = IOTDevice.list.getListUUIDs();
 
         for (int inx = 0; inx < list.length(); inx++)
         {
             String uuid = Json.getString(list, inx);
-            IOTDevice device = IOTDevices.getEntry(uuid);
+            IOTDevice device = IOTDevice.list.getEntryInternal(uuid);
 
             if (device == null) continue;
             if (todo) continue;

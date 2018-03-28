@@ -38,7 +38,7 @@ public class IOTListGeneric<T>
         loadAllFromStorage();
     }
 
-    public int getListSize()
+    public int getCount()
     {
         return list.size();
     }

@@ -13,7 +13,6 @@ import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Simple;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
-import de.xavaro.android.iot.things.IOTDevices;
 
 public class IOTAlive
 {
@@ -111,7 +110,7 @@ public class IOTAlive
                 if ((list == null) || (index >= list.length()))
                 {
                     index = 0;
-                    list = IOTDevices.instance.getListUUIDs();
+                    list = IOTDevice.list.getListUUIDs();
                 }
 
                 String uuid = Json.getString(list, index++);
@@ -161,7 +160,7 @@ public class IOTAlive
 
         setRequested(uuid);
 
-        IOTDevice device = IOTDevices.getEntry(uuid);
+        IOTDevice device = IOTDevice.list.getEntryInternal(uuid);
         if (device == null) return;
 
         if (! device.driver.equals("tpl")) return;

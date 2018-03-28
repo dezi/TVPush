@@ -2,6 +2,7 @@ package de.xavaro.android.iot.things;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.iot.base.IOTListGeneric;
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.base.IOTSimple;
 import de.xavaro.android.iot.simple.Json;
@@ -10,6 +11,8 @@ import de.xavaro.android.iot.simple.Simple;
 @SuppressWarnings("WeakerAccess")
 public class IOTHuman extends IOTThing
 {
+    public static IOTListGeneric<IOTHuman> list;
+
     public String firstname;
     public String middlename;
     public String lastname;
@@ -50,7 +53,7 @@ public class IOTHuman extends IOTThing
         String humanUUID = Json.getString(check, "uuid");
         if (humanUUID == null) return;
 
-        IOTHuman oldHuman = IOTHumans.getEntry(humanUUID);
+        IOTHuman oldHuman = IOTHuman.list.getEntryInternal(humanUUID);
 
         if (oldHuman == null)
         {
@@ -64,8 +67,11 @@ public class IOTHuman extends IOTThing
         }
     }
 
-    public int checkAndMergeContent(IOTHuman check, boolean external)
+    @Override
+    public int checkAndMergeContent(IOTObject iotObject, boolean external)
     {
+        IOTHuman check = (IOTHuman) iotObject;
+
         changedSys = false;
         changedUsr = false;
 

@@ -2,8 +2,8 @@ package de.xavaro.android.iot.things;
 
 import android.support.annotation.Nullable;
 
-import de.xavaro.android.iot.status.IOTCredentials;
-import de.xavaro.android.iot.status.IOTMetadatas;
+import de.xavaro.android.iot.status.IOTCredential;
+import de.xavaro.android.iot.status.IOTMetadata;
 import de.xavaro.android.iot.status.IOTStatus;
 
 public class IOTThings
@@ -13,23 +13,23 @@ public class IOTThings
     {
         IOTThing thing;
 
-        if ((thing = IOTHumans.getEntry(uuid)) != null) return thing;
-        if ((thing = IOTDevices.getEntry(uuid)) != null) return thing;
-        if ((thing = IOTDomains.getEntry(uuid)) != null) return thing;
-        if ((thing = IOTLocations.getEntry(uuid)) != null) return thing;
+        if ((thing = IOTHuman.list.getEntryInternal(uuid)) != null) return thing;
+        if ((thing = IOTDevice.list.getEntryInternal(uuid)) != null) return thing;
+        if ((thing = IOTDomain.list.getEntryInternal(uuid)) != null) return thing;
+        if ((thing = IOTLocation.list.getEntryInternal(uuid)) != null) return thing;
 
         return null;
     }
 
     public static void deleteThing(String uuid)
     {
-        IOTHumans.instance.removeEntry(uuid);
-        IOTDevices.instance.removeEntry(uuid);
-        IOTDomains.instance.removeEntry(uuid);
-        IOTLocations.instance.removeEntry(uuid);
+        IOTHuman.list.removeEntry(uuid);
+        IOTDevice.list.removeEntry(uuid);
+        IOTDomain.list.removeEntry(uuid);
+        IOTLocation.list.removeEntry(uuid);
 
         IOTStatus.list.removeEntry(uuid);
-        IOTMetadatas.instance.removeEntry(uuid);
-        IOTCredentials.instance.removeEntry(uuid);
+        IOTMetadata.list.removeEntry(uuid);
+        IOTCredential.list.removeEntry(uuid);
     }
 }

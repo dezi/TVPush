@@ -24,7 +24,6 @@ import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Simple;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
-import de.xavaro.android.iot.things.IOTDevices;
 
 public class IOTProximLocation implements LocationListener
 {
@@ -154,7 +153,7 @@ public class IOTProximLocation implements LocationListener
                 device.fixedLonCoarse = location.getLongitude();
                 device.fixedAltCoarse = location.getAltitude();
 
-                IOTDevices.addEntry(device, false);
+                IOTDevice.list.addEntryInternal(device, false);
             }
 
             IOTStatus status = new IOTStatus(IOT.device.uuid);

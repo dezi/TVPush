@@ -3,10 +3,8 @@ package de.xavaro.android.iot.base;
 import android.util.Log;
 
 import de.xavaro.android.iot.things.IOTDevice;
-import de.xavaro.android.iot.things.IOTDevices;
-import de.xavaro.android.iot.things.IOTLocations;
+import de.xavaro.android.iot.things.IOTLocation;
 import de.xavaro.android.iot.things.IOTHuman;
-import de.xavaro.android.iot.things.IOTHumans;
 
 @SuppressWarnings("WeakerAccess")
 public class IOTBoot extends IOTObject
@@ -33,9 +31,9 @@ public class IOTBoot extends IOTObject
 
     private static void loadOwnIdentity()
     {
-        Log.d(LOGTAG, "loadOwnIdentity: domains=" + IOTLocations.getCount());
-        Log.d(LOGTAG, "loadOwnIdentity: devices=" + IOTDevices.getCount());
-        Log.d(LOGTAG, "loadOwnIdentity: humans=" + IOTHumans.getCount());
+        Log.d(LOGTAG, "loadOwnIdentity: domains=" + IOTLocation.list.getCount());
+        Log.d(LOGTAG, "loadOwnIdentity: devices=" + IOTDevice.list.getCount());
+        Log.d(LOGTAG, "loadOwnIdentity: humans=" + IOTHuman.list.getCount());
 
         IOT.boot = new IOTBoot();
 
@@ -87,7 +85,7 @@ public class IOTBoot extends IOTObject
             // Only create if there are NO humans at all known.
             //
 
-            if (IOTHumans.getCount() == 0)
+            if (IOTHuman.list.getCount() == 0)
             {
                 IOT.human = localHuman;
 

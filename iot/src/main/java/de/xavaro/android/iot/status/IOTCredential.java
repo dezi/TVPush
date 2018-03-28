@@ -4,11 +4,14 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.iot.base.IOTListGeneric;
 import de.xavaro.android.iot.base.IOTObject;
 
 public class IOTCredential extends IOTObject
 {
     private final static String LOGTAG = IOTCredential.class.getSimpleName();
+
+    public static IOTListGeneric<IOTCredential> list;
 
     public JSONObject credentials;
 

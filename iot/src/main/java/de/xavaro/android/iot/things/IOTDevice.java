@@ -1,14 +1,11 @@
 package de.xavaro.android.iot.things;
 
-import android.support.annotation.Nullable;
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import de.xavaro.android.iot.base.IOTDefs;
+import de.xavaro.android.iot.base.IOTListGeneric;
+
 import de.xavaro.android.iot.base.IOTObject;
-import de.xavaro.android.iot.base.IOTSimple;
 import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Simple;
 
@@ -16,6 +13,8 @@ import de.xavaro.android.iot.simple.Simple;
 public class IOTDevice extends IOTThing
 {
     private final static String LOGTAG = IOTDevice.class.getSimpleName();
+
+    public static IOTListGeneric<IOTDevice> list;
 
     public final static String TYPE_PC = "pc";
     public final static String TYPE_TV = "tv";
@@ -105,8 +104,11 @@ public class IOTDevice extends IOTThing
         return local;
     }
 
-    public int checkAndMergeContent(IOTDevice check, boolean external)
+    @Override
+    public int checkAndMergeContent(IOTObject iotObject, boolean external)
     {
+        IOTDevice check = (IOTDevice) iotObject;
+
         // @formatter:off
 
         changedSys = false;

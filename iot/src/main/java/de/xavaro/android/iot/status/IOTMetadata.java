@@ -35,8 +35,11 @@ public class IOTMetadata extends IOTObject
         super(jsonstr, dummy);
     }
 
-    public int checkAndMergeContent(IOTMetadata check, boolean external)
+    @Override
+    public int checkAndMergeContent(IOTObject iotCheck, boolean external)
     {
+        IOTMetadata check = (IOTMetadata) iotCheck;
+
         changedSys = false;
         changedUsr = false;
 

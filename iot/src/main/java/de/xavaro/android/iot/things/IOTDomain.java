@@ -2,9 +2,14 @@ package de.xavaro.android.iot.things;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.iot.base.IOTListGeneric;
+import de.xavaro.android.iot.base.IOTObject;
+
 @SuppressWarnings("WeakerAccess")
 public class IOTDomain extends IOTThing
 {
+    public static IOTListGeneric<IOTDomain> list;
+
     public String fixedwifi;
 
     public Double fixedLatFine;
@@ -31,8 +36,11 @@ public class IOTDomain extends IOTThing
         super(jsonstr, dummy);
     }
 
-    public int checkAndMergeContent(IOTDomain check, boolean external)
+    @Override
+    public int checkAndMergeContent(IOTObject iotObject, boolean external)
     {
+        IOTDomain check = (IOTDomain) iotObject;
+
         // @formatter:off
 
         changedSys = false;

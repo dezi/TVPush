@@ -7,12 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.xavaro.android.iot.status.IOTCredential;
-import de.xavaro.android.iot.status.IOTCredentials;
 import de.xavaro.android.iot.status.IOTMetadata;
-import de.xavaro.android.iot.status.IOTMetadatas;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
-import de.xavaro.android.iot.things.IOTDevices;
 
 import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Log;
@@ -47,7 +44,7 @@ public class IOTRegister
         Json.put(device, "capabilities", capabilities);
 
         IOTDevice newDevice = new IOTDevice(device);
-        IOTDevices.addEntry(newDevice, false);
+        IOTDevice.list.addEntryInternal(newDevice, false);
 
         if (credentials != null)
         {
@@ -57,7 +54,7 @@ public class IOTRegister
             Json.put(crendital, "credentials", credentials);
 
             IOTCredential newCredential = new IOTCredential(crendital);
-            IOTCredentials.addEntry(newCredential, false);
+            IOTCredential.list.addEntryInternal(newCredential, false);
         }
     }
 
@@ -96,7 +93,7 @@ public class IOTRegister
 
             IOTMetadata newMetatdata = new IOTMetadata(internal);
 
-            IOTMetadatas.addEntry(newMetatdata, false);
+            IOTMetadata.list.addEntryInternal(newMetatdata, false);
         }
         else
         {
@@ -119,7 +116,7 @@ public class IOTRegister
 
             IOTCredential newCredential = new IOTCredential(internal);
 
-            IOTCredentials.addEntry(newCredential, false);
+            IOTCredential.list.addEntryInternal(newCredential, false);
         }
         else
         {

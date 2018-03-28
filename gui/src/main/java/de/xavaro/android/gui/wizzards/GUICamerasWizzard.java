@@ -6,7 +6,6 @@ import android.view.View;
 import org.json.JSONArray;
 
 import de.xavaro.android.iot.things.IOTDevice;
-import de.xavaro.android.iot.things.IOTDevices;
 
 import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.base.GUI;
@@ -37,12 +36,12 @@ public class GUICamerasWizzard extends GUIPluginTitleListIOT
 
     public void collectEntries(GUIListView listView, boolean todo)
     {
-        JSONArray list = IOTDevices.instance.getListUUIDs();
+        JSONArray list = IOTDevice.list.getListUUIDs();
 
         for (int inx = 0; inx < list.length(); inx++)
         {
             String uuid = Json.getString(list, inx);
-            IOTDevice device = IOTDevices.getEntry(uuid);
+            IOTDevice device = IOTDevice.list.getEntryInternal(uuid);
 
             if (device == null) continue;
 
@@ -61,7 +60,7 @@ public class GUICamerasWizzard extends GUIPluginTitleListIOT
         @Override
         public void onClick(View view)
         {
-            IOTDevice device = IOTDevices.getEntry(((GUIListEntryIOT) view).uuid);
+            IOTDevice device = IOTDevice.list.getEntryInternal(((GUIListEntryIOT) view).uuid);
             GUI.instance.desktopActivity.displayWizzard(GUICameraWizzard.class.getSimpleName(), device);
         }
     };

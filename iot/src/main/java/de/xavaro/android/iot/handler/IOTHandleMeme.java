@@ -7,7 +7,6 @@ import de.xavaro.android.iot.base.IOTSimple;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.simple.Json;
-import de.xavaro.android.iot.things.IOTDevices;
 
 public class IOTHandleMeme extends IOTHandle
 {
@@ -49,7 +48,7 @@ public class IOTHandleMeme extends IOTHandle
 
         IOTDevice newDevice = new IOTDevice(device);
 
-        if (IOTDevices.addEntry(newDevice, true) >= 0)
+        if (IOTDevice.list.addEntryInternal(newDevice, true) >= 0)
         {
             //
             // Collect status.

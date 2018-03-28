@@ -14,7 +14,6 @@ import de.xavaro.android.iot.status.IOTCredential;
 import de.xavaro.android.iot.status.IOTMetadata;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
-import de.xavaro.android.iot.things.IOTDevices;
 
 import zz.top.p2p.base.P2P;
 import zz.top.sny.base.SNY;
@@ -128,7 +127,7 @@ public class SystemsIAM extends IAM
                     String uuid = Json.getString(devices, dinx);
                     if ((uuid == null) || uuid.isEmpty()) continue;
 
-                    IOTDevice device = IOTDevices.getEntry(uuid);
+                    IOTDevice device = IOTDevice.list.getEntryInternal(uuid);
                     if ((device == null) || (device.type == null)) continue;
 
                     JSONObject doaction = Json.clone(jaction);

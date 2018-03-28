@@ -9,13 +9,9 @@ import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUI;
 
 import de.xavaro.android.iot.things.IOTDevice;
-import de.xavaro.android.iot.things.IOTDevices;
 import de.xavaro.android.iot.things.IOTDomain;
-import de.xavaro.android.iot.things.IOTDomains;
 import de.xavaro.android.iot.things.IOTHuman;
-import de.xavaro.android.iot.things.IOTHumans;
 import de.xavaro.android.iot.things.IOTLocation;
-import de.xavaro.android.iot.things.IOTLocations;
 
 import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.base.IOTObject;
@@ -58,22 +54,22 @@ public class GUIPluginTitleIOT extends GUIPluginTitle
 
         if (iotObjectChanged instanceof IOTHuman)
         {
-            saved = IOTHumans.addEntry((IOTHuman) iotObjectChanged, true);
+            saved = IOTHuman.list.addEntryInternal((IOTHuman) iotObjectChanged, true);
         }
 
         if (iotObjectChanged instanceof IOTDevice)
         {
-            saved = IOTDevices.addEntry((IOTDevice) iotObjectChanged, true);
+            saved = IOTDevice.list.addEntryInternal((IOTDevice) iotObjectChanged, true);
         }
 
         if (iotObjectChanged instanceof IOTDomain)
         {
-            saved = IOTDomains.addEntry((IOTDomain) iotObjectChanged, true);
+            saved = IOTDomain.list.addEntryInternal((IOTDomain) iotObjectChanged, true);
         }
 
         if (iotObjectChanged instanceof IOTLocation)
         {
-            saved = IOTLocations.addEntry((IOTLocation) iotObjectChanged, true);
+            saved = IOTLocation.list.addEntryInternal((IOTLocation) iotObjectChanged, true);
         }
 
         if (saved != IOTDefs.IOT_SAVE_UNCHANGED)

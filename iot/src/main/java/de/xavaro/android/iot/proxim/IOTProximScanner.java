@@ -32,7 +32,6 @@ import de.xavaro.android.iot.simple.Log;
 import de.xavaro.android.iot.simple.Simple;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
-import de.xavaro.android.iot.things.IOTDevices;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class IOTProximScanner
@@ -423,7 +422,7 @@ public class IOTProximScanner
                     + " alt=" + newDevice.fixedAltCoarse
                 );
 
-                IOTDevices.addEntry(newDevice, false);
+                IOTDevice.list.addEntryInternal(newDevice, false);
             }
         }
 
@@ -523,7 +522,7 @@ public class IOTProximScanner
 
             Json.put(beacondev, "capabilities", Json.jsonArrayFromSeparatedString(caps, "\\|"));
 
-            IOTDevices.addEntry(new IOTDevice(beacondev), false);
+            IOTDevice.list.addEntryInternal(new IOTDevice(beacondev), false);
 
             JSONObject status = new JSONObject();
 
@@ -543,7 +542,7 @@ public class IOTProximScanner
 
     private void addLocationMeasurement(String uuid, int rssi, int txpo, String macAddr)
     {
-        IOTDevice device = IOTDevices.getEntry(uuid);
+        IOTDevice device = IOTDevice.list.getEntryInternal(uuid);
 
         if ((device != null)
                 && (device.fixedLatFine != null)
@@ -621,7 +620,7 @@ public class IOTProximScanner
 
             Json.put(beacondev, "capabilities", Json.jsonArrayFromSeparatedString(caps, "\\|"));
 
-            IOTDevices.addEntry(new IOTDevice(beacondev), false);
+            IOTDevice.list.addEntryInternal(new IOTDevice(beacondev), false);
 
             JSONObject status = new JSONObject();
 
@@ -746,7 +745,7 @@ public class IOTProximScanner
 
             Json.put(beacondev, "capabilities", Json.jsonArrayFromSeparatedString(caps, "\\|"));
 
-            IOTDevices.addEntry(new IOTDevice(beacondev), false);
+            IOTDevice.list.addEntryInternal(new IOTDevice(beacondev), false);
 
             JSONObject status = new JSONObject();
 

@@ -12,14 +12,15 @@ import de.xavaro.android.iot.proxim.IOTProximLocation;
 import de.xavaro.android.iot.proxim.IOTProximScanner;
 import de.xavaro.android.iot.proxim.IOTProximServer;
 import de.xavaro.android.iot.simple.Json;
+import de.xavaro.android.iot.status.IOTCredential;
 import de.xavaro.android.iot.status.IOTMetadata;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
-import de.xavaro.android.iot.things.IOTDevices;
 import de.xavaro.android.iot.things.IOTDomain;
 import de.xavaro.android.iot.things.IOTHuman;
 import de.xavaro.android.iot.simple.Simple;
 
+import de.xavaro.android.iot.things.IOTLocation;
 import pub.android.interfaces.all.SubSystemHandler;
 import pub.android.interfaces.iot.GetDevices;
 import pub.android.interfaces.iot.OnStatusRequest;
@@ -77,8 +78,14 @@ public class IOT implements
     @Override
     public void startSubsystem()
     {
+        IOTHuman.list = new IOTListGeneric<>((new IOTHuman()).getClassKey());
+        IOTDevice.list = new IOTListGeneric<>((new IOTDevice()).getClassKey());
+        IOTDomain.list = new IOTListGeneric<>((new IOTDomain()).getClassKey());
+        IOTLocation.list = new IOTListGeneric<>((new IOTLocation()).getClassKey());
+
         IOTStatus.list = new IOTListGeneric<>((new IOTStatus()).getClassKey());
         IOTMetadata.list = new IOTListGeneric<>((new IOTMetadata()).getClassKey());
+        IOTCredential.list = new IOTListGeneric<>((new IOTCredential()).getClassKey());
 
         register = new IOTRegister();
 
@@ -106,8 +113,14 @@ public class IOT implements
         IOTAlive.stopService();
         IOTProximLocation.stopService();
 
+        IOTHuman.list = null;
+        IOTDevice.list = null;
+        IOTDomain.list = null;
+        IOTLocation.list = null;
+
         IOTStatus.list = null;
         IOTMetadata.list = null;
+        IOTCredential.list = null;
 
         onSubsystemStopped("iot", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
     }
@@ -144,14 +157,14 @@ public class IOT implements
     {
         JSONArray result = new JSONArray();
 
-        JSONArray list = IOTDevices.instance.getListUUIDs();
+        JSONArray list = IOTDevice.list.getListUUIDs();
 
         for (int inx = 0; inx < list.length(); inx++)
         {
             String uuid = Json.getString(list, inx);
             if (uuid == null) continue;
 
-            IOTDevice device = IOTDevices.getEntry(uuid);
+            IOTDevice device = IOTDevice.list.getEntryInternal(uuid);
             if (device == null) continue;
 
             if (device.hasCapability(capability))
