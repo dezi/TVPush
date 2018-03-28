@@ -223,11 +223,13 @@ public class GLSRenderer implements GLSurfaceView.Renderer, PUBSurface
                         // A frame is missing. Reset to next I-Frame.
                         //
 
-                        if (frameQueue.size() > 10)
+                        if (frameQueue.size() > 40)
                         {
                             //
                             // Reset until next I-Frame.
                             //
+
+                            frameQueue.remove(0);
 
                             while (frameQueue.size() > 0)
                             {

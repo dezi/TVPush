@@ -49,32 +49,17 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
             {
                 return onKeyDownDoit(keyCode, event) || super.onKeyDown(keyCode, event);
             }
-
-            @Override
-            public void onHighlightChanged(View view, boolean highlight)
-            {
-                if (!highlight)
-                {
-
-                }
-            }
         };
 
-        final String toastFocus = ""
+        String toastFocus = ""
                 + "Drücken Sie "
                 + GUIDefs.UTF_OK
-                + " um die Kamera zu bewegen";
-
-        final String toastHighlight = ""
-                + "Bewegen mit" + " " + GUIDefs.UTF_MOVE + " "
-                + ", zoomen mit" + " " + GUIDefs.UTF_ZOOMIN
-                + " und" + " " + GUIDefs.UTF_ZOOMOUT;
+                + " um die Kamera zu steuern";
 
         mainFrame.setSizeDip(Simple.MP, Simple.MP);
         mainFrame.setHighlightable(true);
         mainFrame.setFocusable(true);
         mainFrame.setToastFocus(toastFocus);
-        mainFrame.setToastHighlight(toastHighlight);
 
         padFrame.addView(mainFrame);
 
@@ -88,14 +73,6 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
                 mainFrame.setHighlight(! mainFrame.getHighlight());
             }
         });
-    }
-
-    private void setZoom()
-    {
-        if ((videoSurface != null) && (videoSurface instanceof PUBSurface))
-        {
-            ((PUBSurface) videoSurface).setZoom(zoom, 50);
-        }
     }
 
     @Override
@@ -173,6 +150,19 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
         {
             IOTDevice device = (IOTDevice) iotObject;
 
+            String toastHighlight = ""
+                    + "Zoomen mit" + " " + GUIDefs.UTF_ZOOMIN
+                    + " und" + " " + GUIDefs.UTF_ZOOMOUT;
+
+            if (device.hasCapability("pan") && device.hasCapability("tilt"))
+            {
+                toastHighlight = ""
+                        + "Bewegen mit" + " " + GUIDefs.UTF_MOVE
+                        + ", zoomen mit" + " " + GUIDefs.UTF_ZOOMIN
+                        + " und" + " " + GUIDefs.UTF_ZOOMOUT;
+            }
+
+            mainFrame.setToastHighlight(toastHighlight);
         }
     }
 
@@ -182,21 +172,25 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT)
         {
+            startMove(PUBCamera.PTZ_DIRECTION_LEFT);
             usedkey = true;
         }
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_UP)
         {
+            startMove(PUBCamera.PTZ_DIRECTION_UP);
             usedkey = true;
         }
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)
         {
+            startMove(PUBCamera.PTZ_DIRECTION_RIGHT);
             usedkey = true;
         }
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN)
         {
+            startMove(PUBCamera.PTZ_DIRECTION_DOWN);
             usedkey = true;
         }
 
@@ -209,15 +203,36 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
 
         if (keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD)
         {
-            if (zoom < 5) zoom += 1;
+            if (zoom < 8) zoom += 1;
             setZoom();
             usedkey = true;
         }
 
-        if (usedkey)
-        {
-        }
-
         return usedkey;
     }
+
+    private void setZoom()
+    {
+        if ((videoSurface != null) && (videoSurface instanceof PUBSurface))
+        {
+            ((PUBSurface) videoSurface).setZoom(zoom, 50);
+        }
+    }
+
+    private void startMove(int dir)
+    {
+        camera.startPTZDirection(dir, 1);
+
+        Simple.getHandler().removeCallbacks(stopMove);
+        Simple.getHandler().postDelayed(stopMove, 250);
+    }
+
+    private final Runnable stopMove = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            camera.stopPTZDirection();
+        }
+    };
 }
