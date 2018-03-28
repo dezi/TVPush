@@ -74,7 +74,7 @@ public class IOTRegister
             Log.d(LOGTAG, "registerDeviceStatus: uuid=" + uuid + " ipaddr=" + ipaddr);
 
             IOTStatus newStatus = new IOTStatus(status);
-            IOTStatusses.instance.addEntryInternal(newStatus, false);
+            IOTStatus.list.addEntryInternal(newStatus, false);
         }
         else
         {

@@ -3,6 +3,7 @@ package de.xavaro.android.gui.views;
 import android.content.Context;
 import android.graphics.Color;
 
+import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.base.IOTAlive;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
@@ -34,7 +35,7 @@ public class GUIIconViewIOT extends GUIIconView
         super.onAttachedToWindow();
 
         IOTDevices.instance.subscribe(uuid, onDeviceUpdated);
-        IOTStatusses.instance.subscribe(uuid, onStatusUpdated);
+        IOTStatus.list.subscribe(uuid, onStatusUpdated);
 
         Simple.getHandler().postDelayed(onBeaconBlink, 100);
     }
@@ -45,7 +46,7 @@ public class GUIIconViewIOT extends GUIIconView
         super.onDetachedFromWindow();
 
         IOTDevices.instance.unsubscribe(uuid, onDeviceUpdated);
-        IOTStatusses.instance.unsubscribe(uuid, onStatusUpdated);
+        IOTStatus.list.unsubscribe(uuid, onStatusUpdated);
 
         Simple.getHandler().removeCallbacks(onBeaconBlink);
     }
@@ -82,7 +83,7 @@ public class GUIIconViewIOT extends GUIIconView
         if (iotThing instanceof IOTDevice)
         {
             IOTDevice device = (IOTDevice) iotThing;
-            IOTStatus status = IOTStatusses.instance.getEntryInternal(uuid);
+            IOTStatus status = IOTStatus.list.getEntryInternal(uuid);
 
             int residplain = GUIIcons.getImageResid(device, false);
             int residcolor = GUIIcons.getImageResid(device, true);

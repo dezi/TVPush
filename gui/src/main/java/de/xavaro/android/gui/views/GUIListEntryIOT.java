@@ -9,6 +9,7 @@ import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.simple.Log;
 import de.xavaro.android.gui.simple.Simple;
 
+import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.status.IOTCredential;
 import de.xavaro.android.iot.status.IOTCredentials;
 import de.xavaro.android.iot.status.IOTStatus;
@@ -70,7 +71,7 @@ public class GUIListEntryIOT extends GUIListEntry
         super.onAttachedToWindow();
 
         IOTDevices.instance.subscribe(uuid, onDeviceUpdated);
-        IOTStatusses.instance.subscribe(uuid, onStatusUpdated);
+        IOTStatus.list.subscribe(uuid, onStatusUpdated);
     }
 
     @Override
@@ -79,7 +80,7 @@ public class GUIListEntryIOT extends GUIListEntry
         super.onDetachedFromWindow();
 
         IOTDevices.instance.unsubscribe(uuid, onDeviceUpdated);
-        IOTStatusses.instance.unsubscribe(uuid, onStatusUpdated);
+        IOTStatus.list.unsubscribe(uuid, onStatusUpdated);
     }
 
     private void setStatusColor(int color)
@@ -168,7 +169,7 @@ public class GUIListEntryIOT extends GUIListEntry
         public void onClick(View view)
         {
             IOTDevice device = IOTDevices.getEntry(uuid);
-            IOTStatus status = IOTStatusses.instance.getEntryInternal(uuid);
+            IOTStatus status = IOTStatus.list.getEntryInternal(uuid);
             IOTCredential credential = IOTCredentials.getEntry(uuid);
 
             PUBSmartPlug handler = GUI.instance.onSmartPlugHandlerRequest(
@@ -189,7 +190,7 @@ public class GUIListEntryIOT extends GUIListEntry
         public void onClick(View view)
         {
             IOTDevice device = IOTDevices.getEntry(uuid);
-            IOTStatus status = IOTStatusses.instance.getEntryInternal(uuid);
+            IOTStatus status = IOTStatus.list.getEntryInternal(uuid);
             IOTCredential credential = IOTCredentials.getEntry(uuid);
 
             PUBSmartBulb handler = GUI.instance.onSmartBulbHandlerRequest(
@@ -210,7 +211,7 @@ public class GUIListEntryIOT extends GUIListEntry
         public void onClick(View view)
         {
             IOTDevice device = IOTDevices.getEntry(uuid);
-            IOTStatus status = IOTStatusses.instance.getEntryInternal(uuid);
+            IOTStatus status = IOTStatus.list.getEntryInternal(uuid);
             IOTCredential credential = IOTCredentials.getEntry(uuid);
 
             PUBCamera handler = GUI.instance.onCameraHandlerRequest(

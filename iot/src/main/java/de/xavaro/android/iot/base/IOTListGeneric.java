@@ -1,5 +1,7 @@
 package de.xavaro.android.iot.base;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -10,9 +12,9 @@ import java.util.Map;
 import de.xavaro.android.iot.simple.Simple;
 import de.xavaro.android.iot.simple.Prefs;
 import de.xavaro.android.iot.simple.Json;
-import de.xavaro.android.iot.simple.Log;
+import de.xavaro.android.iot.status.IOTStatus;
 
-public abstract class IOTListGeneric<T>
+public class IOTListGeneric<T>
 {
     private final static String LOGTAG = IOTListGeneric.class.getSimpleName();
 
@@ -23,10 +25,10 @@ public abstract class IOTListGeneric<T>
     {
         this.classKey = classKey;
 
+        Log.d(LOGTAG, "IOTListGeneric: classKey=" + classKey);
+
         loadAllFromStorage();
     }
-
-    public abstract T loadFromJson(JSONObject json);
 
     public int getListSize()
     {
@@ -62,6 +64,7 @@ public abstract class IOTListGeneric<T>
         return list.get(uuid);
     }
 
+    @SuppressWarnings("unchecked")
     private void loadAllFromStorage()
     {
         JSONArray keys = Prefs.searchPreferences(classKey);
@@ -74,7 +77,10 @@ public abstract class IOTListGeneric<T>
             JSONObject jsonobj = Json.fromStringObject(json);
             if (jsonobj == null) continue;
 
-            T iotObject = loadFromJson(jsonobj);
+            T iotObject = null;
+
+            if (classKey.equals("iot.IOTStatus")) iotObject = (T) new IOTStatus(jsonobj);
+
             if (iotObject == null) continue;
 
             list.put(((IOTObject) iotObject).uuid, iotObject);

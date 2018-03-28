@@ -216,7 +216,7 @@ public abstract class IOTObject
             IOTDomains.instance.putEntry(this);
         }
 
-        if (this instanceof IOTStatus) IOTStatusses.instance.putEntry((IOTStatus) this);
+        if (this instanceof IOTStatus) IOTStatus.list.putEntry((IOTStatus) this);
         if (this instanceof IOTMetadata) IOTMetadatas.instance.putEntry(this);
         if (this instanceof IOTCredential) IOTCredentials.instance.putEntry(this);
 

@@ -12,6 +12,7 @@ import de.xavaro.android.iot.proxim.IOTProximLocation;
 import de.xavaro.android.iot.proxim.IOTProximScanner;
 import de.xavaro.android.iot.proxim.IOTProximServer;
 import de.xavaro.android.iot.simple.Json;
+import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 import de.xavaro.android.iot.things.IOTDomain;
@@ -75,6 +76,8 @@ public class IOT implements
     @Override
     public void startSubsystem()
     {
+        IOTStatus.list = new IOTListGeneric<>((new IOTStatus()).getClassKey());
+
         register = new IOTRegister();
 
         IOTBoot.initialize();
@@ -98,8 +101,11 @@ public class IOT implements
     @Override
     public void stopSubsystem()
     {
+
         IOTAlive.stopService();
         IOTProximLocation.stopService();
+
+        IOTStatus.list = null;
 
         onSubsystemStopped("iot", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
     }

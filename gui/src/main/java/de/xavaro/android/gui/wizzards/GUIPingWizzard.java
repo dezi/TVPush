@@ -10,6 +10,7 @@ import de.xavaro.android.gui.views.GUIListView;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.R;
 
+import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
@@ -47,7 +48,7 @@ public class GUIPingWizzard extends GUIPluginTitleListIOT
             if (device == null) continue;
             if (todo) continue;
 
-            IOTStatus status = IOTStatusses.instance.getEntryInternal(uuid);
+            IOTStatus status = IOTStatus.list.getEntryInternal(uuid);
             if (status == null) continue;
 
             String connect = (status.ipaddr != null) ? status.ipaddr : status.macaddr;

@@ -2,8 +2,10 @@ package de.xavaro.android.iot.things;
 
 import android.support.annotation.Nullable;
 
+import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.status.IOTCredentials;
 import de.xavaro.android.iot.status.IOTMetadatas;
+import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.status.IOTStatusses;
 
 public class IOTThings
@@ -28,7 +30,7 @@ public class IOTThings
         IOTDomains.instance.removeEntry(uuid);
         IOTLocations.instance.removeEntry(uuid);
 
-        IOTStatusses.instance.removeEntry(uuid);
+        IOTStatus.list.removeEntry(uuid);
         IOTMetadatas.instance.removeEntry(uuid);
         IOTCredentials.instance.removeEntry(uuid);
     }
