@@ -122,6 +122,33 @@ public class GLSShaderYUV2RGB extends GLSShader
         return yuvTextures;
     }
 
+    public void setZoom(int zoom, int step, int width, int height)
+    {
+        float offset = (step / (float) width) * zoom;
+
+        Log.d(LOGTAG, "setZoom: offset=" + offset);
+
+        float[] zoom_flip = new float[ TEX_VERTICES_FlIP.length ];
+
+        for (int inx = 0; inx < zoom_flip.length; inx++)
+        {
+            float val = TEX_VERTICES_FlIP[ inx ];
+            zoom_flip[ inx ] = (val == 0.0f) ? offset : (1.0f - offset);
+        }
+
+        texVerticesFlip = GLSUtils.createVerticesBuffer(zoom_flip);
+
+        float[] zoom_norm = new float[ TEX_VERTICES_NORM.length ];
+
+        for (int inx = 0; inx < zoom_norm.length; inx++)
+        {
+            float val = TEX_VERTICES_NORM[ inx ];
+            zoom_norm[ inx ] = (val == 0.0f) ? offset : (1.0f - offset);
+        }
+
+        texVerticesNorm = GLSUtils.createVerticesBuffer(zoom_norm);
+    }
+
     public boolean process(GLSImage rgb, int width, int height)
     {
         if (program == 0)

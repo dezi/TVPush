@@ -69,6 +69,8 @@ public class GLSRenderer implements GLSurfaceView.Renderer, PUBSurface
         this.step = step;
 
         Log.d(LOGTAG, "setZoom: zoom=" + zoom + " step=" + step);
+
+        yuvShader.setZoom(zoom, step, displayWidth, displayHeight);
     }
 
     private void startFaceDetect()
@@ -217,6 +219,24 @@ public class GLSRenderer implements GLSurfaceView.Renderer, PUBSurface
                     }
                     else
                     {
+                        //
+                        // A frame is missing. Reset to next I-Frame.
+                        //
+
+                        if (frameQueue.size() > 10)
+                        {
+                            //
+                            // Reset until next I-Frame.
+                            //
+
+                            while (frameQueue.size() > 0)
+                            {
+                                GLSFrame frame = frameQueue.get(0);
+                                if (frame.isIFrame()) break;
+                                frameQueue.remove(0);
+                            }
+                        }
+
                         break;
                     }
                 }
