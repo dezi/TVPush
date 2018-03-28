@@ -1,13 +1,5 @@
 package de.xavaro.android.tvpush;
 
-import android.util.Log;
-
-import java.io.ByteArrayOutputStream;
-
-import de.xavaro.android.adb.AdbServiceCheck;
-
-import de.xavaro.android.adb.AdbServicePull;
-import de.xavaro.android.adb.AdbTest;
 import de.xavaro.android.gui.base.GUIApplication;
 import de.xavaro.android.gui.simple.Simple;
 
