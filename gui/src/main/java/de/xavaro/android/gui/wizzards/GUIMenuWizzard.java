@@ -32,7 +32,7 @@ public class GUIMenuWizzard extends GUIPluginTitleList
     {
         super(context);
 
-        setIsWizzard(true, false, 1, Gravity.RIGHT);
+        setIsWizzard(true, false, 1, Gravity.END);
 
         setTitleIcon(R.drawable.menu_400);
         setTitleText("Menu");

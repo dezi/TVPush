@@ -38,7 +38,7 @@ public class GUIPlugin extends GUIFrameLayout
         contentFrame = this;
 
         numcols = 1;
-        gravity = Gravity.LEFT;
+        gravity = Gravity.START;
 
         if (Simple.isTV())
         {
@@ -69,12 +69,12 @@ public class GUIPlugin extends GUIFrameLayout
 
     public void setIsWizzard(boolean wizzard, boolean helper)
     {
-        setIsWizzard(wizzard, helper, 1, Gravity.LEFT);
+        setIsWizzard(wizzard, helper, 1, Gravity.START);
     }
 
     public void setIsWizzard(boolean wizzard, boolean helper, int numcols)
     {
-        setIsWizzard(wizzard, helper, numcols, Gravity.LEFT);
+        setIsWizzard(wizzard, helper, numcols, Gravity.START);
     }
 
     public void setIsWizzard(boolean wizzard, boolean helper, int numcols, int gravity)
@@ -86,7 +86,7 @@ public class GUIPlugin extends GUIFrameLayout
 
         this.setPluginSizeDip(newwidth, height);
 
-        if (gravity == Gravity.RIGHT)
+        if (gravity == Gravity.END)
         {
             int left = Simple.getDeviceWidthDip() - newwidth - DEFAULT_HORZ_MARGIN;
             this.setPluginPositionDip(left, DEFAULT_TOP_MARGIN);

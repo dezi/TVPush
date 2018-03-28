@@ -49,7 +49,7 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
     {
         super(context);
 
-        setIsWizzard(true, true, 2, Gravity.RIGHT);
+        setIsWizzard(true, true, 2, Gravity.END);
 
         mapFrame = new GUIFrameLayout(context)
         {

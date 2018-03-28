@@ -35,13 +35,12 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
     {
         super(context);
 
-        setIsWizzard(true, true, 2, Gravity.RIGHT);
+        setIsWizzard(true, true, 2, Gravity.END);
 
         GUIFrameLayout padFrame = new GUIFrameLayout(context);
         padFrame.setPaddingDip(GUIDefs.PADDING_SMALL);
 
         contentFrame.addView(padFrame);
-
 
         mainFrame = new GUIFrameLayout(context)
         {
@@ -52,10 +51,7 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
             }
         };
 
-        String toastFocus = ""
-                + "Drücken Sie "
-                + GUIDefs.UTF_OK
-                + " um die Kamera zu steuern";
+        String toastFocus = "Drücken Sie " + GUIDefs.UTF_OK + " um die Kamera zu steuern";
 
         mainFrame.setSizeDip(Simple.MP, Simple.MP);
         mainFrame.setHighlightable(true);
@@ -81,11 +77,24 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
     {
         super.onAttachedToWindow();
 
-        IOTStatus status = new IOTStatus(iotObject.uuid);
-        IOTCredential credential = new IOTCredential(iotObject.uuid);
+        connectCamera();
+    }
 
+    @Override
+    public void onDetachedFromWindow()
+    {
+        super.onDetachedFromWindow();
+
+        releaseCamera();
+    }
+
+    private void connectCamera()
+    {
         if (camera == null)
         {
+            IOTStatus status = new IOTStatus(iotObject.uuid);
+            IOTCredential credential = new IOTCredential(iotObject.uuid);
+
             camera = GUI.instance.onCameraHandlerRequest(
                     iotObject.toJson(),
                     status.toJson(),
@@ -106,11 +115,8 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
         }
     }
 
-    @Override
-    public void onDetachedFromWindow()
+    private void releaseCamera()
     {
-        super.onDetachedFromWindow();
-
         if (camera != null)
         {
             if (videoSurface != null)
@@ -149,6 +155,9 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
 
         if (iotObject instanceof IOTDevice)
         {
+            releaseCamera();
+            connectCamera();
+
             IOTDevice device = (IOTDevice) iotObject;
 
             String toastHighlight = ""
