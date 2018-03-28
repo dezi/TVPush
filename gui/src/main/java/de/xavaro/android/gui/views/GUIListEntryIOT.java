@@ -6,6 +6,7 @@ import android.view.View;
 
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIDefs;
+import de.xavaro.android.gui.simple.Log;
 import de.xavaro.android.gui.simple.Simple;
 
 import de.xavaro.android.iot.status.IOTCredential;
@@ -31,7 +32,10 @@ public class GUIListEntryIOT extends GUIListEntry
     public String uuid;
 
     public GUIRelativeLayout bulletView;
+
     private View.OnClickListener onClickListener;
+    private View.OnLongClickListener onLongClickListener;
+
     private OnUpdateContentListener onUpdateContentListener;
 
     public GUIListEntryIOT(Context context, String uuid)
@@ -119,6 +123,11 @@ public class GUIListEntryIOT extends GUIListEntry
         {
             boolean pingt = (System.currentTimeMillis() - lastPing) < (60 * 1000);
             setStatusColor(pingt ? GUIDefs.STATUS_COLOR_GREEN : GUIDefs.STATUS_COLOR_RED);
+        }
+
+        if (onLongClickListener == null)
+        {
+            setOnLongClickListener(onThingLongClickListener);
         }
 
         if (onUpdateContentListener != null)
@@ -213,11 +222,31 @@ public class GUIListEntryIOT extends GUIListEntry
         }
     };
 
+    private final OnLongClickListener onThingLongClickListener = new OnLongClickListener()
+    {
+        @Override
+        public boolean onLongClick(View view)
+        {
+            Log.d(LOGTAG,"onThingLongClickListener:");
+
+            IOTThings.deleteThing(uuid);
+
+            return true;
+        }
+    };
+
     @Override
     public void setOnClickListener(View.OnClickListener onClickListener)
     {
         this.onClickListener = onClickListener;
         super.setOnClickListener(onClickListener);
+    }
+
+    @Override
+    public void setOnLongClickListener(View.OnLongClickListener onLongClickListener)
+    {
+        this.onLongClickListener = onLongClickListener;
+        super.setOnLongClickListener(onLongClickListener);
     }
 
     public void setOnUpdateContentListener(OnUpdateContentListener onUpdateContentListener)

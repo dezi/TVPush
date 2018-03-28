@@ -26,6 +26,11 @@ public class Prefs
         return Simple.getPrefs().edit().putString(key, value).commit();
     }
 
+    public static boolean removePref(String key)
+    {
+        return Simple.getPrefs().edit().remove(key).commit();
+    }
+
     public static JSONArray searchPreferences(String prefix)
     {
         JSONArray result = new JSONArray();

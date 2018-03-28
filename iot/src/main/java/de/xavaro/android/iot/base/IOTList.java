@@ -14,16 +14,20 @@ public abstract class IOTList
 {
     private final static String LOGTAG = IOTList.class.getSimpleName();
 
+    public String classKey;
+
     public Map<String, IOTObject> list = new HashMap<>();
 
     public IOTList(String classKey)
     {
-        load(classKey);
+        this.classKey = classKey;
+
+        load();
     }
 
     public abstract IOTObject loadFromJson(String json);
 
-    private void load(String classKey)
+    private void load()
     {
         JSONArray keys = Prefs.searchPreferences(classKey);
 
@@ -33,10 +37,10 @@ public abstract class IOTList
 
             String json = Prefs.getString(prefkey);
 
-            IOTObject iotbase = loadFromJson(json);
-            if (iotbase == null) continue;
+            IOTObject iotObject = loadFromJson(json);
+            if (iotObject == null) continue;
 
-            list.put(iotbase.uuid, iotbase);
+            list.put(iotObject.uuid, iotObject);
         }
     }
 
@@ -60,6 +64,13 @@ public abstract class IOTList
     public void putEntry(IOTObject object)
     {
         list.put(object.uuid, object);
+    }
+
+    public void removeEntry(String uuid)
+    {
+        list.remove(uuid);
+
+        Prefs.removePref(classKey + "." + uuid);
     }
 
     //region Subscriptions implementation.

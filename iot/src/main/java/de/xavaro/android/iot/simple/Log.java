@@ -6,7 +6,7 @@ public class Log
 
     public static String[] allow = new String[]
             {
-                    "IOTProxim*",
+                    "IOTProxim*-",
                     "IOTStatus*-",
                     "IOTDevice*-"
             };
