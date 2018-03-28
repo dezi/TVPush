@@ -6,7 +6,7 @@ import android.util.Log;
 import org.json.JSONObject;
 
 import pub.android.interfaces.all.SubSystemHandler;
-import pub.android.interfaces.drv.Camera;
+import pub.android.interfaces.pub.PUBCamera;
 import pub.android.interfaces.ext.GetCameraHandler;
 import pub.android.interfaces.ext.OnDeviceHandler;
 import pub.android.interfaces.all.DoSomethingHandler;
@@ -113,7 +113,7 @@ public class P2P implements
     }
 
     @Override
-    public Camera getCameraHandler(JSONObject device, JSONObject status, JSONObject credentials)
+    public PUBCamera getCameraHandler(JSONObject device, JSONObject status, JSONObject credentials)
     {
         return new P2PCamera(device, credentials);
     }

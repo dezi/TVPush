@@ -2,9 +2,9 @@ package pub.android.interfaces.ext;
 
 import org.json.JSONObject;
 
-import pub.android.interfaces.drv.SmartPlug;
+import pub.android.interfaces.pub.PUBSmartPlug;
 
 public interface GetSmartPlugHandler
 {
-    SmartPlug getSmartPlugHandler(JSONObject device, JSONObject status, JSONObject credentials);
+    PUBSmartPlug getSmartPlugHandler(JSONObject device, JSONObject status, JSONObject credentials);
 }

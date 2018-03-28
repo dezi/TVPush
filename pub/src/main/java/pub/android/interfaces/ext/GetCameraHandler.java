@@ -2,9 +2,9 @@ package pub.android.interfaces.ext;
 
 import org.json.JSONObject;
 
-import pub.android.interfaces.drv.Camera;
+import pub.android.interfaces.pub.PUBCamera;
 
 public interface GetCameraHandler
 {
-    Camera getCameraHandler(JSONObject device, JSONObject status, JSONObject credentials);
+    PUBCamera getCameraHandler(JSONObject device, JSONObject status, JSONObject credentials);
 }

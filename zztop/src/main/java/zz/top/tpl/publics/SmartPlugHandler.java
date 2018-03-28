@@ -1,9 +1,9 @@
 package zz.top.tpl.publics;
 
-import pub.android.interfaces.drv.SmartPlug;
+import pub.android.interfaces.pub.PUBSmartPlug;
 import zz.top.tpl.handler.TPLHandlerSmartPlug;
 
-public class SmartPlugHandler implements SmartPlug
+public class SmartPlugHandler implements PUBSmartPlug
 {
     private String ipaddr;
 

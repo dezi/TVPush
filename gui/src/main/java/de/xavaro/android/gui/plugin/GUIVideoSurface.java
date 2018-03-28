@@ -5,7 +5,7 @@ import android.view.Gravity;
 
 import de.xavaro.android.gui.base.GUIPlugin;
 
-import pub.android.interfaces.drv.Camera;
+import pub.android.interfaces.pub.PUBCamera;
 
 import zz.top.gls.GLSVideoView;
 
@@ -13,7 +13,7 @@ public class GUIVideoSurface extends GUIPlugin
 {
     private final static String LOGTAG = GUIToastBar.class.getSimpleName();
 
-    private Camera camera;
+    private PUBCamera camera;
     private GLSVideoView glsVideoView;
 
     public GUIVideoSurface(Context context)
@@ -37,12 +37,12 @@ public class GUIVideoSurface extends GUIPlugin
         return glsVideoView;
     }
 
-    public void setCamera(Camera camera)
+    public void setCamera(PUBCamera camera)
     {
         this.camera = camera;
     }
 
-    public Camera getCamera()
+    public PUBCamera getCamera()
     {
         return camera;
     }

@@ -2,9 +2,9 @@ package pub.android.interfaces.ext;
 
 import org.json.JSONObject;
 
-import pub.android.interfaces.drv.SmartBulb;
+import pub.android.interfaces.pub.PUBSmartBulb;
 
 public interface GetSmartBulbHandler
 {
-    SmartBulb getSmartBulbHandler(JSONObject device, JSONObject status, JSONObject credentials);
+    PUBSmartBulb getSmartBulbHandler(JSONObject device, JSONObject status, JSONObject credentials);
 }

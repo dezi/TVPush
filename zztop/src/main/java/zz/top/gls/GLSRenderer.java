@@ -14,10 +14,11 @@ import java.util.ArrayList;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import pub.android.interfaces.pub.PUBSurface;
 import zz.top.dec.VIDDecode;
 import zz.top.utl.Log;
 
-public class GLSRenderer implements GLSurfaceView.Renderer
+public class GLSRenderer implements GLSurfaceView.Renderer, PUBSurface
 {
     private final static String LOGTAG = GLSRenderer.class.getSimpleName();
 
@@ -51,11 +52,23 @@ public class GLSRenderer implements GLSurfaceView.Renderer
     private final ArrayList<GLSFrame> frameQueue = new ArrayList<>();
     private final ArrayList<GLSFrame> renderQueue = new ArrayList<>();
 
+    private int zoom;
+    private int step;
+
     public GLSRenderer(Context context)
     {
         super();
 
         faceDetector = new GLSFaceDetect(context);
+    }
+
+    @Override
+    public void setZoom(int zoom, int step)
+    {
+        this.zoom = zoom;
+        this.step = step;
+
+        Log.d(LOGTAG, "setZoom: zoom=" + zoom + " step=" + step);
     }
 
     private void startFaceDetect()

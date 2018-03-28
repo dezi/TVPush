@@ -6,9 +6,11 @@ import android.opengl.GLSurfaceView;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import pub.android.interfaces.pub.PUBSurface;
+
 import zz.top.utl.Log;
 
-public class GLSSurfaceView extends GLSurfaceView
+public class GLSSurfaceView extends GLSurfaceView implements PUBSurface
 {
     private static final String LOGTAG = GLSSurfaceView.class.getSimpleName();
 
@@ -59,6 +61,12 @@ public class GLSSurfaceView extends GLSurfaceView
         super.onDetachedFromWindow();
 
         Log.d(LOGTAG, "onDetachedFromWindow:");
+    }
+
+    @Override
+    public void setZoom(int zoom, int step)
+    {
+        renderer.setZoom(zoom, step);
     }
 
     private boolean supportsOpenGLES2(Context context)

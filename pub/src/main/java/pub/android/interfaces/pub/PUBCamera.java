@@ -1,12 +1,10 @@
-package pub.android.interfaces.drv;
+package pub.android.interfaces.pub;
 
 import android.content.Context;
 import android.widget.FrameLayout;
 
-import org.json.JSONObject;
-
 @SuppressWarnings("unused")
-public interface Camera
+public interface PUBCamera
 {
      int RESOLUTION_AUTO = 0;
      int RESOLUTION_1080P = 1;

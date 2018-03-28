@@ -1,6 +1,6 @@
-package pub.android.interfaces.drv;
+package pub.android.interfaces.pub;
 
-public interface SmartPlug
+public interface PUBSmartPlug
 {
     boolean setPlugState(int onoff);
     boolean setLEDState(int onoff);

@@ -6,7 +6,7 @@ import android.widget.FrameLayout;
 
 import org.json.JSONObject;
 
-import pub.android.interfaces.drv.Camera;
+import pub.android.interfaces.pub.PUBCamera;
 
 import zz.top.p2p.commands.CloseCameraSend;
 import zz.top.p2p.commands.DayNightSend;
@@ -25,12 +25,11 @@ import zz.top.p2p.commands.StopVideoSend;
 
 import zz.top.gls.GLSVideoView;
 
-import zz.top.cam.Cameras;
 import zz.top.utl.Json;
 import zz.top.utl.Simple;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
-public class P2PCamera implements Camera
+public class P2PCamera implements PUBCamera
 {
     private static final String LOGTAG = P2PCamera.class.getSimpleName();
 

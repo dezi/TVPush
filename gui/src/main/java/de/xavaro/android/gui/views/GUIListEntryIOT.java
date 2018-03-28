@@ -14,9 +14,9 @@ import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
-import pub.android.interfaces.drv.Camera;
-import pub.android.interfaces.drv.SmartBulb;
-import pub.android.interfaces.drv.SmartPlug;
+import pub.android.interfaces.pub.PUBCamera;
+import pub.android.interfaces.pub.PUBSmartBulb;
+import pub.android.interfaces.pub.PUBSmartPlug;
 
 public class GUIListEntryIOT extends GUIListEntry
 {
@@ -165,7 +165,7 @@ public class GUIListEntryIOT extends GUIListEntry
 
             entry.credential = new IOTCredential(entry.uuid);
 
-            SmartPlug handler = GUI.instance.onSmartPlugHandlerRequest(
+            PUBSmartPlug handler = GUI.instance.onSmartPlugHandlerRequest(
                     entry.device.toJson(),
                     entry.status.toJson(),
                     entry.credential.toJson());
@@ -186,7 +186,7 @@ public class GUIListEntryIOT extends GUIListEntry
 
             entry.credential = new IOTCredential(entry.uuid);
 
-            SmartBulb handler = GUI.instance.onSmartBulbHandlerRequest(
+            PUBSmartBulb handler = GUI.instance.onSmartBulbHandlerRequest(
                     entry.device.toJson(),
                     entry.status.toJson(),
                     entry.credential.toJson());
@@ -207,7 +207,7 @@ public class GUIListEntryIOT extends GUIListEntry
 
             entry.credential = new IOTCredential(entry.uuid);
 
-            Camera handler = GUI.instance.onCameraHandlerRequest(
+            PUBCamera handler = GUI.instance.onCameraHandlerRequest(
                     entry.device.toJson(),
                     entry.status.toJson(),
                     entry.credential.toJson());

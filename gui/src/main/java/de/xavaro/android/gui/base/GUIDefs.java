@@ -73,13 +73,13 @@ public class GUIDefs
 
     public static final Character UTF_OK           = 0x2316;
 
-    public static final Character UTF_LEFT         = (char) (Simple.isTV() ? 0x25c0 : 0x27a1); // 0x25c0;
-    public static final Character UTF_RIGHT        = (char) (Simple.isTV() ? 0x25b6 : 0x2b05); // 0x25b6;
-    public static final Character UTF_UP           = (char) (Simple.isTV() ? 0x25b2 : 0x2b06); // 0x25b2;
-    public static final Character UTF_DOWN         = (char) (Simple.isTV() ? 0x25bc : 0x2b07); // 0x25bc;
+    public static final Character UTF_LEFT         = (char) (Simple.isTV() ? 0x25c0 : 0x27a1);
+    public static final Character UTF_RIGHT        = (char) (Simple.isTV() ? 0x25b6 : 0x2b05);
+    public static final Character UTF_UP           = (char) (Simple.isTV() ? 0x25b2 : 0x2b06);
+    public static final Character UTF_DOWN         = (char) (Simple.isTV() ? 0x25bc : 0x2b07);
 
-    public static final Character UTF_REWIND       = 0x23EA; // "" + UTF_LEFT + UTF_LEFT;
-    public static final Character UTF_FAST_FORWARD = 0x23E9; // "" + UTF_RIGHT + UTF_RIGHT;
+    public static final Character UTF_REWIND       = 0x23ea;
+    public static final Character UTF_FAST_FORWARD = 0x23e9;
 
     public static final String UTF_MOVE            = "" + UTF_LEFT + UTF_RIGHT + UTF_UP + UTF_DOWN;
     public static final String UTF_ZOOMIN          = "" + UTF_REWIND;

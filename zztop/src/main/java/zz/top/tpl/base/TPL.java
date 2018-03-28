@@ -6,8 +6,8 @@ import android.graphics.Color;
 import org.json.JSONObject;
 
 import pub.android.interfaces.all.SubSystemHandler;
-import pub.android.interfaces.drv.SmartBulb;
-import pub.android.interfaces.drv.SmartPlug;
+import pub.android.interfaces.pub.PUBSmartBulb;
+import pub.android.interfaces.pub.PUBSmartPlug;
 import pub.android.interfaces.ext.GetSmartBulbHandler;
 import pub.android.interfaces.ext.GetSmartPlugHandler;
 
@@ -125,14 +125,14 @@ public class TPL implements
     }
 
     @Override
-    public SmartPlug getSmartPlugHandler(JSONObject device, JSONObject status, JSONObject credentials)
+    public PUBSmartPlug getSmartPlugHandler(JSONObject device, JSONObject status, JSONObject credentials)
     {
         String ipaddr = Json.getString(status, "ipaddr");
         return (ipaddr != null) ? new SmartPlugHandler(ipaddr) : null;
     }
 
     @Override
-    public SmartBulb getSmartBulbHandler(JSONObject device, JSONObject status, JSONObject credentials)
+    public PUBSmartBulb getSmartBulbHandler(JSONObject device, JSONObject status, JSONObject credentials)
     {
         String ipaddr = Json.getString(status, "ipaddr");
         return (ipaddr != null) ? new SmartBulbHandler(ipaddr) : null;

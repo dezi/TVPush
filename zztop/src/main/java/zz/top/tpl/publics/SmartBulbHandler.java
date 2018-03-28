@@ -1,9 +1,9 @@
 package zz.top.tpl.publics;
 
-import pub.android.interfaces.drv.SmartBulb;
+import pub.android.interfaces.pub.PUBSmartBulb;
 import zz.top.tpl.handler.TPLHandlerSmartBulb;
 
-public class SmartBulbHandler implements SmartBulb
+public class SmartBulbHandler implements PUBSmartBulb
 {
     private String ipaddr;
 

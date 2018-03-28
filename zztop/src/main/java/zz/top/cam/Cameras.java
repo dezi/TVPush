@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import pub.android.interfaces.drv.Camera;
+import pub.android.interfaces.pub.PUBCamera;
 import zz.top.p2p.camera.P2PCamera;
 import zz.top.utl.Json;
 
@@ -106,25 +106,25 @@ public class Cameras
         return null;
     }
     @Nullable
-    public static Camera createCameraByName(String name)
+    public static PUBCamera createCameraByName(String name)
     {
         return createCameraByUUID(Cameras.findCameraByName(name));
     }
 
     @Nullable
-    public static Camera createCameraByNick(String nick)
+    public static PUBCamera createCameraByNick(String nick)
     {
         return createCameraByUUID(Cameras.findCameraByNick(nick));
     }
 
     @Nullable
-    public static Camera createCameraByDeviceID(String deviceID)
+    public static PUBCamera createCameraByDeviceID(String deviceID)
     {
         return createCameraByUUID(Cameras.findCameraByDeviceID(deviceID));
     }
 
     @Nullable
-    public static Camera createCameraByUUID(String uuid)
+    public static PUBCamera createCameraByUUID(String uuid)
     {
         JSONObject camera = Cameras.getCameraDevice(uuid);
 
@@ -141,7 +141,7 @@ public class Cameras
                 + " driver=" + deviceDriver
                 );
 
-        Camera newcamera = null;
+        PUBCamera newcamera = null;
 
         if (deviceDriver != null)
         {

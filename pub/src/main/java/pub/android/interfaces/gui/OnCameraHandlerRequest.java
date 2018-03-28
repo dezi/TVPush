@@ -4,10 +4,10 @@ import android.support.annotation.Nullable;
 
 import org.json.JSONObject;
 
-import pub.android.interfaces.drv.Camera;
+import pub.android.interfaces.pub.PUBCamera;
 
 public interface OnCameraHandlerRequest
 {
     @Nullable
-    Camera onCameraHandlerRequest(JSONObject device, JSONObject status, JSONObject credentials);
+    PUBCamera onCameraHandlerRequest(JSONObject device, JSONObject status, JSONObject credentials);
 }

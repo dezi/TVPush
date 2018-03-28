@@ -1,16 +1,18 @@
 package zz.top.gls;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.util.SparseArray;
 import android.widget.FrameLayout;
 import android.content.Context;
-import android.os.Handler;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.util.AttributeSet;
+import android.util.SparseArray;
+import android.os.Handler;
 
 import com.google.android.gms.vision.face.Face;
 
-public class GLSVideoView extends FrameLayout
+import pub.android.interfaces.pub.PUBSurface;
+
+public class GLSVideoView extends FrameLayout implements PUBSurface
 {
     private static final String LOGTAG = GLSVideoView.class.getSimpleName();
 
@@ -60,6 +62,12 @@ public class GLSVideoView extends FrameLayout
         maldat.setBackgroundColor(Color.TRANSPARENT);
 
         addView(maldat);
+    }
+
+    @Override
+    public void setZoom(int zoom, int step)
+    {
+        surface.setZoom(zoom, step);
     }
 
     public void setFaceDetecion(boolean enabled)

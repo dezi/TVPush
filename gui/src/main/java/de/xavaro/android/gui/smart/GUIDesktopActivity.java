@@ -29,7 +29,6 @@ import de.xavaro.android.gui.plugin.GUIVideoSurface;
 import de.xavaro.android.gui.plugin.GUIToastBar;
 
 import de.xavaro.android.iot.base.IOTObject;
-import pub.android.interfaces.drv.Camera;
 
 public class GUIDesktopActivity extends GUIActivity
 {

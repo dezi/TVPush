@@ -17,7 +17,7 @@ import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.gui.simple.Simple;
 
-import pub.android.interfaces.drv.Camera;
+import pub.android.interfaces.pub.PUBCamera;
 
 public class GUICameraWizzard extends GUIPluginTitleIOT
 {
@@ -25,7 +25,7 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
 
     private GUIFrameLayout mainFrame;
     private FrameLayout videoSurface;
-    private Camera camera;
+    private PUBCamera camera;
 
     private FrameLayout.LayoutParams videoSurfaceZoom;
     private int zoom;
@@ -154,7 +154,7 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
             }
 
             camera.connectCamera();
-            camera.setResolution(Camera.RESOLUTION_720P);
+            camera.setResolution(PUBCamera.RESOLUTION_720P);
             camera.startRealtimeVideo();
         }
     }

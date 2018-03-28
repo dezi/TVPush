@@ -10,9 +10,9 @@ import de.xavaro.android.gui.smart.GUIDesktopActivity;
 import de.xavaro.android.gui.smart.GUISpeechListener;
 
 import pub.android.interfaces.all.SubSystemHandler;
-import pub.android.interfaces.drv.Camera;
-import pub.android.interfaces.drv.SmartBulb;
-import pub.android.interfaces.drv.SmartPlug;
+import pub.android.interfaces.pub.PUBCamera;
+import pub.android.interfaces.pub.PUBSmartBulb;
+import pub.android.interfaces.pub.PUBSmartPlug;
 import pub.android.interfaces.gui.DesktopHandler;
 import pub.android.interfaces.gui.OnSubsystemRequest;
 import pub.android.interfaces.gui.OnCameraHandlerRequest;
@@ -100,7 +100,7 @@ public class GUI implements
     }
 
     @Override
-    public Camera onCameraHandlerRequest(JSONObject device, JSONObject status, JSONObject credentials)
+    public PUBCamera onCameraHandlerRequest(JSONObject device, JSONObject status, JSONObject credentials)
     {
         Log.d(LOGTAG, "onCameraHandlerRequest: STUB!");
 
@@ -108,7 +108,7 @@ public class GUI implements
     }
 
     @Override
-    public SmartPlug onSmartPlugHandlerRequest(JSONObject device, JSONObject status, JSONObject credentials)
+    public PUBSmartPlug onSmartPlugHandlerRequest(JSONObject device, JSONObject status, JSONObject credentials)
     {
         Log.d(LOGTAG, "OnSmartPlugHandlerRequest: STUB!");
 
@@ -116,7 +116,7 @@ public class GUI implements
     }
 
     @Override
-    public SmartBulb onSmartBulbHandlerRequest(JSONObject device, JSONObject status, JSONObject credentials)
+    public PUBSmartBulb onSmartBulbHandlerRequest(JSONObject device, JSONObject status, JSONObject credentials)
     {
         Log.d(LOGTAG, "onSmartBulbHandlerRequest: STUB!");
 
