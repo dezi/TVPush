@@ -18,6 +18,7 @@ import pub.android.interfaces.pub.PUBSurface;
 import zz.top.dec.VIDDecode;
 import zz.top.utl.Log;
 
+@SuppressWarnings({"FieldCanBeLocal", "CanBeFinal"})
 public class GLSRenderer implements GLSurfaceView.Renderer, PUBSurface
 {
     private final static String LOGTAG = GLSRenderer.class.getSimpleName();
@@ -183,7 +184,7 @@ public class GLSRenderer implements GLSurfaceView.Renderer, PUBSurface
                 return;
             }
 
-            int frst = frameQueue.get(0).getFrameNo();;
+            int frst = frameQueue.get(0).getFrameNo();
             int last = frameQueue.get(frameQueue.size() - 1).getFrameNo();
             int curr = avFrame.getFrameNo();
 
