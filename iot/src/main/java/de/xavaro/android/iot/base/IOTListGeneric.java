@@ -9,10 +9,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.xavaro.android.iot.things.IOTHuman;
+import de.xavaro.android.iot.things.IOTDevice;
+import de.xavaro.android.iot.things.IOTDomain;
+import de.xavaro.android.iot.things.IOTLocation;
+
+import de.xavaro.android.iot.status.IOTStatus;
+import de.xavaro.android.iot.status.IOTMetadata;
+import de.xavaro.android.iot.status.IOTCredential;
+
 import de.xavaro.android.iot.simple.Simple;
 import de.xavaro.android.iot.simple.Prefs;
 import de.xavaro.android.iot.simple.Json;
-import de.xavaro.android.iot.status.IOTStatus;
 
 public class IOTListGeneric<T>
 {
@@ -79,7 +87,14 @@ public class IOTListGeneric<T>
 
             T iotObject = null;
 
+            if (classKey.equals("iot.IOTHuman")) iotObject = (T) new IOTHuman(jsonobj);
+            if (classKey.equals("iot.IOTDevice")) iotObject = (T) new IOTDevice(jsonobj);
+            if (classKey.equals("iot.IOTDomain")) iotObject = (T) new IOTDomain(jsonobj);
+            if (classKey.equals("iot.IOTLocation")) iotObject = (T) new IOTLocation(jsonobj);
+
             if (classKey.equals("iot.IOTStatus")) iotObject = (T) new IOTStatus(jsonobj);
+            if (classKey.equals("iot.IOTMetadata")) iotObject = (T) new IOTMetadata(jsonobj);
+            if (classKey.equals("iot.IOTCredential")) iotObject = (T) new IOTCredential(jsonobj);
 
             if (iotObject == null) continue;
 

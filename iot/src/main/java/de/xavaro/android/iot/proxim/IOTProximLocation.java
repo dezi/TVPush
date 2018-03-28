@@ -17,15 +17,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Simple;
 import de.xavaro.android.iot.status.IOTStatus;
-import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 

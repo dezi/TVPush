@@ -5,7 +5,6 @@ import org.json.JSONObject;
 import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.base.IOTSimple;
 import de.xavaro.android.iot.status.IOTStatus;
-import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.things.IOTDevices;

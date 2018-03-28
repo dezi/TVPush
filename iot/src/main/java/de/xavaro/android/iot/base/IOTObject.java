@@ -17,7 +17,6 @@ import de.xavaro.android.iot.status.IOTCredentials;
 import de.xavaro.android.iot.status.IOTMetadata;
 import de.xavaro.android.iot.status.IOTMetadatas;
 import de.xavaro.android.iot.status.IOTStatus;
-import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 import de.xavaro.android.iot.things.IOTDomain;

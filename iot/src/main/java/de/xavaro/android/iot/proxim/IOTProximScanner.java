@@ -31,7 +31,6 @@ import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Log;
 import de.xavaro.android.iot.simple.Simple;
 import de.xavaro.android.iot.status.IOTStatus;
-import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 
