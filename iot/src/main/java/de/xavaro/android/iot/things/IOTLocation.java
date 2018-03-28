@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import de.xavaro.android.iot.base.IOTObject;
 
 @SuppressWarnings("WeakerAccess")
-public class IOTLocation extends IOTObject
+public class IOTLocation extends IOTThing
 {
     public String nick;
     public String name;

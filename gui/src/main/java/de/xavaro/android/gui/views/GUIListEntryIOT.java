@@ -7,8 +7,7 @@ import android.util.Log;
 
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIDefs;
-import de.xavaro.android.gui.base.GUIIcons;
-import de.xavaro.android.iot.base.IOTAlive;
+import de.xavaro.android.gui.simple.Simple;
 
 import de.xavaro.android.iot.status.IOTCredential;
 import de.xavaro.android.iot.status.IOTStatus;
@@ -16,7 +15,7 @@ import de.xavaro.android.iot.status.IOTStatusses;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 
-import de.xavaro.android.gui.simple.Simple;
+import de.xavaro.android.iot.base.IOTAlive;
 
 import pub.android.interfaces.pub.PUBCamera;
 import pub.android.interfaces.pub.PUBSmartBulb;
@@ -37,9 +36,11 @@ public class GUIListEntryIOT extends GUIListEntry
     private View.OnClickListener onClickListener;
     private OnUpdateContentListener onUpdateContentListener;
 
-    public GUIListEntryIOT(Context context)
+    public GUIListEntryIOT(Context context, String uuid)
     {
         super(context);
+
+        this.uuid = uuid;
 
         GUIRelativeLayout statusBox = new GUIRelativeLayout(context);
         statusBox.setGravity(Gravity.CENTER);
@@ -72,14 +73,14 @@ public class GUIListEntryIOT extends GUIListEntry
         IOTStatusses.instance.unsubscribe(device.uuid, onStatusUpdated);
     }
 
-    public void setStatusColor(int color)
+    private void setStatusColor(int color)
     {
         bulletView.setRoundedCornersDip(GUIDefs.PADDING_MEDIUM / 2, color);
     }
 
     public void updateContent()
     {
-        iconView.setIOTObject(device);
+        iconView.setIOTThing(device.uuid);
 
         if (device.type.equals("smartbulb"))
         {

@@ -182,6 +182,7 @@ public class Json
         return (json != null) && json.has(key);
     }
 
+    @SuppressWarnings("unchecked")
     public static void put(JSONObject json, String key, Object val)
     {
         try

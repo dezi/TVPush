@@ -8,10 +8,8 @@ import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Simple;
 
 @SuppressWarnings("WeakerAccess")
-public class IOTHuman extends IOTObject
+public class IOTHuman extends IOTThing
 {
-    public String nick;
-
     public String firstname;
     public String middlename;
     public String lastname;
@@ -77,7 +75,9 @@ public class IOTHuman extends IOTObject
 
             changed = false;
 
+            if (nequals(name,      check.name      )) name       = check.name;
             if (nequals(nick,      check.nick      )) nick       = check.nick;
+
             if (nequals(firstname, check.firstname )) firstname  = check.firstname;
             if (nequals(middlename,check.middlename)) middlename = check.middlename;
             if (nequals(lastname,  check.lastname  )) lastname   = check.lastname;

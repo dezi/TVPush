@@ -3,13 +3,11 @@ package de.xavaro.android.gui.plugin;
 import android.content.Context;
 import android.view.View;
 
-import de.xavaro.android.gui.base.GUI;
-import de.xavaro.android.gui.base.GUIDefs;
-import de.xavaro.android.gui.base.GUIIcons;
 import de.xavaro.android.gui.views.GUIEditText;
 
-import de.xavaro.android.iot.base.IOTDefs;
-import de.xavaro.android.iot.base.IOTObject;
+import de.xavaro.android.gui.base.GUIDefs;
+import de.xavaro.android.gui.base.GUI;
+
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
 import de.xavaro.android.iot.things.IOTDomain;
@@ -18,6 +16,9 @@ import de.xavaro.android.iot.things.IOTHuman;
 import de.xavaro.android.iot.things.IOTHumans;
 import de.xavaro.android.iot.things.IOTLocation;
 import de.xavaro.android.iot.things.IOTLocations;
+
+import de.xavaro.android.iot.base.IOTDefs;
+import de.xavaro.android.iot.base.IOTObject;
 
 public class GUIPluginTitleIOT extends GUIPluginTitle
 {
@@ -34,7 +35,7 @@ public class GUIPluginTitleIOT extends GUIPluginTitle
     {
         this.iotObject = iotObject;
 
-        titleIcon.setIOTObject(iotObject);
+        titleIcon.setIOTThing(this.iotObject.uuid);
 
         if (iotObject instanceof IOTDevice)
         {

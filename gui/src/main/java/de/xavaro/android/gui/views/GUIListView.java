@@ -147,11 +147,10 @@ public class GUIListView extends  GUILinearLayout
 
         if (entry == null)
         {
-            entry = new GUIListEntryIOT(getContext());
+            entry = new GUIListEntryIOT(getContext(), uuid);
             entry.setFocusable(true);
         }
 
-        entry.uuid = uuid;
         entry.device = device;
         entry.status = status;
         entry.isinuse = true;

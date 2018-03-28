@@ -2,41 +2,81 @@ package de.xavaro.android.gui.views;
 
 import android.content.Context;
 
-import de.xavaro.android.gui.base.GUIDefs;
-import de.xavaro.android.gui.base.GUIIcons;
-import de.xavaro.android.gui.simple.Log;
-import de.xavaro.android.gui.simple.Simple;
-import de.xavaro.android.iot.base.IOTObject;
+import de.xavaro.android.iot.things.IOTDevice;
+import de.xavaro.android.iot.things.IOTDevices;
+import de.xavaro.android.iot.things.IOTThing;
+import de.xavaro.android.iot.things.IOTThings;
+
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.status.IOTStatusses;
-import de.xavaro.android.iot.things.IOTDevice;
+
+import de.xavaro.android.gui.base.GUIDefs;
+import de.xavaro.android.gui.base.GUIIcons;
+
+import de.xavaro.android.gui.simple.Simple;
 
 public class GUIIconViewIOT extends GUIIconView
 {
     private static final String LOGTAG = GUIIconViewIOT.class.getSimpleName();
 
-    public IOTObject iotObject;
+    public String uuid;
 
     public GUIIconViewIOT(Context context)
     {
         super(context);
     }
 
-    public void setIOTObject(IOTObject iotObject)
+    @Override
+    public void onAttachedToWindow()
     {
-        this.iotObject = iotObject;
+        super.onAttachedToWindow();
 
-        updateContents();
+        IOTDevices.instance.subscribe(uuid, onDeviceUpdated);
+        IOTStatusses.instance.subscribe(uuid, onStatusUpdated);
     }
 
-    public void updateContents()
+    @Override
+    public void onDetachedFromWindow()
     {
-        Log.d(LOGTAG, "updateContents: ##########" + iotObject.toJsonString());
+        super.onDetachedFromWindow();
 
-        if (iotObject instanceof IOTDevice)
+        IOTDevices.instance.unsubscribe(uuid, onDeviceUpdated);
+        IOTStatusses.instance.unsubscribe(uuid, onStatusUpdated);
+    }
+
+    public void setIOTThing(String uuid)
+    {
+        this.uuid = uuid;
+
+        updateContent();
+    }
+
+    private final Runnable onDeviceUpdated = new Runnable()
+    {
+        @Override
+        public void run()
         {
-            IOTDevice device = (IOTDevice) iotObject;
-            IOTStatus status = IOTStatusses.getEntry(device.uuid);
+            updateContent();
+        }
+    };
+
+    private final Runnable onStatusUpdated = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            updateContent();
+        }
+    };
+
+    private void updateContent()
+    {
+        IOTThing iotThing = IOTThings.getEntry(uuid);
+
+        if (iotThing instanceof IOTDevice)
+        {
+            IOTDevice device = (IOTDevice) iotThing;
+            IOTStatus status = IOTStatusses.getEntry(uuid);
 
             int residplain = GUIIcons.getImageResid(device, false);
             int residcolor = GUIIcons.getImageResid(device, true);

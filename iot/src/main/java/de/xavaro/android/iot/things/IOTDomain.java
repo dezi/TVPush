@@ -2,14 +2,9 @@ package de.xavaro.android.iot.things;
 
 import org.json.JSONObject;
 
-import de.xavaro.android.iot.base.IOTObject;
-
 @SuppressWarnings("WeakerAccess")
-public class IOTDomain extends IOTObject
+public class IOTDomain extends IOTThing
 {
-    public String nick;
-    public String name;
-
     public String fixedwifi;
 
     public Double fixedLatFine;

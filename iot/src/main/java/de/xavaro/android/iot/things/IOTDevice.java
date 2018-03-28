@@ -13,7 +13,7 @@ import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Simple;
 
 @SuppressWarnings("WeakerAccess")
-public class IOTDevice extends IOTObject
+public class IOTDevice extends IOTThing
 {
     private final static String LOGTAG = IOTDevice.class.getSimpleName();
 
@@ -29,8 +29,6 @@ public class IOTDevice extends IOTObject
     public final static String TYPE_SMARTPLUG = "smartplug";
 
     public String did;
-    public String nick;
-    public String name;
     public String type;
     public String model;
     public String brand;
