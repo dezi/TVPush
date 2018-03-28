@@ -168,7 +168,7 @@ public class GUIListEntryIOT extends GUIListEntry
         public void onClick(View view)
         {
             IOTDevice device = IOTDevices.getEntry(uuid);
-            IOTStatus status = IOTStatusses.getEntry(uuid);
+            IOTStatus status = IOTStatusses.instance.getEntryInternal(uuid);
             IOTCredential credential = IOTCredentials.getEntry(uuid);
 
             PUBSmartPlug handler = GUI.instance.onSmartPlugHandlerRequest(
@@ -189,7 +189,7 @@ public class GUIListEntryIOT extends GUIListEntry
         public void onClick(View view)
         {
             IOTDevice device = IOTDevices.getEntry(uuid);
-            IOTStatus status = IOTStatusses.getEntry(uuid);
+            IOTStatus status = IOTStatusses.instance.getEntryInternal(uuid);
             IOTCredential credential = IOTCredentials.getEntry(uuid);
 
             PUBSmartBulb handler = GUI.instance.onSmartBulbHandlerRequest(
@@ -210,7 +210,7 @@ public class GUIListEntryIOT extends GUIListEntry
         public void onClick(View view)
         {
             IOTDevice device = IOTDevices.getEntry(uuid);
-            IOTStatus status = IOTStatusses.getEntry(uuid);
+            IOTStatus status = IOTStatusses.instance.getEntryInternal(uuid);
             IOTCredential credential = IOTCredentials.getEntry(uuid);
 
             PUBCamera handler = GUI.instance.onCameraHandlerRequest(

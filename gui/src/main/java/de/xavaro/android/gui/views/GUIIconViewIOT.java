@@ -82,7 +82,7 @@ public class GUIIconViewIOT extends GUIIconView
         if (iotThing instanceof IOTDevice)
         {
             IOTDevice device = (IOTDevice) iotThing;
-            IOTStatus status = IOTStatusses.getEntry(uuid);
+            IOTStatus status = IOTStatusses.instance.getEntryInternal(uuid);
 
             int residplain = GUIIcons.getImageResid(device, false);
             int residcolor = GUIIcons.getImageResid(device, true);

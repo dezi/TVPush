@@ -216,7 +216,7 @@ public abstract class IOTObject
             IOTDomains.instance.putEntry(this);
         }
 
-        if (this instanceof IOTStatus) IOTStatusses.instance.putEntry(this);
+        if (this instanceof IOTStatus) IOTStatusses.instance.putEntry((IOTStatus) this);
         if (this instanceof IOTMetadata) IOTMetadatas.instance.putEntry(this);
         if (this instanceof IOTCredential) IOTCredentials.instance.putEntry(this);
 
@@ -356,5 +356,12 @@ public abstract class IOTObject
         changedUsr = false;
 
         return state;
+    }
+
+    public int checkAndMergeContent(IOTObject iotCheck, boolean external)
+    {
+        Log.e(LOGTAG, "checkAndMergeContent: STUB!");
+
+        return IOTDefs.IOT_SAVE_UNCHANGED;
     }
 }

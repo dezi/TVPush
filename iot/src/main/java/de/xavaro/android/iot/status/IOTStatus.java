@@ -64,8 +64,11 @@ public class IOTStatus extends IOTObject
         super(jsonstr, dummy);
     }
 
-    public int checkAndMergeContent(IOTStatus check, boolean external)
+    @Override
+    public int checkAndMergeContent(IOTObject iotCheck, boolean external)
     {
+        IOTStatus check = (IOTStatus) iotCheck;
+
         // @formatter:off
 
         changedSys = false;

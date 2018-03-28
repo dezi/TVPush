@@ -30,7 +30,7 @@ public class IOTDevices extends IOTList
 
     public static IOTDevice getEntry(String uuid)
     {
-        return (IOTDevice) instance.list.get(uuid);
+        return (IOTDevice) instance.getEntryInternal(uuid);
     }
 
     public static int addEntry(IOTDevice newDevice, boolean external)

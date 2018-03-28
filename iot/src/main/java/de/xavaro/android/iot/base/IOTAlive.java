@@ -118,7 +118,7 @@ public class IOTAlive
                 String uuid = Json.getString(list, index++);
                 if (uuid == null) continue;
 
-                IOTStatus status = IOTStatusses.getEntry(uuid);
+                IOTStatus status = IOTStatusses.instance.getEntryInternal(uuid);
                 if (status == null) continue;
 
                 if (status.ipaddr != null) performPing(uuid, status.ipaddr);

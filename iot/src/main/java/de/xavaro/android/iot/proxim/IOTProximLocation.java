@@ -165,7 +165,7 @@ public class IOTProximLocation implements LocationListener
             status.positionLonCoarse = location.getLongitude();
             status.positionAltCoarse = location.getAltitude();
 
-            IOTStatusses.addEntry(status, false);
+            IOTStatusses.instance.addEntryInternal(status, false);
 
             IOT.instance.proximServer.advertiseGPSCoarse();
 

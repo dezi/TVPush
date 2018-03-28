@@ -47,7 +47,7 @@ public class GUIPingWizzard extends GUIPluginTitleListIOT
             if (device == null) continue;
             if (todo) continue;
 
-            IOTStatus status = IOTStatusses.getEntry(uuid);
+            IOTStatus status = IOTStatusses.instance.getEntryInternal(uuid);
             if (status == null) continue;
 
             String connect = (status.ipaddr != null) ? status.ipaddr : status.macaddr;

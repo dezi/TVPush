@@ -532,7 +532,7 @@ public class IOTProximScanner
             Json.put(status, "txpower", txpo);
             Json.put(status, "macaddr", macAddr);
 
-            IOTStatusses.addEntry(new IOTStatus(status), false);
+            IOTStatusses.instance.addEntryInternal(new IOTStatus(status), false);
         }
 
         addLocationMeasurement(uuid, rssi, txpo, macAddr);
@@ -630,7 +630,7 @@ public class IOTProximScanner
             Json.put(status, "txpower", txpo);
             Json.put(status, "macaddr", macAddr);
 
-            IOTStatusses.addEntry(new IOTStatus(status), false);
+            IOTStatusses.instance.addEntryInternal(new IOTStatus(status), false);
         }
 
         addLocationMeasurement(uuid, rssi, txpo, macAddr);
@@ -755,7 +755,7 @@ public class IOTProximScanner
             Json.put(status, "txpower", txpo);
             Json.put(status, "macaddr", macAddr);
 
-            IOTStatusses.addEntry(new IOTStatus(status), false);
+            IOTStatusses.instance.addEntryInternal(new IOTStatus(status), false);
         }
 
         addLocationMeasurement(uuid, rssi, txpo, macAddr);

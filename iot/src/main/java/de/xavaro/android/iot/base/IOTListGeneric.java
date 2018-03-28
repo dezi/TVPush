@@ -1,14 +1,16 @@
 package de.xavaro.android.iot.base;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.xavaro.android.iot.simple.Json;
-import de.xavaro.android.iot.simple.Prefs;
 import de.xavaro.android.iot.simple.Simple;
+import de.xavaro.android.iot.simple.Prefs;
+import de.xavaro.android.iot.simple.Json;
+import de.xavaro.android.iot.simple.Log;
 
 public abstract class IOTListGeneric<T>
 {
@@ -24,7 +26,7 @@ public abstract class IOTListGeneric<T>
         loadAllFromStorage();
     }
 
-    public abstract T loadFromJson(String json);
+    public abstract T loadFromJson(JSONObject json);
 
     public int getListSize()
     {
@@ -43,9 +45,9 @@ public abstract class IOTListGeneric<T>
         return result;
     }
 
-    public void putEntry(T object)
+    public void putEntry(T iotObject)
     {
-        list.put(((IOTObject) object).uuid, object);
+        list.put(((IOTObject) iotObject).uuid, iotObject);
     }
 
     public void removeEntry(String uuid)
@@ -69,12 +71,51 @@ public abstract class IOTListGeneric<T>
             String prefkey = Json.getString(keys, inx);
 
             String json = Prefs.getString(prefkey);
+            JSONObject jsonobj = Json.fromStringObject(json);
+            if (jsonobj == null) continue;
 
-            T iotObject = loadFromJson(json);
+            T iotObject = loadFromJson(jsonobj);
             if (iotObject == null) continue;
 
             list.put(((IOTObject) iotObject).uuid, iotObject);
         }
+    }
+
+    public int addEntryInternal(T newStatus, boolean external)
+    {
+        String uuid = ((IOTObject) newStatus).uuid;
+
+        int result;
+
+        T oldStatus = getEntryInternal(uuid);
+
+        if (oldStatus == null)
+        {
+            Log.d(LOGTAG, "addEntry: new uuid=" + uuid);
+
+            result = ((IOTObject) newStatus).saveToStorage()
+                    ? IOTDefs.IOT_SAVE_ALLCHANGED
+                    : IOTDefs.IOT_SAVE_FAILED;
+
+            if (result > 0) putEntry(newStatus);
+        }
+        else
+        {
+            Log.d(LOGTAG, "addEntry: old uuid=" + uuid);
+
+            result = ((IOTObject) oldStatus).checkAndMergeContent((IOTObject) newStatus, external);
+
+            if (result > 0)
+            {
+                Log.d(LOGTAG, "addEntry: diff=" + ((IOTObject) oldStatus).getChangedDiff());
+
+                putEntry(oldStatus);
+            }
+        }
+
+        if (result > 0) broadcast(uuid);
+
+        return result;
     }
 
     //region Subscriptions implementation.

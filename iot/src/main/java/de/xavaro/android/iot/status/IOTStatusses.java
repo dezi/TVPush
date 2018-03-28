@@ -1,16 +1,10 @@
 package de.xavaro.android.iot.status;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import org.json.JSONObject;
 
-import de.xavaro.android.iot.base.IOTDefs;
-import de.xavaro.android.iot.base.IOTList;
-import de.xavaro.android.iot.base.IOTObject;
-import de.xavaro.android.iot.simple.Log;
-import de.xavaro.android.iot.simple.Simple;
+import de.xavaro.android.iot.base.IOTListGeneric;
 
-public class IOTStatusses extends IOTList
+public class IOTStatusses extends IOTListGeneric<IOTStatus>
 {
     private final static String LOGTAG = IOTStatusses.class.getSimpleName();
 
@@ -22,48 +16,13 @@ public class IOTStatusses extends IOTList
     }
 
     @Override
-    public IOTObject loadFromJson(String json)
+    public IOTStatus loadFromJson(JSONObject json)
     {
-        return new IOTStatus(json, true);
+        return new IOTStatus(json);
     }
 
-    public static IOTStatus getEntry(String uuid)
+    public static int addEntryx(IOTStatus newStatus, boolean external)
     {
-        return (IOTStatus) instance.getEntryInternal(uuid);
-    }
-
-    public static int addEntry(IOTStatus newStatus, boolean external)
-    {
-        int result;
-
-        IOTStatus oldStatus = getEntry(newStatus.uuid);
-
-        if (oldStatus == null)
-        {
-            Log.d(LOGTAG, "addEntry: new uuid=" + newStatus.uuid);
-
-            result = newStatus.saveToStorage()
-                    ? IOTDefs.IOT_SAVE_ALLCHANGED
-                    : IOTDefs.IOT_SAVE_FAILED;
-
-            if (result > 0) instance.putEntry(newStatus);
-        }
-        else
-        {
-            Log.d(LOGTAG, "addEntry: old uuid=" + oldStatus.uuid);
-
-            result = oldStatus.checkAndMergeContent(newStatus, external);
-
-            if (result > 0)
-            {
-                Log.d(LOGTAG, "addEntry: diff=" + oldStatus.getChangedDiff());
-
-                instance.putEntry(oldStatus);
-            }
-        }
-
-        if (result > 0) IOTStatusses.instance.broadcast(newStatus.uuid);
-
-        return result;
+        return instance.addEntryInternal(newStatus, external);
     }
 }
