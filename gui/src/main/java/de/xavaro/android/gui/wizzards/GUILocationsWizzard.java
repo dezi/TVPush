@@ -57,9 +57,7 @@ public class GUILocationsWizzard extends GUIPluginTitleList
 
             if (todo && isnice) continue;
 
-            IOTStatus status = IOTStatusses.getEntry(uuid);
-
-            GUIListEntryIOT entry = listView.findGUIListEntryIOTOrCreate(uuid, device, status);
+            GUIListEntryIOT entry = listView.findGUIListEntryIOTOrCreate(uuid);
 
             entry.setOnUpdateContentListener(onUpdateContentListener);
             entry.setOnClickListener(onClickListener);

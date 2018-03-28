@@ -52,10 +52,9 @@ public class GUICamerasWizzard extends GUIPluginTitleListIOT
 
             if (todo) continue;
 
-            IOTStatus status = IOTStatusses.getEntry(uuid);
-
-            GUIListEntryIOT entry = listView.findGUIListEntryIOTOrCreate(uuid, device, status);
+            GUIListEntryIOT entry = listView.findGUIListEntryIOTOrCreate(uuid);
             entry.setOnClickListener(onClickListener);
+            entry.infoView.setVisibility(GONE);
         }
     }
 

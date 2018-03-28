@@ -69,6 +69,7 @@ public class GUIDesktopActivity extends GUIActivity
 
         displayWizzard(GUIMenuWizzard.class.getSimpleName());
         displayWizzard(GUICamerasWizzard.class.getSimpleName());
+        displayWizzard(GUILocationsWizzard.class.getSimpleName());
 
         checkWindowSize();
    }

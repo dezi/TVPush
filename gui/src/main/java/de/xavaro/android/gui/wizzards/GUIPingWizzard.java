@@ -53,8 +53,7 @@ public class GUIPingWizzard extends GUIPluginTitleListIOT
             String connect = (status.ipaddr != null) ? status.ipaddr : status.macaddr;
             if (connect == null) continue;
 
-            GUIListEntryIOT entry = listView.findGUIListEntryIOTOrCreate(uuid, device, status);
-
+            GUIListEntryIOT entry = listView.findGUIListEntryIOTOrCreate(uuid);
             entry.infoView.setText(connect);
         }
     }

@@ -20,6 +20,8 @@ public class GUIListEntry extends GUILinearLayout
     {
         super(context);
 
+        isinuse = true;
+
         setFocusable(true);
         setOrientation(HORIZONTAL);
         setPaddingDip(GUIDefs.PADDING_TINY);
