@@ -151,8 +151,6 @@ public class GUIListView extends  GUILinearLayout
             entry.setFocusable(true);
         }
 
-        entry.device = device;
-        entry.status = status;
         entry.isinuse = true;
 
         entry.updateContent();

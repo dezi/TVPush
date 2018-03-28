@@ -64,8 +64,7 @@ public class GUICamerasWizzard extends GUIPluginTitleListIOT
         @Override
         public void onClick(View view)
         {
-            IOTDevice device = ((GUIListEntryIOT) view).device;
-
+            IOTDevice device = IOTDevices.getEntry(((GUIListEntryIOT) view).uuid);
             GUI.instance.desktopActivity.displayWizzard(GUICameraWizzard.class.getSimpleName(), device);
         }
     };

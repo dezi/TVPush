@@ -76,20 +76,22 @@ public class GUILocationsWizzard extends GUIPluginTitleList
 
             boolean isnice = false;
 
-            if (entry.device != null)
+            IOTDevice device = IOTDevices.getEntry(entry.uuid);
+
+            if (device != null)
             {
-                isnice = (entry.device.fixedLatFine != null)
-                        && (entry.device.fixedLonFine != null)
-                        && (entry.device.fixedAltFine != null);
+                isnice = (device.fixedLatFine != null)
+                        && (device.fixedLonFine != null)
+                        && (device.fixedAltFine != null);
 
                 if (isnice)
                 {
                     info = ""
-                            + Simple.getRounded3(entry.device.fixedLatFine)
+                            + Simple.getRounded3(device.fixedLatFine)
                             + " "
-                            + Simple.getRounded3(entry.device.fixedLonFine)
+                            + Simple.getRounded3(device.fixedLonFine)
                             + " "
-                            + Simple.getRounded3(entry.device.fixedAltFine)
+                            + Simple.getRounded3(device.fixedAltFine)
                             + " m";
                 }
             }
@@ -107,7 +109,7 @@ public class GUILocationsWizzard extends GUIPluginTitleList
         @Override
         public void onClick(View view)
         {
-            IOTDevice device = ((GUIListEntryIOT) view).device;
+            IOTDevice device = IOTDevices.getEntry(((GUIListEntryIOT) view).uuid);
             GUI.instance.desktopActivity.displayWizzard(GUIGeomapWizzard.class.getSimpleName(), device);
         }
     };

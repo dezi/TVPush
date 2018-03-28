@@ -3,17 +3,20 @@ package de.xavaro.android.gui.views;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
-import android.util.Log;
 
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.simple.Simple;
 
 import de.xavaro.android.iot.status.IOTCredential;
+import de.xavaro.android.iot.status.IOTCredentials;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.status.IOTStatusses;
+
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDevices;
+import de.xavaro.android.iot.things.IOTThing;
+import de.xavaro.android.iot.things.IOTThings;
 
 import de.xavaro.android.iot.base.IOTAlive;
 
@@ -28,11 +31,6 @@ public class GUIListEntryIOT extends GUIListEntry
     public String uuid;
 
     public GUIRelativeLayout bulletView;
-
-    public IOTDevice device;
-    public IOTStatus status;
-    public IOTCredential credential;
-
     private View.OnClickListener onClickListener;
     private OnUpdateContentListener onUpdateContentListener;
 
@@ -41,6 +39,8 @@ public class GUIListEntryIOT extends GUIListEntry
         super(context);
 
         this.uuid = uuid;
+
+        iconView.setIOTThing(uuid);
 
         GUIRelativeLayout statusBox = new GUIRelativeLayout(context);
         statusBox.setGravity(Gravity.CENTER);
@@ -60,8 +60,8 @@ public class GUIListEntryIOT extends GUIListEntry
     {
         super.onAttachedToWindow();
 
-        IOTDevices.instance.subscribe(device.uuid, onDeviceUpdated);
-        IOTStatusses.instance.subscribe(device.uuid, onStatusUpdated);
+        IOTDevices.instance.subscribe(uuid, onDeviceUpdated);
+        IOTStatusses.instance.subscribe(uuid, onStatusUpdated);
     }
 
     @Override
@@ -69,8 +69,8 @@ public class GUIListEntryIOT extends GUIListEntry
     {
         super.onDetachedFromWindow();
 
-        IOTDevices.instance.unsubscribe(device.uuid, onDeviceUpdated);
-        IOTStatusses.instance.unsubscribe(device.uuid, onStatusUpdated);
+        IOTDevices.instance.unsubscribe(uuid, onDeviceUpdated);
+        IOTStatusses.instance.unsubscribe(uuid, onStatusUpdated);
     }
 
     private void setStatusColor(int color)
@@ -80,33 +80,38 @@ public class GUIListEntryIOT extends GUIListEntry
 
     public void updateContent()
     {
-        iconView.setIOTThing(device.uuid);
+        IOTThing iotThing = IOTThings.getEntry(uuid);
 
-        if (device.type.equals("smartbulb"))
+        if (iotThing instanceof IOTDevice)
         {
-            if (onClickListener == null)
+            IOTDevice device = (IOTDevice) iotThing;
+
+            if (device.type.equals("smartbulb"))
             {
-                setOnClickListener(onSmartBulbClickListener);
+                if (onClickListener == null)
+                {
+                    setOnClickListener(onSmartBulbClickListener);
+                }
+            }
+
+            if (device.type.equals("smartplug"))
+            {
+                if (onClickListener == null)
+                {
+                    setOnClickListener(onSmartPlugClickListener);
+                }
+            }
+
+            if (device.type.equals("camera"))
+            {
+                if (onClickListener == null)
+                {
+                    setOnClickListener(onCameraClickListener);
+                }
             }
         }
 
-        if (device.type.equals("smartplug"))
-        {
-            if (onClickListener == null)
-            {
-                setOnClickListener(onSmartPlugClickListener);
-            }
-        }
-
-        if (device.type.equals("camera"))
-        {
-            if (onClickListener == null)
-            {
-                setOnClickListener(onCameraClickListener);
-            }
-        }
-
-        headerViev.setText(device.name);
+        headerViev.setText(iotThing.name);
 
         Long lastPing = IOTAlive.getAliveNetwork(uuid);
 
@@ -127,10 +132,6 @@ public class GUIListEntryIOT extends GUIListEntry
         @Override
         public void run()
         {
-            Log.d(LOGTAG, "onDeviceUpdated: name=" + device.name);
-
-            device = IOTDevices.getEntry(uuid);
-
             updateContent();
         }
     };
@@ -140,73 +141,71 @@ public class GUIListEntryIOT extends GUIListEntry
         @Override
         public void run()
         {
-            Log.d(LOGTAG, "onStatusUpdated: name=" + device.name);
-
-            status = IOTStatusses.getEntry(uuid);
-
             updateContent();
         }
     };
 
-    private static final OnClickListener onSmartPlugClickListener = new OnClickListener()
+    private final OnClickListener onSmartPlugClickListener = new OnClickListener()
     {
         @Override
         public void onClick(View view)
         {
-            GUIListEntryIOT entry = (GUIListEntryIOT) view;
-
-            entry.credential = new IOTCredential(entry.uuid);
+            IOTDevice device = IOTDevices.getEntry(uuid);
+            IOTStatus status = IOTStatusses.getEntry(uuid);
+            IOTCredential credential = IOTCredentials.getEntry(uuid);
 
             PUBSmartPlug handler = GUI.instance.onSmartPlugHandlerRequest(
-                    entry.device.toJson(),
-                    entry.status.toJson(),
-                    entry.credential.toJson());
+                    device.toJson(),
+                    status.toJson(),
+                    credential.toJson());
 
             if (handler == null) return;
 
-            boolean off = (entry.status.plugstate == null) || (entry.status.plugstate == 0);
+            boolean off = (status.plugstate == null) || (status.plugstate == 0);
             handler.setPlugState(off ? 1 : 0);
         }
     };
 
-    private static final OnClickListener onSmartBulbClickListener = new OnClickListener()
+    private final OnClickListener onSmartBulbClickListener = new OnClickListener()
     {
         @Override
         public void onClick(View view)
         {
-            GUIListEntryIOT entry = (GUIListEntryIOT) view;
-
-            entry.credential = new IOTCredential(entry.uuid);
+            IOTDevice device = IOTDevices.getEntry(uuid);
+            IOTStatus status = IOTStatusses.getEntry(uuid);
+            IOTCredential credential = IOTCredentials.getEntry(uuid);
 
             PUBSmartBulb handler = GUI.instance.onSmartBulbHandlerRequest(
-                    entry.device.toJson(),
-                    entry.status.toJson(),
-                    entry.credential.toJson());
+                    device.toJson(),
+                    status.toJson(),
+                    credential.toJson());
 
             if (handler == null) return;
 
-            boolean off = (entry.status.bulbstate == null) || (entry.status.bulbstate == 0);
+            boolean off = (status.bulbstate == null) || (status.bulbstate == 0);
             handler.setBulbState(off ? 1 : 0);
         }
     };
 
-    private static final OnClickListener onCameraClickListener = new OnClickListener()
+    private final OnClickListener onCameraClickListener = new OnClickListener()
     {
         @Override
         public void onClick(View view)
         {
             GUIListEntryIOT entry = (GUIListEntryIOT) view;
 
-            entry.credential = new IOTCredential(entry.uuid);
+            IOTDevice device = IOTDevices.getEntry(uuid);
+            IOTStatus status = IOTStatusses.getEntry(uuid);
+            IOTCredential credential = IOTCredentials.getEntry(uuid);
 
             PUBCamera handler = GUI.instance.onCameraHandlerRequest(
-                    entry.device.toJson(),
-                    entry.status.toJson(),
-                    entry.credential.toJson());
+                    device.toJson(),
+                    status.toJson(),
+                    credential.toJson());
 
             if (handler == null) return;
 
-            boolean off = (entry.status.ledstate == null) || (entry.status.ledstate == 0);
+            boolean off = (status.ledstate == null) || (status.ledstate == 0);
 
             handler.connectCamera();
             handler.setLEDOnOff(off);

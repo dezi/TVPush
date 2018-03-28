@@ -3,9 +3,13 @@ package de.xavaro.android.gui.plugin;
 import android.content.Context;
 import android.graphics.Color;
 
+import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.base.GUIIcons;
 import de.xavaro.android.gui.simple.Simple;
-import de.xavaro.android.gui.views.GUIListEntryIOT;
+
+import de.xavaro.android.iot.things.IOTDevice;
+import de.xavaro.android.iot.things.IOTDevices;
+
 import de.xavaro.android.iot.base.IOTAlive;
 
 public class GUIPluginTitleListIOT extends GUIPluginTitleList
@@ -45,26 +49,27 @@ public class GUIPluginTitleListIOT extends GUIPluginTitleList
                 if (! (listView.getChildAt(inx) instanceof GUIListEntryIOT)) continue;
 
                 GUIListEntryIOT entry = (GUIListEntryIOT) listView.getChildAt(inx);
+                IOTDevice device = IOTDevices.getEntry(entry.uuid);
 
-                if (entry.device == null) continue;
-                if (entry.device.uuid == null) continue;
-                if (entry.device.type == null) continue;
+                if (device == null) continue;
+                if (device.uuid == null) continue;
+                if (device.type == null) continue;
 
-                if (!entry.device.type.equals("beacon")) continue;
+                if (!device.type.equals("beacon")) continue;
 
-                Long lastPing = IOTAlive.getAliveNetwork(entry.device.uuid);
+                Long lastPing = IOTAlive.getAliveNetwork(device.uuid);
                 if (lastPing == null) continue;
 
                 long age = (System.currentTimeMillis() - lastPing) / 1000;
 
                 if ((age > 15) || ! blink)
                 {
-                    int residplain = GUIIcons.getImageResid(entry.device, false);
+                    int residplain = GUIIcons.getImageResid(device, false);
                     entry.iconView.setImageResource(residplain);
                 }
                 else
                 {
-                    int residcolor = GUIIcons.getImageResid(entry.device, true);
+                    int residcolor = GUIIcons.getImageResid(device, true);
                     entry.iconView.setImageResource(residcolor, Color.RED);
                 }
             }

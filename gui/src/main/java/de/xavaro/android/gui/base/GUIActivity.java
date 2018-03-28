@@ -2,6 +2,7 @@ package de.xavaro.android.gui.base;
 
 import android.annotation.SuppressLint;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.PixelFormat;
@@ -297,7 +298,7 @@ public class GUIActivity extends AppCompatActivity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults)
     {
         Log.d(LOGTAG, "onRequestPermissionsResult:");
 
