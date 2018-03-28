@@ -1,5 +1,7 @@
 package de.xavaro.android.iot.comm;
 
+import android.util.Log;
+
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ import de.xavaro.android.iot.handler.IOTHandle;
 import de.xavaro.android.iot.handler.IOTHandleHelo;
 import de.xavaro.android.iot.handler.IOTHandleMeme;
 import de.xavaro.android.iot.handler.IOTHandleStot;
+import de.xavaro.android.iot.handler.IOTHandleUpda;
 import de.xavaro.android.iot.simple.Json;
 
 public class IOTMessageHandler
@@ -30,6 +33,8 @@ public class IOTMessageHandler
     {
         subscribe("HELO", new IOTHandleHelo());
         subscribe("MEME", new IOTHandleMeme());
+        subscribe("UPDA", new IOTHandleUpda());
+
         subscribe("STOT", new IOTHandleStot());
     }
 
@@ -68,8 +73,22 @@ public class IOTMessageHandler
     public void receiveMessage(JSONObject message)
     {
         String type = Json.getString(message, "type");
-
         if (type == null) return;
+
+        JSONObject device = Json.getObject(message, "device");
+        String uuid = Json.getString(device, "uuid");
+        if (uuid == null) return;
+
+        if (IOT.device.uuid.equals(uuid))
+        {
+            //
+            // Originator is local device. Ignore.
+            //
+
+            Log.d(LOGTAG, "receiveMessage: type=" + type + " loopback=" + uuid);
+
+            return;
+        }
 
         ArrayList<IOTHandle> typeHandlers = subscribers.get(type);
         if (typeHandlers == null) return;

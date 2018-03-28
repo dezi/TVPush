@@ -422,7 +422,7 @@ public class IOTProximScanner
                     + " alt=" + newDevice.fixedAltCoarse
                 );
 
-                IOTDevice.list.addEntry(newDevice, false);
+                IOTDevice.list.addEntry(newDevice, false, true);
             }
         }
 
@@ -522,7 +522,7 @@ public class IOTProximScanner
 
             Json.put(beacondev, "capabilities", Json.jsonArrayFromSeparatedString(caps, "\\|"));
 
-            IOTDevice.list.addEntry(new IOTDevice(beacondev), false);
+            IOTDevice.list.addEntry(new IOTDevice(beacondev), false, true);
 
             JSONObject status = new JSONObject();
 
@@ -530,7 +530,7 @@ public class IOTProximScanner
             Json.put(status, "txpower", txpo);
             Json.put(status, "macaddr", macAddr);
 
-            IOTStatus.list.addEntry(new IOTStatus(status), false);
+            IOTStatus.list.addEntry(new IOTStatus(status), false, true);
         }
 
         addLocationMeasurement(uuid, rssi, txpo, macAddr);
@@ -620,7 +620,7 @@ public class IOTProximScanner
 
             Json.put(beacondev, "capabilities", Json.jsonArrayFromSeparatedString(caps, "\\|"));
 
-            IOTDevice.list.addEntry(new IOTDevice(beacondev), false);
+            IOTDevice.list.addEntry(new IOTDevice(beacondev), false, true);
 
             JSONObject status = new JSONObject();
 
@@ -628,7 +628,7 @@ public class IOTProximScanner
             Json.put(status, "txpower", txpo);
             Json.put(status, "macaddr", macAddr);
 
-            IOTStatus.list.addEntry(new IOTStatus(status), false);
+            IOTStatus.list.addEntry(new IOTStatus(status), false, true);
         }
 
         addLocationMeasurement(uuid, rssi, txpo, macAddr);
@@ -745,7 +745,7 @@ public class IOTProximScanner
 
             Json.put(beacondev, "capabilities", Json.jsonArrayFromSeparatedString(caps, "\\|"));
 
-            IOTDevice.list.addEntry(new IOTDevice(beacondev), false);
+            IOTDevice.list.addEntry(new IOTDevice(beacondev), false, true);
 
             JSONObject status = new JSONObject();
 
@@ -753,7 +753,7 @@ public class IOTProximScanner
             Json.put(status, "txpower", txpo);
             Json.put(status, "macaddr", macAddr);
 
-            IOTStatus.list.addEntry(new IOTStatus(status), false);
+            IOTStatus.list.addEntry(new IOTStatus(status), false, true);
         }
 
         addLocationMeasurement(uuid, rssi, txpo, macAddr);

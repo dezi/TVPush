@@ -100,7 +100,7 @@ public class IOTDevice extends IOTThing
     }
 
     @Override
-    public int checkAndMergeContent(IOTObject iotObject, boolean external)
+    public int checkAndMergeContent(IOTObject iotObject, boolean external, boolean publish)
     {
         IOTDevice check = (IOTDevice) iotObject;
 
@@ -148,6 +148,6 @@ public class IOTDevice extends IOTThing
             // @formatter:on
         }
 
-        return saveIfChanged();
+        return saveIfChanged(publish);
     }
 }

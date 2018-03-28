@@ -29,7 +29,7 @@ public class IOTCredential extends IOTObject
     }
 
     @Override
-    public int checkAndMergeContent(IOTObject iotCheck, boolean external)
+    public int checkAndMergeContent(IOTObject iotCheck, boolean external, boolean publish)
     {
         IOTCredential check = (IOTCredential) iotCheck;
 
@@ -42,6 +42,6 @@ public class IOTCredential extends IOTObject
 
         changedSys = changed;
 
-        return saveIfChanged();
+        return saveIfChanged(publish);
     }
 }

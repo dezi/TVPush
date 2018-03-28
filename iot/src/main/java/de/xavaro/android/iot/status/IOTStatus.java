@@ -61,7 +61,7 @@ public class IOTStatus extends IOTObject
     }
 
     @Override
-    public int checkAndMergeContent(IOTObject iotCheck, boolean external)
+    public int checkAndMergeContent(IOTObject iotCheck, boolean external, boolean publish)
     {
         IOTStatus check = (IOTStatus) iotCheck;
 
@@ -104,6 +104,6 @@ public class IOTStatus extends IOTObject
 
         IOTAlive.setAliveStatus(uuid);
 
-        return saveIfChanged();
+        return saveIfChanged(publish);
     }
 }

@@ -29,7 +29,7 @@ public class IOTMetadata extends IOTObject
     }
 
     @Override
-    public int checkAndMergeContent(IOTObject iotCheck, boolean external)
+    public int checkAndMergeContent(IOTObject iotCheck, boolean external, boolean publish)
     {
         IOTMetadata check = (IOTMetadata) iotCheck;
 
@@ -42,6 +42,6 @@ public class IOTMetadata extends IOTObject
 
         changedSys = changed;
 
-        return saveIfChanged();
+        return saveIfChanged(publish);
     }
 }

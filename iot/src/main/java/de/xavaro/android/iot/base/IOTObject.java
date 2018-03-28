@@ -10,6 +10,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import de.xavaro.android.iot.handler.IOTHandleUpda;
 import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Prefs;
 
@@ -165,7 +166,7 @@ public abstract class IOTObject
         return getClassKey() + uuid;
     }
 
-    public boolean saveToStorage()
+    public boolean saveToStorage(boolean publish)
     {
         boolean ok = false;
 
@@ -187,6 +188,8 @@ public abstract class IOTObject
             }
 
             IOTDevice.list.putEntry((IOTDevice) this);
+
+            if (publish) IOTHandleUpda.sendUPDA(this);
         }
 
         if (this instanceof IOTHuman)
@@ -325,7 +328,7 @@ public abstract class IOTObject
         return false;
     }
 
-    public int saveIfChanged()
+    public int saveIfChanged(boolean publish)
     {
         int state = IOTDefs.IOT_SAVE_UNCHANGED;
 
@@ -343,7 +346,7 @@ public abstract class IOTObject
 
         if (state != IOTDefs.IOT_SAVE_UNCHANGED)
         {
-            if (! saveToStorage()) state = IOTDefs.IOT_SAVE_FAILED;
+            if (! saveToStorage(publish)) state = IOTDefs.IOT_SAVE_FAILED;
         }
 
         changed = false;
@@ -353,7 +356,7 @@ public abstract class IOTObject
         return state;
     }
 
-    public int checkAndMergeContent(IOTObject iotCheck, boolean external)
+    public int checkAndMergeContent(IOTObject iotCheck, boolean external, boolean publish)
     {
         Log.e(LOGTAG, "checkAndMergeContent: STUB!");
 

@@ -32,7 +32,7 @@ public class IOTDomain extends IOTThing
     }
 
     @Override
-    public int checkAndMergeContent(IOTObject iotObject, boolean external)
+    public int checkAndMergeContent(IOTObject iotObject, boolean external, boolean publish)
     {
         IOTDomain check = (IOTDomain) iotObject;
 
@@ -71,6 +71,6 @@ public class IOTDomain extends IOTThing
             // @formatter:on
         }
 
-        return saveIfChanged();
+        return saveIfChanged(publish);
     }
 }

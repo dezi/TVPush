@@ -33,7 +33,7 @@ public class IOTLocation extends IOTThing
     }
 
     @Override
-    public int checkAndMergeContent(IOTObject iotObject, boolean external)
+    public int checkAndMergeContent(IOTObject iotObject, boolean external, boolean publish)
     {
         IOTLocation check = (IOTLocation) iotObject;
 
@@ -58,6 +58,6 @@ public class IOTLocation extends IOTThing
             // @formatter:on
         }
 
-        return saveIfChanged();
+        return saveIfChanged(publish);
     }
 }

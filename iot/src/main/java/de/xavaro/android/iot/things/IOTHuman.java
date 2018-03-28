@@ -40,29 +40,8 @@ public class IOTHuman extends IOTThing
         return local;
     }
 
-    public static void checkAndMergeContent(JSONObject check, boolean external)
-    {
-        if (check == null) return;
-
-        String humanUUID = Json.getString(check, "uuid");
-        if (humanUUID == null) return;
-
-        IOTHuman oldHuman = IOTHuman.list.getEntry(humanUUID);
-
-        if (oldHuman == null)
-        {
-            oldHuman = new IOTHuman(check);
-            oldHuman.saveToStorage();
-        }
-        else
-        {
-            IOTHuman newhuman = new IOTHuman(check);
-            oldHuman.checkAndMergeContent(newhuman, true);
-        }
-    }
-
     @Override
-    public int checkAndMergeContent(IOTObject iotObject, boolean external)
+    public int checkAndMergeContent(IOTObject iotObject, boolean external, boolean publish)
     {
         IOTHuman check = (IOTHuman) iotObject;
 
@@ -87,6 +66,6 @@ public class IOTHuman extends IOTThing
             // @formatter:on
         }
 
-        return saveIfChanged();
+        return saveIfChanged(publish);
     }
 }

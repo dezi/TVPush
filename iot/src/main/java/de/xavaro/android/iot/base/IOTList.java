@@ -76,7 +76,7 @@ public class IOTList<T>
         }
     }
 
-    public int addEntry(T newEntry, boolean external)
+    public int addEntry(T newEntry, boolean external, boolean publish)
     {
         String uuid = ((IOTObject) newEntry).uuid;
 
@@ -88,7 +88,7 @@ public class IOTList<T>
         {
             Log.d(LOGTAG, "addEntry: new uuid=" + uuid);
 
-            result = ((IOTObject) newEntry).saveToStorage()
+            result = ((IOTObject) newEntry).saveToStorage(publish)
                     ? IOTDefs.IOT_SAVE_ALLCHANGED
                     : IOTDefs.IOT_SAVE_FAILED;
         }
@@ -96,7 +96,7 @@ public class IOTList<T>
         {
             Log.d(LOGTAG, "addEntry: old uuid=" + uuid);
 
-            result = ((IOTObject) oldEntry).checkAndMergeContent((IOTObject) newEntry, external);
+            result = ((IOTObject) oldEntry).checkAndMergeContent((IOTObject) newEntry, external, publish);
 
             if (result > 0)
             {

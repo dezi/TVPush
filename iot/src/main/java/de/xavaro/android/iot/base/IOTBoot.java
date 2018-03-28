@@ -43,7 +43,7 @@ public class IOTBoot extends IOTObject
             // Create root UUID.
             //
 
-            IOT.boot.saveToStorage();
+            IOT.boot.saveToStorage(false);
         }
 
         Log.d(LOGTAG, "loadOwnIdentity: bootHumanUUID=" + IOT.boot.bootHumanUUID);
@@ -64,9 +64,9 @@ public class IOTBoot extends IOTObject
 
             IOT.boot.bootDeviceUUID = IOT.device.uuid;
 
-            if (IOT.boot.saveToStorage())
+            if (IOT.boot.saveToStorage(false))
             {
-                IOT.device.saveToStorage();
+                IOT.device.saveToStorage(false);
             }
         }
         else
@@ -76,7 +76,7 @@ public class IOTBoot extends IOTObject
             //
 
             IOT.device = new IOTDevice(IOT.boot.bootDeviceUUID);
-            IOT.device.checkAndMergeContent(localDevice, false);
+            IOT.device.checkAndMergeContent(localDevice, false, false);
         }
 
         if ((IOT.boot.bootHumanUUID == null) || IOT.boot.bootHumanUUID.isEmpty())
@@ -93,9 +93,9 @@ public class IOTBoot extends IOTObject
 
                 IOT.boot.bootHumanUUID = IOT.human.uuid;
 
-                if (IOT.boot.saveToStorage())
+                if (IOT.boot.saveToStorage(false))
                 {
-                    IOT.human.saveToStorage();
+                    IOT.human.saveToStorage(false);
                 }
             }
         }
@@ -106,7 +106,7 @@ public class IOTBoot extends IOTObject
             //
 
             IOT.human = new IOTHuman(IOT.boot.bootHumanUUID);
-            IOT.human.checkAndMergeContent(localHuman, false);
+            IOT.human.checkAndMergeContent(localHuman, false, false);
         }
     }
 }

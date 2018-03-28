@@ -30,26 +30,12 @@ public class IOTHandleHelo extends IOTHandle
         JSONObject origin = Json.getObject(message, "origin");
 
         //
-        // Check if message comes from ourself via
-        // broadcast feed back. If so, ignore.
-        //
-
-        if (IOTSimple.equals(Json.getString(device, "uuid"), IOT.device.uuid))
-        {
-            //
-            // HELO from our identity, ignore.
-            //
-
-            return;
-        }
-
-        //
         // Collect external device.
         //
 
         IOTDevice newDevice = new IOTDevice(device);
 
-        if (IOTDevice.list.addEntry(newDevice, true) >= 0)
+        if (IOTDevice.list.addEntry(newDevice, true, false) >= 0)
         {
             //
             // Collect status.
@@ -60,7 +46,7 @@ public class IOTHandleHelo extends IOTHandle
             newStatus.ipaddr = Json.getString(origin, "ipaddr");
             newStatus.ipport = Json.getInt(origin, "ipport");
 
-            if (IOTStatus.list.addEntry(newStatus, false) >= 0)
+            if (IOTStatus.list.addEntry(newStatus, false, false) >= 0)
             {
                 //
                 // Reply with own identity.
