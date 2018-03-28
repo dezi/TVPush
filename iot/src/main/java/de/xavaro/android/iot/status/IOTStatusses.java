@@ -20,9 +20,4 @@ public class IOTStatusses extends IOTListGeneric<IOTStatus>
     {
         return new IOTStatus(json);
     }
-
-    public static int addEntryx(IOTStatus newStatus, boolean external)
-    {
-        return instance.addEntryInternal(newStatus, external);
-    }
 }

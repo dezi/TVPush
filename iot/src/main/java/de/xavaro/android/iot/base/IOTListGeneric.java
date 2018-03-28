@@ -81,35 +81,35 @@ public abstract class IOTListGeneric<T>
         }
     }
 
-    public int addEntryInternal(T newStatus, boolean external)
+    public int addEntryInternal(T newEntry, boolean external)
     {
-        String uuid = ((IOTObject) newStatus).uuid;
+        String uuid = ((IOTObject) newEntry).uuid;
 
         int result;
 
-        T oldStatus = getEntryInternal(uuid);
+        T oldEntry = getEntryInternal(uuid);
 
-        if (oldStatus == null)
+        if (oldEntry == null)
         {
             Log.d(LOGTAG, "addEntry: new uuid=" + uuid);
 
-            result = ((IOTObject) newStatus).saveToStorage()
+            result = ((IOTObject) newEntry).saveToStorage()
                     ? IOTDefs.IOT_SAVE_ALLCHANGED
                     : IOTDefs.IOT_SAVE_FAILED;
 
-            if (result > 0) putEntry(newStatus);
+            if (result > 0) putEntry(newEntry);
         }
         else
         {
             Log.d(LOGTAG, "addEntry: old uuid=" + uuid);
 
-            result = ((IOTObject) oldStatus).checkAndMergeContent((IOTObject) newStatus, external);
+            result = ((IOTObject) oldEntry).checkAndMergeContent((IOTObject) newEntry, external);
 
             if (result > 0)
             {
-                Log.d(LOGTAG, "addEntry: diff=" + ((IOTObject) oldStatus).getChangedDiff());
+                Log.d(LOGTAG, "addEntry: diff=" + ((IOTObject) oldEntry).getChangedDiff());
 
-                putEntry(oldStatus);
+                putEntry(oldEntry);
             }
         }
 
