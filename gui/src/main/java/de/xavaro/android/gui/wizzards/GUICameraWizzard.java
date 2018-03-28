@@ -27,6 +27,7 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
     private FrameLayout videoSurface;
     private Camera camera;
 
+    private FrameLayout.LayoutParams videoSurfaceZoom;
     private int zoom;
 
     public GUICameraWizzard(Context context)
@@ -52,10 +53,18 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
             @Override
             public void onHighlightChanged(View view, boolean highlight)
             {
-                if (! highlight)
+                if (!highlight)
                 {
 
                 }
+            }
+
+            @Override
+            protected void onLayout(boolean changed, int l, int t, int r, int b)
+            {
+                super.onLayout(changed, l, t, r, b);
+
+                if (changed) setZoom();
             }
         };
 
@@ -89,6 +98,32 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
         });
     }
 
+    private void setZoom()
+    {
+        if (videoSurface != null)
+        {
+            int nettoWidth = mainFrame.getWidth() - mainFrame.getPaddingLeft() - mainFrame.getPaddingRight();
+            int nettoHeight = mainFrame.getHeight() - mainFrame.getPaddingTop() - mainFrame.getPaddingLeft();
+
+            int zoomWidth = (zoom * 50) + nettoWidth;
+            int zoomHeight = (zoom * 50) + nettoHeight;
+
+            videoSurfaceZoom.width = zoomWidth;
+            videoSurfaceZoom.height = zoomHeight;
+            videoSurfaceZoom.leftMargin = -(zoom * 50) / 2;
+            videoSurfaceZoom.topMargin = -(zoom * 50) / 2;
+
+            videoSurface.setLayoutParams(videoSurfaceZoom);
+
+            Log.d(LOGTAG, "setZoom:"
+                    + " wid=" + videoSurfaceZoom.width
+                    + " hei=" + videoSurfaceZoom.height
+                    + " left=" + videoSurfaceZoom.leftMargin
+                    + " top=" + videoSurfaceZoom.topMargin
+            );
+        }
+    }
+
     @Override
     public void onAttachedToWindow()
     {
@@ -108,7 +143,11 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
 
             if (videoSurface == null)
             {
+                videoSurfaceZoom = new FrameLayout.LayoutParams(Simple.MP, Simple.MP);
+
                 videoSurface = camera.createSurface(getContext());
+                videoSurface.setLayoutParams(videoSurfaceZoom);
+
                 mainFrame.addView(videoSurface);
 
                 camera.registerSurface(videoSurface);
@@ -135,6 +174,7 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
                 }
 
                 videoSurface = null;
+                videoSurfaceZoom = null;
             }
 
             camera.disconnectCamera();
@@ -150,7 +190,7 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
 
         if (mainFrame.getHighlight())
         {
-            usedKey = moveMap(keyCode);
+            usedKey = moveCam(keyCode);
         }
 
         return usedKey;
@@ -168,7 +208,7 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
         }
     }
 
-    private boolean moveMap(int keyCode)
+    private boolean moveCam(int keyCode)
     {
         boolean usedkey = false;
 
@@ -194,13 +234,15 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
 
         if (keyCode == KeyEvent.KEYCODE_MEDIA_REWIND)
         {
-            if (zoom > 15) zoom -= 1;
+            if (zoom > 0) zoom -= 1;
+            setZoom();
             usedkey = true;
         }
 
         if (keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD)
         {
-            if (zoom < 20) zoom += 1;
+            if (zoom < 5) zoom += 1;
+            setZoom();
             usedkey = true;
         }
 

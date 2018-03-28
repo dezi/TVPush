@@ -194,15 +194,18 @@ public class GLSRenderer implements GLSurfaceView.Renderer
 
             frameQueue.add(index, avFrame);
 
-            while (frameQueue.size() > 1)
+            synchronized (renderQueue)
             {
-                if ((frameQueue.get(0).getFrameNo() + 1) == frameQueue.get(1).getFrameNo())
+                while (frameQueue.size() > 1)
                 {
-                    renderQueue.add(frameQueue.remove(0));
-                }
-                else
-                {
-                    break;
+                    if ((frameQueue.get(0).getFrameNo() + 1) == frameQueue.get(1).getFrameNo())
+                    {
+                        renderQueue.add(frameQueue.remove(0));
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
             }
 

@@ -7,6 +7,8 @@ public class P2PReaderThreadVideo extends P2PReaderThread
     public P2PReaderThreadVideo(P2PSession session, byte channel)
     {
         super(session, channel);
+
+        this.setPriority(MAX_PRIORITY);
     }
 
     private int frameNoOverflows;
