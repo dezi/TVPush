@@ -1,11 +1,9 @@
 package de.xavaro.android.iot.status;
 
-import android.util.Log;
-
 import org.json.JSONObject;
 
 import de.xavaro.android.iot.base.IOTAlive;
-import de.xavaro.android.iot.base.IOTListGeneric;
+import de.xavaro.android.iot.base.IOTList;
 import de.xavaro.android.iot.base.IOTObject;
 
 @SuppressWarnings("WeakerAccess")
@@ -13,7 +11,7 @@ public class IOTStatus extends IOTObject
 {
     private final static String LOGTAG = IOTStatus.class.getSimpleName();
 
-    public static IOTListGeneric<IOTStatus> list;
+    public static IOTList<IOTStatus> list;
 
     //
     // These are real classes not primitives because

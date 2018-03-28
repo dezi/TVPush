@@ -14,7 +14,6 @@ import de.xavaro.android.iot.status.IOTStatus;
 
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTThing;
-import de.xavaro.android.iot.things.IOTThings;
 
 import de.xavaro.android.iot.base.IOTAlive;
 
@@ -86,7 +85,7 @@ public class GUIListEntryIOT extends GUIListEntry
 
     public void updateContent()
     {
-        IOTThing iotThing = IOTThings.getEntry(uuid);
+        IOTThing iotThing = IOTThing.getEntry(uuid);
 
         if (iotThing instanceof IOTDevice)
         {
@@ -232,7 +231,7 @@ public class GUIListEntryIOT extends GUIListEntry
         {
             Log.d(LOGTAG,"onThingLongClickListener:");
 
-            IOTThings.deleteThing(uuid);
+            IOTThing.deleteThing(uuid);
 
             return true;
         }

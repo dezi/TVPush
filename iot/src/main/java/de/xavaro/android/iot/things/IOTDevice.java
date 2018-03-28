@@ -3,7 +3,7 @@ package de.xavaro.android.iot.things;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import de.xavaro.android.iot.base.IOTListGeneric;
+import de.xavaro.android.iot.base.IOTList;
 
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.simple.Json;
@@ -14,7 +14,7 @@ public class IOTDevice extends IOTThing
 {
     private final static String LOGTAG = IOTDevice.class.getSimpleName();
 
-    public static IOTListGeneric<IOTDevice> list;
+    public static IOTList<IOTDevice> list;
 
     public final static String TYPE_PC = "pc";
     public final static String TYPE_TV = "tv";

@@ -2,14 +2,13 @@ package de.xavaro.android.iot.things;
 
 import org.json.JSONObject;
 
-import de.xavaro.android.iot.base.IOTListGeneric;
+import de.xavaro.android.iot.base.IOTList;
 import de.xavaro.android.iot.base.IOTObject;
-import de.xavaro.android.iot.status.IOTStatus;
 
 @SuppressWarnings("WeakerAccess")
 public class IOTLocation extends IOTThing
 {
-    public static IOTListGeneric<IOTLocation> list;
+    public static IOTList<IOTLocation> list;
 
     public String nick;
     public String name;

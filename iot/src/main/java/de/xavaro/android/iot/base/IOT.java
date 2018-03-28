@@ -78,14 +78,14 @@ public class IOT implements
     @Override
     public void startSubsystem()
     {
-        IOTHuman.list = new IOTListGeneric<>((new IOTHuman()).getClassKey());
-        IOTDevice.list = new IOTListGeneric<>((new IOTDevice()).getClassKey());
-        IOTDomain.list = new IOTListGeneric<>((new IOTDomain()).getClassKey());
-        IOTLocation.list = new IOTListGeneric<>((new IOTLocation()).getClassKey());
+        IOTHuman.list = new IOTList<>((new IOTHuman()).getClassKey());
+        IOTDevice.list = new IOTList<>((new IOTDevice()).getClassKey());
+        IOTDomain.list = new IOTList<>((new IOTDomain()).getClassKey());
+        IOTLocation.list = new IOTList<>((new IOTLocation()).getClassKey());
 
-        IOTStatus.list = new IOTListGeneric<>((new IOTStatus()).getClassKey());
-        IOTMetadata.list = new IOTListGeneric<>((new IOTMetadata()).getClassKey());
-        IOTCredential.list = new IOTListGeneric<>((new IOTCredential()).getClassKey());
+        IOTStatus.list = new IOTList<>((new IOTStatus()).getClassKey());
+        IOTMetadata.list = new IOTList<>((new IOTMetadata()).getClassKey());
+        IOTCredential.list = new IOTList<>((new IOTCredential()).getClassKey());
 
         register = new IOTRegister();
 

@@ -7,7 +7,6 @@ import de.xavaro.android.iot.base.IOTAlive;
 
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTThing;
-import de.xavaro.android.iot.things.IOTThings;
 
 import de.xavaro.android.iot.status.IOTStatus;
 
@@ -76,7 +75,7 @@ public class GUIIconViewIOT extends GUIIconView
 
     private void updateContent()
     {
-        IOTThing iotThing = IOTThings.getEntry(uuid);
+        IOTThing iotThing = IOTThing.getEntry(uuid);
 
         if (iotThing instanceof IOTDevice)
         {

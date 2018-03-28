@@ -2,13 +2,13 @@ package de.xavaro.android.iot.things;
 
 import org.json.JSONObject;
 
-import de.xavaro.android.iot.base.IOTListGeneric;
+import de.xavaro.android.iot.base.IOTList;
 import de.xavaro.android.iot.base.IOTObject;
 
 @SuppressWarnings("WeakerAccess")
 public class IOTDomain extends IOTThing
 {
-    public static IOTListGeneric<IOTDomain> list;
+    public static IOTList<IOTDomain> list;
 
     public String fixedwifi;
 

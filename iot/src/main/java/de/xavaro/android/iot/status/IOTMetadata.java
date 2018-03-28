@@ -1,17 +1,15 @@
 package de.xavaro.android.iot.status;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import de.xavaro.android.iot.base.IOTListGeneric;
+import de.xavaro.android.iot.base.IOTList;
 import de.xavaro.android.iot.base.IOTObject;
-import de.xavaro.android.iot.simple.Json;
 
 public class IOTMetadata extends IOTObject
 {
     private final static String LOGTAG = IOTMetadata.class.getSimpleName();
 
-    public static IOTListGeneric<IOTMetadata> list;
+    public static IOTList<IOTMetadata> list;
 
     public JSONObject metadata;
 

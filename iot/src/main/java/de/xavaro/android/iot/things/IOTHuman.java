@@ -2,16 +2,15 @@ package de.xavaro.android.iot.things;
 
 import org.json.JSONObject;
 
-import de.xavaro.android.iot.base.IOTListGeneric;
+import de.xavaro.android.iot.base.IOTList;
 import de.xavaro.android.iot.base.IOTObject;
-import de.xavaro.android.iot.base.IOTSimple;
 import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Simple;
 
 @SuppressWarnings("WeakerAccess")
 public class IOTHuman extends IOTThing
 {
-    public static IOTListGeneric<IOTHuman> list;
+    public static IOTList<IOTHuman> list;
 
     public String firstname;
     public String middlename;
