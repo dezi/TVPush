@@ -26,8 +26,6 @@ import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUIImageView;
 import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.base.IOTDefs;
-import de.xavaro.android.iot.base.IOTObject;
-import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTThing;
 

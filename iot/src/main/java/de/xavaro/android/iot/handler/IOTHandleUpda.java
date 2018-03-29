@@ -8,10 +8,9 @@ import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.base.IOTObject;
 
-import de.xavaro.android.iot.base.IOTSimple;
-import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.things.IOTDevice;
-import de.xavaro.android.iot.things.IOTThing;
+
+import de.xavaro.android.iot.simple.Json;
 
 public class IOTHandleUpda extends IOTHandle
 {

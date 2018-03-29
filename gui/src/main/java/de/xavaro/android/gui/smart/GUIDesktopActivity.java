@@ -20,6 +20,7 @@ import de.xavaro.android.gui.wizzards.GUICameraWizzard;
 import de.xavaro.android.gui.wizzards.GUISetupWizzard;
 import de.xavaro.android.gui.wizzards.GUIMenuWizzard;
 import de.xavaro.android.gui.wizzards.GUIPingWizzard;
+import de.xavaro.android.gui.wizzards.GUIStreetviewWizzard;
 import de.xavaro.android.gui.wizzards.GUITodoWizzard;
 
 import de.xavaro.android.gui.plugin.GUIPluginTitleIOT;
@@ -64,12 +65,14 @@ public class GUIDesktopActivity extends GUIActivity
         wizzards.put(GUIChannelWizzard.   class.getSimpleName(), new GUIChannelWizzard   (this));
         wizzards.put(GUILocationsWizzard. class.getSimpleName(), new GUILocationsWizzard (this));
         wizzards.put(GUIGeomapWizzard.    class.getSimpleName(), new GUIGeomapWizzard    (this));
+        wizzards.put(GUIStreetviewWizzard.class.getSimpleName(), new GUIStreetviewWizzard(this));
 
         // @formatter:on
 
-        displayWizzard(GUICamerasWizzard.class.getSimpleName());
-        displayWizzard(GUIPingWizzard.class.getSimpleName());
-        displayWizzard(GUILocationsWizzard.class.getSimpleName());
+        //displayWizzard(GUICamerasWizzard.class.getSimpleName());
+        //displayWizzard(GUIPingWizzard.class.getSimpleName());
+        //displayWizzard(GUILocationsWizzard.class.getSimpleName());
+        displayWizzard(GUIStreetviewWizzard.class.getSimpleName());
 
         checkWindowSize();
    }
