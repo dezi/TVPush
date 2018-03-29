@@ -696,5 +696,17 @@ public class Simple
         return (Looper.getMainLooper().getThread() == Thread.currentThread());
     }
 
+    public static void setSystemProp(String prop, String level)
+    {
+        try
+        {
+            Process setprop = Runtime.getRuntime().exec("setprop " + prop + " " + level);
+            setprop.waitFor();
+        }
+        catch (Exception ignore)
+        {
+        }
+    }
+
     //endregion Smart helpers.
 }
