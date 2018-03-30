@@ -116,6 +116,22 @@ public class SystemsIAM extends IAM
                         continue;
                     }
                 }
+
+                if (object.equals("streetview"))
+                {
+                    if (action.equals("open"))
+                    {
+                        String address = Json.getString(jaction, "objectWords");
+                        if (GUI.instance != null) GUI.instance.displayStreetView(true, address);
+                        continue;
+                    }
+
+                    if (action.equals("close"))
+                    {
+                        if (GUI.instance != null) GUI.instance.displayStreetView(false, null);
+                        continue;
+                    }
+                }
             }
 
             JSONArray devices = Json.getArray(jaction, "devices");

@@ -2,6 +2,8 @@ package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.location.Address;
+import android.location.Geocoder;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -23,6 +25,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import de.xavaro.android.gui.plugin.GUIPluginTitle;
 import de.xavaro.android.gui.smart.GUIStreetViewService;
@@ -93,6 +96,44 @@ public class GUIStreetviewWizzard extends GUIPluginTitle implements
         mapFrame.setToastHighlight(toastHighlight);
 
         contentFrame.addView(mapFrame);
+
+        setCoordinates(51.5099272,-0.1349173);
+        setCoordinatesFromAddress("jungfernstieg in hamburg");
+    }
+
+    public void setCoordinatesFromAddress(String address)
+    {
+        Geocoder coder = new Geocoder(getContext());
+
+        try
+        {
+            List<Address> locations = coder.getFromLocationName(address, 5);
+
+            if (locations != null)
+            {
+                for (Address location : locations)
+                {
+                    Log.d(LOGTAG, "setCoordinatesFromAddress location=" + location);
+
+                    setCoordinates(location.getLatitude(), location.getLongitude());
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+    }
+
+    public void setCoordinates(Double lat, Double lon)
+    {
+        coordinates = new LatLng(lat, lon);
+
+        if (panorama != null)
+        {
+            panorama.setPosition(coordinates, StreetViewSource.DEFAULT);
+        }
     }
 
     @Override
@@ -113,8 +154,6 @@ public class GUIStreetviewWizzard extends GUIPluginTitle implements
 
     private void connectStreetView()
     {
-        setCoordinates(51.5099272,-0.1349173);
-
         streetViewService = new GUIStreetViewService(getContext());
         streetViewService.setGUIStreetViewServiceCallback(new GUIStreetViewService.GUIStreetViewServiceCallback()
         {
@@ -174,11 +213,6 @@ public class GUIStreetviewWizzard extends GUIPluginTitle implements
         lastlinks = null;
         location = null;
         camera = null;
-    }
-
-    public void setCoordinates(Double lat, Double lon)
-    {
-        coordinates = new LatLng(lat, lon);
     }
 
     @Override

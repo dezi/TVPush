@@ -146,6 +146,14 @@ public class GUI implements
     }
 
     @Override
+    public void displayStreetView(boolean show, String address)
+    {
+        Log.d(LOGTAG, "displayStreetView: show=" + show + " address=" + address);
+
+        GUI.instance.desktopActivity.displayStreetView(show, address);
+    }
+
+    @Override
     public void displayPinCodeMessage(int timeout)
     {
         GUI.instance.desktopActivity.displayPinCodeMessage(timeout);

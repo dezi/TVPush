@@ -30,7 +30,7 @@ public class IAM implements
         JSONObject info = new JSONObject();
 
         Json.put(info, "drv", "iam");
-        Json.put(info, "name", "I.A.M");
+        Json.put(info, "name", "I.A.M - KI");
 
         return info;
     }

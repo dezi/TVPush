@@ -1,6 +1,7 @@
 package de.xavaro.android.iam.eval;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,12 +15,12 @@ public class IAMEval
 {
     private final static String LOGTAG = IAMEval.class.getSimpleName();
 
-    public JSONObject speech;
+    private JSONObject speech;
 
-    public JSONArray lastResult;
+    private JSONArray lastResult;
 
-    public String message;
-    public String lastwrd;
+    private String message;
+    private String lastwrd;
 
     @Nullable
     public static JSONArray evaluateSpeech(JSONObject speech)
@@ -28,7 +29,7 @@ public class IAMEval
         return eval.evaluateSpeech();
     }
 
-    public IAMEval(JSONObject speech)
+    private IAMEval(JSONObject speech)
     {
         this.speech = speech;
 
@@ -57,6 +58,8 @@ public class IAMEval
             String action = evaluateAction();
             String actionWords = lastwrd;
 
+            Log.d(LOGTAG, "################# action=" + action + " message=" + message);
+
             if ((action != null) && ! action.isEmpty())
             {
                 JSONArray devices = evaluateDevices(action, actionWords);
@@ -81,6 +84,8 @@ public class IAMEval
                 }
 
                 lastResult = (results.length() > 0) ? results : null;
+
+                Log.d(LOGTAG, "################# json=" + Json.toPretty(lastResult));
 
                 return lastResult;
             }
@@ -154,6 +159,19 @@ public class IAMEval
         while (suchwas)
         {
             suchwas = false;
+
+            if (ifContainsRemove("Streetview"))
+            {
+                JSONObject object = new JSONObject();
+                Json.put(objects, object);
+
+                Json.put(object, "action", action);
+                Json.put(object, "actionWords", actionWords);
+                Json.put(object, "plural", plural);
+                Json.put(object, "object", "streetview");
+                Json.put(object, "objectWords", message);
+                suchwas = false;
+            }
 
             if (ifIsPincodeRemove()
                     || ifContainsRemove("PIN Code")
@@ -567,6 +585,11 @@ public class IAMEval
 
     private String evaluateAction()
     {
+        if (ifContains("Streetview"))
+        {
+            return "open";
+        }
+
         if (ifContains("Puff Beleuchtung")
                 || ifContains("Bordell Beleuchtung")
                 || ifContains("normale Beleuchtung"))
@@ -691,7 +714,6 @@ public class IAMEval
             String locmess = " " + message + " ";
             String loctarg = " " + target + " ";
 
-            int len = target.length();
             int pos;
 
             pos = locmess.indexOf(loctarg);

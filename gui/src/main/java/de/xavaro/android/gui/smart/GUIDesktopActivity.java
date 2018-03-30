@@ -72,6 +72,7 @@ public class GUIDesktopActivity extends GUIActivity
         //displayWizzard(GUICamerasWizzard.class.getSimpleName());
         //displayWizzard(GUIPingWizzard.class.getSimpleName());
         //displayWizzard(GUILocationsWizzard.class.getSimpleName());
+        //displayWizzard(GUISetupWizzard.class.getSimpleName());
         displayWizzard(GUIStreetviewWizzard.class.getSimpleName());
 
         checkWindowSize();
@@ -237,6 +238,27 @@ public class GUIDesktopActivity extends GUIActivity
 
     public void displayCamera(boolean show, String uuid)
     {
+    }
+
+    public void displayStreetView(boolean show, String address)
+    {
+        if (show)
+        {
+            bringToFront();
+
+            String wizzardname = GUIStreetviewWizzard.class.getSimpleName();
+
+            GUIPlugin wizzard = wizzards.get(wizzardname);
+
+            if (wizzard instanceof GUIStreetviewWizzard)
+            {
+                ((GUIStreetviewWizzard) wizzard).setCoordinatesFromAddress(address);
+
+                displayWizzard(wizzardname);
+            }
+        }
+
+        checkWindowSize();
     }
 
     public void displaySpeechRecognition(boolean show)

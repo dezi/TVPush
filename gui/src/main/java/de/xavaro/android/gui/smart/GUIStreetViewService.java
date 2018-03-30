@@ -137,7 +137,7 @@ public class GUIStreetViewService extends WebView
         @SuppressWarnings("deprecation")
         public WebResourceResponse shouldInterceptRequest(WebView view, String url)
         {
-            Log.d(LOGTAG, "shouldInterceptRequest: old=" + url);
+            //Log.d(LOGTAG, "shouldInterceptRequest: old=" + url);
 
             Uri uri = Uri.parse(url);
 
@@ -150,7 +150,7 @@ public class GUIStreetViewService extends WebView
         {
             Uri uri = request.getUrl();
 
-            Log.d(LOGTAG, "shouldInterceptRequest: new=" + uri.toString());
+            //Log.d(LOGTAG, "shouldInterceptRequest: new=" + uri.toString());
 
             return handleRequest(uri);
         }
