@@ -87,6 +87,8 @@ public class GUIStreetViewService extends WebView
                     + "        lat: " + lat + ",\n"
                     + "        lng: " + lon + "\n"
                     + "      },\n"
+                  //+ "      source: " + "default" + ",\n"
+                  //+ "      preference: " + "nearest" + ",\n"
                     + "      radius: " + radius + "\n"
                     + "  },\n"
                     + "  processSVData\n"

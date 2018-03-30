@@ -48,6 +48,7 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
     private LatLng coordinates;
 
     private GUIFrameLayout[] nextPanoramaHints = new GUIFrameLayout[ 16 ];
+
     private JSONArray otherPanoramas;
 
     public GUIStreetviewWizzard(Context context)
