@@ -18,15 +18,11 @@ import com.google.android.gms.maps.model.StreetViewPanoramaLocation;
 import com.google.android.gms.maps.model.StreetViewSource;
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import de.xavaro.android.gui.plugin.GUIPluginTitle;
 import de.xavaro.android.gui.smart.GUIStreetViewService;
@@ -43,29 +39,30 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
 
     private GUIFrameLayout mapFrame;
     private GUIFrameLayout clickFrame;
-    private GUIStreetViewService webView;
+    private GUIStreetViewService streetViewService;
 
-    private StreetViewPanoramaView panoramaView;
     private StreetViewPanoramaLocation location;
     private StreetViewPanoramaCamera camera;
     private StreetViewPanorama panorama;
 
     private LatLng coordinates;
 
-    private Map<String, JSONObject> panoramaMetas = new HashMap<>();
-    private GUIFrameLayout[] exitDoors = new GUIFrameLayout[ 4 ];
+    private GUIFrameLayout[] nextPanoramaHints = new GUIFrameLayout[ 16 ];
+    private JSONArray otherPanoramas;
 
     public GUIStreetviewWizzard(Context context)
     {
         super(context);
+
+        setCoordinates(51.5099272,-0.1349173);
 
         setIsWizzard(true, false, Simple.isTV() ? 3 : 2, Gravity.START);
 
         setTitleIcon(R.drawable.wizzard_streetview_550);
         setTitleText("Streetview Wizzard");
 
-        webView = new GUIStreetViewService(context);
-        webView.setGUIStreetViewServiceCallback(new GUIStreetViewService.GUIStreetViewServiceCallback()
+        streetViewService = new GUIStreetViewService(context);
+        streetViewService.setGUIStreetViewServiceCallback(new GUIStreetViewService.GUIStreetViewServiceCallback()
         {
             @Override
             public void onDataReceived(String status, JSONObject data)
@@ -114,15 +111,13 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
 
         contentFrame.addView(mapFrame);
 
-        setCoordinates(51.5099272,-0.1349173);
-
         StreetViewPanoramaOptions options = new StreetViewPanoramaOptions();
         options.streetNamesEnabled(true);
         options.zoomGesturesEnabled(true);
         options.userNavigationEnabled(false);
         options.panningGesturesEnabled(true);
 
-        panoramaView = new StreetViewPanoramaView(getContext(), options);
+        StreetViewPanoramaView panoramaView = new StreetViewPanoramaView(getContext(), options);
         panoramaView.onCreate(null);
 
         panoramaView.getStreetViewPanoramaAsync(new OnStreetViewPanoramaReadyCallback()
@@ -142,11 +137,14 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
                     @Override
                     public void onStreetViewPanoramaChange(StreetViewPanoramaLocation streetViewPanoramaLocation)
                     {
+                        otherPanoramas = null;
+
                         location = streetViewPanoramaLocation;
 
-                        webView.evaluate(location.position.latitude, location.position.longitude, 100);
-
-                        registerLocation();
+                        streetViewService.evaluate(
+                                location.position.latitude,
+                                location.position.longitude,
+                                200);
 
                         showNextPanoramas();
                     }
@@ -158,7 +156,6 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
                     public void onStreetViewPanoramaCameraChange(StreetViewPanoramaCamera streetViewPanoramaCamera)
                     {
                         camera = streetViewPanoramaCamera;
-                        Log.d(LOGTAG, "onStreetViewPanoramaCameraChange: camera=" + camera);
 
                         showNextPanoramas();
                     }
@@ -202,14 +199,13 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
         });
         */
 
-        for (int inx = 0; inx < exitDoors.length; inx++)
+        for (int inx = 0; inx < nextPanoramaHints.length; inx++)
         {
-            exitDoors[ inx ] = new GUIFrameLayout(getContext());
-            exitDoors[ inx ].setSizeDip(50,50);
-            exitDoors[ inx ].setBackgroundColor(0x8800ff00);
-            exitDoors[ inx ].setVisibility(GONE);
+            nextPanoramaHints[ inx ] = new GUIFrameLayout(getContext());
+            nextPanoramaHints[ inx ].setSizeDip(50,50);
+            nextPanoramaHints[ inx ].setVisibility(GONE);
 
-            exitDoors[ inx ].setOnClickListener(new OnClickListener()
+            nextPanoramaHints[ inx ].setOnClickListener(new OnClickListener()
             {
                 @Override
                 public void onClick(View view)
@@ -221,8 +217,13 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
                 }
             });
 
-            mapFrame.addView(exitDoors[ inx ]);
+            mapFrame.addView(nextPanoramaHints[ inx ]);
         }
+    }
+
+    public void setCoordinates(Double lat, Double lon)
+    {
+        coordinates = new LatLng(lat, lon);
     }
 
     private boolean onKeyDownDoit(int keyCode, KeyEvent event)
@@ -239,62 +240,90 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
         return usedKey;
     }
 
-    public void setCoordinates(Double lat, Double lon)
-    {
-        coordinates = new LatLng(lat, lon);
-    }
-
-    private void registerLocation()
-    {
-        Log.d(LOGTAG, "registerLocation: location=" + location);
-
-        getPanoramaMetaAsync(location.panoId);
-
-        if ((location != null) && (location.links != null))
-        {
-            for (StreetViewPanoramaLink link : location.links)
-            {
-                getPanoramaMetaAsync(link.panoId);
-            }
-        }
-    }
-
     private void showNextPanoramas()
     {
+        int viewsused = 0;
+
+        ArrayList<String> dups = new ArrayList<>();
+
         if ((location != null) && (location.links != null))
         {
-            for (int inx = 0;  inx < location.links.length; inx++)
+            dups.add(location.panoId);
+
+            //
+            // Show defined navigation panoramas as green.
+            //
+
+            for (int inx = 0; (inx < location.links.length) && (viewsused < nextPanoramaHints.length); inx++)
             {
-                StreetViewPanoramaLink link = location.links[ inx ];
+                StreetViewPanoramaLink link = location.links[inx];
+
+                dups.add(link.panoId);
 
                 StreetViewPanoramaOrientation orient = new StreetViewPanoramaOrientation(camera.tilt, link.bearing);
                 Point point = panorama.orientationToPoint(orient);
 
-                Log.d(LOGTAG, "showNextPanoramas: panoid=" + link.panoId + " point=" + point);
+                Log.d(LOGTAG, "showNextPanoramas: links panoid=" + link.panoId + " point=" + point);
 
-                if (inx < exitDoors.length)
-                {
-                    if (point == null)
-                    {
-                        exitDoors[inx].setVisibility(GONE);
-                    }
-                    else
-                    {
-                        MarginLayoutParams lp = (MarginLayoutParams) exitDoors[inx].getLayoutParams();
-                        lp.leftMargin = point.x;
-                        lp.topMargin = point.y;
-                        exitDoors[inx].setLayoutParams(lp);
+                if (point == null) continue;
 
-                        exitDoors[inx].setVisibility(VISIBLE);
-                        exitDoors[inx].setTag(link.panoId);
-                    }
-                }
+                MarginLayoutParams lp = (MarginLayoutParams) nextPanoramaHints[viewsused].getLayoutParams();
+                lp.leftMargin = point.x;
+                lp.topMargin = point.y;
+                nextPanoramaHints[viewsused].setLayoutParams(lp);
+
+                nextPanoramaHints[viewsused].setVisibility(VISIBLE);
+                nextPanoramaHints[viewsused].setBackgroundColor(0x8800ff00);
+                nextPanoramaHints[viewsused].setTag(link.panoId);
+
+                viewsused++;
             }
+        }
 
-            for (int inx = location.links.length; inx < exitDoors.length; inx++)
+        if (otherPanoramas != null)
+        {
+            //
+            // Show retrieved other panoramas as yellow.
+            //
+
+            for (int inx = 0; inx < otherPanoramas.length(); inx++)
             {
-                exitDoors[ inx ].setVisibility(GONE);
+                JSONObject otherPanorama = Json.getObject(otherPanoramas, inx);
+                if (otherPanorama == null) continue;
+
+                String panoid = Json.getString(otherPanorama, "panoid");
+
+                if (panoid == null) continue;
+                if (dups.contains(panoid)) continue;
+
+                float heading = Json.getFloat(otherPanorama, "heading");
+                StreetViewPanoramaOrientation orient = new StreetViewPanoramaOrientation(camera.tilt, heading);
+                Point point = panorama.orientationToPoint(orient);
+
+                Log.d(LOGTAG, "showNextPanoramas: other panoid=" + panoid + " point=" + point);
+
+                if (point == null) continue;
+
+                MarginLayoutParams lp = (MarginLayoutParams) nextPanoramaHints[viewsused].getLayoutParams();
+                lp.leftMargin = point.x;
+                lp.topMargin = point.y;
+                nextPanoramaHints[viewsused].setLayoutParams(lp);
+
+                nextPanoramaHints[viewsused].setVisibility(VISIBLE);
+                nextPanoramaHints[viewsused].setBackgroundColor(0x88ffff00);
+                nextPanoramaHints[viewsused].setTag(panoid);
+
+                viewsused++;
             }
+        }
+
+        //
+        // Render superflous hints invisible.
+        //
+
+        while (viewsused < nextPanoramaHints.length)
+        {
+            nextPanoramaHints[ viewsused++ ].setVisibility(GONE);
         }
     }
 
@@ -370,6 +399,47 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
         return movekey || okkey;
     }
 
+    private void onPanoramaDataReceived(String status, JSONObject data)
+    {
+        Log.d(LOGTAG, "onPanoramaDataReceived: status=" + status + " data=" + Json.toPretty(data));
+
+        if ((data == null) || ! status.equals("OK")) return;
+
+        JSONObject locationJson = Json.getObject(data, "location");
+        String description = Json.getString(locationJson, "description");
+
+        setTitleInfo(description);
+
+        JSONObject follows = Json.getObject(data, "f");
+
+        if (follows != null)
+        {
+            otherPanoramas = new JSONArray();
+
+            Iterator<String> panoids = follows.keys();
+
+            while (panoids.hasNext())
+            {
+                String panoid = panoids.next();
+                JSONObject latlon = Json.getObject(follows, panoid);
+                if (latlon == null) continue;
+
+                Double lat = Json.getDouble(latlon, "lat");
+                Double lon = Json.getDouble(latlon, "lng");
+                LatLng panopos = new LatLng(lat, lon);
+
+                Double heading = computeHeading(location.position, panopos);
+
+                Json.put(latlon, "panoid", panoid);
+                Json.put(latlon, "heading", heading);
+
+                Json.put(otherPanoramas, latlon);
+
+                Log.d(LOGTAG, "onPanoramaDataReceived: pano=" + latlon.toString());
+            }
+        }
+    }
+
     private final static double EARTH_RADIUS = 6371009;
 
     private static LatLng computeOffset(LatLng from, double distance, double heading)
@@ -392,75 +462,30 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
         return new LatLng(Math.toDegrees(Math.asin(sinLat)), Math.toDegrees(fromLng + dLng));
     }
 
-    private void getPanoramaMetaAsync(final String panoid)
+    private static double computeHeading(LatLng from, LatLng to)
     {
-        if (! panoramaMetas.containsKey(panoid))
-        {
-            Thread runner = new Thread(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    getPanoramaMeta(panoid);
-                }
-            });
+        double fromLat = Math.toRadians(from.latitude);
+        double fromLng = Math.toRadians(from.longitude);
 
-            runner.start();
-        }
+        double toLat = Math.toRadians(to.latitude);
+        double toLng = Math.toRadians(to.longitude);
+
+        double dLng = toLng - fromLng;
+
+        double heading = Math.atan2(
+                Math.sin(dLng) * Math.cos(toLat),
+                Math.cos(fromLat) * Math.sin(toLat) - Math.sin(fromLat) * Math.cos(toLat) * Math.cos(dLng));
+
+        return wrap(Math.toDegrees(heading), -180, 180);
     }
 
-    private void getPanoramaMeta(String panoid)
+    private static double wrap(double n, double min, double max)
     {
-        String url = "https://maps.googleapis.com/maps/api/streetview/metadata"
-                + "?pano=" + panoid + "&key=AIzaSyBJ1BXy83xwFwJNhJdD-imW7AfxBZsRkZs";
-
-        Log.d(LOGTAG, "getPanoramaMeta: url=" + url);
-
-        try
-        {
-            HttpURLConnection connection = (HttpURLConnection) (new URL(url)).openConnection();
-
-            connection.setDoOutput(true);
-            connection.setUseCaches(false);
-            connection.setRequestMethod("GET");
-
-            InputStream stream = connection.getInputStream();
-
-            if (stream != null)
-            {
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
-                StringBuilder respStr = new StringBuilder();
-
-                String line;
-
-                while ((line = bufferedReader.readLine()) != null)
-                {
-                    respStr.append(line);
-                    respStr.append("\n");
-                }
-
-                stream.close();
-
-                Log.d(LOGTAG, "getPanoramaMeta: json=" + respStr);
-
-                panoramaMetas.put(panoid, Json.fromStringObject(respStr.toString()));
-            }
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
+        return (n >= min && n < max) ? n : (mod(n - min, max - min) + min);
     }
 
-    private void onPanoramaDataReceived(String status, JSONObject data)
+    private static double mod(double x, double m)
     {
-        Log.d(LOGTAG, "onPanoramaDataReceived: status=" + status + " data=" + Json.toPretty(data));
-
-        if ((data == null) || ! status.equals("OK")) return;
-
-        JSONObject location = Json.getObject(data, "location");
-        String description = Json.getString(location, "description");
-
-        setTitleInfo(description);
+        return ((x % m) + m) % m;
     }
 }

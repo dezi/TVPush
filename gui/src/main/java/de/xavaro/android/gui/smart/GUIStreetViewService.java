@@ -1,8 +1,8 @@
 package de.xavaro.android.gui.smart;
 
-import android.support.annotation.RequiresApi;
-import android.webkit.JavascriptInterface;
 import android.annotation.SuppressLint;
+import android.webkit.JavascriptInterface;
+import android.support.annotation.RequiresApi;
 
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -42,7 +42,7 @@ public class GUIStreetViewService extends WebView
 
         setWebViewClient(new GUIWebViewClient());
 
-        addJavascriptInterface(new GUIWebViewCallback(), "GUIWebViewCallback");
+        addJavascriptInterface(new GUIWebViewCallback(), GUIWebViewCallback.class.getSimpleName());
 
         loadUrl("http://" + DUMMYHOSTNAME + "/");
     }
@@ -139,7 +139,7 @@ public class GUIStreetViewService extends WebView
 
             Uri uri = Uri.parse(url);
 
-            return handleRequest(view, uri);
+            return handleRequest(uri);
         }
 
         @Override
@@ -150,10 +150,10 @@ public class GUIStreetViewService extends WebView
 
             Log.d(LOGTAG, "shouldInterceptRequest: new=" + uri.toString());
 
-            return handleRequest(view, uri);
+            return handleRequest(uri);
         }
 
-        private WebResourceResponse handleRequest(WebView view, Uri uri)
+        private WebResourceResponse handleRequest(Uri uri)
         {
             if (uri.getHost().equals(DUMMYHOSTNAME))
             {
