@@ -34,7 +34,8 @@ import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.iot.simple.Json;
 
 @SuppressWarnings("WeakerAccess")
-public class GUIStreetviewWizzard extends GUIPluginTitle
+public class GUIStreetviewWizzard extends GUIPluginTitle implements
+        OnStreetViewPanoramaReadyCallback
 {
     private final static String LOGTAG = GUIStreetviewWizzard.class.getSimpleName();
 
@@ -56,8 +57,6 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
     {
         super(context);
 
-        setCoordinates(51.5099272,-0.1349173);
-
         setIsWizzard(true, false, Simple.isTV() ? 3 : 2, Gravity.START);
 
         setTitleIcon(R.drawable.wizzard_streetview_550);
@@ -78,11 +77,11 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
                 + " um die Ansicht zur bearbeiten";
 
         final String toastHighlight = ""
+                + "Jump: " + GUIDefs.UTF_OK
+                + ", "
                 + "Kamera: " + GUIDefs.UTF_MOVE + " "
                 + ", "
                 + "Zoom: " + GUIDefs.UTF_ZOOMIN + GUIDefs.UTF_ZOOMOUT
-                + ", "
-                + "Jump: " + GUIDefs.UTF_OK
                 + ", "
                 + "Exit: " + GUIDefs.UTF_BACK
                 ;
@@ -114,6 +113,8 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
 
     private void connectStreetView()
     {
+        setCoordinates(51.5099272,-0.1349173);
+
         streetViewService = new GUIStreetViewService(getContext());
         streetViewService.setGUIStreetViewServiceCallback(new GUIStreetViewService.GUIStreetViewServiceCallback()
         {
@@ -132,64 +133,7 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
 
         panoramaView = new StreetViewPanoramaView(getContext(), options);
         panoramaView.onCreate(null);
-
-        panoramaView.getStreetViewPanoramaAsync(new OnStreetViewPanoramaReadyCallback()
-        {
-            @Override
-            public void onStreetViewPanoramaReady(StreetViewPanorama streetViewPanorama)
-            {
-                Log.d(LOGTAG, "onStreetViewPanoramaReady:");
-
-                panorama = streetViewPanorama;
-                camera = panorama.getPanoramaCamera();
-
-                panorama.setPosition(coordinates,  StreetViewSource.DEFAULT);
-
-                panorama.setOnStreetViewPanoramaChangeListener(new StreetViewPanorama.OnStreetViewPanoramaChangeListener()
-                {
-                    @Override
-                    public void onStreetViewPanoramaChange(StreetViewPanoramaLocation streetViewPanoramaLocation)
-                    {
-
-                        location = streetViewPanoramaLocation;
-                        coordinates = location.position;
-
-                        otherPanoramas = null;
-
-                        streetViewService.evaluate(
-                                location.position.latitude,
-                                location.position.longitude,
-                                200);
-
-                        showNextPanoramas();
-                    }
-                });
-
-                panorama.setOnStreetViewPanoramaCameraChangeListener(new StreetViewPanorama.OnStreetViewPanoramaCameraChangeListener()
-                {
-                    @Override
-                    public void onStreetViewPanoramaCameraChange(StreetViewPanoramaCamera streetViewPanoramaCamera)
-                    {
-                        camera = streetViewPanoramaCamera;
-
-                        showNextPanoramas();
-                    }
-                });
-
-                panorama.setOnStreetViewPanoramaClickListener(new StreetViewPanorama.OnStreetViewPanoramaClickListener()
-                {
-                    @Override
-                    public void onStreetViewPanoramaClick(StreetViewPanoramaOrientation streetViewPanoramaOrientation)
-                    {
-                        camera = panorama.getPanoramaCamera();
-                        coordinates = computeOffset(location.position, 20, streetViewPanoramaOrientation.bearing);
-                        panorama.setPosition(coordinates,  StreetViewSource.DEFAULT);
-                    }
-                });
-
-                mapFrame.requestFocus();
-            }
-        });
+        panoramaView.getStreetViewPanoramaAsync(this);
 
         mapFrame.addView(panoramaView);
 
@@ -235,6 +179,61 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
     public void setCoordinates(Double lat, Double lon)
     {
         coordinates = new LatLng(lat, lon);
+    }
+
+    @Override
+    public void onStreetViewPanoramaReady(StreetViewPanorama streetViewPanorama)
+    {
+        Log.d(LOGTAG, "onStreetViewPanoramaReady:");
+
+        panorama = streetViewPanorama;
+        camera = panorama.getPanoramaCamera();
+
+        panorama.setPosition(coordinates, StreetViewSource.DEFAULT);
+
+        panorama.setOnStreetViewPanoramaChangeListener(new StreetViewPanorama.OnStreetViewPanoramaChangeListener()
+        {
+            @Override
+            public void onStreetViewPanoramaChange(StreetViewPanoramaLocation streetViewPanoramaLocation)
+            {
+
+                location = streetViewPanoramaLocation;
+                coordinates = location.position;
+
+                otherPanoramas = null;
+
+                streetViewService.evaluate(
+                        location.position.latitude,
+                        location.position.longitude,
+                        200);
+
+                showNextPanoramas();
+            }
+        });
+
+        panorama.setOnStreetViewPanoramaCameraChangeListener(new StreetViewPanorama.OnStreetViewPanoramaCameraChangeListener()
+        {
+            @Override
+            public void onStreetViewPanoramaCameraChange(StreetViewPanoramaCamera streetViewPanoramaCamera)
+            {
+                camera = streetViewPanoramaCamera;
+
+                showNextPanoramas();
+            }
+        });
+
+        panorama.setOnStreetViewPanoramaClickListener(new StreetViewPanorama.OnStreetViewPanoramaClickListener()
+        {
+            @Override
+            public void onStreetViewPanoramaClick(StreetViewPanoramaOrientation streetViewPanoramaOrientation)
+            {
+                camera = panorama.getPanoramaCamera();
+                coordinates = computeOffset(location.position, 20, streetViewPanoramaOrientation.bearing);
+                panorama.setPosition(coordinates,  StreetViewSource.DEFAULT);
+            }
+        });
+
+        mapFrame.requestFocus();
     }
 
     @Override
@@ -388,13 +387,15 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
             int width = mapFrame.getWidth();
             int height = mapFrame.getHeight();
 
+            double diagonale = Math.sqrt(Math.pow(width, 2) + Math.pow((height), 2));
+
             for (GUIFrameLayout hint : nextPanoramaHints)
             {
                 if (hint.getVisibility() == GONE) continue;
 
                 MarginLayoutParams lp = (MarginLayoutParams) hint.getLayoutParams();
 
-                double dist = Math.pow(width - lp.leftMargin, 2) + Math.pow((height - lp.topMargin), 2);
+                double dist = Math.sqrt(Math.pow(width - lp.leftMargin, 2) + Math.pow((height - lp.topMargin), 2));
 
                 Log.d(LOGTAG, "moveCamera: ok left=" + lp.leftMargin + " top=" + lp.topMargin + " dist=" + dist);
 
@@ -405,9 +406,15 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
                 }
             }
 
-            if (bestPanoid != null)
+            if ((bestPanoid != null) && (bestDist < (diagonale / 2)))
             {
                 panorama.setPosition(bestPanoid);
+            }
+            else
+            {
+                camera = panorama.getPanoramaCamera();
+                coordinates = computeOffset(location.position, 20, camera.bearing);
+                panorama.setPosition(coordinates,  StreetViewSource.DEFAULT);
             }
 
             okkey = true;
@@ -509,6 +516,8 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
         showNextPanoramas();
     }
 
+    //region Coordinates math helper.
+
     private final static double EARTH_RADIUS = 6371009;
 
     @SuppressWarnings("SameParameterValue")
@@ -559,4 +568,6 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
     {
         return ((x % m) + m) % m;
     }
+
+    //endregion Coordinates math helper.
 }
