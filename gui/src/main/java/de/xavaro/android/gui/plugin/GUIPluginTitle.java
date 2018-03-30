@@ -23,6 +23,7 @@ public class GUIPluginTitle extends GUIPlugin
     public GUIIconViewIOT titleIcon;
     public GUITextView titleText;
     public GUIEditText titleEdit;
+    public GUITextView titleInfo;
 
     private int titleIconResid;
 
@@ -77,6 +78,15 @@ public class GUIPluginTitle extends GUIPlugin
 
         titleCenter.addView(titleEdit);
 
+        titleInfo = new GUITextView(context);
+        titleInfo.setSizeDip(Simple.MP, Simple.WC, 1.0f);
+        titleInfo.setPaddingDip(GUIDefs.PADDING_SMALL);
+        titleInfo.setTextSizeDip(GUIDefs.FONTSIZE_HEADERS);
+        titleInfo.setGravity(Gravity.END);
+        titleInfo.setVisibility(GONE);
+
+        titleCenter.addView(titleInfo);
+
         contentFrame = new GUIFrameLayout(context);
         contentFrame.setSizeDip(Simple.MP, Simple.MP);
 
@@ -105,10 +115,12 @@ public class GUIPluginTitle extends GUIPlugin
         return titleText.getText().toString();
     }
 
-    public void setTitleEdit(String text)
+    public void setTitleInfo(String text)
     {
-        titleEdit.setText(text);
-        titleEdit.setVisibility(VISIBLE);
+        titleInfo.setText(text);
+        titleInfo.setVisibility(VISIBLE);
+
+        titleEdit.setVisibility(GONE);
     }
 
     public void setTitleEdit(String text, String hint, String toast)
@@ -128,6 +140,8 @@ public class GUIPluginTitle extends GUIPlugin
         titleEdit.setToastFocus(toast);
         titleEdit.setHighlightable(true);
         titleEdit.setVisibility(VISIBLE);
+
+        titleInfo.setVisibility(GONE);
     }
 
     public void onTitleEditFinished(View view)

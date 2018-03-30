@@ -461,6 +461,6 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
         JSONObject location = Json.getObject(data, "location");
         String description = Json.getString(location, "description");
 
-        setTitleEdit(description);
+        setTitleInfo(description);
     }
 }

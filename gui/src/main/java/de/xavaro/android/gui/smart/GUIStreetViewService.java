@@ -37,7 +37,6 @@ public class GUIStreetViewService extends WebView
 
         WebSettings webSettings = getSettings();
 
-        webSettings.setAppCacheEnabled(false);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setAllowUniversalAccessFromFileURLs(true);
 
@@ -77,8 +76,6 @@ public class GUIStreetViewService extends WebView
 
     public void evaluateReal(Double lat, Double lon, int radius)
     {
-        Log.d(LOGTAG, "evaluate in...");
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
         {
             String js = ""
@@ -97,8 +94,6 @@ public class GUIStreetViewService extends WebView
                     ;
 
             evaluateJavascript(js, null);
-
-            Log.d(LOGTAG, "evaluate out...");
         }
     }
 
@@ -137,17 +132,14 @@ public class GUIStreetViewService extends WebView
     private class GUIWebViewClient extends WebViewClient
     {
         @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url)
-        {
-            return false;
-        }
-
-        @Override
         @SuppressWarnings("deprecation")
         public WebResourceResponse shouldInterceptRequest(WebView view, String url)
         {
             Log.d(LOGTAG, "shouldInterceptRequest: old=" + url);
-            return null;
+
+            Uri uri = Uri.parse(url);
+
+            return handleRequest(view, uri);
         }
 
         @Override
@@ -156,11 +148,14 @@ public class GUIStreetViewService extends WebView
         {
             Uri uri = request.getUrl();
 
-            Log.d(LOGTAG, "shouldInterceptRequest: uri=" + uri.toString());
+            Log.d(LOGTAG, "shouldInterceptRequest: new=" + uri.toString());
 
-            if (! uri.getHost().equals(DUMMYHOSTNAME)) return null;
+            return handleRequest(view, uri);
+        }
 
-            try
+        private WebResourceResponse handleRequest(WebView view, Uri uri)
+        {
+            if (uri.getHost().equals(DUMMYHOSTNAME))
             {
                 String apikey = Simple.getManifestMetaData("com.google.android.geo.API_KEY");
 
@@ -184,16 +179,11 @@ public class GUIStreetViewService extends WebView
                         + "  >\n"
                         + "</script>\n"
                         + "</body>\n"
-                        + "</html>\n"
-                        ;
+                        + "</html>\n";
 
                 ByteArrayInputStream is = new ByteArrayInputStream(html.getBytes());
 
                 return new WebResourceResponse("text/html", "UTF-8", is);
-            }
-            catch (Exception ex)
-            {
-                ex.printStackTrace();
             }
 
             return null;
