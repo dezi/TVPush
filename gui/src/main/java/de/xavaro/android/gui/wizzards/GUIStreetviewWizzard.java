@@ -163,7 +163,17 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
                     }
                 });
 
-                if (Simple.isTV()) mapFrame.setHighlight(true);
+                if (Simple.isTV())
+                {
+                    Simple.getHandler().post(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            mapFrame.setHighlight(true);
+                        }
+                    });
+                }
             }
         });
 
@@ -324,23 +334,48 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER)
         {
-            Log.d(LOGTAG, "moveCamera: center zoom=" + camera.zoom);
+            Log.d(LOGTAG, "moveCamera: DPAD_CENTER");
 
-            coordinates = computeOffset(coordinates, 10, camera.bearing);
-            panorama.setPosition(coordinates);
+            String bestPanoid = null;
+            double bestDist = -1;
+
+            int width = mapFrame.getWidth();
+            int height = mapFrame.getHeight();
+
+            for (int inx = 0; inx < nextPanoramaHints.length; inx++)
+            {
+                if (nextPanoramaHints[ inx ].getVisibility() == GONE) continue;
+
+                MarginLayoutParams lp = (MarginLayoutParams) nextPanoramaHints[ inx ].getLayoutParams();
+
+                double dist = Math.pow(width - lp.leftMargin, 2) + Math.pow((height - lp.topMargin), 2);
+
+                Log.d(LOGTAG, "moveCamera: ok left=" + lp.leftMargin + " top=" + lp.topMargin + " dist=" + dist);
+
+                if ((bestDist < 0) || (dist < bestDist))
+                {
+                    bestPanoid = (String) nextPanoramaHints[ inx ].getTag();
+                    bestDist = dist;
+                }
+            }
+
+            if (bestPanoid != null)
+            {
+                panorama.setPosition(bestPanoid);
+            }
 
             okkey = true;
         }
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT)
         {
-            bearing += 10;
+            bearing -= 20;
             movekey = true;
         }
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)
         {
-            bearing -= 10;
+            bearing += 20;
             movekey = true;
         }
 
@@ -378,7 +413,7 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
 
             camera = new StreetViewPanoramaCamera.Builder().zoom(zoom).tilt(tilt).bearing(bearing).build();
 
-            panorama.animateTo(camera, 250);
+            panorama.animateTo(camera, 200);
 
         }
 
