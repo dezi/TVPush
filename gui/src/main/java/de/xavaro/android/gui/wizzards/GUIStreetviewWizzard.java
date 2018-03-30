@@ -33,21 +33,22 @@ import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.iot.simple.Json;
 
+@SuppressWarnings("WeakerAccess")
 public class GUIStreetviewWizzard extends GUIPluginTitle
 {
     private final static String LOGTAG = GUIStreetviewWizzard.class.getSimpleName();
 
-    private GUIFrameLayout mapFrame;
-    private GUIFrameLayout clickFrame;
-    private GUIStreetViewService streetViewService;
+    private final GUIStreetViewService streetViewService;
+    private final GUIFrameLayout mapFrame;
 
     private StreetViewPanoramaLocation location;
+    private StreetViewPanoramaLink[] lastlinks;
     private StreetViewPanoramaCamera camera;
     private StreetViewPanorama panorama;
 
     private LatLng coordinates;
 
-    private GUIFrameLayout[] nextPanoramaHints = new GUIFrameLayout[ 16 ];
+    private final GUIFrameLayout[] nextPanoramaHints = new GUIFrameLayout[ 16 ];
 
     private JSONArray otherPanoramas;
 
@@ -78,19 +79,6 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
             public boolean onKeyDown(int keyCode, KeyEvent event)
             {
                 return onKeyDownDoit(keyCode, event) || super.onKeyDown(keyCode, event);
-            }
-
-            @Override
-            public void onHighlightChanged(View view, boolean highlight)
-            {
-                if (highlight)
-                {
-                    clickFrame.setVisibility(GONE);
-                }
-                else
-                {
-                    clickFrame.setVisibility(VISIBLE);
-                }
             }
         };
 
@@ -138,9 +126,11 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
                     @Override
                     public void onStreetViewPanoramaChange(StreetViewPanoramaLocation streetViewPanoramaLocation)
                     {
-                        otherPanoramas = null;
 
                         location = streetViewPanoramaLocation;
+                        coordinates = location.position;
+
+                        otherPanoramas = null;
 
                         streetViewService.evaluate(
                                 location.position.latitude,
@@ -167,13 +157,9 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
                     @Override
                     public void onStreetViewPanoramaClick(StreetViewPanoramaOrientation streetViewPanoramaOrientation)
                     {
-                        Log.d(LOGTAG, "onStreetViewPanoramaClick: orient=" + streetViewPanoramaOrientation);
                         camera = panorama.getPanoramaCamera();
-                        Log.d(LOGTAG, "onStreetViewPanoramaClick: camera=" + camera);
-
                         coordinates = computeOffset(location.position, 20, streetViewPanoramaOrientation.bearing);
                         panorama.setPosition(coordinates,  StreetViewSource.DEFAULT);
-
                     }
                 });
 
@@ -182,23 +168,6 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
         });
 
         mapFrame.addView(panoramaView);
-
-        clickFrame = new GUIFrameLayout(context);
-        clickFrame.setSizeDip(Simple.MP, Simple.MP);
-
-        mapFrame.addView(clickFrame);
-
-        /*
-        clickFrame.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Log.d(LOGTAG, "onClick: ....");
-
-            }
-        });
-        */
 
         for (int inx = 0; inx < nextPanoramaHints.length; inx++)
         {
@@ -227,10 +196,9 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
         coordinates = new LatLng(lat, lon);
     }
 
+    @SuppressWarnings("unused")
     private boolean onKeyDownDoit(int keyCode, KeyEvent event)
     {
-        //Log.d(LOGTAG, "onKeyDown: event=" + event);
-
         boolean usedKey = false;
 
         if (mapFrame.getHighlight())
@@ -243,41 +211,55 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
 
     private void showNextPanoramas()
     {
-        int viewsused = 0;
+        int hintsUsed = 0;
 
         ArrayList<String> dups = new ArrayList<>();
 
-        if ((location != null) && (location.links != null))
+        if (location != null)
         {
             dups.add(location.panoId);
+        }
+
+        if ((location != null) && (location.links != null) && (location.links.length > 0))
+        {
+            lastlinks = location.links;
 
             //
             // Show defined navigation panoramas as green.
             //
 
-            for (int inx = 0; (inx < location.links.length) && (viewsused < nextPanoramaHints.length); inx++)
+            for (int inx = 0; (inx < location.links.length) && (hintsUsed < nextPanoramaHints.length); inx++)
             {
                 StreetViewPanoramaLink link = location.links[inx];
 
+                if (dups.contains(link.panoId)) continue;
                 dups.add(link.panoId);
 
                 StreetViewPanoramaOrientation orient = new StreetViewPanoramaOrientation(camera.tilt, link.bearing);
-                Point point = panorama.orientationToPoint(orient);
+                
+                hintsUsed = setupHint(link.panoId, hintsUsed, orient, true);
+            }
+        }
+        else
+        {
+            //
+            // We are trapped inside the current panorama.
+            // Retain the last good panorama links.
+            //
 
-                Log.d(LOGTAG, "showNextPanoramas: links panoid=" + link.panoId + " point=" + point);
+            if (lastlinks != null)
+            {
+                for (int inx = 0; (inx < lastlinks.length) && (hintsUsed < nextPanoramaHints.length); inx++)
+                {
+                    StreetViewPanoramaLink link = lastlinks[inx];
 
-                if (point == null) continue;
+                    if (dups.contains(link.panoId)) continue;
+                    dups.add(link.panoId);
 
-                MarginLayoutParams lp = (MarginLayoutParams) nextPanoramaHints[viewsused].getLayoutParams();
-                lp.leftMargin = point.x;
-                lp.topMargin = point.y;
-                nextPanoramaHints[viewsused].setLayoutParams(lp);
+                    StreetViewPanoramaOrientation orient = new StreetViewPanoramaOrientation(camera.tilt, link.bearing);
 
-                nextPanoramaHints[viewsused].setVisibility(VISIBLE);
-                nextPanoramaHints[viewsused].setBackgroundColor(0x8800ff00);
-                nextPanoramaHints[viewsused].setTag(link.panoId);
-
-                viewsused++;
+                    hintsUsed = setupHint(link.panoId, hintsUsed, orient, true);
+                }
             }
         }
 
@@ -293,39 +275,42 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
                 if (otherPanorama == null) continue;
 
                 String panoid = Json.getString(otherPanorama, "panoid");
-
                 if (panoid == null) continue;
                 if (dups.contains(panoid)) continue;
 
                 float heading = Json.getFloat(otherPanorama, "heading");
                 StreetViewPanoramaOrientation orient = new StreetViewPanoramaOrientation(camera.tilt, heading);
-                Point point = panorama.orientationToPoint(orient);
 
-                Log.d(LOGTAG, "showNextPanoramas: other panoid=" + panoid + " point=" + point);
-
-                if (point == null) continue;
-
-                MarginLayoutParams lp = (MarginLayoutParams) nextPanoramaHints[viewsused].getLayoutParams();
-                lp.leftMargin = point.x;
-                lp.topMargin = point.y;
-                nextPanoramaHints[viewsused].setLayoutParams(lp);
-
-                nextPanoramaHints[viewsused].setVisibility(VISIBLE);
-                nextPanoramaHints[viewsused].setBackgroundColor(0x88ffff00);
-                nextPanoramaHints[viewsused].setTag(panoid);
-
-                viewsused++;
+                hintsUsed = setupHint(panoid, hintsUsed, orient, false);
             }
         }
 
         //
-        // Render superflous hints invisible.
+        // Render superfluous hints invisible.
         //
 
-        while (viewsused < nextPanoramaHints.length)
+        while (hintsUsed < nextPanoramaHints.length)
         {
-            nextPanoramaHints[ viewsused++ ].setVisibility(GONE);
+            nextPanoramaHints[ hintsUsed++ ].setVisibility(GONE);
         }
+    }
+
+    private int setupHint(String panoid, int hintsUsed, StreetViewPanoramaOrientation orient, boolean main)
+    {
+        Point point = panorama.orientationToPoint(orient);
+        Log.d(LOGTAG, "showNextPanoramas: other panoid=" + panoid + " point=" + point);
+        if (point == null) return hintsUsed;
+
+        MarginLayoutParams lp = (MarginLayoutParams) nextPanoramaHints[hintsUsed].getLayoutParams();
+        lp.leftMargin = point.x;
+        lp.topMargin = point.y;
+        nextPanoramaHints[hintsUsed].setLayoutParams(lp);
+
+        nextPanoramaHints[hintsUsed].setVisibility(VISIBLE);
+        nextPanoramaHints[hintsUsed].setBackgroundColor(main ? 0x8800ff00 : 0x88ffff00);
+        nextPanoramaHints[hintsUsed].setTag(panoid);
+
+        return ++hintsUsed;
     }
 
     private boolean moveCamera(int keyCode)
@@ -402,7 +387,7 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
 
     private void onPanoramaDataReceived(String status, JSONObject data)
     {
-        Log.d(LOGTAG, "onPanoramaDataReceived: status=" + status + " data=" + Json.toPretty(data));
+        //Log.d(LOGTAG, "onPanoramaDataReceived: status=" + status + " data=" + Json.toPretty(data));
 
         if ((data == null) || ! status.equals("OK")) return;
 
@@ -439,6 +424,8 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
                 Log.d(LOGTAG, "onPanoramaDataReceived: pano=" + latlon.toString());
             }
         }
+
+        showNextPanoramas();
     }
 
     private final static double EARTH_RADIUS = 6371009;
@@ -480,6 +467,7 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
         return wrap(Math.toDegrees(heading), -180, 180);
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static double wrap(double n, double min, double max)
     {
         return (n >= min && n < max) ? n : (mod(n - min, max - min) + min);
