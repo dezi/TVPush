@@ -85,12 +85,17 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
         final String toastFocus = ""
                 + "Drücken Sie "
                 + GUIDefs.UTF_OK
-                + " um das Gerät zu positionieren";
+                + " um die Ansicht zur bearbeiten";
 
         final String toastHighlight = ""
-                + "Bewegen mit" + " " + GUIDefs.UTF_MOVE + " "
-                + ", zoomen mit" + " " + GUIDefs.UTF_ZOOMIN
-                + " und" + " " + GUIDefs.UTF_ZOOMOUT;
+                + "Kamera: " + GUIDefs.UTF_MOVE + " "
+                + ", "
+                + "Zoom: " + GUIDefs.UTF_ZOOMIN + GUIDefs.UTF_ZOOMOUT
+                + ", "
+                + "Jump: " + GUIDefs.UTF_OK
+                + ", "
+                + "Exit: " + GUIDefs.UTF_BACK
+                ;
 
         mapFrame.setSizeDip(Simple.MP, Simple.MP);
         mapFrame.setHighlightable(true);
@@ -162,18 +167,6 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
                         panorama.setPosition(coordinates,  StreetViewSource.DEFAULT);
                     }
                 });
-
-                if (Simple.isTV())
-                {
-                    Simple.getHandler().post(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            mapFrame.setHighlight(true);
-                        }
-                    });
-                }
             }
         });
 
@@ -204,6 +197,21 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
     public void setCoordinates(Double lat, Double lon)
     {
         coordinates = new LatLng(lat, lon);
+    }
+
+    @Override
+    public boolean onBackPressed()
+    {
+        Log.d(LOGTAG, "onBackPressed:");
+
+        if (mapFrame.getHighlight())
+        {
+            mapFrame.setHighlight(false);
+
+            return true;
+        }
+
+        return super.onBackPressed();
     }
 
     @SuppressWarnings("unused")
@@ -342,11 +350,11 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
             int width = mapFrame.getWidth();
             int height = mapFrame.getHeight();
 
-            for (int inx = 0; inx < nextPanoramaHints.length; inx++)
+            for (GUIFrameLayout hint : nextPanoramaHints)
             {
-                if (nextPanoramaHints[ inx ].getVisibility() == GONE) continue;
+                if (hint.getVisibility() == GONE) continue;
 
-                MarginLayoutParams lp = (MarginLayoutParams) nextPanoramaHints[ inx ].getLayoutParams();
+                MarginLayoutParams lp = (MarginLayoutParams) hint.getLayoutParams();
 
                 double dist = Math.pow(width - lp.leftMargin, 2) + Math.pow((height - lp.topMargin), 2);
 
@@ -354,7 +362,7 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
 
                 if ((bestDist < 0) || (dist < bestDist))
                 {
-                    bestPanoid = (String) nextPanoramaHints[ inx ].getTag();
+                    bestPanoid = (String) hint.getTag();
                     bestDist = dist;
                 }
             }
@@ -465,6 +473,7 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
 
     private final static double EARTH_RADIUS = 6371009;
 
+    @SuppressWarnings("SameParameterValue")
     private static LatLng computeOffset(LatLng from, double distance, double heading)
     {
         distance /= EARTH_RADIUS;

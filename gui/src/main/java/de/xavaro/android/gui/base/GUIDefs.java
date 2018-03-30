@@ -72,6 +72,7 @@ public class GUIDefs
     //
 
     public static final Character UTF_OK           = 0x2316;
+    public static final Character UTF_BACK         = 0x21a9;
 
     public static final Character UTF_LEFT         = (char) (Simple.isTV() ? 0x25c0 : 0x27a1);
     public static final Character UTF_RIGHT        = (char) (Simple.isTV() ? 0x25b6 : 0x2b05);

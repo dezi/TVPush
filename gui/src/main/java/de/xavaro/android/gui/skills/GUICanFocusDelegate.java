@@ -134,6 +134,11 @@ public class GUICanFocusDelegate
                 if (gf.getHasFocus())
                 {
                     gf.setRoundedCorners(0, gf.getBackgroundColor(), GUIDefs.COLOR_TV_FOCUS);
+
+                    if (gt != null)
+                    {
+                        GUICanToastDelegate.displayToast(gt.getToastFocus());
+                    }
                 }
                 else
                 {

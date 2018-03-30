@@ -291,7 +291,6 @@ public class GUIActivity extends AppCompatActivity
                     return;
                 }
             }
-
         }
 
         super.onBackPressed();

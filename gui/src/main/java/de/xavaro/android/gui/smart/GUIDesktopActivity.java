@@ -132,7 +132,7 @@ public class GUIDesktopActivity extends GUIActivity
         Log.d(LOGTAG, "onBackPressed:");
 
         //
-        // Check for dialogs.
+        // Check for dialogs first.
         //
 
         for (int inx = 0; inx < topframe.getChildCount(); inx++)
@@ -147,6 +147,24 @@ public class GUIDesktopActivity extends GUIActivity
                 ((GUIDialogView) plugin).dismissDialog();
 
                 return;
+            }
+        }
+
+        //
+        // Check for plugins which might handle it.
+        //
+
+        for (int inx = 0; inx < topframe.getChildCount(); inx++)
+        {
+            View plugin = topframe.getChildAt(inx);
+            if (plugin == speechRecognition) continue;
+
+            if (plugin instanceof GUIPlugin)
+            {
+                if (((GUIPlugin) plugin).onBackPressed())
+                {
+                    return;
+                }
             }
         }
 
