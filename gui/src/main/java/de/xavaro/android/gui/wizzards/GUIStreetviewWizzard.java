@@ -2,12 +2,10 @@ package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
 import android.graphics.Point;
-import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.util.Log;
-import android.widget.FrameLayout;
 
 import com.google.android.gms.maps.OnStreetViewPanoramaReadyCallback;
 import com.google.android.gms.maps.StreetViewPanoramaOptions;
@@ -31,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.xavaro.android.gui.plugin.GUIPluginTitle;
+import de.xavaro.android.gui.smart.GUIStreetViewService;
 import de.xavaro.android.gui.views.GUIFrameLayout;
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.R;
@@ -44,6 +43,7 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
 
     private GUIFrameLayout mapFrame;
     private GUIFrameLayout clickFrame;
+    private GUIStreetViewService webView;
 
     private StreetViewPanoramaView panoramaView;
     private StreetViewPanoramaLocation location;
@@ -63,6 +63,9 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
 
         setTitleIcon(R.drawable.wizzard_streetview_550);
         setTitleText("Streetview Wizzard");
+
+        webView = new GUIStreetViewService(context);
+        //contentFrame.addView(webView);
 
         mapFrame = new GUIFrameLayout(context)
         {
@@ -109,7 +112,7 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
         StreetViewPanoramaOptions options = new StreetViewPanoramaOptions();
         options.streetNamesEnabled(true);
         options.zoomGesturesEnabled(true);
-        //options.userNavigationEnabled(true);
+        options.userNavigationEnabled(false);
         options.panningGesturesEnabled(true);
 
         panoramaView = new StreetViewPanoramaView(getContext(), options);
@@ -211,6 +214,15 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
 
             mapFrame.addView(exitDoors[ inx ]);
         }
+
+        Simple.getHandler().postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                webView.evaluate(location.position.latitude, location.position.longitude, 100);
+            }
+        }, 3000);
     }
 
     private boolean onKeyDownDoit(int keyCode, KeyEvent event)
