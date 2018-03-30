@@ -105,6 +105,12 @@ public class GUIPluginTitle extends GUIPlugin
         return titleText.getText().toString();
     }
 
+    public void setTitleEdit(String text)
+    {
+        titleEdit.setText(text);
+        titleEdit.setVisibility(VISIBLE);
+    }
+
     public void setTitleEdit(String text, String hint, String toast)
     {
         if ((text != null) && text.equals(titleText.getText().toString()))

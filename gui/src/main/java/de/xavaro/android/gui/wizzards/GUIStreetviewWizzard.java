@@ -65,7 +65,14 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
         setTitleText("Streetview Wizzard");
 
         webView = new GUIStreetViewService(context);
-        //contentFrame.addView(webView);
+        webView.setGUIStreetViewServiceCallback(new GUIStreetViewService.GUIStreetViewServiceCallback()
+        {
+            @Override
+            public void onDataReceived(String status, JSONObject data)
+            {
+                onPanoramaDataReceived(status, data);
+            }
+        });
 
         mapFrame = new GUIFrameLayout(context)
         {
@@ -136,6 +143,8 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
                     public void onStreetViewPanoramaChange(StreetViewPanoramaLocation streetViewPanoramaLocation)
                     {
                         location = streetViewPanoramaLocation;
+
+                        webView.evaluate(location.position.latitude, location.position.longitude, 100);
 
                         registerLocation();
 
@@ -214,15 +223,6 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
 
             mapFrame.addView(exitDoors[ inx ]);
         }
-
-        Simple.getHandler().postDelayed(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                webView.evaluate(location.position.latitude, location.position.longitude, 100);
-            }
-        }, 3000);
     }
 
     private boolean onKeyDownDoit(int keyCode, KeyEvent event)
@@ -450,5 +450,17 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
         {
             ex.printStackTrace();
         }
+    }
+
+    private void onPanoramaDataReceived(String status, JSONObject data)
+    {
+        Log.d(LOGTAG, "onPanoramaDataReceived: status=" + status + " data=" + Json.toPretty(data));
+
+        if ((data == null) || ! status.equals("OK")) return;
+
+        JSONObject location = Json.getObject(data, "location");
+        String description = Json.getString(location, "description");
+
+        setTitleEdit(description);
     }
 }

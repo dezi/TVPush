@@ -26,7 +26,9 @@ public class GUIStreetViewService extends WebView
 {
     private static final String LOGTAG = GUIStreetViewService.class.getSimpleName();
 
-    private final static String DUMMYHOSTNAME = "xzzylemondummy42";
+    private final static String DUMMYHOSTNAME = "xzzydummy42";
+
+    private boolean serviceIsReady;
 
     @SuppressLint("SetJavaScriptEnabled")
     public GUIStreetViewService(Context context)
@@ -46,7 +48,34 @@ public class GUIStreetViewService extends WebView
         loadUrl("http://" + DUMMYHOSTNAME + "/");
     }
 
-    public void evaluate(Double lat, Double lon, int radius)
+    public void evaluate(final Double lat, final Double lon, final int radius)
+    {
+        if (!serviceIsReady)
+        {
+            Simple.getHandler().postDelayed(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    if (!serviceIsReady)
+                    {
+                        Simple.getHandler().postDelayed(this, 500);
+                    }
+                    else
+                    {
+                        evaluateReal(lat, lon, radius);
+                    }
+                }
+
+            }, 500);
+        }
+        else
+        {
+            evaluateReal(lat, lon, radius);
+        }
+    }
+
+    public void evaluateReal(Double lat, Double lon, int radius)
     {
         Log.d(LOGTAG, "evaluate in...");
 
@@ -54,7 +83,7 @@ public class GUIStreetViewService extends WebView
         {
             String js = ""
                     + "console.log(\"pupsi\");\n"
-                    + "blabla.getPanorama(\n"
+                    + "GUIStreetViewService.getPanorama(\n"
                     + "  {\n"
                     + "    location:\n"
                     + "      {\n"
@@ -73,31 +102,34 @@ public class GUIStreetViewService extends WebView
         }
     }
 
-    private boolean isReady;
-
+    @SuppressWarnings("unused")
     private class GUIWebViewCallback
     {
         private final String LOGTAG = GUIWebViewCallback.class.getSimpleName();
 
         @JavascriptInterface
-        public void isReady()
+        public void serviceIsReady()
         {
-            de.xavaro.android.gui.simple.Log.d(LOGTAG, "isReady:");
-            isReady = true;
+            de.xavaro.android.gui.simple.Log.d(LOGTAG, "serviceIsReady:");
+
+            serviceIsReady = true;
         }
 
         @JavascriptInterface
-        public void getSomething(String status, String jsonString)
+        public void gotPanoramaData(final String status, String jsonString)
         {
-            de.xavaro.android.gui.simple.Log.d(LOGTAG, "getSomething: status=" + status);
-
-            JSONObject jsonData = Json.fromStringObject(jsonString);
-
-            de.xavaro.android.gui.simple.Log.d(LOGTAG, "getSomething: #############" + Json.toPretty(jsonData));
+            final JSONObject jsonData = Json.fromStringObject(jsonString);
 
             if (callback != null)
             {
-                callback.onDataReceived(status, jsonData);
+                Simple.getHandler().post(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        callback.onDataReceived(status, jsonData);
+                    }
+                });
             }
         }
     }
@@ -108,12 +140,6 @@ public class GUIStreetViewService extends WebView
         public boolean shouldOverrideUrlLoading(WebView view, String url)
         {
             return false;
-        }
-
-        @Override
-        public void onPageFinished(WebView view, String url)
-        {
-            super.onPageFinished(view, url);
         }
 
         @Override
@@ -145,19 +171,17 @@ public class GUIStreetViewService extends WebView
                         + "<script>\n"
                         + "function initMap()\n"
                         + "{\n"
-                        + "  console.log(\"da bin ich....\");\n"
-                        + "  blabla = new google.maps.StreetViewService();\n"
-                        + "  GUIWebViewCallback.isReady();\n"
+                        + "  GUIStreetViewService = new google.maps.StreetViewService();\n"
+                        + "  GUIWebViewCallback.serviceIsReady();\n"
                         + "}\n"
                         + "function processSVData(data, status)\n"
                         + "{\n"
-                        + "  console.log(\"da bin ich....\" + status);\n"
-                        + "  GUIWebViewCallback.getSomething(status, JSON.stringify(data));\n"
+                        + "  GUIWebViewCallback.gotPanoramaData(status, JSON.stringify(data));\n"
                         + "}\n"
                         + "</script>\n>"
-                        + "<script async defer src=\"https://maps.googleapis.com/maps/api/js"
-                        + "?key=" + apikey
-                        + "&callback=initMap\">\n"
+                        + "<script async defer\n"
+                        + "  src=\"https://maps.googleapis.com/maps/api/js?key=" + apikey + "&callback=initMap\"\n"
+                        + "  >\n"
                         + "</script>\n"
                         + "</body>\n"
                         + "</html>\n"
