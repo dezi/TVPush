@@ -38,19 +38,19 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
 {
     private final static String LOGTAG = GUIStreetviewWizzard.class.getSimpleName();
 
-    private final GUIStreetViewService streetViewService;
-    private final GUIFrameLayout mapFrame;
+    private GUIStreetViewService streetViewService;
+    private GUIFrameLayout[] nextPanoramaHints;
+    private GUIFrameLayout mapFrame;
 
+    private StreetViewPanoramaView panoramaView;
     private StreetViewPanoramaLocation location;
     private StreetViewPanoramaLink[] lastlinks;
     private StreetViewPanoramaCamera camera;
     private StreetViewPanorama panorama;
 
-    private LatLng coordinates;
-
-    private final GUIFrameLayout[] nextPanoramaHints = new GUIFrameLayout[ 16 ];
-
     private JSONArray otherPanoramas;
+
+    private LatLng coordinates;
 
     public GUIStreetviewWizzard(Context context)
     {
@@ -62,16 +62,6 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
 
         setTitleIcon(R.drawable.wizzard_streetview_550);
         setTitleText("Streetview Wizzard");
-
-        streetViewService = new GUIStreetViewService(context);
-        streetViewService.setGUIStreetViewServiceCallback(new GUIStreetViewService.GUIStreetViewServiceCallback()
-        {
-            @Override
-            public void onDataReceived(String status, JSONObject data)
-            {
-                onPanoramaDataReceived(status, data);
-            }
-        });
 
         mapFrame = new GUIFrameLayout(context)
         {
@@ -104,6 +94,35 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
         mapFrame.setToastHighlight(toastHighlight);
 
         contentFrame.addView(mapFrame);
+    }
+
+    @Override
+    public void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+
+        connectStreetView();
+    }
+
+    @Override
+    public void onDetachedFromWindow()
+    {
+        super.onDetachedFromWindow();
+
+        releaseStreetView();
+    }
+
+    private void connectStreetView()
+    {
+        streetViewService = new GUIStreetViewService(getContext());
+        streetViewService.setGUIStreetViewServiceCallback(new GUIStreetViewService.GUIStreetViewServiceCallback()
+        {
+            @Override
+            public void onDataReceived(String status, JSONObject data)
+            {
+                onPanoramaDataReceived(status, data);
+            }
+        });
 
         StreetViewPanoramaOptions options = new StreetViewPanoramaOptions();
         options.streetNamesEnabled(true);
@@ -111,7 +130,7 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
         options.userNavigationEnabled(false);
         options.panningGesturesEnabled(true);
 
-        StreetViewPanoramaView panoramaView = new StreetViewPanoramaView(getContext(), options);
+        panoramaView = new StreetViewPanoramaView(getContext(), options);
         panoramaView.onCreate(null);
 
         panoramaView.getStreetViewPanoramaAsync(new OnStreetViewPanoramaReadyCallback()
@@ -167,10 +186,14 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
                         panorama.setPosition(coordinates,  StreetViewSource.DEFAULT);
                     }
                 });
+
+                mapFrame.requestFocus();
             }
         });
 
         mapFrame.addView(panoramaView);
+
+        nextPanoramaHints = new GUIFrameLayout[ 16 ];
 
         for (int inx = 0; inx < nextPanoramaHints.length; inx++)
         {
@@ -192,6 +215,21 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
 
             mapFrame.addView(nextPanoramaHints[ inx ]);
         }
+    }
+
+    private void releaseStreetView()
+    {
+        mapFrame.removeAllViews();
+
+        panoramaView.onDestroy();
+        panoramaView = null;
+
+        nextPanoramaHints = null;
+        streetViewService = null;
+        otherPanoramas = null;
+        lastlinks = null;
+        location = null;
+        camera = null;
     }
 
     public void setCoordinates(Double lat, Double lon)
@@ -296,8 +334,8 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
                 if (panoid == null) continue;
                 if (dups.contains(panoid)) continue;
 
-                float heading = Json.getFloat(otherPanorama, "heading");
-                StreetViewPanoramaOrientation orient = new StreetViewPanoramaOrientation(camera.tilt, heading);
+                float bearing = Json.getFloat(otherPanorama, "bearing");
+                StreetViewPanoramaOrientation orient = new StreetViewPanoramaOrientation(camera.tilt, bearing);
 
                 hintsUsed = setupHint(panoid, hintsUsed, orient, false);
             }
@@ -457,10 +495,10 @@ public class GUIStreetviewWizzard extends GUIPluginTitle
                 Double lon = Json.getDouble(latlon, "lng");
                 LatLng panopos = new LatLng(lat, lon);
 
-                Double heading = computeHeading(location.position, panopos);
+                Double bearing = computeHeading(location.position, panopos) + 180;
 
                 Json.put(latlon, "panoid", panoid);
-                Json.put(latlon, "heading", heading);
+                Json.put(latlon, "bearing", bearing);
 
                 Json.put(otherPanoramas, latlon);
 
