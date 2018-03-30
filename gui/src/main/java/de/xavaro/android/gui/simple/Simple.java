@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothManager;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -81,6 +82,7 @@ public class Simple
     private static SharedPreferences prefs;
     private static ContentResolver contentResolver;
 
+    private static String packageName;
     private static WifiManager wifiManager;
     private static AudioManager audioManager;
     private static WindowManager windowManager;
@@ -97,6 +99,7 @@ public class Simple
         resources = app.getResources();
         contentResolver = app.getContentResolver();
 
+        packageName = app.getPackageName();
         packageManager = app.getPackageManager();
         wifiManager = (WifiManager) app.getSystemService(Context.WIFI_SERVICE);
         audioManager = (AudioManager) app.getSystemService(Context.AUDIO_SERVICE);
@@ -706,6 +709,26 @@ public class Simple
         catch (Exception ignore)
         {
         }
+    }
+
+    @Nullable
+    public static String getManifestMetaData(String name)
+    {
+        try
+        {
+            ApplicationInfo ai = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
+            String value = ai.metaData.getString(name);
+
+            Log.d(LOGTAG, "getManifestMetaData: name=" + name + " value=" + value);
+
+            return value;
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return null;
     }
 
     //endregion Smart helpers.

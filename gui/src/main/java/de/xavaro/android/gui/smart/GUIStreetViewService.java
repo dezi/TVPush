@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayInputStream;
 
 import de.xavaro.android.gui.simple.Json;
+import de.xavaro.android.gui.simple.Simple;
 
 public class GUIStreetViewService extends WebView
 {
@@ -54,10 +55,16 @@ public class GUIStreetViewService extends WebView
             String js = ""
                     + "console.log(\"pupsi\");\n"
                     + "blabla.getPanorama(\n"
-                    + "{\n"
-                    + "  location:\n"
-                    + "{lat: 51.5099272, lng: -0.1349173}, radius: 100}, processSVData"
-                    + ");"
+                    + "  {\n"
+                    + "    location:\n"
+                    + "      {\n"
+                    + "        lat: " + lat + ",\n"
+                    + "        lng: " + lon + "\n"
+                    + "      },\n"
+                    + "      radius: " + radius + "\n"
+                    + "  },\n"
+                    + "  processSVData\n"
+                    + ");\n"
                     ;
 
             evaluateJavascript(js, null);
@@ -84,9 +91,14 @@ public class GUIStreetViewService extends WebView
         {
             de.xavaro.android.gui.simple.Log.d(LOGTAG, "getSomething: status=" + status);
 
-            JSONObject json = Json.fromStringObject(jsonString);
+            JSONObject jsonData = Json.fromStringObject(jsonString);
 
-            de.xavaro.android.gui.simple.Log.d(LOGTAG, "getSomething: #############" + Json.toPretty(json));
+            de.xavaro.android.gui.simple.Log.d(LOGTAG, "getSomething: #############" + Json.toPretty(jsonData));
+
+            if (callback != null)
+            {
+                callback.onDataReceived(status, jsonData);
+            }
         }
     }
 
@@ -124,6 +136,8 @@ public class GUIStreetViewService extends WebView
 
             try
             {
+                String apikey = Simple.getManifestMetaData("com.google.android.geo.API_KEY");
+
                 String html = ""
                         + "<!DOCTYPE html>\n"
                         + "<html>\n"
@@ -133,6 +147,7 @@ public class GUIStreetViewService extends WebView
                         + "{\n"
                         + "  console.log(\"da bin ich....\");\n"
                         + "  blabla = new google.maps.StreetViewService();\n"
+                        + "  GUIWebViewCallback.isReady();\n"
                         + "}\n"
                         + "function processSVData(data, status)\n"
                         + "{\n"
@@ -140,7 +155,9 @@ public class GUIStreetViewService extends WebView
                         + "  GUIWebViewCallback.getSomething(status, JSON.stringify(data));\n"
                         + "}\n"
                         + "</script>\n>"
-                        + "<script async defer src=\"https://maps.googleapis.com/maps/api/js?key=AIzaSyBJ1BXy83xwFwJNhJdD-imW7AfxBZsRkZs&callback=initMap\">\n"
+                        + "<script async defer src=\"https://maps.googleapis.com/maps/api/js"
+                        + "?key=" + apikey
+                        + "&callback=initMap\">\n"
                         + "</script>\n"
                         + "</body>\n"
                         + "</html>\n"
