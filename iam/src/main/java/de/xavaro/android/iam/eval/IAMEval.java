@@ -1,6 +1,7 @@
 package de.xavaro.android.iam.eval;
 
 import android.support.annotation.Nullable;
+
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -8,14 +9,12 @@ import org.json.JSONObject;
 
 import java.util.Iterator;
 
-import de.xavaro.android.iam.simple.Json;
 import de.xavaro.android.iot.things.IOTDevice;
+import de.xavaro.android.iam.simple.Json;
 
 public class IAMEval
 {
     private final static String LOGTAG = IAMEval.class.getSimpleName();
-
-    private JSONObject speech;
 
     private JSONArray lastResult;
 
@@ -31,8 +30,6 @@ public class IAMEval
 
     private IAMEval(JSONObject speech)
     {
-        this.speech = speech;
-
         JSONArray results = Json.getArray(speech, "results");
 
         if ((results != null) && (results.length() != 0))
@@ -56,10 +53,16 @@ public class IAMEval
             }
 
             String action = evaluateAction();
-            String actionWords = lastwrd;
+
+            if (action == null)
+            {
+                action = evaluateInstrinsic();
+            }
 
             if ((action != null) && ! action.isEmpty())
             {
+                String actionWords = lastwrd;
+
                 JSONArray devices = evaluateDevices(action, actionWords);
                 JSONArray objects = evaluateObjects(action, actionWords);
 
@@ -82,8 +85,6 @@ public class IAMEval
                 }
 
                 lastResult = (results.length() > 0) ? results : null;
-
-                Log.d(LOGTAG, "################# json=" + Json.toPretty(lastResult));
 
                 return lastResult;
             }
@@ -209,7 +210,7 @@ public class IAMEval
                 Json.put(objects, object);
 
                 Json.put(object, "action", action);
-                Json.put(object, "actionData", "fefefe");
+                Json.put(object, "actionData", "fffffe");
                 Json.put(object, "actionWords", actionWords);
 
                 Json.put(object, "plural", true);
@@ -596,8 +597,20 @@ public class IAMEval
         return devices;
     }
 
-    private String evaluateAction()
+    private String evaluateInstrinsic()
     {
+        if (ifIsPincode()
+                || ifContains("PIN Code")
+                || ifContains("PIN-Code"))
+        {
+            return "pincode";
+        }
+
+        if (ifContains("Kamera"))
+        {
+            return "open";
+        }
+
         if (ifContains("Streetview")
                 || ifContains("Street View"))
         {
@@ -617,13 +630,11 @@ public class IAMEval
             return "color";
         }
 
-        if (ifIsPincode()
-                || ifContains("PIN Code")
-                || ifContains("PIN-Code"))
-        {
-            return "pincode";
-        }
+        return null;
+    }
 
+    private String evaluateAction()
+    {
         if (ifContainsRemove("dunkler machen")
                 || ifContainsRemove("dimmen"))
         {

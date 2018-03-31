@@ -66,7 +66,7 @@ public class IAM implements
     @Override
     public void onActionsFound(JSONArray actions)
     {
-        Log.d(LOGTAG, "onActionsFound: actions=" + Json.toPretty(actions));
+        Log.d(LOGTAG, "onActionsFound: STUB! actions=" + Json.toPretty(actions));
     }
 
     @Override

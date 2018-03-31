@@ -61,12 +61,6 @@ public class SystemsIAM extends IAM
     }
 
     @Override
-    public void stopSubsystem()
-    {
-        super.stopSubsystem();
-    }
-
-    @Override
     public void onSubsystemStarted(String subsystem, int state)
     {
         GUI.instance.subSystems.registerSubsystemRunstate(subsystem, state);

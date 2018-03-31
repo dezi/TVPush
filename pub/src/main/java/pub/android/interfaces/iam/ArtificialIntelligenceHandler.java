@@ -5,7 +5,6 @@ import org.json.JSONObject;
 
 public interface ArtificialIntelligenceHandler
 {
-    void onActionsFound(JSONArray actions);
-
     void evaluateSpeech(JSONObject speech);
+    void onActionsFound(JSONArray actions);
 }
