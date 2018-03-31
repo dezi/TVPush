@@ -158,7 +158,8 @@ public class IAMEval
         {
             suchwas = false;
 
-            if (ifContainsRemove("Streetview"))
+            if (ifContainsRemove("Streetview")
+                    || ifContainsRemove("Street View"))
             {
                 JSONObject object = new JSONObject();
                 Json.put(objects, object);
@@ -597,7 +598,8 @@ public class IAMEval
 
     private String evaluateAction()
     {
-        if (ifContains("Streetview"))
+        if (ifContains("Streetview")
+                || ifContains("Street View"))
         {
             return "open";
         }
