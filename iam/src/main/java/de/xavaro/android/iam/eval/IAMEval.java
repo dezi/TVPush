@@ -198,6 +198,8 @@ public class IAMEval
                 Json.put(object, "action", action);
                 Json.put(object, "actionData", actionWords);
                 Json.put(object, "actionWords", actionWords);
+                Json.put(object, "object", "pincode");
+                Json.put(object, "objectWords", message);
 
                 getMatchingDevices(object);
 
@@ -252,6 +254,7 @@ public class IAMEval
                 Json.put(object, "plural", plural);
                 Json.put(object, "object", "application");
                 Json.put(object, "objectWords", lastwrd);
+
                 suchwas = true;
             }
 
@@ -266,6 +269,7 @@ public class IAMEval
                 Json.put(object, "plural", true);
                 Json.put(object, "object", "application");
                 Json.put(object, "objectWords", lastwrd);
+
                 suchwas = true;
             }
 
@@ -689,7 +693,7 @@ public class IAMEval
 
         if (ifContainsRemove("anwählen")
                 || ifContainsRemove("auswählen")
-                || ifContainsRemove("aktivieren"))
+                || ifContainsRemove("einstellen"))
         {
             return "select";
         }

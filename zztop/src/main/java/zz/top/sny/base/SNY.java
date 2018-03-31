@@ -147,6 +147,12 @@ public class SNY implements
 
             if (dial != null)
             {
+                //
+                // Request GUI to go to background. Otherwise
+                // dialed numbers are lost and the Sony backgrounds
+                // the GUI anyway.
+                //
+
                 onBackgroundRequest();
 
                 Simple.getHandler().postDelayed(new Runnable()
