@@ -105,6 +105,8 @@ public class GUIStreetviewWizzard extends GUIPluginTitle implements
     {
         Geocoder coder = new Geocoder(getContext());
 
+        Log.d(LOGTAG, "setCoordinatesFromAddress address=" + address);
+
         try
         {
             List<Address> locations = coder.getFromLocationName(address, 5);
@@ -132,7 +134,7 @@ public class GUIStreetviewWizzard extends GUIPluginTitle implements
 
         if (panorama != null)
         {
-            panorama.setPosition(coordinates, StreetViewSource.DEFAULT);
+            panorama.setPosition(coordinates, StreetViewSource.OUTDOOR);
         }
     }
 
@@ -223,7 +225,7 @@ public class GUIStreetviewWizzard extends GUIPluginTitle implements
         panorama = streetViewPanorama;
         camera = panorama.getPanoramaCamera();
 
-        panorama.setPosition(coordinates, StreetViewSource.DEFAULT);
+        panorama.setPosition(coordinates, StreetViewSource.OUTDOOR);
 
         panorama.setOnStreetViewPanoramaChangeListener(new StreetViewPanorama.OnStreetViewPanoramaChangeListener()
         {
@@ -387,7 +389,6 @@ public class GUIStreetviewWizzard extends GUIPluginTitle implements
     private int setupHint(String panoid, int hintsUsed, StreetViewPanoramaOrientation orient, boolean main)
     {
         Point point = panorama.orientationToPoint(orient);
-        Log.d(LOGTAG, "showNextPanoramas: other panoid=" + panoid + " point=" + point);
         if (point == null) return hintsUsed;
 
         MarginLayoutParams lp = (MarginLayoutParams) nextPanoramaHints[hintsUsed].getLayoutParams();

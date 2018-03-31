@@ -107,7 +107,7 @@ public class GUIDesktopActivity extends GUIActivity
 
     public void displayWizzard(String name)
     {
-        GUIPlugin wizzard = wizzards.get(name);
+        GUIPlugin wizzard = getWizzard(name);
         if (wizzard == null) return;
 
         hideAllWizzards();
@@ -116,7 +116,7 @@ public class GUIDesktopActivity extends GUIActivity
 
     public void displayWizzard(String name, String uuid)
     {
-        GUIPlugin wizzard = wizzards.get(name);
+        GUIPlugin wizzard = getWizzard(name);
         if (wizzard == null) return;
 
         if (wizzard instanceof GUIPluginTitleIOT)
@@ -238,6 +238,7 @@ public class GUIDesktopActivity extends GUIActivity
 
     public void displayCamera(boolean show, String uuid)
     {
+        displayWizzard(GUICameraWizzard.class.getSimpleName(), uuid);
     }
 
     public void displayStreetView(boolean show, String address)
@@ -248,7 +249,7 @@ public class GUIDesktopActivity extends GUIActivity
 
             String wizzardname = GUIStreetviewWizzard.class.getSimpleName();
 
-            GUIPlugin wizzard = wizzards.get(wizzardname);
+            GUIPlugin wizzard = getWizzard(wizzardname);
 
             if (wizzard instanceof GUIStreetviewWizzard)
             {
