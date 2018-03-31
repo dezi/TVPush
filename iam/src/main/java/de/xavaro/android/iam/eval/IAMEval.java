@@ -58,8 +58,6 @@ public class IAMEval
             String action = evaluateAction();
             String actionWords = lastwrd;
 
-            Log.d(LOGTAG, "################# action=" + action + " message=" + message);
-
             if ((action != null) && ! action.isEmpty())
             {
                 JSONArray devices = evaluateDevices(action, actionWords);
@@ -169,6 +167,20 @@ public class IAMEval
                 Json.put(object, "actionWords", actionWords);
                 Json.put(object, "plural", plural);
                 Json.put(object, "object", "streetview");
+                Json.put(object, "objectWords", message);
+                suchwas = false;
+            }
+
+            if (ifContainsRemove("Wizard")
+                    || ifContainsRemove("Wizzard"))
+            {
+                JSONObject object = new JSONObject();
+                Json.put(objects, object);
+
+                Json.put(object, "action", action);
+                Json.put(object, "actionWords", actionWords);
+                Json.put(object, "plural", plural);
+                Json.put(object, "object", "wizzard");
                 Json.put(object, "objectWords", message);
                 suchwas = false;
             }
@@ -586,6 +598,12 @@ public class IAMEval
     private String evaluateAction()
     {
         if (ifContains("Streetview"))
+        {
+            return "open";
+        }
+
+        if (ifContains("Wizard")
+                || ifContains("Wizzard"))
         {
             return "open";
         }

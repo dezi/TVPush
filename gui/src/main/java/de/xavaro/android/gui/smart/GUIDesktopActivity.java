@@ -236,9 +236,19 @@ public class GUIDesktopActivity extends GUIActivity
         }
     }
 
+    public void displayWizzard(boolean show, String name)
+    {
+        if (show)
+        {
+        }
+    }
+
     public void displayCamera(boolean show, String uuid)
     {
-        displayWizzard(GUICameraWizzard.class.getSimpleName(), uuid);
+        if (show)
+        {
+            displayWizzard(GUICameraWizzard.class.getSimpleName(), uuid);
+        }
     }
 
     public void displayStreetView(boolean show, String address)

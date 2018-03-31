@@ -132,6 +132,22 @@ public class SystemsIAM extends IAM
                         continue;
                     }
                 }
+
+                if (object.equals("wizzard"))
+                {
+                    if (action.equals("open"))
+                    {
+                        String wizzard = Json.getString(jaction, "objectWords");
+                        if (GUI.instance != null) GUI.instance.displayWizzard(true, wizzard);
+                        continue;
+                    }
+
+                    if (action.equals("close"))
+                    {
+                        if (GUI.instance != null) GUI.instance.displayWizzard(false, null);
+                        continue;
+                    }
+                }
             }
 
             JSONArray devices = Json.getArray(jaction, "devices");

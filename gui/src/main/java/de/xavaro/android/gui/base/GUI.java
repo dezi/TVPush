@@ -146,6 +146,14 @@ public class GUI implements
     }
 
     @Override
+    public void displayWizzard(boolean show, String wizzard)
+    {
+        Log.d(LOGTAG, "displayWizzard: show=" + show + " wizzard=" + wizzard);
+
+        GUI.instance.desktopActivity.displayWizzard(show, wizzard);
+    }
+
+    @Override
     public void displayStreetView(boolean show, String address)
     {
         Log.d(LOGTAG, "displayStreetView: show=" + show + " address=" + address);
