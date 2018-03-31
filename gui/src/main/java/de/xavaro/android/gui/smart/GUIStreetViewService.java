@@ -13,7 +13,6 @@ import android.webkit.WebView;
 import android.content.Context;
 import android.os.Build;
 import android.net.Uri;
-import android.util.Log;
 
 import org.json.JSONObject;
 
@@ -36,15 +35,13 @@ public class GUIStreetViewService extends WebView
         super(context);
 
         WebSettings webSettings = getSettings();
-
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setAllowUniversalAccessFromFileURLs(true);
 
         setWebViewClient(new GUIWebViewClient());
 
         addJavascriptInterface(new GUIWebViewCallback(), GUIWebViewCallback.class.getSimpleName());
 
-        loadUrl("http://" + DUMMYHOSTNAME + "/");
+        loadUrl("https://" + DUMMYHOSTNAME + "/");
     }
 
     public void evaluate(final Double lat, final Double lon, final int radius)
@@ -87,8 +84,8 @@ public class GUIStreetViewService extends WebView
                     + "        lat: " + lat + ",\n"
                     + "        lng: " + lon + "\n"
                     + "      },\n"
-                  //+ "      source: " + "default" + ",\n"
-                  //+ "      preference: " + "nearest" + ",\n"
+                    + "      source: \"" + "default" + "\",\n"
+                    + "      preference: \"" + "best" + "\",\n"
                     + "      radius: " + radius + "\n"
                     + "  },\n"
                     + "  processSVData\n"

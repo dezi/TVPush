@@ -32,8 +32,6 @@ import de.xavaro.android.gui.views.GUIDialogView;
 import de.xavaro.android.gui.base.GUIActivity;
 import de.xavaro.android.gui.base.GUI;
 
-import de.xavaro.android.iot.base.IOTObject;
-
 public class GUIDesktopActivity extends GUIActivity
 {
     private final static String LOGTAG = GUIDesktopActivity.class.getSimpleName();
