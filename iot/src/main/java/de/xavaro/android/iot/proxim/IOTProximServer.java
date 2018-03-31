@@ -34,17 +34,29 @@ public class IOTProximServer
     private IOTProximCallback callbackIOTDevice;
     private IOTProximCallback callbackIOTDevname;
 
-    static public void startService(Context context)
+    static public void startService()
     {
         if (IOT.instance == null) return;
 
         if (IOT.instance.proximServer == null)
         {
-            IOT.instance.proximServer = new IOTProximServer(context);
+            IOT.instance.proximServer = new IOTProximServer();
+            IOT.instance.proximServer.startAdvertising();
         }
     }
 
-    public IOTProximServer(Context context)
+    static public void stopService()
+    {
+        if (IOT.instance == null) return;
+
+        if (IOT.instance.proximServer != null)
+        {
+            IOT.instance.proximServer.stopAdvertising();
+            IOT.instance.proximServer = null;
+        }
+    }
+
+    private IOTProximServer()
     {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
         {
@@ -61,16 +73,6 @@ public class IOTProximServer
 
         powerLevel = AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM;
         btLEAdvertiser = btAdapter.getBluetoothLeAdvertiser();
-
-        startAdvertising();
-    }
-
-    public void close()
-    {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        {
-            stopAdvertising();
-        }
     }
 
     private void startAdvertising()
@@ -95,39 +97,41 @@ public class IOTProximServer
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void stopAdvertising()
     {
-        if (btLEAdvertiser == null) return;
-
-        if (callbackGPSFine != null)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
-            btLEAdvertiser.stopAdvertising(callbackGPSFine);
-            callbackGPSFine = null;
-        }
+            if (btLEAdvertiser == null) return;
 
-        if (callbackGPSCoarse != null)
-        {
-            btLEAdvertiser.stopAdvertising(callbackGPSCoarse);
-            callbackGPSCoarse = null;
-        }
+            if (callbackGPSFine != null)
+            {
+                btLEAdvertiser.stopAdvertising(callbackGPSFine);
+                callbackGPSFine = null;
+            }
 
-        if (callbackIOTDevice != null)
-        {
-            btLEAdvertiser.stopAdvertising(callbackIOTDevice);
-            callbackIOTDevice = null;
-        }
+            if (callbackGPSCoarse != null)
+            {
+                btLEAdvertiser.stopAdvertising(callbackGPSCoarse);
+                callbackGPSCoarse = null;
+            }
 
-        if (callbackIOTHuman != null)
-        {
-            btLEAdvertiser.stopAdvertising(callbackIOTHuman);
-            callbackIOTHuman = null;
-        }
+            if (callbackIOTDevice != null)
+            {
+                btLEAdvertiser.stopAdvertising(callbackIOTDevice);
+                callbackIOTDevice = null;
+            }
 
-        if (callbackIOTDevname != null)
-        {
-            btLEAdvertiser.stopAdvertising(callbackIOTDevname);
-            callbackIOTDevname = null;
+            if (callbackIOTHuman != null)
+            {
+                btLEAdvertiser.stopAdvertising(callbackIOTHuman);
+                callbackIOTHuman = null;
+            }
+
+            if (callbackIOTDevname != null)
+            {
+                btLEAdvertiser.stopAdvertising(callbackIOTDevname);
+                callbackIOTDevname = null;
+            }
         }
     }
 
@@ -210,7 +214,6 @@ public class IOTProximServer
 
             if (IOT.device != null)
             {
-
                 IOTStatus status = new IOTStatus(IOT.device.uuid);
 
                 if ((status.positionLatCoarse != null) && (status.positionLonCoarse != null))
@@ -221,7 +224,7 @@ public class IOTProximServer
                 }
             }
 
-            if ((lat != null) && (lon != null))
+            if (lat != null)
             {
                 byte[] bytes = ByteBuffer
                         .allocate(1 + 1 + 8 + 8 + 4)
@@ -239,6 +242,7 @@ public class IOTProximServer
         }
     }
 
+    @SuppressWarnings("unused")
     public void advertiseIOTHuman()
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
@@ -265,7 +269,6 @@ public class IOTProximServer
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void advertiseIOTDevice()
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
@@ -292,7 +295,7 @@ public class IOTProximServer
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @SuppressWarnings("unused")
     public void advertiseIOTDevname()
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)

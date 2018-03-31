@@ -41,11 +41,13 @@ public class GUIApplication extends Application implements Application.ActivityL
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        Simple.setSystemProp("log.tag.art", "WARN");
-        Simple.setSystemProp("log.tag.skia", "WARN");
-        Simple.setSystemProp("log.tag.TextView", "WARN");
-        Simple.setSystemProp("log.tag.ScanRecord", "WARN");
-        Simple.setSystemProp("log.tag.System.out", "WARN");
+        Simple.setSystemProp("log.tag.art", "ERROR");
+        Simple.setSystemProp("log.tag.skia", "ERROR");
+        Simple.setSystemProp("log.tag.TextView", "ERROR");
+        Simple.setSystemProp("log.tag.ScanRecord", "ERROR");
+        Simple.setSystemProp("log.tag.System.out", "ERROR");
+        Simple.setSystemProp("log.tag.VideoCapabilities", "ERROR");
+        Simple.setSystemProp("log.tag.AudioCapabilities", "ERROR");
     }
 
     @Override

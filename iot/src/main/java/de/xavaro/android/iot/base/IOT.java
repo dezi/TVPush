@@ -95,11 +95,12 @@ public class IOT implements
 
         IOTMessageHandler.initialize();
 
-        IOTProximServer.startService(appcontext);
+        IOTProximServer.startService();
 
         IOTProximScanner.startService(appcontext);
 
         IOTProximLocation.startService(appcontext);
+
         IOTAlive.startService();
 
         IOTHandleHelo.sendHELO();
@@ -111,7 +112,10 @@ public class IOT implements
     public void stopSubsystem()
     {
         IOTAlive.stopService();
+
         IOTProximLocation.stopService();
+
+        IOTProximServer.stopService();
 
         IOTHuman.list = null;
         IOTDevice.list = null;

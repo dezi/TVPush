@@ -703,8 +703,12 @@ public class Simple
     {
         try
         {
-            Process setprop = Runtime.getRuntime().exec("setprop " + prop + " " + level);
-            setprop.waitFor();
+            String command = "setprop " + prop + " " + level;
+
+            Process setprop = Runtime.getRuntime().exec(command);
+            int res = setprop.waitFor();
+
+            Log.d(LOGTAG, "setSystemProp: res=" + res + " command=" + command);
         }
         catch (Exception ignore)
         {
