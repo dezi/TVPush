@@ -19,7 +19,7 @@ import java.util.Set;
 @SuppressWarnings({"WeakerAccess"})
 public class Json
 {
-    private static final String LOGTAG = zz.top.utl.Json.class.getSimpleName();
+    private static final String LOGTAG = Json.class.getSimpleName();
 
     @Nullable
     public static JSONObject fromStringObject(String jsonstr)
@@ -452,12 +452,12 @@ public class Json
 
     public static String toJavaScript(JSONObject jsonObject)
     {
-        return (jsonObject == null) ? "{}" : zz.top.utl.Json.toPretty(jsonObject);
+        return (jsonObject == null) ? "{}" : Json.toPretty(jsonObject);
     }
 
     public static String toJavaScript(JSONArray jsonArray)
     {
-        return (jsonArray == null) ? "[]" : zz.top.utl.Json.toPretty(jsonArray);
+        return (jsonArray == null) ? "[]" : Json.toPretty(jsonArray);
     }
 
     public static void makeFormat(JSONObject jsonObject, String key, Object... args)
