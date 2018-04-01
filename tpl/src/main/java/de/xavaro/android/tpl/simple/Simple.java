@@ -1,18 +1,13 @@
 package de.xavaro.android.tpl.simple;
 
-import android.content.res.Resources;
 import android.support.annotation.Nullable;
 
-import android.content.ContentResolver;
-import android.provider.Settings;
-import android.os.Handler;
-import android.os.Build;
-
-import android.app.Application;
-import android.content.Context;
 import android.net.wifi.WifiManager;
-import android.text.format.Formatter;
+import android.content.res.Resources;
+import android.content.Context;
+import android.app.Application;
 import android.util.Base64;
+import android.os.Build;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -25,17 +20,13 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class Simple
 {
-    private static Handler handler;
     private static Resources resources;
     private static WifiManager wifiManager;
-    private static ContentResolver contentResolver;
 
     public static void initialize(Application app)
     {
-        handler = new Handler();
         resources = app.getResources();
         wifiManager = (WifiManager) app.getSystemService(Context.WIFI_SERVICE);
-        contentResolver = app.getContentResolver();
     }
 
     @Nullable
@@ -65,11 +56,6 @@ public class Simple
         return null;
     }
 
-    public static Handler getHandler()
-    {
-        return handler;
-    }
-
     @Nullable
     public static String getConnectedWifiName()
     {
@@ -77,21 +63,6 @@ public class Simple
 
         String wifi = wifiManager.getConnectionInfo().getSSID();
         return wifi.replace("\"", "");
-    }
-
-    @Nullable
-    @SuppressWarnings("deprecation")
-    public static String getConnectedWifiIPAddress()
-    {
-        if (wifiManager == null) return null;
-
-        int ipint = wifiManager.getConnectionInfo().getIpAddress();
-        return Formatter.formatIpAddress(ipint);
-    }
-
-    public static String getDeviceUserName()
-    {
-        return Settings.Secure.getString(contentResolver, "bluetooth_name");
     }
 
     public static String getMapString(Map<String, String> map, String key)
