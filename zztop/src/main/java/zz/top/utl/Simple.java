@@ -75,6 +75,7 @@ public class Simple
     }
 
     @Nullable
+    @SuppressWarnings("deprecation")
     public static String getConnectedWifiIPAddress()
     {
         if (wifiManager == null) return null;
