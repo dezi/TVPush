@@ -3,61 +3,30 @@ package de.xavaro.android.sny.simple;
 import android.support.annotation.Nullable;
 
 import android.content.ContentResolver;
-import android.provider.Settings;
-import android.os.Handler;
-import android.os.Build;
-
-import android.app.Application;
+import android.content.res.Resources;
 import android.content.Context;
+import android.app.Application;
 import android.net.wifi.WifiManager;
 import android.text.format.Formatter;
+import android.provider.Settings;
+import android.os.Handler;
+import android.util.Base64;
 
-import java.nio.ByteBuffer;
-import java.security.Key;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
+import java.io.InputStream;
 
 public class Simple
 {
     private static Handler handler;
+    private static Resources resources;
     private static WifiManager wifiManager;
     private static ContentResolver contentResolver;
 
     public static void initialize(Application app)
     {
         handler = new Handler();
+        resources = app.getResources();
         wifiManager = (WifiManager) app.getSystemService(Context.WIFI_SERVICE);
         contentResolver = app.getContentResolver();
-    }
-
-    @Nullable
-    public static String hmacSha1UUID(String key, String data)
-    {
-        try
-        {
-            Key secretKeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "HmacSHA1");
-            Mac instance = Mac.getInstance("HmacSHA1");
-            instance.init(secretKeySpec);
-
-            byte[] bytes = instance.doFinal(data.getBytes("UTF-8"));
-
-            ByteBuffer bb = ByteBuffer.wrap(bytes,0 , 16);
-
-            long high = bb.getLong();
-            long low = bb.getLong();
-
-            UUID uuid = new UUID(high, low);
-
-            return uuid.toString();
-        }
-        catch (Exception ignore)
-        {
-        }
-
-        return null;
     }
 
     public static Handler getHandler()
@@ -89,22 +58,27 @@ public class Simple
         return Settings.Secure.getString(contentResolver, "bluetooth_name");
     }
 
-    public static String getMapString(Map<String, String> map, String key)
+    public static String getTrans(int resid, Object... args)
     {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        return String.format(resources.getString(resid), args);
+    }
+
+    @Nullable
+    public static String getImageResourceBase64(int resid)
+    {
+        try
         {
-            return map.getOrDefault(key, null);
+            InputStream is = resources.openRawResource(+resid);
+            byte[] buffer = new byte[16 * 1024];
+            int xfer = is.read(buffer);
+
+            return Base64.encodeToString(buffer, 0 ,xfer, android.util.Base64.NO_WRAP);
         }
-        else
+        catch (Exception ex)
         {
-            try
-            {
-                return map.get(key);
-            }
-            catch (Exception ignore)
-            {
-                return null;
-            }
+            ex.printStackTrace();
         }
+
+        return null;
     }
 }

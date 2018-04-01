@@ -2,6 +2,7 @@ package de.xavaro.android.sny.base;
 
 import android.app.Application;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import pub.android.interfaces.all.SubSystemHandler;
@@ -14,6 +15,7 @@ import pub.android.interfaces.ext.OnPincodeRequest;
 import de.xavaro.android.sny.simple.Simple;
 import de.xavaro.android.sny.simple.Json;
 import de.xavaro.android.sny.simple.Log;
+import de.xavaro.android.sny.R;
 
 public class SNY implements
         SubSystemHandler,
@@ -40,7 +42,40 @@ public class SNY implements
         JSONObject info = new JSONObject();
 
         Json.put(info, "drv", "sny");
-        Json.put(info, "name", "Sony Android TV");
+
+        Json.put(info, "name", Simple.getTrans(R.string.subsystem_name));
+        Json.put(info, "info", Simple.getTrans(R.string.subsystem_info));
+        Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_sony_600));
+
+        JSONArray services = new JSONArray();
+        Json.put(info, "services", services);
+
+        JSONObject tvremote = new JSONObject();
+
+        Json.put(tvremote, "name", Simple.getTrans(R.string.subsystem_service_tvremote_name));
+        Json.put(tvremote, "info", Simple.getTrans(R.string.subsystem_service_tvremote_info));
+
+        Json.put(services, tvremote);
+
+        JSONArray features = new JSONArray();
+        Json.put(info, "features", features);
+
+        JSONObject usbstick = new JSONObject();
+
+        Json.put(usbstick, "name", Simple.getTrans(R.string.subsystem_feature_usbstick_name));
+        Json.put(usbstick, "info", Simple.getTrans(R.string.subsystem_feature_usbstick_info));
+        Json.put(usbstick, "feature", "usb");
+        Json.put(usbstick, "permission", "ext");
+
+        Json.put(features, usbstick);
+
+        JSONObject adbaccess = new JSONObject();
+
+        Json.put(adbaccess, "name", Simple.getTrans(R.string.subsystem_feature_adbaccess_name));
+        Json.put(adbaccess, "info", Simple.getTrans(R.string.subsystem_feature_adbaccess_info));
+        Json.put(adbaccess, "feature", "adb");
+
+        Json.put(features, adbaccess);
 
         return info;
     }
@@ -121,8 +156,6 @@ public class SNY implements
     public boolean doSomething(JSONObject action, JSONObject device, JSONObject status, JSONObject credentials)
     {
         Log.d(LOGTAG, "doSomething: action=" + Json.toPretty(action));
-        //Log.d(LOGTAG, "doSomething: device=" + Json.toPretty(device));
-        //Log.d(LOGTAG, "doSomething: status=" + Json.toPretty(status));
         Log.d(LOGTAG, "doSomething: credentials=" + Json.toPretty(credentials));
 
         String actioncmd = Json.getString(action, "action");

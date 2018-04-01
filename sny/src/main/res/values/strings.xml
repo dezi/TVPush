@@ -1,2 +1,43 @@
 <resources>
+
+    <string name="subsystem_name">Sony Android TV</string>
+
+    <string name="subsystem_info">
+        Dieses System enthält verschiedene speziell auf Sony Android TVs
+        zugeschnittene Dienste, wie z.B. das Bearbeiten der Programmliste
+        und das Fernsteuern des Geräts über das lokale Wifi und über Internet.
+    </string>
+
+    <string name="subsystem_service_tvremote_name">Fernsteuerung</string>
+    <string name="subsystem_service_tvremote_info">
+        Mit diesem Feature können Sie den Fernseher per App bedienen.
+        \n\n
+        Wenn Sie diesen das erste mal diesen Service aktivieren, erscheint
+        auf dem Fernseher ein Pin-Code. Bitte geben Sie diesen Pin-Code
+        in den Aktivierungs-Dialog ein.
+    </string>
+
+    <string name="subsystem_feature_usbstick_name">Fernsteuerung</string>
+    <string name="subsystem_feature_usbstick_info">
+        Wenn Sie einen USB-Stick an dem TV-Gerät eingesteckt haben,
+        können Sie die Programmliste exporten, bearbeiten und wieder
+        importieren.
+        \n\n
+        Stecken Sie dazu einen FAT32 formatierten USB-Stick in
+        einen Anschluss des Fernsehers.
+    </string>
+
+    <string name="subsystem_feature_adbaccess_name">ADB-Zugriff</string>
+    <string name="subsystem_feature_adbaccess_info">
+        Um eine sortierte Programmliste in den Fernseher importieren
+        zu können, muss diese auf dem USB-Stick abgespeichert werden.
+        \n\n
+        Dazu muss zuerst der Entwickler-Dienst aktiviert werden. Sobald
+        der Entwickler-Dienst aktiv ist, können Sie den ADB-Zugriff hier
+        aktivieren.
+        \n\n
+        Wenn Sie diesen das erste mal dieses Feature aktivieren, erscheint
+        auf dem Fernseher ein Fenster zur Genehmigung des Zurgiffs.
+    </string>
+
 </resources>
