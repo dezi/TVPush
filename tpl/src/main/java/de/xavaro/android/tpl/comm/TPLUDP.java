@@ -6,8 +6,8 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Iterator;
 
-import zz.top.utl.Json;
-import zz.top.utl.Log;
+import de.xavaro.android.tpl.simple.Json;
+import de.xavaro.android.tpl.simple.Log;
 
 public class TPLUDP
 {

@@ -2,8 +2,8 @@ package de.xavaro.android.tpl.comm;
 
 import org.json.JSONObject;
 
-import zz.top.tpl.base.TPL;
-import zz.top.utl.Log;
+import de.xavaro.android.tpl.base.TPL;
+import de.xavaro.android.tpl.simple.Log;
 
 public class TPLMessageService extends Thread
 {

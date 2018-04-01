@@ -2,9 +2,9 @@ package de.xavaro.android.tpl.handler;
 
 import org.json.JSONObject;
 
-import zz.top.tpl.base.TPL;
+import de.xavaro.android.tpl.base.TPL;
 
-import zz.top.utl.Json;
+import de.xavaro.android.tpl.simple.Json;
 
 public class TPLHandlerSmartPlug extends TPLHandler
 {

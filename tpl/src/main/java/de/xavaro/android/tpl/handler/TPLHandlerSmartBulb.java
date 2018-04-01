@@ -2,11 +2,11 @@ package de.xavaro.android.tpl.handler;
 
 import org.json.JSONObject;
 
-import zz.top.tpl.base.TPL;
+import de.xavaro.android.tpl.base.TPL;
 
-import zz.top.utl.Simple;
-import zz.top.utl.Json;
-import zz.top.utl.Log;
+import de.xavaro.android.tpl.simple.Simple;
+import de.xavaro.android.tpl.simple.Json;
+import de.xavaro.android.tpl.simple.Log;
 
 public class TPLHandlerSmartBulb extends TPLHandler
 {

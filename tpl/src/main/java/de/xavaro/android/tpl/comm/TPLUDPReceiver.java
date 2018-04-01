@@ -9,8 +9,8 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
-import zz.top.utl.Json;
-import zz.top.utl.Log;
+import de.xavaro.android.tpl.simple.Json;
+import de.xavaro.android.tpl.simple.Log;
 
 public class TPLUDPReceiver extends Thread
 {

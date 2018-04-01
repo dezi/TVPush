@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import zz.top.tpl.base.TPL;
-import zz.top.tpl.handler.TPLHandler;
-import zz.top.tpl.handler.TPLHandlerSmartBulb;
-import zz.top.tpl.handler.TPLHandlerSmartPlug;
-import zz.top.tpl.handler.TPLHandlerSysInfo;
+import de.xavaro.android.tpl.handler.TPLHandlerSmartBulb;
+import de.xavaro.android.tpl.handler.TPLHandlerSmartPlug;
+import de.xavaro.android.tpl.handler.TPLHandlerSysInfo;
+import de.xavaro.android.tpl.handler.TPLHandler;
+import de.xavaro.android.tpl.base.TPL;
 
 public class TPLMessageHandler
 {
