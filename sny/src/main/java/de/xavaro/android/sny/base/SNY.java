@@ -57,6 +57,16 @@ public class SNY implements
 
         Json.put(services, tvremote);
 
+        JSONObject channeledit = new JSONObject();
+
+        Json.put(channeledit, "name", Simple.getTrans(R.string.subsystem_service_channeledit_name));
+        Json.put(channeledit, "info", Simple.getTrans(R.string.subsystem_service_channeledit_info));
+        Json.put(channeledit, "service", "dev");
+        Json.put(channeledit, "feature", "usb+adb");
+        Json.put(channeledit, "permission", "ext");
+
+        Json.put(services, channeledit);
+
         JSONArray features = new JSONArray();
         Json.put(info, "features", features);
 
@@ -73,6 +83,7 @@ public class SNY implements
 
         Json.put(adbaccess, "name", Simple.getTrans(R.string.subsystem_feature_adbaccess_name));
         Json.put(adbaccess, "info", Simple.getTrans(R.string.subsystem_feature_adbaccess_info));
+        Json.put(adbaccess, "service", "dev");
         Json.put(adbaccess, "feature", "adb");
 
         Json.put(features, adbaccess);
