@@ -18,7 +18,7 @@ import de.xavaro.android.tpl.publics.SmartBulbHandler;
 import de.xavaro.android.tpl.publics.SmartPlugHandler;
 import de.xavaro.android.tpl.comm.TPLMessageHandler;
 import de.xavaro.android.tpl.comm.TPLMessageService;
-import de.xavaro.android.tpl.comm.TPLUDP;
+import de.xavaro.android.tpl.comm.TPLDatagrammService;
 
 import de.xavaro.android.tpl.simple.Simple;
 import de.xavaro.android.tpl.simple.Json;
@@ -67,7 +67,7 @@ public class TPL implements
     {
         TPLMessageHandler.startService();
         TPLMessageService.startService();
-        TPLUDP.startService();
+        TPLDatagrammService.startService();
 
         TPLHandlerSysInfo.sendAllGetSysinfo();
 
@@ -77,7 +77,7 @@ public class TPL implements
     @Override
     public void stopSubsystem()
     {
-        TPLUDP.stopService();
+        TPLDatagrammService.stopService();
         TPLMessageService.stopService();
         TPLMessageHandler.stopService();
 

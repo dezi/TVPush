@@ -9,9 +9,9 @@ import java.util.Iterator;
 import de.xavaro.android.tpl.simple.Json;
 import de.xavaro.android.tpl.simple.Log;
 
-public class TPLUDP
+public class TPLDatagrammService
 {
-    private static final String LOGTAG = TPLUDP.class.getSimpleName();
+    private static final String LOGTAG = TPLDatagrammService.class.getSimpleName();
 
     private static final int BCAST_PORT = 9999;
     private static final String BCAST_ADDR = "255.255.255.255";
@@ -20,8 +20,8 @@ public class TPLUDP
     public static InetAddress bcastip;
     public static int bcastport;
 
-    public static TPLUDPReceiver receiver;
-    public static TPLUDPSender sender;
+    public static TPLDatagrammReceiver receiver;
+    public static TPLDatagrammSender sender;
 
     public static void startService()
     {
@@ -56,7 +56,7 @@ public class TPLUDP
         {
             Log.d(LOGTAG, "startService: sender: starting.");
 
-            sender = new TPLUDPSender();
+            sender = new TPLDatagrammSender();
             sender.start();
         }
         else
@@ -68,7 +68,7 @@ public class TPLUDP
         {
             Log.d(LOGTAG, "startService: receiver: starting.");
 
-            receiver = new TPLUDPReceiver();
+            receiver = new TPLDatagrammReceiver();
             receiver.start();
         }
         else

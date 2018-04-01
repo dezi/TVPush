@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import de.xavaro.android.tpl.simple.Json;
 import de.xavaro.android.tpl.simple.Log;
 
-public class TPLUDPSender extends Thread
+public class TPLDatagrammSender extends Thread
 {
-    private static final String LOGTAG = TPLUDPSender.class.getSimpleName();
+    private static final String LOGTAG = TPLDatagrammSender.class.getSimpleName();
 
     private static final ArrayList<JSONObject> messageQueue = new ArrayList<>();
 
@@ -58,12 +58,12 @@ public class TPLUDPSender extends Thread
                     continue;
                 }
 
-                String type = TPLUDP.getMessageType(message);
+                String type = TPLDatagrammService.getMessageType(message);
 
                 JSONObject dest = Json.getObject(message, "destination");
                 Json.remove(message, "destination");
 
-                byte[] txbuff = TPLUDP.encryptMessage(message.toString());
+                byte[] txbuff = TPLDatagrammService.encryptMessage(message.toString());
                 DatagramPacket txpack = new DatagramPacket(txbuff, txbuff.length);
 
                 if (dest == null)
@@ -72,8 +72,8 @@ public class TPLUDPSender extends Thread
                     // Broadcast.
                     //
 
-                    txpack.setAddress(TPLUDP.bcastip);
-                    txpack.setPort(TPLUDP.bcastport);
+                    txpack.setAddress(TPLDatagrammService.bcastip);
+                    txpack.setPort(TPLDatagrammService.bcastport);
                 }
                 else
                 {
@@ -85,7 +85,7 @@ public class TPLUDPSender extends Thread
                     int ipport = Json.getInt(dest, "ipport");
 
                     txpack.setAddress(InetAddress.getByName(ipaddr));
-                    txpack.setPort((ipport != 0) ? ipport : TPLUDP.bcastport);
+                    txpack.setPort((ipport != 0) ? ipport : TPLDatagrammService.bcastport);
                 }
 
                 String ipaddr = txpack.getAddress().toString().substring(1);
@@ -95,7 +95,7 @@ public class TPLUDPSender extends Thread
                         + " send=" + ipaddr + ":" + ipport
                         + " type=" + type);
 
-                TPLUDP.socket.send(txpack);
+                TPLDatagrammService.socket.send(txpack);
             }
             catch (InterruptedException ex)
             {

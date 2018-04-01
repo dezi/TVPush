@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import de.xavaro.android.tpl.simple.Json;
 import de.xavaro.android.tpl.simple.Log;
 
-public class TPLUDPReceiver extends Thread
+public class TPLDatagrammReceiver extends Thread
 {
-    private static final String LOGTAG = TPLUDPReceiver.class.getSimpleName();
+    private static final String LOGTAG = TPLDatagrammReceiver.class.getSimpleName();
 
     private static final ArrayList<JSONObject> messageQueue = new ArrayList<>();
 
@@ -52,9 +52,9 @@ public class TPLUDPReceiver extends Thread
             {
                 byte[] rxbuff = new byte[8 * 1024];
                 DatagramPacket rxpack = new DatagramPacket(rxbuff, rxbuff.length);
-                TPLUDP.socket.receive(rxpack);
+                TPLDatagrammService.socket.receive(rxpack);
 
-                String strmess = TPLUDP.decryptMessage(rxpack.getData(), rxpack.getOffset(), rxpack.getLength());
+                String strmess = TPLDatagrammService.decryptMessage(rxpack.getData(), rxpack.getOffset(), rxpack.getLength());
 
                 JSONObject message = Json.fromStringObject(strmess);
 
@@ -68,7 +68,7 @@ public class TPLUDPReceiver extends Thread
                     continue;
                 }
 
-                String type  = TPLUDP.getMessageType(message);
+                String type  = TPLDatagrammService.getMessageType(message);
                 String ipaddr = rxpack.getAddress().toString().substring(1);
                 int ipport = rxpack.getPort();
 

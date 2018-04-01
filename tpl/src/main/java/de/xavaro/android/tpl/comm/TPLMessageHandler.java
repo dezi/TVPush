@@ -67,7 +67,7 @@ public class TPLMessageHandler
 
     public void receiveMessage(JSONObject message)
     {
-        String type = TPLUDP.getMessageType(message);
+        String type = TPLDatagrammService.getMessageType(message);
 
         if (type == null) return;
 

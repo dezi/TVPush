@@ -11,7 +11,7 @@ public class TPLMessageService extends Thread
 
     public static void sendMessage(JSONObject json)
     {
-        TPLUDPSender.sendMessage(json);
+        TPLDatagrammSender.sendMessage(json);
     }
 
     public static void startService()
@@ -63,7 +63,7 @@ public class TPLMessageService extends Thread
         {
             try
             {
-                JSONObject message = TPLUDPReceiver.receiveMessage();
+                JSONObject message = TPLDatagrammReceiver.receiveMessage();
 
                 if (message == null)
                 {
