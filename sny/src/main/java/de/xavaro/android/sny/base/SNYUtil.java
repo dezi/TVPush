@@ -1,4 +1,4 @@
-package zz.top.sny.base;
+package de.xavaro.android.sny.base;
 
 import android.support.annotation.Nullable;
 
@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.net.URL;
 
-import zz.top.utl.Json;
-import zz.top.utl.Log;
+import de.xavaro.android.sny.simple.Json;
+import de.xavaro.android.sny.simple.Log;
 
 public class SNYUtil
 {
@@ -32,21 +32,9 @@ public class SNYUtil
     }
 
     @Nullable
-    public static JSONObject getPost(String urlstr, JSONObject post)
-    {
-        return getPostInternal(urlstr, post, null, null, null, null);
-    }
-
-    @Nullable
     public static JSONObject getPost(String urlstr, JSONObject post, JSONObject headers)
     {
         return getPostInternal(urlstr, post, headers,null, null, null);
-    }
-
-    @Nullable
-    public static JSONObject getPostAuth(String urlstr, JSONObject post, String user, String pass)
-    {
-        return getPostInternal(urlstr, post, null, user, pass, null);
     }
 
     @Nullable
@@ -241,19 +229,20 @@ public class SNYUtil
 
         if (split == null)
         {
-            if (Build.VERSION.SDK_INT >= 24)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             {
                 return Html.fromHtml(htmlString, Html.FROM_HTML_MODE_LEGACY).toString();
             }
             else
             {
+                //noinspection deprecation
                 return Html.fromHtml(htmlString).toString();
             }
         }
 
         String[] parts = htmlString.split(split);
 
-        if (Build.VERSION.SDK_INT >= 24)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
         {
             for (int inx = 0; inx < parts.length; inx++)
             {
@@ -275,7 +264,7 @@ public class SNYUtil
         // How unbelievable fuckable that is!!
         //
 
-        if (Build.VERSION.SDK_INT >= 26)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
             return String.join(split, parts);
         }

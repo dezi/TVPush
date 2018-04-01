@@ -14,7 +14,7 @@ import pub.android.interfaces.pub.PUBSmartBulb;
 import pub.android.interfaces.pub.PUBSmartPlug;
 
 import zz.top.p2p.base.P2P;
-import zz.top.sny.base.SNY;
+import de.xavaro.android.sny.base.SNY;
 import zz.top.tpl.base.TPL;
 
 public class SystemsGUI extends GUI

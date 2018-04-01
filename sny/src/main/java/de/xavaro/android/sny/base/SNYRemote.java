@@ -1,8 +1,8 @@
-package zz.top.sny.base;
+package de.xavaro.android.sny.base;
 
 import android.os.StrictMode;
 
-import zz.top.utl.Log;
+import de.xavaro.android.sny.simple.Log;
 
 public class SNYRemote
 {

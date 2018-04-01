@@ -1,4 +1,4 @@
-package zz.top.sny.base;
+package de.xavaro.android.sny.base;
 
 import android.support.annotation.Nullable;
 
@@ -13,9 +13,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.net.URL;
 
-import zz.top.utl.Simple;
-import zz.top.utl.Json;
-import zz.top.utl.Log;
+import de.xavaro.android.sny.simple.Simple;
+import de.xavaro.android.sny.simple.Json;
+import de.xavaro.android.sny.simple.Log;
 
 public class SNYDiscover
 {

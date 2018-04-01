@@ -1,10 +1,10 @@
-package zz.top.sny.base;
+package de.xavaro.android.sny.base;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import zz.top.utl.Json;
-import zz.top.utl.Log;
+import de.xavaro.android.sny.simple.Json;
+import de.xavaro.android.sny.simple.Log;
 
 public class SNYAuthorize
 {

@@ -1,4 +1,4 @@
-package zz.top.sny.base;
+package de.xavaro.android.sny.base;
 
 import android.support.annotation.Nullable;
 

@@ -1,4 +1,4 @@
-package zz.top.sny.base;
+package de.xavaro.android.sny.base;
 
 import android.app.Application;
 
@@ -11,9 +11,9 @@ import pub.android.interfaces.ext.OnDeviceHandler;
 import pub.android.interfaces.all.DoSomethingHandler;
 import pub.android.interfaces.ext.OnPincodeRequest;
 
-import zz.top.utl.Simple;
-import zz.top.utl.Json;
-import zz.top.utl.Log;
+import de.xavaro.android.sny.simple.Simple;
+import de.xavaro.android.sny.simple.Json;
+import de.xavaro.android.sny.simple.Log;
 
 public class SNY implements
         SubSystemHandler,
