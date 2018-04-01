@@ -44,7 +44,6 @@ extern "C" JNIEXPORT void JNICALL Java_zz_top_dec_VIDDecode_nativeInit
         (JNIEnv *env, jclass self)
 {
     return Java_com_decoder_xiaomi_AntsDecoder_nativeInit(env, self);
-
 }
 
 extern "C" JNIEXPORT void JNICALL Java_zz_top_dec_VIDDecode_init
