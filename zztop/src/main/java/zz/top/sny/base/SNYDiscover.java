@@ -13,9 +13,9 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.URL;
 
+import zz.top.utl.Log;
 import zz.top.utl.Simple;
 import zz.top.utl.Json;
-import zz.top.utl.Log;
 
 public class SNYDiscover
 {
@@ -23,11 +23,6 @@ public class SNYDiscover
 
     private final static String BCAST_ADDR = "239.255.255.250";
     private final static int BCAST_PORT = 1900;
-
-    public static MulticastSocket socket;
-    public static InetAddress bcastip;
-    public static int bcastport;
-    public static long exittime;
 
     private final static String DISCOVER_MESSAGE_ROOTDEVICE = ""
             + "M-SEARCH * HTTP/1.1\r\n"
@@ -43,29 +38,57 @@ public class SNYDiscover
     private final static String modelNameRegex = "<modelName>([^<]*)<\\/modelName>";
     private final static String UDNRegex = "<UDN>uuid:([^<]*)<\\/UDN>";
 
-    public static void discover(int seconds)
+    public static void startService()
+    {
+        if ((SNY.instance != null) && (SNY.instance.discover == null))
+        {
+            SNY.instance.discover = new SNYDiscover();
+        }
+    }
+
+    public static void stopService()
+    {
+        if ((SNY.instance != null) && (SNY.instance.discover != null))
+        {
+            SNYDiscover discover = SNY.instance.discover;
+
+            synchronized (discover.mutex)
+            {
+                if (discover.searchThread != null)
+                {
+                    discover.searchThread.interrupt();
+                    discover.searchThread = null;
+                }
+            }
+
+            SNY.instance.discover = null;
+        }
+    }
+
+    private final Object mutex = new Object();
+
+    private Thread searchThread;
+    private MulticastSocket socket;
+    private long exittime;
+
+    private SNYDiscover()
     {
         try
         {
-            bcastip = InetAddress.getByName(BCAST_ADDR);
-            bcastport = BCAST_PORT;
+            InetAddress bcastip = InetAddress.getByName(BCAST_ADDR);
 
-            if (socket == null)
-            {
-                socket = new MulticastSocket();
-                socket.setReuseAddress(true);
-                socket.setSoTimeout(15000);
-                socket.joinGroup(bcastip);
+            socket = new MulticastSocket();
+            socket.setReuseAddress(true);
+            socket.setSoTimeout(1000);
+            socket.joinGroup(bcastip);
 
-                exittime = System.currentTimeMillis() + seconds * 1000;
+            exittime = System.currentTimeMillis() + 10 * 1000;
 
-                Thread search = new Thread(searchThread);
-                search.start();
+            searchThread = new Thread(searchRunnable);
+            searchThread.start();
 
-                byte[] txbuf = DISCOVER_MESSAGE_ROOTDEVICE.getBytes();
-
-                socket.send(new DatagramPacket(txbuf, txbuf.length, bcastip, bcastport));
-            }
+            byte[] txbuf = DISCOVER_MESSAGE_ROOTDEVICE.getBytes();
+            socket.send(new DatagramPacket(txbuf, txbuf.length, bcastip, BCAST_PORT));
         }
         catch (Exception ex)
         {
@@ -73,18 +96,19 @@ public class SNYDiscover
         }
     }
 
-    private final static Runnable searchThread = new Runnable()
+    @SuppressWarnings("FieldCanBeLocal")
+    private final Runnable searchRunnable = new Runnable()
     {
         @Override
         public void run()
         {
-            Log.d(LOGTAG, "searchThread: start.");
+            Log.d(LOGTAG, "searchRunnable: start.");
 
-            Log.d(LOGTAG, "searchThread: self=" + Simple.getConnectedWifiIPAddress());
+            Log.d(LOGTAG, "searchRunnable: self=" + Simple.getConnectedWifiIPAddress());
 
             ArrayList<String> dupstuff = new ArrayList<>();
 
-            while (System.currentTimeMillis() < exittime)
+            while ((searchThread != null) && (System.currentTimeMillis() < exittime))
             {
                 try
                 {
@@ -98,7 +122,7 @@ public class SNYDiscover
 
                     String xml = new String(packet.getData(), packet.getOffset(), packet.getLength());
 
-                    Log.d(LOGTAG, "searchThread: recv"
+                    Log.d(LOGTAG, "searchRunnable: recv"
                             + " ip=" + packet.getAddress().toString().substring(1)
                             + " port=" + packet.getPort()
                             );
@@ -110,7 +134,7 @@ public class SNYDiscover
                         if (! line.startsWith("LOCATION: ")) continue;
 
                         String urlstr = line.substring(10);
-                        Log.d(LOGTAG, "searchThread: LOCATION=" + urlstr);
+                        Log.d(LOGTAG, "searchRunnable: LOCATION=" + urlstr);
 
                         if (dupstuff.contains(urlstr)) continue;
                         dupstuff.add(urlstr);
@@ -131,11 +155,16 @@ public class SNYDiscover
             socket.close();
             socket = null;
 
-            Log.d(LOGTAG, "searchThread: done.");
+            synchronized (mutex)
+            {
+                searchThread = null;
+            }
+
+            Log.d(LOGTAG, "searchRunnable: done.");
         }
     };
 
-    public static void buildDeviceDescription(String xmlfuck)
+    private void buildDeviceDescription(String xmlfuck)
     {
         String ipAddr = SNYUtil.HTMLdefuck(SNYUtil.matchStuff(xmlfuck, ipAddrRegex));
         String friendlyName = SNYUtil.HTMLdefuck(SNYUtil.matchStuff(xmlfuck, friendlyNameRegex));
@@ -157,13 +186,13 @@ public class SNYDiscover
 
         String caps = "tvremote|stupid|hosted|pincode|select|poweronoff";
 
-        JSONObject sonydev = new JSONObject();
+        JSONObject sonyremote = new JSONObject();
 
         JSONObject device = new JSONObject();
-        Json.put(sonydev, "device", device);
+        Json.put(sonyremote, "device", device);
 
         JSONObject network = new JSONObject();
-        Json.put(sonydev, "network", network);
+        Json.put(sonyremote, "network", network);
 
         Json.put(device, "uuid", UDN);
 
@@ -181,7 +210,7 @@ public class SNYDiscover
         Json.put(network, "ipaddr", ipAddr);
         Json.put(network, "ssid", ssid);
 
-        SNY.instance.onDeviceFound(sonydev);
+        SNY.instance.onDeviceFound(sonyremote);
 
         JSONObject status = new JSONObject();
 
@@ -215,7 +244,7 @@ public class SNYDiscover
     }
 
     @Nullable
-    private static byte[] readHTTPData(String urlstr)
+    private byte[] readHTTPData(String urlstr)
     {
         try
         {
@@ -224,7 +253,6 @@ public class SNYDiscover
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setUseCaches(false);
             connection.setDoInput(true);
-
             connection.connect();
 
             InputStream input = connection.getInputStream();

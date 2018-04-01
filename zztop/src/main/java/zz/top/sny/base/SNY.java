@@ -27,6 +27,8 @@ public class SNY implements
 
     public static SNY instance;
 
+    public SNYDiscover discover;
+
     public SNY(Application application)
     {
         Simple.initialize(application);
@@ -46,7 +48,7 @@ public class SNY implements
     @Override
     public void startSubsystem()
     {
-        SNYDiscover.discover(10);
+        SNYDiscover.startService();
 
         onSubsystemStarted("sny", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
     }
@@ -54,6 +56,8 @@ public class SNY implements
     @Override
     public void stopSubsystem()
     {
+        SNYDiscover.stopService();
+
         onSubsystemStopped("sny", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
     }
 

@@ -8,7 +8,7 @@ public class Log
             {
                     "GLSRenderer",
                     "p2p*",
-                    "gls*+"
+                    "sny*"
             };
 
     public static void d(String logtag, String message)
