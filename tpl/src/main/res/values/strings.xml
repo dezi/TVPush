@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">TPL</string>
+
+    <string name="subsystem_name">TP-Link Smart Home</string>
+
+    <string name="subsystem_info">
+        Dieses System enthält eine Schnittstelle zu intelligenten Steckdosen und
+        Glühbirnen des Herstellers TP-Link.
+        \n\n
+        Wenn dieses System aktiviert ist, können Sie diese Geräte per App bedienen.
+    </string>
+
 </resources>

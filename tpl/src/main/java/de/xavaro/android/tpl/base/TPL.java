@@ -20,9 +20,10 @@ import de.xavaro.android.tpl.comm.TPLMessageHandler;
 import de.xavaro.android.tpl.comm.TPLMessageService;
 import de.xavaro.android.tpl.comm.TPLUDP;
 
-import de.xavaro.android.tpl.simple.Log;
 import de.xavaro.android.tpl.simple.Simple;
 import de.xavaro.android.tpl.simple.Json;
+import de.xavaro.android.tpl.simple.Log;
+import de.xavaro.android.tpl.R;
 
 import pub.android.interfaces.ext.OnDeviceHandler;
 import pub.android.interfaces.ext.PutStatusRequest;
@@ -54,7 +55,9 @@ public class TPL implements
         JSONObject info = new JSONObject();
 
         Json.put(info, "drv", "tpl");
-        Json.put(info, "name", "TP-Link Smart Home");
+        Json.put(info, "name", Simple.getTrans(R.string.subsystem_name));
+        Json.put(info, "info", Simple.getTrans(R.string.subsystem_info));
+        Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_tp_link_410));
 
         return info;
     }
