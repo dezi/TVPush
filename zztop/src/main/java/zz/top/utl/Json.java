@@ -1,7 +1,7 @@
 package zz.top.utl;
 
-import android.os.Build;
 import android.support.annotation.Nullable;
+import android.os.Build;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -473,7 +473,6 @@ public class Json
         }
     }
 
-    @Nullable
     public static String toPretty(JSONObject jsonObject)
     {
         if (jsonObject != null)
@@ -490,7 +489,6 @@ public class Json
         return "NULL";
     }
 
-    @Nullable
     public static String toPretty(JSONArray jsonArray)
     {
         if (jsonArray != null)

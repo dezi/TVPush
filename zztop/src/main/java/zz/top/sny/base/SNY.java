@@ -46,8 +46,6 @@ public class SNY implements
     @Override
     public void startSubsystem()
     {
-        Log.d(LOGTAG, "startSubsystem: ######");
-
         SNYDiscover.discover(10);
 
         onSubsystemStarted("sny", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
@@ -56,8 +54,6 @@ public class SNY implements
     @Override
     public void stopSubsystem()
     {
-        Log.d(LOGTAG, "stopSubsystem: ######");
-
         onSubsystemStopped("sny", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
     }
 
