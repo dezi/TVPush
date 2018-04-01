@@ -22,14 +22,14 @@ import de.xavaro.android.tpl.comm.TPLDatagrammService;
 
 import de.xavaro.android.tpl.simple.Simple;
 import de.xavaro.android.tpl.simple.Json;
-import de.xavaro.android.tpl.simple.Log;
 import de.xavaro.android.tpl.R;
 
 import pub.android.interfaces.ext.OnDeviceHandler;
 import pub.android.interfaces.ext.PutStatusRequest;
 import pub.android.interfaces.all.DoSomethingHandler;
+import pub.android.stubs.OnInterfacesStubs;
 
-public class TPL implements
+public class TPL extends OnInterfacesStubs implements
         SubSystemHandler,
         OnDeviceHandler,
         PutStatusRequest,
@@ -82,42 +82,6 @@ public class TPL implements
         TPLMessageHandler.stopService();
 
         onSubsystemStopped("tpl", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
-    }
-
-    @Override
-    public void onSubsystemStarted(String subsystem, int state)
-    {
-        android.util.Log.d(LOGTAG, "onSubsystemStarted: STUB!");
-    }
-
-    @Override
-    public void onSubsystemStopped(String subsystem, int state)
-    {
-        android.util.Log.d(LOGTAG, "onSubsystemStopped: STUB!");
-    }
-
-    @Override
-    public void onDeviceFound(JSONObject device)
-    {
-        Log.d(LOGTAG, "onDeviceFound: STUB!");
-    }
-
-    @Override
-    public void onDeviceStatus(JSONObject device)
-    {
-        Log.d(LOGTAG, "onDeviceStatus: STUB!");
-    }
-
-    @Override
-    public void onDeviceMetadata(JSONObject metadata)
-    {
-        Log.d(LOGTAG, "onDeviceMetadata: STUB!");
-    }
-
-    @Override
-    public void onDeviceCredentials(JSONObject credentials)
-    {
-        Log.d(LOGTAG, "onDeviceCredentials: STUB!");
     }
 
     @Override

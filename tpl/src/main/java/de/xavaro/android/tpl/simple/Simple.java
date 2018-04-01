@@ -34,11 +34,11 @@ public class Simple
     {
         try
         {
-            Key secretKeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "HmacSHA1");
+            Key secretKeySpec = new SecretKeySpec(key.getBytes(), "HmacSHA1");
             Mac instance = Mac.getInstance("HmacSHA1");
             instance.init(secretKeySpec);
 
-            byte[] bytes = instance.doFinal(data.getBytes("UTF-8"));
+            byte[] bytes = instance.doFinal(data.getBytes());
 
             ByteBuffer bb = ByteBuffer.wrap(bytes,0 , 16);
 
