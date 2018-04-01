@@ -6,24 +6,25 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import de.xavaro.android.iot.comm.IOTMessageHandler;
-import de.xavaro.android.iot.handler.IOTHandleHelo;
 import de.xavaro.android.iot.proxim.IOTProximLocation;
 import de.xavaro.android.iot.proxim.IOTProximScanner;
+import de.xavaro.android.iot.comm.IOTMessageHandler;
 import de.xavaro.android.iot.proxim.IOTProximServer;
-import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.status.IOTCredential;
 import de.xavaro.android.iot.status.IOTMetadata;
+import de.xavaro.android.iot.things.IOTLocation;
 import de.xavaro.android.iot.status.IOTStatus;
+import de.xavaro.android.iot.handler.IOTHandleHelo;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDomain;
 import de.xavaro.android.iot.things.IOTHuman;
 import de.xavaro.android.iot.simple.Simple;
+import de.xavaro.android.iot.simple.Json;
+import de.xavaro.android.iot.R;
 
-import de.xavaro.android.iot.things.IOTLocation;
 import pub.android.interfaces.all.SubSystemHandler;
-import pub.android.interfaces.iot.GetDevices;
 import pub.android.interfaces.iot.OnStatusRequest;
+import pub.android.interfaces.iot.GetDevices;
 
 public class IOT implements
         SubSystemHandler,
@@ -70,7 +71,9 @@ public class IOT implements
         JSONObject info = new JSONObject();
 
         Json.put(info, "drv", "iot");
-        Json.put(info, "name", "I.O.T");
+        Json.put(info, "name", Simple.getTrans(R.string.subsystem_name));
+        Json.put(info, "info", Simple.getTrans(R.string.subsystem_info));
+        Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_iot_200));
 
         return info;
     }

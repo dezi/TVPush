@@ -1,3 +1,15 @@
 <resources>
-    <string name="app_name">iot</string>
+
+    <string name="subsystem_name">I.O.T System</string>
+
+    <string name="subsystem_info">
+        Dieses System enthält alle Dienste für diese Internet of Things
+        Anwendung.
+    </string>
+
+    <string name="subsystem_service_location_name">Ortsdienste</string>
+    <string name="subsystem_service_location_info">
+        Dieser Service ermöglicht es Ihrem Gerät, seinen Standort zu orten.
+    </string>
+
 </resources>

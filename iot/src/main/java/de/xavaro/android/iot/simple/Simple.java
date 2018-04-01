@@ -23,6 +23,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.speech.SpeechRecognizer;
 import android.support.v4.app.ActivityCompat;
+import android.util.Base64;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.os.Handler;
@@ -34,6 +35,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -65,6 +67,7 @@ public class Simple
     private static float deviceDensity;
 
     private static Handler handler;
+    private static Resources resources;
     private static SharedPreferences prefs;
     private static ContentResolver contentResolver;
 
@@ -80,7 +83,7 @@ public class Simple
     {
         handler = new Handler();
         prefs = PreferenceManager.getDefaultSharedPreferences(app);
-
+        resources = app.getResources();
         packageManager = app.getPackageManager();
         contentResolver = app.getContentResolver();
 
@@ -648,5 +651,29 @@ public class Simple
     public static String padRight(float val, int pad)
     {
         return padRight(Float.valueOf(val).toString(), pad);
+    }
+
+    public static String getTrans(int resid, Object... args)
+    {
+        return String.format(resources.getString(resid), args);
+    }
+
+    @Nullable
+    public static String getImageResourceBase64(int resid)
+    {
+        try
+        {
+            InputStream is = resources.openRawResource(+resid);
+            byte[] buffer = new byte[16 * 1024];
+            int xfer = is.read(buffer);
+
+            return Base64.encodeToString(buffer, 0 ,xfer, android.util.Base64.NO_WRAP);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return null;
     }
 }
