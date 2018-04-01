@@ -1,4 +1,4 @@
-package zz.top.tpl.comm;
+package de.xavaro.android.tpl.comm;
 
 import android.support.annotation.Nullable;
 

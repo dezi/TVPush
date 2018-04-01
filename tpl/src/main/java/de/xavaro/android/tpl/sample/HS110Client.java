@@ -1,4 +1,4 @@
-package zz.top.tpl.api;
+package de.xavaro.android.tpl.sample;
 
 import java.io.IOException;
 import java.io.InputStream;

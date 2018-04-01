@@ -1,4 +1,4 @@
-package zz.top.tpl.handler;
+package de.xavaro.android.tpl.handler;
 
 import android.support.annotation.Nullable;
 
@@ -7,11 +7,11 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import zz.top.tpl.base.TPL;
+import de.xavaro.android.tpl.base.TPL;
 
-import zz.top.utl.Simple;
-import zz.top.utl.Json;
-import zz.top.utl.Log;
+import de.xavaro.android.tpl.simple.Simple;
+import de.xavaro.android.tpl.simple.Json;
+import de.xavaro.android.tpl.simple.Log;
 
 public class TPLHandlerSysInfo extends TPLHandler
 {

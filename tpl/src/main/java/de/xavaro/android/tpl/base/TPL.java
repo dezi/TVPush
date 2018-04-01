@@ -1,4 +1,4 @@
-package zz.top.tpl.base;
+package de.xavaro.android.tpl.base;
 
 import android.app.Application;
 import android.graphics.Color;
@@ -11,17 +11,18 @@ import pub.android.interfaces.pub.PUBSmartPlug;
 import pub.android.interfaces.ext.GetSmartBulbHandler;
 import pub.android.interfaces.ext.GetSmartPlugHandler;
 
-import zz.top.tpl.comm.TPLMessageHandler;
-import zz.top.tpl.comm.TPLMessageService;
-import zz.top.tpl.comm.TPLUDP;
-import zz.top.tpl.handler.TPLHandlerSmartBulb;
-import zz.top.tpl.handler.TPLHandlerSmartPlug;
-import zz.top.tpl.handler.TPLHandlerSysInfo;
-import zz.top.tpl.publics.SmartBulbHandler;
-import zz.top.tpl.publics.SmartPlugHandler;
-import zz.top.utl.Log;
-import zz.top.utl.Simple;
-import zz.top.utl.Json;
+import de.xavaro.android.tpl.handler.TPLHandlerSmartBulb;
+import de.xavaro.android.tpl.handler.TPLHandlerSmartPlug;
+import de.xavaro.android.tpl.handler.TPLHandlerSysInfo;
+import de.xavaro.android.tpl.publics.SmartBulbHandler;
+import de.xavaro.android.tpl.publics.SmartPlugHandler;
+import de.xavaro.android.tpl.comm.TPLMessageHandler;
+import de.xavaro.android.tpl.comm.TPLMessageService;
+import de.xavaro.android.tpl.comm.TPLUDP;
+
+import de.xavaro.android.tpl.simple.Log;
+import de.xavaro.android.tpl.simple.Simple;
+import de.xavaro.android.tpl.simple.Json;
 
 import pub.android.interfaces.ext.OnDeviceHandler;
 import pub.android.interfaces.ext.PutStatusRequest;
