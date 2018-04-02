@@ -55,6 +55,7 @@ dependencies {
     implementation project(':gui')
     implementation project(':iot')
     implementation project(':pub')
+    implementation project(':bcn')
     implementation project(':sny')
     implementation project(':tpl')
     implementation project(':zztop')
