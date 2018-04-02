@@ -6,18 +6,19 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import pub.android.interfaces.all.SubSystemHandler;
+import pub.android.interfaces.all.DoSomethingHandler;
 import pub.android.interfaces.ext.GetDeviceCredentials;
 import pub.android.interfaces.ext.OnBackgroundRequest;
 import pub.android.interfaces.ext.OnDeviceHandler;
-import pub.android.interfaces.all.DoSomethingHandler;
 import pub.android.interfaces.ext.OnPincodeRequest;
+import pub.android.stubs.OnInterfacesStubs;
 
 import de.xavaro.android.sny.simple.Simple;
 import de.xavaro.android.sny.simple.Json;
 import de.xavaro.android.sny.simple.Log;
 import de.xavaro.android.sny.R;
 
-public class SNY implements
+public class SNY extends OnInterfacesStubs implements
         SubSystemHandler,
         OnDeviceHandler,
         GetDeviceCredentials,
@@ -108,59 +109,11 @@ public class SNY implements
     }
 
     @Override
-    public void onSubsystemStarted(String subsystem, int state)
-    {
-        android.util.Log.d(LOGTAG, "onSubsystemStarted: STUB! state=" + state);
-    }
-
-    @Override
-    public void onSubsystemStopped(String subsystem, int state)
-    {
-        android.util.Log.d(LOGTAG, "onSubsystemStopped: STUB! state=" + state);
-    }
-
-    @Override
     public JSONObject getDeviceCredentials(String uuid)
     {
         Log.d(LOGTAG, "getDeviceCredentials: STUB!");
 
         return null;
-    }
-
-    @Override
-    public void onDeviceFound(JSONObject device)
-    {
-        Log.d(LOGTAG, "onDeviceFound: STUB!");
-    }
-
-    @Override
-    public void onDeviceStatus(JSONObject device)
-    {
-        Log.d(LOGTAG, "onDeviceStatus: STUB!");
-    }
-
-    @Override
-    public void onDeviceMetadata(JSONObject metadata)
-    {
-        Log.d(LOGTAG, "onDeviceMetadata: STUB!");
-    }
-
-    @Override
-    public void onDeviceCredentials(JSONObject credentials)
-    {
-        Log.d(LOGTAG, "onDeviceCredentials: STUB!");
-    }
-
-    @Override
-    public void onPincodeRequest(String uuid)
-    {
-        Log.d(LOGTAG, "onPincodeRequest: STUB!");
-    }
-
-    @Override
-    public void onBackgroundRequest()
-    {
-        Log.d(LOGTAG, "onBackgroundRequest: STUB!");
     }
 
     @Override

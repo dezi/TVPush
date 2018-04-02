@@ -5,11 +5,15 @@ import android.graphics.Color;
 
 import org.json.JSONObject;
 
+import pub.android.interfaces.ext.GetSmartBulbHandler;
+import pub.android.interfaces.ext.GetSmartPlugHandler;
+import pub.android.interfaces.ext.OnDeviceHandler;
+import pub.android.interfaces.ext.PutStatusRequest;
+import pub.android.interfaces.all.DoSomethingHandler;
 import pub.android.interfaces.all.SubSystemHandler;
 import pub.android.interfaces.pub.PUBSmartBulb;
 import pub.android.interfaces.pub.PUBSmartPlug;
-import pub.android.interfaces.ext.GetSmartBulbHandler;
-import pub.android.interfaces.ext.GetSmartPlugHandler;
+import pub.android.stubs.OnInterfacesStubs;
 
 import de.xavaro.android.tpl.handler.TPLHandlerSmartBulb;
 import de.xavaro.android.tpl.handler.TPLHandlerSmartPlug;
@@ -24,10 +28,6 @@ import de.xavaro.android.tpl.simple.Simple;
 import de.xavaro.android.tpl.simple.Json;
 import de.xavaro.android.tpl.R;
 
-import pub.android.interfaces.ext.OnDeviceHandler;
-import pub.android.interfaces.ext.PutStatusRequest;
-import pub.android.interfaces.all.DoSomethingHandler;
-import pub.android.stubs.OnInterfacesStubs;
 
 public class TPL extends OnInterfacesStubs implements
         SubSystemHandler,

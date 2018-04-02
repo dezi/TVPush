@@ -1,0 +1,12 @@
+<resources>
+
+    <string name="subsystem_name">Beacons Ortung</string>
+
+    <string name="subsystem_info">
+        Dieses System erkennt Bluetooth-Beacons, die in den Örtlichkeiten angebracht sind.
+        \n\n
+        Wenn dieses System aktiviert ist, kann festgestellt werden, welches Geräte bzw.
+        welcher User sich an einem bestimmtem Ort aufhält.
+    </string>
+
+</resources>

@@ -17,14 +17,7 @@
         in den Aktivierungs-Dialog ein.
     </string>
 
-    <string name="subsystem_service_channeledit_name">Programm-Editor</string>
-    <string name="subsystem_service_channeledit_info">
-        Mit diesem Feature können Sie die Programmliste Ihres
-        Sony-Fernsehers charmant bearbeiten. Nix fünfhundert mal
-        klicken um ein Programm zu verschieben.
-    </string>
-
-    <string name="subsystem_feature_usbstick_name">Fernsteuerung</string>
+    <string name="subsystem_feature_usbstick_name">USB-Stick</string>
     <string name="subsystem_feature_usbstick_info">
         Wenn Sie einen USB-Stick an dem TV-Gerät eingesteckt haben,
         können Sie die Programmliste exporten, bearbeiten und wieder
@@ -45,6 +38,13 @@
         \n\n
         Wenn Sie diesen das erste mal dieses Feature aktivieren, erscheint
         auf dem Fernseher ein Fenster zur Genehmigung des Zurgiffs.
+    </string>
+
+    <string name="subsystem_service_channeledit_name">Programm-Editor</string>
+    <string name="subsystem_service_channeledit_info">
+        Mit diesem Feature können Sie die Programmliste Ihres
+        Sony-Fernsehers charmant bearbeiten. Nix fünfhundert mal
+        klicken um ein Programm zu verschieben.
     </string>
 
 </resources>

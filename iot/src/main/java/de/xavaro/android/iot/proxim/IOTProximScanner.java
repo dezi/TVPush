@@ -38,8 +38,6 @@ public class IOTProximScanner
 {
     private static final String LOGTAG = IOTProximScanner.class.getSimpleName();
 
-    private final boolean debug = false;
-
     //
     // adb shell setprop log.tag.TextView WARN
     // adb shell setprop log.tag.ScanRecord WARN
@@ -298,19 +296,16 @@ public class IOTProximScanner
             txpo = result.getScanRecord().getTxPowerLevel();
         }
 
-        if (debug)
-        {
-            Log.d(LOGTAG, "evaluateScan: ALT"
-                    + " rssi=" + rssi
-                    + " txpo=" + txpo
-                    + " addr=" + result.getDevice().getAddress()
-                    + " vend=" + Simple.padZero(vendor, 4)
-                    + " name=" + result.getDevice().getName()
-                    + " uuid=" + serviceUuid
-                    + " data=" + serviceDataUuid
-                    + " scan=" + result.getScanRecord()
-            );
-        }
+        Log.d(LOGTAG, "evaluateScan: ALT"
+                + " rssi=" + rssi
+                + " txpo=" + txpo
+                + " addr=" + result.getDevice().getAddress()
+                + " vend=" + Simple.padZero(vendor, 4)
+                + " name=" + result.getDevice().getName()
+                + " uuid=" + serviceUuid
+                + " data=" + serviceDataUuid
+                + " scan=" + result.getScanRecord()
+        );
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

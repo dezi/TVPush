@@ -46,4 +46,16 @@ public class OnInterfacesStubs
         Log.d(LOGTAG(), "onDeviceCredentials: STUB!");
         Log.d(LOGTAG(), Log.getStackTraceString(new Exception()));
     }
+
+    public void onPincodeRequest(String uuid)
+    {
+        Log.d(LOGTAG(), "onPincodeRequest: STUB!");
+        Log.d(LOGTAG(), Log.getStackTraceString(new Exception()));
+    }
+
+    public void onBackgroundRequest()
+    {
+        Log.d(LOGTAG(), "onBackgroundRequest: STUB!");
+        Log.d(LOGTAG(), Log.getStackTraceString(new Exception()));
+    }
 }
