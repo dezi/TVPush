@@ -1,4 +1,4 @@
-package de.xavaro.android.bcn.simple.simple;
+package de.xavaro.android.bcn.simple;
 
 import android.app.Application;
 import android.content.Context;

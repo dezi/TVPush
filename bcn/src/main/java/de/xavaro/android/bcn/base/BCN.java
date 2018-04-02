@@ -4,8 +4,8 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
-import de.xavaro.android.bcn.simple.simple.Simple;
-import de.xavaro.android.bcn.simple.simple.Json;
+import de.xavaro.android.bcn.simple.Simple;
+import de.xavaro.android.bcn.simple.Json;
 import de.xavaro.android.bcn.R;
 
 import pub.android.interfaces.all.SubSystemHandler;

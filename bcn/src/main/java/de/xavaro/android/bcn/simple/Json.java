@@ -1,4 +1,4 @@
-package de.xavaro.android.bcn.simple.simple;
+package de.xavaro.android.bcn.simple;
 
 import android.os.Build;
 import android.support.annotation.Nullable;
