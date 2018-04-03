@@ -62,7 +62,7 @@ public class GUI implements
         Json.put(info, "mode", SubSystemHandler.SUBSYSTEM_MODE_MANDATORY);
         Json.put(info, "name", Simple.getTrans(R.string.subsystem_gui_name));
         Json.put(info, "info", Simple.getTrans(R.string.subsystem_gui_info));
-        Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_gui_220));
+        Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_gui_420));
 
         return info;
     }
