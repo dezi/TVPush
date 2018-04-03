@@ -97,10 +97,12 @@ public class GUISetup
         switch (perm)
         {
             case "mic": return R.drawable.mic_540;
-            case "ext": return R.drawable.read_write_340;
             case "cam": return R.drawable.camera_shutter_820;
             case "ble": return R.drawable.bluetooth_450;
             case "loc": return R.drawable.position_560;
+            case "ext": return R.drawable.read_write_340;
+            case "usb": return R.drawable.read_write_340;
+            case "ssd": return R.drawable.read_write_340;
         }
 
         return R.drawable.unknown_550;
@@ -111,10 +113,12 @@ public class GUISetup
         switch (need)
         {
             case "mic": return R.string.setup_perm_head_mic;
-            case "ext": return R.string.setup_perm_head_ext;
             case "cam": return R.string.setup_perm_head_cam;
             case "ble": return R.string.setup_perm_head_ble;
             case "loc": return R.string.setup_perm_head_loc;
+            case "ext": return R.string.setup_perm_head_ext;
+            case "usb": return R.string.setup_perm_head_ext;
+            case "ssd": return R.string.setup_perm_head_ext;
         }
 
         return R.string.setup_ukn;
@@ -263,6 +267,16 @@ public class GUISetup
     public static boolean needHasService(String need)
     {
         return need.equals("ble") || need.equals("loc") || need.equals("dev");
+    }
+
+    public static boolean needHasInfos(String need)
+    {
+        return need.equals("usb") || need.equals("ssd");
+    }
+
+    public static boolean needHasRequest(String need)
+    {
+        return need.equals("adb") || need.equals("pin");
     }
 
     public static boolean needHasPermissions(String need)
@@ -431,8 +445,11 @@ public class GUISetup
         if (need.equals("mic")) which = Manifest.permission.RECORD_AUDIO;
         if (need.equals("loc")) which = Manifest.permission.ACCESS_FINE_LOCATION;
         if (need.equals("ble")) which = Manifest.permission.BLUETOOTH_ADMIN;
-        if (need.equals("ext")) which = Manifest.permission.WRITE_EXTERNAL_STORAGE;
         if (need.equals("cam")) which = Manifest.permission.CAMERA;
+
+        if (need.equals("ext")) which = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        if (need.equals("usb")) which = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        if (need.equals("ssd")) which = Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
         if ((which != null) && ! havePermission(activity, which))
         {

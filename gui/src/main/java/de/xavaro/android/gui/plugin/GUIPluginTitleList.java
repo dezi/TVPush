@@ -34,6 +34,11 @@ public class GUIPluginTitleList extends GUIPluginTitle
 
     public void setObjectTag(String objectTag)
     {
+        if ((objectTag != null) && (this.objectTag != null) && ! objectTag.equals(this.objectTag))
+        {
+            listView.removeAllViews();
+        }
+
         super.setObjectTag(objectTag);
 
         updateContent();

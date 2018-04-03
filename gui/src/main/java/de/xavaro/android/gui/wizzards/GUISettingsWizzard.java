@@ -41,91 +41,103 @@ public class GUISettingsWizzard extends GUIPluginTitleList
         collectEntries(listView, todo);
     }
 
-    public void collectEntries(GUIListView listView, boolean todo)
+    private void collectEntries(GUIListView listView, boolean todo)
     {
-        JSONObject subsystemInfo = GUI.instance.subSystems.getSubsystemInfos(objectTag);
-        if (subsystemInfo == null) return;
+        String subsystem = objectTag;
+        if (subsystem == null) return;
 
-        String subsystem = Json.getString(subsystemInfo, "drv");
-        String subsystemName = Json.getString(subsystemInfo, "name");
-        String subsystemIcon = Json.getString(subsystemInfo, "icon");
-        String subsystemNeed = Json.getString(subsystemInfo, "need");
-        if ((subsystem == null) || (subsystemName == null)) return;
+        JSONObject infos = GUI.instance.subSystems.getSubsystemInfos(subsystem);
+        if (infos == null) return;
 
-        int subsystemState = GUISetup.getSubsystemState(subsystem);
-        int subsystemRunstate = GUISetup.getSubsystemRunState(subsystem);
+        String name = Json.getString(infos, "name");
+        String icon = Json.getString(infos, "icon");
+        String need = Json.getString(infos, "need");
+        if (name == null) return;
 
-        String subsystemInfoText = GUISetup.getTextForSubsystemEnabled(subsystemName, subsystemState);
+        int state = GUISetup.getSubsystemState(subsystem);
+        int runstate = GUISetup.getSubsystemRunState(subsystem);
 
-        if (subsystemState == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
+        String info = GUISetup.getTextForSubsystemEnabled(name, state);
+
+        if (state == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
         {
-            subsystemInfoText += " - " + Simple.getTrans(GUISetup.getTextForSubsystemRunstateResid(subsystemRunstate));
+            info += " - " + Simple.getTrans(GUISetup.getTextForSubsystemRunstateResid(runstate));
         }
 
-        GUIListEntry subsystemEntry = listView.findGUIListEntryOrCreate(subsystem);
-        subsystemEntry.setOnClickListener(onSubsystemClickListener);
-        subsystemEntry.setTag(subsystemInfo);
+        int color = (state == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
+                ? GUIDefs.TEXT_COLOR_SPECIAL
+                : (runstate == SubSystemHandler.SUBSYSTEM_RUN_STARTED)
+                ? GUIDefs.TEXT_COLOR_INFOS
+                : GUIDefs.TEXT_COLOR_ALERTS;
 
-        subsystemEntry.iconView.setImageResource(subsystemIcon);
-        subsystemEntry.headerViev.setText(subsystemName);
-        subsystemEntry.infoView.setText(subsystemInfoText);
+        GUIListEntry entry = listView.findGUIListEntryOrCreate(subsystem);
+        entry.setOnClickListener(onSubsystemClickListener);
+        entry.setTag(infos);
 
-        collectSubsystemsNeeds(listView, subsystem, subsystemNeed, todo);
+        entry.iconView.setImageResource(icon);
+        entry.headerViev.setText(name);
+        entry.infoView.setText(info);
+        entry.infoView.setTextColor(color);
 
-        //
-        // System specific settings.
-        //
+        collectSubsystemsNeeds(listView, subsystem, need, todo);
 
-        JSONArray settings = Json.getArray(subsystemInfo, "settings");
+        collectSubsystemsSettings(listView, subsystem, todo);
+    }
 
-        if (settings != null)
+    private void collectSubsystemsSettings(GUIListView listView, String subsystem, boolean todo)
+    {
+        JSONObject infos = GUI.instance.subSystems.getSubsystemInfos(subsystem);
+        if (infos == null) return;
+
+        JSONArray settings = Json.getArray(infos, "settings");
+        if (settings == null) return;
+
+        for (int inx = 0; inx < settings.length(); inx++)
         {
-            for (int inx = 0; inx < settings.length(); inx++)
+            JSONObject setting = Json.getObject(settings, inx);
+            if (setting == null) continue;
+
+            String tag = Json.getString(setting, "tag");
+            String type = Json.getString(setting, "type");
+            String name = Json.getString(setting, "name");
+            String icon = Json.getString(setting, "icon");
+
+            if ((tag == null) || (type == null) || (name == null)) continue;
+
+            String subtag = subsystem + "." + tag;
+            int state = GUISetup.getSubsystemState(subtag);
+            int runstate = GUISetup.getSubsystemRunState(subtag);
+
+            String info = GUISetup.getTextForSubsystemEnabled(name, state);
+
+            if (state == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
             {
-                JSONObject setting = Json.getObject(settings, inx);
-                if (setting == null) continue;
-
-                String tag = Json.getString(setting, "tag");
-                String type = Json.getString(setting, "type");
-                String name = Json.getString(setting, "name");
-                String icon = Json.getString(setting, "icon");
-                if ((tag == null) || (type == null) || (name == null)) continue;
-
-                String subtag = subsystem + "." + tag;
-                int state = GUISetup.getSubsystemState(subtag);
-                int runstate = GUISetup.getSubsystemRunState(subtag);
-
-                String info = GUISetup.getTextForSubsystemEnabled(name, state);
-
-                if (state == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
+                if (type.equals(SubSystemHandler.SUBSYSTEM_TYPE_SERVICE))
                 {
-                    if (type.equals(SubSystemHandler.SUBSYSTEM_TYPE_SERVICE))
-                    {
-                        info += " - " + Simple.getTrans(GUISetup.getTextForSubsystemRunstateResid(runstate));
-                    }
+                    info += " - " + Simple.getTrans(GUISetup.getTextForSubsystemRunstateResid(runstate));
                 }
-
-                int color = (state == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
-                        ? GUIDefs.TEXT_COLOR_SPECIAL
-                        : (runstate == SubSystemHandler.SUBSYSTEM_RUN_STARTED)
-                        ? GUIDefs.TEXT_COLOR_INFOS
-                        : GUIDefs.TEXT_COLOR_ALERTS;
-
-                GUIListEntry entry = listView.findGUIListEntryOrCreate(subtag);
-                entry.setOnClickListener(onNeedClickListener);
-                entry.setTag(subtag);
-
-                entry.iconView.setImageResource(icon);
-                entry.headerViev.setText(name);
-                entry.infoView.setText(info);
-
-                entry.infoView.setTextColor(color);
-
-                String need = Json.getString(setting, "need");
-                collectSubsystemsNeeds(listView, subtag, need, todo);
             }
+
+            int color = (state == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
+                    ? GUIDefs.TEXT_COLOR_SPECIAL
+                    : (runstate == SubSystemHandler.SUBSYSTEM_RUN_STARTED)
+                    ? GUIDefs.TEXT_COLOR_INFOS
+                    : GUIDefs.TEXT_COLOR_ALERTS;
+
+            GUIListEntry entry = listView.findGUIListEntryOrCreate(subtag);
+            entry.setOnClickListener(onNeedClickListener);
+            entry.setTag(subtag);
+
+            entry.iconView.setImageResource(icon);
+            entry.headerViev.setText(name);
+            entry.infoView.setText(info);
+
+            entry.infoView.setTextColor(color);
+
+            String need = Json.getString(setting, "need");
+            collectSubsystemsNeeds(listView, subtag, need, todo);
         }
-   }
+    }
 
     private void collectSubsystemsNeeds(GUIListView listView, String subtag, String needString, boolean todo)
     {
@@ -135,76 +147,84 @@ public class GUISettingsWizzard extends GUIPluginTitleList
 
         for (String need : needs)
         {
-            boolean needEnabled = GUISetup.haveNeed(need);
-
-            int needIcon = GUISetup.getIconForNeedResid(need);
-            int needText = GUISetup.getTextForNeedResid(need);
-
-            GUIListEntry needEntry = listView.findGUIListEntryOrCreate(subtag + "." + need);
-            needEntry.setOnClickListener(onNeedClickListener);
-            needEntry.setTag(need);
-
-            needEntry.setLevel(1);
-            needEntry.iconView.setImageResource(needIcon);
-            needEntry.headerViev.setText(needText);
-
-            needEntry.infoView.setText(GUISetup.getTextForNeedStatusResid(need, needEnabled));
-
-            needEntry.infoView.setTextColor(needEnabled
-                    ? GUIDefs.TEXT_COLOR_INFOS
-                    : GUIDefs.TEXT_COLOR_ALERTS);
-
-            JSONArray needPerms = GUISetup.getPermissionsForNeed(need);
-
-            if (needPerms.length() > 0)
+            if (GUISetup.needHasService(need)
+                    || GUISetup.needHasInfos(need)
+                    || GUISetup.needHasRequest(need))
             {
-                int permIcon = GUISetup.getIconForPermResid(need);
-                int permText = GUISetup.getTextForPermResid(need);
+                boolean enabled = GUISetup.haveNeed(need);
 
-                String infos = "";
+                int icon = GUISetup.getIconForNeedResid(need);
+                int text = GUISetup.getTextForNeedResid(need);
 
-                for (int inx = 0; inx < needPerms.length(); inx++)
-                {
-                    String perm = Json.getString(needPerms, inx);
-                    if (perm == null) continue;
+                GUIListEntry entry = listView.findGUIListEntryOrCreate(subtag + "." + need);
+                entry.setOnClickListener(onNeedClickListener);
+                entry.setTag(need);
 
-                    if (infos.length() > 0) infos += ", ";
+                entry.setLevel(1);
+                entry.iconView.setImageResource(icon);
+                entry.headerViev.setText(text);
 
-                    infos += Simple.getTrans(GUISetup.getTextForManifestPermResid(perm));
-                }
+                entry.infoView.setText(GUISetup.getTextForNeedStatusResid(need, enabled));
 
-                GUIListEntry permEntry = listView.findGUIListEntryOrCreate(subtag + "." + need + ".perm");
-                permEntry.setOnClickListener(onPermClickListener);
-                permEntry.setTag(need);
-
-                permEntry.setLevel(1);
-                permEntry.iconView.setImageResource(permIcon);
-                permEntry.headerViev.setText(permText);
-
-                permEntry.infoView.setText(infos);
-
-                permEntry.infoView.setTextColor(GUISetup.haveAllPermissionsForNeed(getContext(), need)
+                entry.infoView.setTextColor(enabled
                         ? GUIDefs.TEXT_COLOR_INFOS
                         : GUIDefs.TEXT_COLOR_ALERTS);
-
             }
+
+            collectNeedPermissions(listView, need, todo);
         }
     }
+
+    @SuppressWarnings("StringConcatenationInLoop")
+    private void collectNeedPermissions(GUIListView listView, String need, boolean todo)
+    {
+        JSONArray perms = GUISetup.getPermissionsForNeed(need);
+        if ((perms == null) || (perms.length() == 0)) return;
+
+        int icon = GUISetup.getIconForPermResid(need);
+        int text = GUISetup.getTextForPermResid(need);
+
+        String infos = "";
+
+        for (int inx = 0; inx < perms.length(); inx++)
+        {
+            String perm = Json.getString(perms, inx);
+            if (perm == null) continue;
+
+            if (infos.length() > 0) infos += ", ";
+
+            infos += Simple.getTrans(GUISetup.getTextForManifestPermResid(perm));
+        }
+
+        GUIListEntry entry = listView.findGUIListEntryOrCreate(infos);
+        entry.setOnClickListener(onPermissionsClickListener);
+        entry.setTag(need);
+
+        entry.setLevel(1);
+        entry.iconView.setImageResource(icon);
+        entry.headerViev.setText(text);
+        entry.infoView.setText(infos);
+
+        entry.infoView.setTextColor(GUISetup.haveAllPermissionsForNeed(getContext(), need)
+                ? GUIDefs.TEXT_COLOR_INFOS
+                : GUIDefs.TEXT_COLOR_ALERTS);
+    }
+
     private final OnClickListener onSubsystemClickListener = new OnClickListener()
     {
         @Override
         public void onClick(final View entry)
         {
-            JSONObject subsystemInfo = (JSONObject) entry.getTag();
-            final String subsystem = Json.getString(subsystemInfo, "drv");
+            JSONObject infos = (JSONObject) entry.getTag();
+            final String subsystem = Json.getString(infos, "drv");
             if (subsystem == null) return;
 
             GUIDialogView dialog = new GUIDialogView(entry.getContext());
 
-            dialog.setTitleText(Json.getString(subsystemInfo, "name"));
-            dialog.setInfoText(Json.getString(subsystemInfo, "info"));
+            dialog.setTitleText(Json.getString(infos, "name"));
+            dialog.setInfoText(Json.getString(infos, "info"));
 
-            if (Json.getInt(subsystemInfo, "mode") == SubSystemHandler.SUBSYSTEM_MODE_MANDATORY)
+            if (Json.getInt(infos, "mode") == SubSystemHandler.SUBSYSTEM_MODE_MANDATORY)
             {
                 dialog.setPositiveButton(R.string.basic_ok);
                 dialog.positiveButton.requestFocus();
@@ -314,7 +334,7 @@ public class GUISettingsWizzard extends GUIPluginTitleList
         }
     };
 
-    private final OnClickListener onPermClickListener = new OnClickListener()
+    private final OnClickListener onPermissionsClickListener = new OnClickListener()
     {
         @Override
         public void onClick(View view)
