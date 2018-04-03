@@ -39,16 +39,14 @@
     <string name="setup_need_status_active">Aktiviert</string>
     <string name="setup_need_status_inactive">Nicht aktiviert</string>
     <string name="setup_need_status_usb_active">Eingesteckt</string>
-    <string name="setup_need_status_usb_inactive">Nicht sichtbar</string>
+    <string name="setup_need_status_usb_inactive">Nicht gefunden</string>
     <string name="setup_need_status_ssd_active">Bereit</string>
-    <string name="setup_need_status_ssd_inactive">Nicht sichtbar</string>
-    <string name="setup_need_status_adb_active">Wird gewährt</string>
+    <string name="setup_need_status_ssd_inactive">Nicht gefunden</string>
+    <string name="setup_need_status_adb_active">Authorisierts</string>
     <string name="setup_need_status_adb_inactive">Nicht authorisiert</string>
     <string name="setup_need_status_pin_active">Authorisiert</string>
     <string name="setup_need_status_pin_inactive">Nicht authorisiert</string>
-
-
-
+    
 
 
 

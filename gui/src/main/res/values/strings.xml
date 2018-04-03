@@ -65,9 +65,9 @@
     <string name="setup_need_status_active">Activated</string>
     <string name="setup_need_status_inactive">Not activated</string>
     <string name="setup_need_status_usb_active">Plugged in</string>
-    <string name="setup_need_status_usb_inactive">Not visible</string>
+    <string name="setup_need_status_usb_inactive">Not found</string>
     <string name="setup_need_status_ssd_active">Ready</string>
-    <string name="setup_need_status_ssd_inactive">Not visible</string>
+    <string name="setup_need_status_ssd_inactive">Not found</string>
     <string name="setup_need_status_adb_active">Granted</string>
     <string name="setup_need_status_adb_inactive">Not authorized</string>
     <string name="setup_need_status_pin_active">Authorized</string>

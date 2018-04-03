@@ -30,6 +30,7 @@ public class SNY extends OnInterfacesStubs implements
 
     public static SNY instance;
 
+    public SNYRemote remote;
     public SNYDiscover discover;
 
     public SNY(Application application)
@@ -83,16 +84,20 @@ public class SNY extends OnInterfacesStubs implements
     public void startSubsystem()
     {
         SNYDiscover.startService();
-
         onSubsystemStarted("sny", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
+
+        SNYRemote.startService();
+        onSubsystemStarted("sny.tvremote", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
     }
 
     @Override
     public void stopSubsystem()
     {
         SNYDiscover.stopService();
-
         onSubsystemStopped("sny", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
+
+        SNYRemote.stopService();
+        onSubsystemStopped("sny.tvremote", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
     }
 
     @Override
@@ -144,29 +149,35 @@ public class SNY extends OnInterfacesStubs implements
                     @Override
                     public void run()
                     {
+                        SNYRemote remote = SNY.instance.remote;
+
+                        if (remote == null) return;
+
                         for (int inx = 0; inx < dial.length(); inx++)
                         {
                             char digit = dial.charAt(inx);
 
                             switch (digit)
                             {
-                                case '0': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num0"); break;
-                                case '1': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num1"); break;
-                                case '2': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num2"); break;
-                                case '3': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num3"); break;
-                                case '4': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num4"); break;
-                                case '5': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num5"); break;
-                                case '6': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num6"); break;
-                                case '7': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num7"); break;
-                                case '8': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num8"); break;
-                                case '9': SNYRemote.sendRemoteCommand(ipaddr, authtoken, "Num9"); break;
+                                case '0': remote.sendRemoteCommand(ipaddr, authtoken, "Num0"); break;
+                                case '1': remote.sendRemoteCommand(ipaddr, authtoken, "Num1"); break;
+                                case '2': remote.sendRemoteCommand(ipaddr, authtoken, "Num2"); break;
+                                case '3': remote.sendRemoteCommand(ipaddr, authtoken, "Num3"); break;
+                                case '4': remote.sendRemoteCommand(ipaddr, authtoken, "Num4"); break;
+                                case '5': remote.sendRemoteCommand(ipaddr, authtoken, "Num5"); break;
+                                case '6': remote.sendRemoteCommand(ipaddr, authtoken, "Num6"); break;
+                                case '7': remote.sendRemoteCommand(ipaddr, authtoken, "Num7"); break;
+                                case '8': remote.sendRemoteCommand(ipaddr, authtoken, "Num8"); break;
+                                case '9': remote.sendRemoteCommand(ipaddr, authtoken, "Num9"); break;
                             }
                         }
 
-                        SNYRemote.sendRemoteCommand(ipaddr, authtoken, "DpadCenter");
-
+                        remote.sendRemoteCommand(ipaddr, authtoken, "DpadCenter");
                     }
+
                 }, 1000);
+
+                return true;
             }
         }
 
