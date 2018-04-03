@@ -50,13 +50,18 @@ public class GUISubSystems
         return subsys;
     }
 
-    public int getSubsystemsRunState(String subsystem)
+    public JSONObject getSubsystemInfos(String subsystem)
+    {
+        return Simple.getMapJSONObject(subSystemsInfos, subsystem);
+    }
+
+    public int getSubsystemRunState(String subsystem)
     {
         Integer val = Simple.getMapInteger(subSystemsRunstates, subsystem);
         return (val != null) ? val : SubSystemHandler.SUBSYSTEM_RUN_STOPPED;
     }
 
-    public int getSubsystemsMode(String subsystem)
+    public int getSubsystemMode(String subsystem)
     {
         JSONObject subsystemInfo = Simple.getMapJSONObject(subSystemsInfos, subsystem);
 
@@ -70,13 +75,12 @@ public class GUISubSystems
 
     public int getSubsystemState(String subsystem)
     {
-        if (getSubsystemsMode(subsystem) == SubSystemHandler.SUBSYSTEM_MODE_MANDATORY)
+        if (getSubsystemMode(subsystem) == SubSystemHandler.SUBSYSTEM_MODE_MANDATORY)
         {
             return SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED;
         }
 
         String key = "subsystem." + subsystem;
-
         JSONObject pref = GUIPrefs.readPref(key);
 
         return Json.getInt(pref, "state");
@@ -84,13 +88,12 @@ public class GUISubSystems
 
     public void setSubsystemState(String subsystem, int state)
     {
-        if (getSubsystemsMode(subsystem) == SubSystemHandler.SUBSYSTEM_MODE_MANDATORY)
+        if (getSubsystemMode(subsystem) == SubSystemHandler.SUBSYSTEM_MODE_MANDATORY)
         {
             return;
         }
 
         String key = "subsystem." + subsystem;
-
         JSONObject pref = GUIPrefs.readPref(key);
         Json.put(pref, "state", state);
         GUIPrefs.savePref(key, pref);
@@ -98,13 +101,12 @@ public class GUISubSystems
 
     public boolean isSubsystemActivated(String subsystem)
     {
-        if (getSubsystemsMode(subsystem) == SubSystemHandler.SUBSYSTEM_MODE_MANDATORY)
+        if (getSubsystemMode(subsystem) == SubSystemHandler.SUBSYSTEM_MODE_MANDATORY)
         {
             return true;
         }
 
         String key = "subsystem." + subsystem;
-
         JSONObject pref = GUIPrefs.readPref(key);
 
         return (Json.getInt(pref, "state") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED);

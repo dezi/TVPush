@@ -12,11 +12,13 @@ import android.util.Log;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import de.xavaro.android.gui.plugin.GUIPluginTitle;
 import de.xavaro.android.gui.wizzards.GUILocationsWizzard;
 import de.xavaro.android.gui.wizzards.GUICamerasWizzard;
 import de.xavaro.android.gui.wizzards.GUIChannelWizzard;
 import de.xavaro.android.gui.wizzards.GUIGeomapWizzard;
 import de.xavaro.android.gui.wizzards.GUICameraWizzard;
+import de.xavaro.android.gui.wizzards.GUISettingsWizzard;
 import de.xavaro.android.gui.wizzards.GUISetupWizzard;
 import de.xavaro.android.gui.wizzards.GUIMenuWizzard;
 import de.xavaro.android.gui.wizzards.GUIPingWizzard;
@@ -58,6 +60,7 @@ public class GUIDesktopActivity extends GUIActivity
         wizzards.put(GUIPingWizzard.      class.getSimpleName(), new GUIPingWizzard      (this));
         wizzards.put(GUITodoWizzard.      class.getSimpleName(), new GUITodoWizzard      (this));
         wizzards.put(GUISetupWizzard.     class.getSimpleName(), new GUISetupWizzard     (this));
+        wizzards.put(GUISettingsWizzard.  class.getSimpleName(), new GUISettingsWizzard  (this));
         wizzards.put(GUICameraWizzard.    class.getSimpleName(), new GUICameraWizzard    (this));
         wizzards.put(GUICamerasWizzard.   class.getSimpleName(), new GUICamerasWizzard   (this));
         wizzards.put(GUIChannelWizzard.   class.getSimpleName(), new GUIChannelWizzard   (this));
@@ -112,14 +115,21 @@ public class GUIDesktopActivity extends GUIActivity
         showPlugin(wizzard);
     }
 
-    public void displayWizzard(String name, String uuid)
+    public void displayWizzard(String name, String tag)
     {
         GUIPlugin wizzard = getWizzard(name);
         if (wizzard == null) return;
 
         if (wizzard instanceof GUIPluginTitleIOT)
         {
-            ((GUIPluginTitleIOT) wizzard).setIOTObject(uuid);
+            ((GUIPluginTitleIOT) wizzard).setIOTObject(tag);
+        }
+        else
+        {
+            if (wizzard instanceof GUIPluginTitle)
+            {
+                ((GUIPluginTitle) wizzard).setObjectTag(tag);
+            }
         }
 
         showPlugin(wizzard);

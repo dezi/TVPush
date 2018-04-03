@@ -6,7 +6,7 @@
     <string name="basic_deactiviate">De-activate</string>
     <string name="basic_postpone">Postpone</string>
 
-    <string name="subsystem_gui_name">GUI System</string>
+    <string name="subsystem_gui_name">GUI Desktop</string>
 
     <string name="subsystem_gui_info">
         Dieses System enthällt die grafische Anwendung.

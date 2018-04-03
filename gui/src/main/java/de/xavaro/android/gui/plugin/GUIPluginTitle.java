@@ -25,6 +25,8 @@ public class GUIPluginTitle extends GUIPlugin
     public GUIEditText titleEdit;
     public GUITextView titleInfo;
 
+    public String objectTag;
+
     private int titleIconResid;
 
     public GUIPluginTitle(Context context)
@@ -142,6 +144,11 @@ public class GUIPluginTitle extends GUIPlugin
         titleEdit.setVisibility(VISIBLE);
 
         titleInfo.setVisibility(GONE);
+    }
+
+    public void setObjectTag(String objectTag)
+    {
+        this.objectTag = objectTag;
     }
 
     public void onTitleEditFinished(View view)

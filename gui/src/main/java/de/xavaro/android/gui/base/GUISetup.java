@@ -575,7 +575,7 @@ public class GUISetup
 
     public static int getSubsystemRunState(String subsystem)
     {
-        return GUI.instance.subSystems.getSubsystemsRunState(subsystem);
+        return GUI.instance.subSystems.getSubsystemRunState(subsystem);
     }
 
     public static String getTextForSubsystemEnabled(String subsystem, int state)

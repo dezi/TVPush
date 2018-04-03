@@ -19,6 +19,7 @@ import de.xavaro.android.gui.base.GUISetup;
 import de.xavaro.android.gui.plugin.GUIPluginTitleList;
 import de.xavaro.android.gui.views.GUIDialogView;
 import de.xavaro.android.gui.views.GUIListEntry;
+import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.views.GUIListView;
 import pub.android.interfaces.all.SubSystemHandler;
 
@@ -46,6 +47,77 @@ public class GUISetupWizzard extends GUIPluginTitleList
     {
         collectSubsystems(listView, todo);
     }
+
+    private void collectSubsystems(GUIListView listView, boolean todo)
+    {
+        JSONArray subsystems = GUISetup.getAvailableSubsystems();
+
+        for (int inx = 0; inx < subsystems.length(); inx++)
+        {
+            JSONObject subsystemInfo = Json.getObject(subsystems, inx);
+            if (subsystemInfo == null) continue;
+
+            String subsystem = Json.getString(subsystemInfo, "drv");
+            String name = Json.getString(subsystemInfo, "name");
+            String icon = Json.getString(subsystemInfo, "icon");
+
+            int state = GUISetup.getSubsystemState(subsystem);
+            int runstate = GUISetup.getSubsystemRunState(subsystem);
+
+            if (todo && (state != SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)) continue;
+
+            GUIListEntry entry = listView.findGUIListEntryOrCreate(subsystem);
+            entry.setOnClickListener(onClickListener);
+            entry.setTag(subsystem);
+
+            String info = GUISetup.getTextForSubsystemEnabled(name, state);
+
+            if (state == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
+            {
+                info += " - " + Simple.getTrans(GUISetup.getTextForSubsystemRunstateResid(runstate));
+            }
+
+            entry.iconView.setImageResource(icon);
+            entry.headerViev.setText(name);
+
+            entry.infoView.setText(info);
+
+            int color = (state == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
+                    ? GUIDefs.TEXT_COLOR_SPECIAL
+                    : (runstate == SubSystemHandler.SUBSYSTEM_RUN_STARTED)
+                    ? GUIDefs.TEXT_COLOR_INFOS
+                    : GUIDefs.TEXT_COLOR_ALERTS;
+
+            entry.infoView.setTextColor(color);
+        }
+    }
+
+    private final OnClickListener onClickListener = new OnClickListener()
+    {
+        @Override
+        public void onClick(View view)
+        {
+            String subsystem = (String) view.getTag();
+            GUI.instance.desktopActivity.displayWizzard(GUISettingsWizzard.class.getSimpleName(), subsystem);
+        }
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private void collectServices(GUIListView listView, boolean todo)
     {
@@ -158,51 +230,6 @@ public class GUISetupWizzard extends GUIPluginTitleList
         }
     }
 
-    private void collectSubsystems(GUIListView listView, boolean todo)
-    {
-        JSONArray subsystems = GUISetup.getAvailableSubsystems();
-
-        for (int inx = 0; inx < subsystems.length(); inx++)
-        {
-            JSONObject subsystem = Json.getObject(subsystems, inx);
-            if (subsystem == null) continue;
-
-            String drv = Json.getString(subsystem, "drv");
-            String name = Json.getString(subsystem, "name");
-            String icon = Json.getString(subsystem, "icon");
-
-            int state = GUISetup.getSubsystemState(drv);
-            int runstate = GUISetup.getSubsystemRunState(drv);
-
-            if (todo && (state != SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)) continue;
-
-            String idtag = "subsystem:" + subsystem;
-            GUIListEntry entry = listView.findGUIListEntryOrCreate(idtag);
-            entry.setOnClickListener(onSubsystemClickListener);
-            entry.setTag(subsystem);
-
-            String info = GUISetup.getTextForSubsystemEnabled(name, state);
-
-            if (state == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
-            {
-                info += " - " + Simple.getTrans(GUISetup.getTextForSubsystemRunstateResid(runstate));
-            }
-
-            entry.iconView.setImageResource(icon);
-            entry.headerViev.setText(name);
-
-            entry.infoView.setText(info);
-
-            int color = (state == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
-                    ? GUIDefs.TEXT_COLOR_SPECIAL
-                    : (runstate == SubSystemHandler.SUBSYSTEM_RUN_STARTED)
-                    ? GUIDefs.TEXT_COLOR_INFOS
-                    : GUIDefs.TEXT_COLOR_ALERTS;
-
-            entry.infoView.setTextColor(color);
-        }
-    }
-
     private final OnClickListener onServiceStartClickListener = new OnClickListener()
     {
         @Override
@@ -291,4 +318,5 @@ public class GUISetupWizzard extends GUIPluginTitleList
             GUI.instance.desktopActivity.topframe.addView(dialog);
         }
     };
+
 }

@@ -1,7 +1,7 @@
 package de.xavaro.android.gui.base;
 
-import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
+import android.annotation.SuppressLint;
 
 import android.support.v7.app.AppCompatActivity;
 import android.graphics.drawable.ColorDrawable;
