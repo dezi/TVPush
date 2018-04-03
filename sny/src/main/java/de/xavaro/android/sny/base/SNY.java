@@ -83,11 +83,17 @@ public class SNY extends OnInterfacesStubs implements
     @Override
     public void startSubsystem()
     {
-        SNYDiscover.startService();
-        onSubsystemStarted("sny", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
+        if (onGetSubsystemState("sny") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
+        {
+            SNYDiscover.startService();
+            onSubsystemStarted("sny", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
+        }
 
-        SNYRemote.startService();
-        onSubsystemStarted("sny.tvremote", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
+        if (onGetSubsystemState("sny.tvremote") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
+        {
+            SNYRemote.startService();
+            onSubsystemStarted("sny.tvremote", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
+        }
     }
 
     @Override

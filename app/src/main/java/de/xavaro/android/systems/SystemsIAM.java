@@ -59,6 +59,12 @@ public class SystemsIAM extends IAM
     }
 
     @Override
+    public int onGetSubsystemState(String subsystem)
+    {
+        return GUI.instance.subSystems.getSubsystemState(subsystem);
+    }
+
+    @Override
     public void onSubsystemStarted(String subsystem, int state)
     {
         GUI.instance.subSystems.setSubsystemRunstate(subsystem, state);

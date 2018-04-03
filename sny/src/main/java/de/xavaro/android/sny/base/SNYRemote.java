@@ -72,6 +72,7 @@ public class SNYRemote
         }
     }
 
+    @SuppressWarnings("FieldCanBeLocal")
     private final Runnable remoteRunnable = new Runnable()
     {
         @Override

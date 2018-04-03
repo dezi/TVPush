@@ -4,6 +4,8 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
+import pub.android.interfaces.all.SubSystemHandler;
+
 public class OnInterfacesStubs
 {
     private String LOGTAG()
@@ -11,13 +13,21 @@ public class OnInterfacesStubs
         return this.getClass().getSimpleName();
     }
 
-    public void onSubsystemStarted(String subsystem, int state)
+    public int onGetSubsystemState(String subsystem)
+    {
+        Log.d(LOGTAG(), "onGetSubsystemState: STUB!");
+        Log.d(LOGTAG(), Log.getStackTraceString(new Exception()));
+
+        return SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED;
+    }
+
+    public void onSubsystemStarted(String subsystem, int runstate)
     {
         Log.d(LOGTAG(), "onSubsystemStarted: STUB!");
         Log.d(LOGTAG(), Log.getStackTraceString(new Exception()));
     }
 
-    public void onSubsystemStopped(String subsystem, int state)
+    public void onSubsystemStopped(String subsystem, int runstate)
     {
         Log.d(LOGTAG(), "onSubsystemStopped: STUB!");
         Log.d(LOGTAG(), Log.getStackTraceString(new Exception()));

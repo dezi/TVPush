@@ -20,6 +20,12 @@ public class SystemsTPL extends TPL
     }
 
     @Override
+    public int onGetSubsystemState(String subsystem)
+    {
+        return GUI.instance.subSystems.getSubsystemState(subsystem);
+    }
+
+    @Override
     public void onSubsystemStarted(String subsystem, int state)
     {
         GUI.instance.subSystems.setSubsystemRunstate(subsystem, state);

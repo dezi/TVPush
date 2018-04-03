@@ -8,6 +8,7 @@ import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.sny.base.SNY;
+import pub.android.interfaces.all.SubSystemHandler;
 
 public class SystemsSNY extends SNY
 {
@@ -18,6 +19,12 @@ public class SystemsSNY extends SNY
         super(application);
 
         GUI.instance.subSystems.registerSubsystem(getSubsystemInfo());
+    }
+
+    @Override
+    public int onGetSubsystemState(String subsystem)
+    {
+        return GUI.instance.subSystems.getSubsystemState(subsystem);
     }
 
     @Override

@@ -23,6 +23,8 @@ public interface SubSystemHandler
     void startSubsystem();
     void stopSubsystem();
 
-    void onSubsystemStarted(String subsystem, int state);
-    void onSubsystemStopped(String subsystem, int state);
+    int onGetSubsystemState(String subsystem);
+
+    void onSubsystemStarted(String subsystem, int runstate);
+    void onSubsystemStopped(String subsystem, int runstate);
 }
