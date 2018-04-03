@@ -5,11 +5,12 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
-import de.xavaro.android.gui.simple.Json;
+import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.smart.GUIDesktopActivity;
 import de.xavaro.android.gui.smart.GUISpeechListener;
+import de.xavaro.android.gui.simple.Json;
+import de.xavaro.android.gui.R;
 
-import pub.android.interfaces.all.SubSystemHandler;
 import pub.android.interfaces.pub.PUBCamera;
 import pub.android.interfaces.pub.PUBSmartBulb;
 import pub.android.interfaces.pub.PUBSmartPlug;
@@ -18,6 +19,7 @@ import pub.android.interfaces.gui.OnSubsystemRequest;
 import pub.android.interfaces.gui.OnCameraHandlerRequest;
 import pub.android.interfaces.gui.OnSmartBulbHandlerRequest;
 import pub.android.interfaces.gui.OnSmartPlugHandlerRequest;
+import pub.android.interfaces.all.SubSystemHandler;
 
 public class GUI implements
         SubSystemHandler,
@@ -56,7 +58,9 @@ public class GUI implements
         JSONObject info = new JSONObject();
 
         Json.put(info, "drv", "gui");
-        Json.put(info, "name", "G.U.I");
+        Json.put(info, "name", Simple.getTrans(R.string.subsystem_name));
+        Json.put(info, "info", Simple.getTrans(R.string.subsystem_info));
+        Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_iot_200));
 
         return info;
     }

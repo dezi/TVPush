@@ -8,7 +8,9 @@ import org.json.JSONObject;
 
 import de.xavaro.android.iam.eval.IAMEval;
 import de.xavaro.android.iam.simple.Json;
+import de.xavaro.android.iam.R;
 
+import de.xavaro.android.iam.simple.Simple;
 import pub.android.interfaces.all.SubSystemHandler;
 import pub.android.interfaces.iam.ArtificialIntelligenceHandler;
 
@@ -22,6 +24,7 @@ public class IAM implements
 
     public IAM(Application appcontext)
     {
+        Simple.initialize(appcontext);
     }
 
     @Override
@@ -30,7 +33,9 @@ public class IAM implements
         JSONObject info = new JSONObject();
 
         Json.put(info, "drv", "iam");
-        Json.put(info, "name", "I.A.M - KI");
+        Json.put(info, "name", Simple.getTrans(R.string.subsystem_name));
+        Json.put(info, "info", Simple.getTrans(R.string.subsystem_info));
+        Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_iam_220));
 
         return info;
     }

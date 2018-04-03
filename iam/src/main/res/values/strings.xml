@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">ai</string>
+
+    <string name="subsystem_name">I.A.M - KI</string>
+
+    <string name="subsystem_info">
+        Dieses System wertet die Spracheingaben aus und setzt diese
+        in Steuerungsinformation für die Smart-Home App um.
+        \n\n
+        Wenn dieses System aktiviert ist, können sie intelligente Steckdosen
+        und Glühbirnen mit Sprachsteuerung an- und ausschalten.
+    </string>
+
 </resources>

@@ -30,6 +30,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.util.Base64;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -41,6 +42,7 @@ import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.io.InputStream;
 import java.math.RoundingMode;
 import java.net.InetAddress;
 import java.text.DecimalFormat;
@@ -726,6 +728,25 @@ public class Simple
             Log.d(LOGTAG, "getManifestMetaData: name=" + name + " value=" + value);
 
             return value;
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static String getImageResourceBase64(int resid)
+    {
+        try
+        {
+            InputStream is = resources.openRawResource(+resid);
+            byte[] buffer = new byte[16 * 1024];
+            int xfer = is.read(buffer);
+
+            return Base64.encodeToString(buffer, 0 ,xfer, android.util.Base64.NO_WRAP);
         }
         catch (Exception ex)
         {
