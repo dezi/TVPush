@@ -580,7 +580,7 @@ public class GUISetup
 
     public static String getTextForSubsystemEnabled(String subsystem, int state)
     {
-        if (state == GUISubSystems.SUBSYSTEM_STATE_ACTIVATED)
+        if (state == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
         {
             return Simple.getTrans(R.string.setup_subysystems_subsystem_active, subsystem);
         }

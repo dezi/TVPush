@@ -20,6 +20,7 @@ import de.xavaro.android.gui.plugin.GUIPluginTitleList;
 import de.xavaro.android.gui.views.GUIDialogView;
 import de.xavaro.android.gui.views.GUIListEntry;
 import de.xavaro.android.gui.views.GUIListView;
+import pub.android.interfaces.all.SubSystemHandler;
 
 public class GUISetupWizzard extends GUIPluginTitleList
 {
@@ -173,27 +174,30 @@ public class GUISetupWizzard extends GUIPluginTitleList
             int state = GUISetup.getSubsystemState(drv);
             int runstate = GUISetup.getSubsystemRunState(drv);
 
-            if (todo && (state != GUISubSystems.SUBSYSTEM_STATE_DEACTIVATED)) continue;
+            if (todo && (state != SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)) continue;
 
             String idtag = "subsystem:" + subsystem;
             GUIListEntry entry = listView.findGUIListEntryOrCreate(idtag);
             entry.setOnClickListener(onSubsystemClickListener);
             entry.setTag(subsystem);
 
-            String info = GUISetup.getTextForSubsystemEnabled(name, state)
-                    + " - "
-                    + Simple.getTrans(GUISetup.getTextForSubsystemRunstateResid(runstate));
+            String info = GUISetup.getTextForSubsystemEnabled(name, state);
+
+            if (state == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
+            {
+                info += " - " + Simple.getTrans(GUISetup.getTextForSubsystemRunstateResid(runstate));
+            }
 
             entry.iconView.setImageResource(icon);
             entry.headerViev.setText(name);
 
             entry.infoView.setText(info);
 
-            int color = (state == GUISubSystems.SUBSYSTEM_STATE_DEACTIVATED)
-                    ? GUIDefs.TEXT_COLOR_ALERTS
-                    : (state == GUISubSystems.SUBSYSTEM_STATE_DISABLED)
+            int color = (state == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
                     ? GUIDefs.TEXT_COLOR_SPECIAL
-                    : GUIDefs.TEXT_COLOR_INFOS;
+                    : (runstate == SubSystemHandler.SUBSYSTEM_RUN_STARTED)
+                    ? GUIDefs.TEXT_COLOR_INFOS
+                    : GUIDefs.TEXT_COLOR_ALERTS;
 
             entry.infoView.setTextColor(color);
         }
@@ -241,14 +245,14 @@ public class GUISetupWizzard extends GUIPluginTitleList
             dialog.setTitleText(GUISetup.getTitleForSubsystemResid(drv));
             dialog.setInfoText(GUISetup.getInfoForSubsystemResid(drv));
 
-            if (GUISetup.getSubsystemState(drv) == GUISubSystems.SUBSYSTEM_STATE_ACTIVATED)
+            if (GUISetup.getSubsystemState(drv) == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
             {
                 dialog.setPositiveButton(R.string.basic_deactiviate, new OnClickListener()
                 {
                     @Override
                     public void onClick(View view)
                     {
-                        GUI.instance.subSystems.setSubsystemState(drv, GUISubSystems.SUBSYSTEM_STATE_DEACTIVATED);
+                        GUI.instance.subSystems.setSubsystemState(drv, SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED);
                         GUIPluginTitleList.updateContentinParentPlugin(entry);
                         GUI.instance.onStopSubsystemRequest(drv);
                     }
@@ -265,7 +269,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
                     @Override
                     public void onClick(View view)
                     {
-                        GUI.instance.subSystems.setSubsystemState(drv, GUISubSystems.SUBSYSTEM_STATE_ACTIVATED);
+                        GUI.instance.subSystems.setSubsystemState(drv, SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED);
                         GUIPluginTitleList.updateContentinParentPlugin(entry);
                         GUI.instance.onStartSubsystemRequest(drv);
                     }
@@ -276,7 +280,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
                     @Override
                     public void onClick(View view)
                     {
-                        GUI.instance.subSystems.setSubsystemState(drv, GUISubSystems.SUBSYSTEM_STATE_DISABLED);
+                        GUI.instance.subSystems.setSubsystemState(drv, SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED);
                         GUIPluginTitleList.updateContentinParentPlugin(entry);
                     }
                 });

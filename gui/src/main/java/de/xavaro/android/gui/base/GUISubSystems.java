@@ -16,10 +16,6 @@ public class GUISubSystems
 {
     private final static String LOGTAG = GUISetup.class.getSimpleName();
 
-    public final static int SUBSYSTEM_STATE_DEACTIVATED = 0;
-    public final static int SUBSYSTEM_STATE_ACTIVATED = 1;
-    public final static int SUBSYSTEM_STATE_DISABLED = 2;
-
     private final Map<String, JSONObject> subSystemsInfos = new LinkedHashMap<>();
     private final Map<String, Integer> subSystemsRunstates = new HashMap<>();
 
@@ -76,7 +72,7 @@ public class GUISubSystems
     {
         if (getSubsystemsMode(subsystem) == SubSystemHandler.SUBSYSTEM_MODE_MANDATORY)
         {
-            return SUBSYSTEM_STATE_ACTIVATED;
+            return SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED;
         }
 
         String key = "subsystem." + subsystem;
@@ -111,6 +107,6 @@ public class GUISubSystems
 
         JSONObject pref = GUIPrefs.readPref(key);
 
-        return (Json.getInt(pref, "state") == SUBSYSTEM_STATE_ACTIVATED);
+        return (Json.getInt(pref, "state") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED);
     }
 }
