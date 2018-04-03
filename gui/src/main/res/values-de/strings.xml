@@ -10,6 +10,59 @@
 
     <string name="setup_ukn">Unbekannt</string>
 
+    <string name="setup_need_head_ble">Bluetooth-Dienst</string>
+    <string name="setup_need_head_loc">Ortungs-Dienst</string>
+    <string name="setup_need_head_dev">Entwickler-Modus</string>
+    <string name="setup_need_head_mic">Mikrofon-Dienst</string>
+    <string name="setup_need_head_ext">Speicher-Dienst</string>
+    <string name="setup_need_head_cam">Kamera-Dienst</string>
+    <string name="setup_need_head_adb">ADB-Zugriff</string>
+    <string name="setup_need_head_usb">USB-Stick</string>
+    <string name="setup_need_head_ssd">SD-Karte</string>
+    <string name="setup_need_head_pin">Pin-Code</string>
+
+    <string name="setup_perm_head_ble">Bluetooth-Zugriff</string>
+    <string name="setup_perm_head_loc">Standort-Zugriff</string>
+    <string name="setup_perm_head_mic">Mikrofon-Zugriff</string>
+    <string name="setup_perm_head_ext">Speicher-Zugriff</string>
+    <string name="setup_perm_head_cam">Kamera-Zugriff</string>
+
+    <string name="setup_manifest_perm_record_audio">Aufnehmen</string>
+    <string name="setup_manifest_perm_bluetooth">Bluetooth</string>
+    <string name="setup_manifest_perm_bluetooth_admin">Bluetooth Admin</string>
+    <string name="setup_manifest_perm_access_fine_location">GPS-Ortung</string>
+    <string name="setup_manifest_perm_access_coarse_location">Netzwerk-Ortung</string>
+    <string name="setup_manifest_perm_read_external_storage">Lesen</string>
+    <string name="setup_manifest_perm_write_external_storage">Schreiben</string>
+    <string name="setup_manifest_perm_camera">Kamera-Zugriff</string>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <string name="setup_services_service">Dienst</string>
     <string name="setup_services_service_active">Aktiviert</string>
     <string name="setup_services_service_inactive">Nicht aktiviert</string>

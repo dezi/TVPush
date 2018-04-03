@@ -51,19 +51,223 @@ public class GUISetup
     {
         switch (need)
         {
-            case "mic": return R.string.setup_services_service_mic;
-            case "ext": return R.string.setup_services_service_ext;
-            case "cam": return R.string.setup_services_service_cam;
-            case "ble": return R.string.setup_services_service_ble;
-            case "loc": return R.string.setup_services_service_loc;
-            case "dev": return R.string.setup_services_service_dev;
-            case "usb": return R.string.setup_features_feature_usb;
-            case "ssd": return R.string.setup_features_feature_ssd;
-            case "adb": return R.string.setup_features_feature_adb;
-            case "pin": return R.string.setup_features_feature_pin;
+            case "mic": return R.string.setup_need_head_mic;
+            case "ext": return R.string.setup_need_head_ext;
+            case "cam": return R.string.setup_need_head_cam;
+            case "ble": return R.string.setup_need_head_ble;
+            case "loc": return R.string.setup_need_head_loc;
+            case "dev": return R.string.setup_need_head_dev;
+            case "usb": return R.string.setup_need_head_usb;
+            case "ssd": return R.string.setup_need_head_ssd;
+            case "adb": return R.string.setup_need_head_adb;
+            case "pin": return R.string.setup_need_head_pin;
         }
 
         return R.string.setup_ukn;
+    }
+
+    public static int getInfoForNeedResid(String need)
+    {
+        switch (need)
+        {
+            case "mic": return R.string.setup_need_info_mic;
+            case "ext": return R.string.setup_need_info_ext;
+            case "cam": return R.string.setup_need_info_cam;
+            case "ble": return R.string.setup_need_info_ble;
+            case "loc": return R.string.setup_need_info_loc;
+            case "dev": return R.string.setup_need_info_dev;
+            case "usb": return R.string.setup_need_info_usb;
+            case "ssd": return R.string.setup_need_info_ssd;
+            case "adb": return R.string.setup_need_info_adb;
+            case "pin": return R.string.setup_need_info_pin;
+        }
+
+        return R.string.setup_ukn;
+    }
+
+    public static int getTextForNeedStatusResid(String need, boolean enabled)
+    {
+        return enabled
+                ? R.string.setup_services_service_active
+                : R.string.setup_services_service_inactive;
+    }
+
+    public static int getIconForPermResid(String perm)
+    {
+        switch (perm)
+        {
+            case "mic": return R.drawable.mic_540;
+            case "ext": return R.drawable.read_write_340;
+            case "cam": return R.drawable.camera_shutter_820;
+            case "ble": return R.drawable.bluetooth_450;
+            case "loc": return R.drawable.position_560;
+        }
+
+        return R.drawable.unknown_550;
+    }
+
+    public static int getTextForPermResid(String need)
+    {
+        switch (need)
+        {
+            case "mic": return R.string.setup_perm_head_mic;
+            case "ext": return R.string.setup_perm_head_ext;
+            case "cam": return R.string.setup_perm_head_cam;
+            case "ble": return R.string.setup_perm_head_ble;
+            case "loc": return R.string.setup_perm_head_loc;
+        }
+
+        return R.string.setup_ukn;
+    }
+
+    public static int getInfoForPermResid(String need)
+    {
+        switch (need)
+        {
+            case "mic": return R.string.setup_perm_info_mic;
+            case "ext": return R.string.setup_perm_info_ext;
+            case "cam": return R.string.setup_perm_info_cam;
+            case "ble": return R.string.setup_perm_info_ble;
+            case "loc": return R.string.setup_perm_info_loc;
+        }
+
+        return R.string.setup_ukn;
+    }
+
+    public static int getTextForManifestPermResid(String manifestperm)
+    {
+        switch (manifestperm)
+        {
+            case Manifest.permission.RECORD_AUDIO:
+                return R.string.setup_manifest_perm_record_audio;
+            case Manifest.permission.BLUETOOTH:
+                return R.string.setup_manifest_perm_bluetooth;
+            case Manifest.permission.BLUETOOTH_ADMIN:
+                return R.string.setup_manifest_perm_bluetooth_admin;
+            case Manifest.permission.ACCESS_FINE_LOCATION:
+                return R.string.setup_manifest_perm_access_fine_location;
+            case Manifest.permission.ACCESS_COARSE_LOCATION:
+                return R.string.setup_manifest_perm_access_coarse_location;
+            case Manifest.permission.READ_EXTERNAL_STORAGE:
+                return R.string.setup_manifest_perm_read_external_storage;
+            case Manifest.permission.WRITE_EXTERNAL_STORAGE:
+                return R.string.setup_manifest_perm_write_external_storage;
+            case Manifest.permission.CAMERA:
+                return R.string.setup_manifest_perm_camera;
+        }
+
+        return R.string.setup_ukn;
+    }
+
+    public static boolean haveNeed(String need)
+    {
+        boolean have = false;
+
+        //
+        // Bluetooth.
+        //
+
+        if (need.equals("ble"))
+        {
+            BluetoothAdapter adapter = Simple.getBTAdapter();
+            have = (adapter != null) && adapter.isEnabled();
+        }
+
+        //
+        // Location.
+        //
+
+        if (need.equals("loc"))
+        {
+            LocationManager locationManager = Simple.getLocationManager();
+            boolean locmanEnabled = (locationManager != null);
+            boolean locgpsEnabled = false;
+            boolean locnetEnabled = false;
+
+            if (locmanEnabled)
+            {
+                try
+                {
+                    locgpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                }
+                catch (Exception ignore)
+                {
+                }
+
+                try
+                {
+                    locnetEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+                }
+                catch (Exception ignore)
+                {
+                }
+            }
+
+            have = locgpsEnabled || locnetEnabled;
+        }
+
+        //
+        // Developer.
+        //
+
+        if (need.equals("dev"))
+        {
+            int devEnabled = Settings.Global.getInt(Simple.getContentResolver(),
+                    Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
+
+            have = (devEnabled == 1);
+        }
+
+        //
+        // Services which are always activated.
+        //
+
+        if (need.equals("mic") || need.equals("cam") || need.equals("ext"))
+        {
+            have = true;
+        }
+
+        //
+        // Special needs.
+        //
+
+        if (need.equals("usb") || need.equals("ssd"))
+        {
+            try
+            {
+                File storage = new File("/storage");
+                File[] mounts = storage.listFiles();
+
+                for (File mount : mounts)
+                {
+                    if (!mount.canRead()) continue;
+                    if (mount.getName().equals("emulated")) continue;
+                    if (mount.getName().equals("enc_emulated")) continue;
+
+                    have = true;
+                }
+            }
+            catch (Exception ignore)
+            {
+            }
+        }
+
+        if (need.equals("adb"))
+        {
+            // Todo: get adb check.
+        }
+
+        return have;
+    }
+
+    public static boolean needHasService(String need)
+    {
+        return need.equals("ble") || need.equals("loc") || need.equals("dev");
+    }
+
+    public static boolean needHasPermissions(String need)
+    {
+        return (getPermissionsForNeed(need).length() > 0);
     }
 
     public static JSONArray getPermissionsForNeed(String need)
@@ -145,6 +349,182 @@ public class GUISetup
 
         return perms;
     }
+
+    public static boolean startIntentForNeed(Context context, String service)
+    {
+        try
+        {
+            if (service.equals("loc"))
+            {
+                context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                return true;
+            }
+
+            if (service.equals("ble"))
+            {
+                if (Simple.isSony())
+                {
+                    //
+                    // Fuck dat. Sony engineers fucked it up.
+                    //
+
+                    String pkg = "com.android.tv.settings";
+                    String cls = "com.sony.dtv.settings.networkaccessories.bluetooth.BluetoothActivity";
+
+                    ComponentName cn = new ComponentName(pkg, cls);
+                    Intent intent = new Intent();
+                    intent.setComponent(cn);
+
+                    context.startActivity(intent);
+                }
+                else
+                {
+                    context.startActivity(new Intent(Settings.ACTION_BLUETOOTH_SETTINGS));
+                }
+
+                return true;
+            }
+
+            if (service.equals("dev"))
+            {
+                if (haveService("dev"))
+                {
+                    context.startActivity(new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
+                }
+                else
+                {
+                    if (Simple.isSony())
+                    {
+                        //
+                        // Fuck dat. Sony engineers fucked it up again.
+                        //
+
+                        String pkg = "com.android.tv.settings";
+                        String cls = "com.sony.dtv.settings.about.AboutActivity";
+
+                        ComponentName cn = new ComponentName(pkg, cls);
+                        Intent intent = new Intent();
+                        intent.setComponent(cn);
+
+                        context.startActivity(intent);
+                    }
+                    else
+                    {
+                        context.startActivity(new Intent(Settings.ACTION_DEVICE_INFO_SETTINGS));
+                    }
+                }
+
+                return true;
+            }
+        }
+        catch (Exception ignore)
+        {
+        }
+
+        return false;
+    }
+
+    public static boolean requestPermissionForNeed(Activity activity, String need, int requestCode)
+    {
+        String which = null;
+
+        if (need.equals("mic")) which = Manifest.permission.RECORD_AUDIO;
+        if (need.equals("loc")) which = Manifest.permission.ACCESS_FINE_LOCATION;
+        if (need.equals("ble")) which = Manifest.permission.BLUETOOTH_ADMIN;
+        if (need.equals("ext")) which = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        if (need.equals("cam")) which = Manifest.permission.CAMERA;
+
+        if ((which != null) && ! havePermission(activity, which))
+        {
+            ActivityCompat.requestPermissions(activity, new String[]{which}, requestCode);
+
+            return true;
+        }
+
+        //
+        // Open the complete permissions
+        // setup page for current app.
+        //
+
+        Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
+
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(uri);
+        activity.startActivity(intent);
+
+        return false;
+    }
+
+    public static boolean havePermission(Context context, String manifestperm)
+    {
+        int permission = ContextCompat.checkSelfPermission(context, manifestperm);
+
+        return (permission == PackageManager.PERMISSION_GRANTED);
+    }
+
+    public static boolean haveAllPermissionsForNeed(Context context, String need)
+    {
+        boolean haveAll = false;
+
+        JSONArray list = getPermissionsForNeed(need);
+
+        if (list != null)
+        {
+            haveAll = true;
+
+            for (int inx = 0; inx < list.length(); inx++)
+            {
+                String manifestperm = Json.getString(list, inx);
+
+                haveAll &= havePermission(context, manifestperm);
+            }
+        }
+
+        return haveAll;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //region Services.
 
@@ -277,13 +657,6 @@ public class GUISetup
         }
 
         return R.drawable.unknown_550;
-    }
-
-    public static int getTextForServiceEnabledResid(String service, boolean enabled)
-    {
-        return enabled
-                ? R.string.setup_services_service_active
-                : R.string.setup_services_service_inactive;
     }
 
     public static boolean startIntentForService(Context context, String service)
@@ -447,13 +820,6 @@ public class GUISetup
         return perms;
     }
 
-    public static boolean havePermission(Context context, String manifestperm)
-    {
-        int permission = ContextCompat.checkSelfPermission(context, manifestperm);
-
-        return (permission == PackageManager.PERMISSION_GRANTED);
-    }
-
     public static boolean haveAllPermissions(Context context, String service)
     {
         boolean haveAll = false;
@@ -482,31 +848,6 @@ public class GUISetup
     public static int getTextPermissionResid()
     {
         return R.string.setup_permissions_permission;
-    }
-
-    public static int getTextForPermissionResid(String manifestperm)
-    {
-        switch (manifestperm)
-        {
-            case Manifest.permission.RECORD_AUDIO:
-                return R.string.setup_permissions_perm_record_audio;
-            case Manifest.permission.BLUETOOTH:
-                return R.string.setup_permissions_perm_bluetooth;
-            case Manifest.permission.BLUETOOTH_ADMIN:
-                return R.string.setup_permissions_perm_bluetooth_admin;
-            case Manifest.permission.ACCESS_FINE_LOCATION:
-                return R.string.setup_permissions_perm_access_fine_location;
-            case Manifest.permission.ACCESS_COARSE_LOCATION:
-                return R.string.setup_permissions_perm_access_coarse_location;
-            case Manifest.permission.READ_EXTERNAL_STORAGE:
-                return R.string.setup_permissions_perm_read_external_storage;
-            case Manifest.permission.WRITE_EXTERNAL_STORAGE:
-                return R.string.setup_permissions_perm_write_external_storage;
-            case Manifest.permission.CAMERA:
-                return R.string.setup_permissions_perm_camera;
-        }
-
-        return R.string.setup_ukn;
     }
 
     public static boolean requestPermission(Activity activity, String area, int requestCode)

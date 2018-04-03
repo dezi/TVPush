@@ -95,6 +95,11 @@ public class GUIPluginTitle extends GUIPlugin
         splitterFrame.addView(contentFrame);
     }
 
+    public void setObjectTag(String objectTag)
+    {
+        this.objectTag = objectTag;
+    }
+
     public void setTitleIcon(int resid)
     {
         titleIconResid = resid;
@@ -149,11 +154,6 @@ public class GUIPluginTitle extends GUIPlugin
         titleEdit.setVisibility(VISIBLE);
 
         titleInfo.setVisibility(GONE);
-    }
-
-    public void setObjectTag(String objectTag)
-    {
-        this.objectTag = objectTag;
     }
 
     public void onTitleEditFinished(View view)

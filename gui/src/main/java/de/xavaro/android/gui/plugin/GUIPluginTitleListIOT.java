@@ -19,16 +19,4 @@ public class GUIPluginTitleListIOT extends GUIPluginTitleList
     {
         super(context);
     }
-
-    @Override
-    public void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-    }
-
-    @Override
-    public void onDetachedFromWindow()
-    {
-        super.onDetachedFromWindow();
-    }
 }

@@ -32,12 +32,19 @@ public class GUIPluginTitleList extends GUIPluginTitle
         scrollView.addView(listView);
     }
 
+    public void setObjectTag(String objectTag)
+    {
+        super.setObjectTag(objectTag);
+
+        updateContent();
+    }
+
     @Override
     public void onAttachedToWindow()
     {
         super.onAttachedToWindow();
 
-        Simple.getHandler().post(makeEntryList);
+        updateContent();
     }
 
     @Override
@@ -85,8 +92,7 @@ public class GUIPluginTitleList extends GUIPluginTitle
             {
                 Log.d(LOGTAG, "onRequestPermissionsResult: yep=" + permissions[ 0 ]);
 
-                Simple.getHandler().removeCallbacks(makeEntryList);
-                Simple.getHandler().post(makeEntryList);
+                updateContent();
             }
             else
             {

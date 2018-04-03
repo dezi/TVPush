@@ -3,13 +3,14 @@
     <string name="subsystem_name">I.O.T System</string>
 
     <string name="subsystem_info">
-        Dieses System enthält alle Dienste für diese Internet of Things
-        Anwendung.
-    </string>
-
-    <string name="subsystem_service_location_name">Ortsdienste</string>
-    <string name="subsystem_service_location_info">
-        Dieser Service ermöglicht es Ihrem Gerät, seinen Standort zu orten.
+        Dieses System enthält benötigte Dienste für diese Anwendung.
+        Dieses System kann nicht deaktiviert werden.
+        Folgende Dienste und Berechtigungen werden benötigt:
+        \n\n
+        - Zugriff auf den Ortungs-Dienst um Geräte mit einer
+        Geo-Position versehen zu können.
+        \n\n
+        - Zugriff auf den Standort.
     </string>
 
 </resources>

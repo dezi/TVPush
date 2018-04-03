@@ -11,7 +11,6 @@ import java.util.Iterator;
 
 import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.base.GUI;
-import de.xavaro.android.gui.base.GUISubSystems;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.base.GUIDefs;
@@ -19,7 +18,6 @@ import de.xavaro.android.gui.base.GUISetup;
 import de.xavaro.android.gui.plugin.GUIPluginTitleList;
 import de.xavaro.android.gui.views.GUIDialogView;
 import de.xavaro.android.gui.views.GUIListEntry;
-import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.views.GUIListView;
 import pub.android.interfaces.all.SubSystemHandler;
 
@@ -143,7 +141,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
             entry.iconView.setImageResource(GUISetup.getIconForServiceResid(service));
             entry.headerViev.setText(head);
 
-            entry.infoView.setText(GUISetup.getTextForServiceEnabledResid(service, enabled));
+            entry.infoView.setText(GUISetup.getTextForNeedStatusResid(service, enabled));
 
             entry.infoView.setTextColor(enabled
                     ? GUIDefs.TEXT_COLOR_INFOS
@@ -181,7 +179,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
 
                 if (infos.length() > 0) infos += ", ";
 
-                infos += Simple.getTrans(GUISetup.getTextForPermissionResid(perm));
+                infos += Simple.getTrans(GUISetup.getTextForManifestPermResid(perm));
             }
 
             String head = Simple.getTrans(GUISetup.getTextPermissionResid())

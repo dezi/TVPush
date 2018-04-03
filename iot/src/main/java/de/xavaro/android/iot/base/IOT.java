@@ -75,20 +75,7 @@ public class IOT implements
         Json.put(info, "name", Simple.getTrans(R.string.subsystem_name));
         Json.put(info, "info", Simple.getTrans(R.string.subsystem_info));
         Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_iot_200));
-
-        JSONArray settings = new JSONArray();
-        Json.put(info, "settings", settings);
-
-        JSONObject geolocation = new JSONObject();
-
-        Json.put(geolocation, "tag", "geolocation");
-        Json.put(geolocation, "name", "Ortungsdienste");
-        Json.put(geolocation, "type", SubSystemHandler.SUBSYSTEM_TYPE_SERVICE);
-        Json.put(geolocation, "mode", SubSystemHandler.SUBSYSTEM_MODE_VOLUNTARY);
-        Json.put(geolocation, "info", "blabla");
-        Json.put(geolocation, "need", "loc");
-
-        Json.put(settings, geolocation);
+        Json.put(info, "need", "loc");
 
         return info;
     }

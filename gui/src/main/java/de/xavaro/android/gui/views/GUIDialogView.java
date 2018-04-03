@@ -346,6 +346,8 @@ public class GUIDialogView extends GUIRelativeLayout
 
     public void setInfoText(String info)
     {
+        info = info.replaceAll("\n *", "\n");
+
         infoView.setText(info);
         infoView.setVisibility(VISIBLE);
     }
