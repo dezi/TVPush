@@ -28,7 +28,7 @@ public class GUISetup
 {
     private final static String LOGTAG = GUISetup.class.getSimpleName();
 
-    public static int getIconForNeededResid(String need)
+    public static int getIconForNeedResid(String need)
     {
         switch (need)
         {
@@ -47,7 +47,7 @@ public class GUISetup
         return R.drawable.unknown_550;
     }
 
-    public static int getTextForNeededResid(String need)
+    public static int getTextForNeedResid(String need)
     {
         switch (need)
         {
@@ -64,6 +64,86 @@ public class GUISetup
         }
 
         return R.string.setup_ukn;
+    }
+
+    public static JSONArray getPermissionsForNeed(String need)
+    {
+        JSONArray perms = new JSONArray();
+
+        //
+        // Microphone.
+        //
+
+        if (need.equals("mic"))
+        {
+            Json.put(perms, Manifest.permission.RECORD_AUDIO);
+        }
+
+        //
+        // Bluetooth.
+        //
+
+        if (need.equals("ble"))
+        {
+            Json.put(perms, Manifest.permission.BLUETOOTH);
+            Json.put(perms, Manifest.permission.BLUETOOTH_ADMIN);
+        }
+
+        //
+        // Location.
+        //
+
+        if (need.equals("loc"))
+        {
+            LocationManager locationManager = Simple.getLocationManager();
+
+            boolean gpsIsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            boolean netIsEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+            if (netIsEnabled || gpsIsEnabled)
+            {
+                if (netIsEnabled)
+                {
+                    Json.put(perms, Manifest.permission.ACCESS_COARSE_LOCATION);
+                }
+
+                if (gpsIsEnabled)
+                {
+                    Json.put(perms, Manifest.permission.ACCESS_FINE_LOCATION);
+                }
+            }
+            else
+            {
+                //
+                // None enabled. Put both into
+                // required permissions for now.
+                //
+
+                Json.put(perms, Manifest.permission.ACCESS_COARSE_LOCATION);
+                Json.put(perms, Manifest.permission.ACCESS_FINE_LOCATION);
+            }
+        }
+
+        //
+        // External storage.
+        //
+
+        if (need.equals("ext") || need.equals("usb") || need.equals("ssd"))
+        {
+            Json.put(perms, Manifest.permission.READ_EXTERNAL_STORAGE);
+            Json.put(perms, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+
+        //
+        // Camera.
+        //
+
+        if (need.equals("cam"))
+        {
+            Json.put(perms, Manifest.permission.CAMERA);
+        }
+
+        return perms;
     }
 
     //region Services.

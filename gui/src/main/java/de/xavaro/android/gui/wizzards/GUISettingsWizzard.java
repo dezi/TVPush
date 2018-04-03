@@ -110,8 +110,8 @@ public class GUISettingsWizzard extends GUIPluginTitleList
 
         for (String need : needs)
         {
-            int icon = GUISetup.getIconForNeededResid(need);
-            int text = GUISetup.getTextForNeededResid(need);
+            int icon = GUISetup.getIconForNeedResid(need);
+            int text = GUISetup.getTextForNeedResid(need);
 
             GUIListEntry entry = listView.findGUIListEntryOrCreate(subtag + "." + need);
             entry.setOnClickListener(onSubServiceSettingClickListener);
@@ -120,6 +120,25 @@ public class GUISettingsWizzard extends GUIPluginTitleList
             entry.iconView.setImageResource(icon);
             entry.headerViev.setText(text);
             entry.setLevel(1);
+
+            JSONArray perms = GUISetup.getPermissionsForNeed(need);
+
+            String infos = "";
+
+            if (perms.length() > 0)
+            {
+                for (int inx = 0; inx < perms.length(); inx++)
+                {
+                    String perm = Json.getString(perms, inx);
+                    if (perm == null) continue;
+
+                    if (infos.length() > 0) infos += ", ";
+
+                    infos += Simple.getTrans(GUISetup.getTextForPermissionResid(perm));
+                }
+            }
+
+            entry.infoView.setText(infos);
         }
     }
 
