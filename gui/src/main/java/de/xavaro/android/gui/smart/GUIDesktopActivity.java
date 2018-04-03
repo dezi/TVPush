@@ -68,9 +68,9 @@ public class GUIDesktopActivity extends GUIActivity
         // @formatter:on
 
         //displayWizzard(GUICamerasWizzard.class.getSimpleName());
-        displayWizzard(GUIPingWizzard.class.getSimpleName());
+        //displayWizzard(GUIPingWizzard.class.getSimpleName());
         //displayWizzard(GUILocationsWizzard.class.getSimpleName());
-        //displayWizzard(GUISetupWizzard.class.getSimpleName());
+        displayWizzard(GUISetupWizzard.class.getSimpleName());
         //displayWizzard(GUIStreetviewWizzard.class.getSimpleName());
 
         checkWindowSize();

@@ -1,3 +1,14 @@
 <resources>
-    <string name="app_name">zztop</string>
+
+    <string name="subsystem_p2p_name">YI Home Cameras</string>
+
+    <string name="subsystem_p2p_info">
+        Dieses System enthält eine Schnittstelle zu allen Kameramodellen
+        des Herstellers Yi-Home.
+        \n\n
+        Wenn dieses System und die Sprachsteuerung aktiviert ist, können
+        Sie diese Geräte per Sprachbefehl bedienen und alle Kamaras auf dem
+        TV-Schirm anzeigen lassen.
+    </string>
+
 </resources>

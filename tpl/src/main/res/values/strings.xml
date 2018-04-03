@@ -1,8 +1,8 @@
 <resources>
 
-    <string name="subsystem_name">TP-Link Smart Home</string>
+    <string name="subsystem_tpl_name">TP-Link Smart Home</string>
 
-    <string name="subsystem_info">
+    <string name="subsystem_tpl_info">
         Dieses System enthält eine Schnittstelle zu intelligenten Steckdosen und
         Glühbirnen des Herstellers TP-Link.
         \n\n

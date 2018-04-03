@@ -31,8 +31,8 @@ public class BCN extends OnInterfacesStubs implements
         JSONObject info = new JSONObject();
 
         Json.put(info, "drv", "bcn");
-        Json.put(info, "name", Simple.getTrans(R.string.subsystem_name));
-        Json.put(info, "info", Simple.getTrans(R.string.subsystem_info));
+        Json.put(info, "name", Simple.getTrans(R.string.subsystem_bcn_name));
+        Json.put(info, "info", Simple.getTrans(R.string.subsystem_bcn_info));
         Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_beacon_220));
 
         return info;

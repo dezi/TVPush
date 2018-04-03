@@ -1,8 +1,8 @@
 <resources>
 
-    <string name="subsystem_name">Sony Android TV</string>
+    <string name="subsystem_sny_name">Sony Android TV</string>
 
-    <string name="subsystem_info">
+    <string name="subsystem_sny_info">
         Dieses System enthält verschiedene speziell auf Sony Android TVs
         zugeschnittene Dienste, wie z.B. das Bearbeiten der Programmliste
         und das Fernsteuern des Geräts über das lokale Wifi und über Internet.

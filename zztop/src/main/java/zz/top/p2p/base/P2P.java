@@ -11,6 +11,7 @@ import pub.android.interfaces.ext.GetCameraHandler;
 import pub.android.interfaces.ext.OnDeviceHandler;
 import pub.android.interfaces.all.DoSomethingHandler;
 
+import zz.top.R;
 import zz.top.p2p.camera.P2PCamera;
 import zz.top.p2p.camera.P2PCloud;
 import zz.top.p2p.camera.P2PSession;
@@ -42,7 +43,9 @@ public class P2P implements
         JSONObject info = new JSONObject();
 
         Json.put(info, "drv", "p2p");
-        Json.put(info, "name", "YI Home Cameras");
+        Json.put(info, "name", Simple.getTrans(R.string.subsystem_p2p_name));
+        Json.put(info, "info", Simple.getTrans(R.string.subsystem_p2p_info));
+        Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_yi_home_190));
 
         return info;
     }

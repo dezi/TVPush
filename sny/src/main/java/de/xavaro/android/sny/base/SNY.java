@@ -44,8 +44,8 @@ public class SNY extends OnInterfacesStubs implements
 
         Json.put(info, "drv", "sny");
 
-        Json.put(info, "name", Simple.getTrans(R.string.subsystem_name));
-        Json.put(info, "info", Simple.getTrans(R.string.subsystem_info));
+        Json.put(info, "name", Simple.getTrans(R.string.subsystem_sny_name));
+        Json.put(info, "info", Simple.getTrans(R.string.subsystem_sny_info));
         Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_sony_600));
 
         JSONArray services = new JSONArray();

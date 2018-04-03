@@ -1,8 +1,8 @@
 <resources>
 
-    <string name="subsystem_name">I.A.M - KI</string>
+    <string name="subsystem_iam_name">I.A.M - KI</string>
 
-    <string name="subsystem_info">
+    <string name="subsystem_iam_info">
         Dieses System wertet die Spracheingaben aus und setzt diese
         in Steuerungsinformation für die Smart-Home App um.
         \n\n
