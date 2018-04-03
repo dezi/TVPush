@@ -5,13 +5,14 @@ import android.app.Application;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import pub.android.stubs.OnInterfacesStubs;
+
 import pub.android.interfaces.all.SubSystemHandler;
 import pub.android.interfaces.all.DoSomethingHandler;
 import pub.android.interfaces.ext.GetDeviceCredentials;
 import pub.android.interfaces.ext.OnBackgroundRequest;
 import pub.android.interfaces.ext.OnDeviceHandler;
 import pub.android.interfaces.ext.OnPincodeRequest;
-import pub.android.stubs.OnInterfacesStubs;
 
 import de.xavaro.android.sny.simple.Simple;
 import de.xavaro.android.sny.simple.Json;

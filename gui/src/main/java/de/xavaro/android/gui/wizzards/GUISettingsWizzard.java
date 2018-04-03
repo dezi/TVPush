@@ -109,17 +109,18 @@ public class GUISettingsWizzard extends GUIPluginTitleList
             int state = GUISetup.getSubsystemState(subtag);
             int runstate = GUISetup.getSubsystemRunState(subtag);
             boolean enabled = (state == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED);
+            boolean service = type.equals(SubSystemHandler.SUBSYSTEM_TYPE_SERVICE);
 
             String info = GUISetup.getTextForSubsystemEnabled(name, state);
 
-            if (enabled && type.equals(SubSystemHandler.SUBSYSTEM_TYPE_SERVICE))
+            if (enabled && service)
             {
                 info += " - " + Simple.getTrans(GUISetup.getTextForSubsystemRunstateResid(runstate));
             }
 
-            int color = (state == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
+            int color = (! enabled)
                     ? GUIDefs.TEXT_COLOR_SPECIAL
-                    : (runstate == SubSystemHandler.SUBSYSTEM_RUN_STARTED)
+                    : ((runstate == SubSystemHandler.SUBSYSTEM_RUN_STARTED) || ! service)
                     ? GUIDefs.TEXT_COLOR_INFOS
                     : GUIDefs.TEXT_COLOR_ALERTS;
 
