@@ -54,6 +54,7 @@ public class SNY extends OnInterfacesStubs implements
 
         JSONObject tvremote = new JSONObject();
 
+        Json.put(tvremote, "tag", "tvremote");
         Json.put(tvremote, "name", Simple.getTrans(R.string.subsystem_service_tvremote_name));
         Json.put(tvremote, "info", Simple.getTrans(R.string.subsystem_service_tvremote_info));
 
@@ -61,6 +62,7 @@ public class SNY extends OnInterfacesStubs implements
 
         JSONObject channeledit = new JSONObject();
 
+        Json.put(channeledit, "tag", "channeledit");
         Json.put(channeledit, "name", Simple.getTrans(R.string.subsystem_service_channeledit_name));
         Json.put(channeledit, "info", Simple.getTrans(R.string.subsystem_service_channeledit_info));
         Json.put(channeledit, "service", "dev");
@@ -74,6 +76,7 @@ public class SNY extends OnInterfacesStubs implements
 
         JSONObject usbstick = new JSONObject();
 
+        Json.put(usbstick, "tag", "usbstick");
         Json.put(usbstick, "name", Simple.getTrans(R.string.subsystem_feature_usbstick_name));
         Json.put(usbstick, "info", Simple.getTrans(R.string.subsystem_feature_usbstick_info));
         Json.put(usbstick, "feature", "usb");
@@ -83,6 +86,7 @@ public class SNY extends OnInterfacesStubs implements
 
         JSONObject adbaccess = new JSONObject();
 
+        Json.put(adbaccess, "tag", "adbaccess");
         Json.put(adbaccess, "name", Simple.getTrans(R.string.subsystem_feature_adbaccess_name));
         Json.put(adbaccess, "info", Simple.getTrans(R.string.subsystem_feature_adbaccess_info));
         Json.put(adbaccess, "service", "dev");

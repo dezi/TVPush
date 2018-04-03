@@ -102,6 +102,11 @@ public class GUIPluginTitle extends GUIPlugin
         titleIcon.setImageResource(resid);
     }
 
+    public void setTitleIcon(String base64)
+    {
+        titleIcon.setImageResource(base64);
+    }
+
     public int getTitleIconResid()
     {
         return titleIconResid;
