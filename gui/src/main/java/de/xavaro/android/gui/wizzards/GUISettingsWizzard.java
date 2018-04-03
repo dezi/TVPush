@@ -106,12 +106,15 @@ public class GUISettingsWizzard extends GUIPluginTitleList
             if ((tag == null) || (type == null) || (name == null)) continue;
 
             String subtag = subsystem + "." + tag;
+
+            int mode = Json.getInt(setting, "mode");
             int state = GUISetup.getSubsystemState(subtag);
             int runstate = GUISetup.getSubsystemRunState(subtag);
+
             boolean enabled = (state == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED);
             boolean service = type.equals(SubSystemHandler.SUBSYSTEM_TYPE_SERVICE);
 
-            String info = GUISetup.getTextForSubsystemEnabled(name, state);
+            String info = GUISetup.getTextForSubsystemEnabled(name, state, mode);
 
             if (enabled && service)
             {
@@ -305,7 +308,10 @@ public class GUISettingsWizzard extends GUIPluginTitleList
             dialog.setTitleText(Json.getString(infos, "name"));
             dialog.setInfoText(Json.getString(infos, "info"));
 
-            if (Json.getInt(infos, "mode") == SubSystemHandler.SUBSYSTEM_MODE_MANDATORY)
+            int mode = Json.getInt(infos, "mode");
+
+            if ((mode == SubSystemHandler.SUBSYSTEM_MODE_MANDATORY)
+                || (mode == SubSystemHandler.SUBSYSTEM_MODE_IMPOSSIBLE))
             {
                 dialog.setPositiveButton(R.string.basic_ok);
                 dialog.positiveButton.requestFocus();

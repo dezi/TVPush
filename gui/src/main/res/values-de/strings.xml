@@ -47,6 +47,16 @@
     <string name="setup_need_status_pin_active">Authorisiert</string>
     <string name="setup_need_status_pin_inactive">Nicht authorisiert</string>
 
+    <string name="setup_state_active">Aktiviert</string>
+    <string name="setup_state_inactive">Nicht aktiviert</string>
+    <string name="setup_state_impossible">Nicht aktivierbar</string>
+
+    <string name="setup_runstates_stopped">Gestoppt</string>
+    <string name="setup_runstates_started">Gestartet</string>
+    <string name="setup_runstates_failed">Fehler</string>
+    <string name="setup_runstates_zombie">Zombie</string>
+
+
 
 
 
@@ -109,14 +119,6 @@
     <string name="setup_features_feature_adb_inactive">Unkonfiguriert</string>
 
     <string name="setup_subysystems_subsystem">Subsystem</string>
-
-    <string name="setup_subysystems_runstates_stopped">Gestoppt</string>
-    <string name="setup_subysystems_runstates_started">Gestartet</string>
-    <string name="setup_subysystems_runstates_failed">Fehler</string>
-    <string name="setup_subysystems_runstates_zombie">Zombie</string>
-
-    <string name="setup_subysystems_subsystem_active">Aktiviert</string>
-    <string name="setup_subysystems_subsystem_inactive">Nicht aktiviert</string>
 
     <string name="setup_subysystems_subsystem_ukn_title">Ubekanntes Subsystem</string>
     <string name="setup_subysystems_subsystem_ukn_info">Es ist keine weitere Information verfügbar.</string>

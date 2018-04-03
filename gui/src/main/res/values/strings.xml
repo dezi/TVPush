@@ -61,7 +61,6 @@
     <string name="setup_manifest_perm_write_external_storage">Write</string>
     <string name="setup_manifest_perm_camera">Camera-Access</string>
 
-
     <string name="setup_need_status_active">Activated</string>
     <string name="setup_need_status_inactive">Not activated</string>
     <string name="setup_need_status_usb_active">Plugged in</string>
@@ -72,6 +71,16 @@
     <string name="setup_need_status_adb_inactive">Not authorized</string>
     <string name="setup_need_status_pin_active">Authorized</string>
     <string name="setup_need_status_pin_inactive">Not authorized</string>
+
+    <string name="setup_state_active">Aktiviert</string>
+    <string name="setup_state_inactive">Nicht aktiviert</string>
+    <string name="setup_state_impossible">Nicht aktivierbar</string>
+
+    <string name="setup_runstates_stopped">Stopped</string>
+    <string name="setup_runstates_started">Started</string>
+    <string name="setup_runstates_failed">Failed</string>
+    <string name="setup_runstates_zombie">Zombie</string>
+
 
 
 
@@ -124,14 +133,6 @@
     <string name="setup_features_feature_pin">Pin-Code</string>
 
     <string name="setup_subysystems_subsystem">Sub-System</string>
-
-    <string name="setup_subysystems_runstates_stopped">Stopped</string>
-    <string name="setup_subysystems_runstates_started">Started</string>
-    <string name="setup_subysystems_runstates_failed">Failed</string>
-    <string name="setup_subysystems_runstates_zombie">Zombie</string>
-
-    <string name="setup_subysystems_subsystem_active">Activated</string>
-    <string name="setup_subysystems_subsystem_inactive">Not activated</string>
 
     <string name="setup_subysystems_subsystem_ukn_title">Unknown sub-system</string>
     <string name="setup_subysystems_subsystem_ukn_info">No further information available.</string>

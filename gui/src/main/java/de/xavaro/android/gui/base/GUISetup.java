@@ -543,11 +543,28 @@ public class GUISetup
     {
         if (state == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
         {
-            return Simple.getTrans(R.string.setup_subysystems_subsystem_active, subsystem);
+            return Simple.getTrans(R.string.setup_state_active, subsystem);
         }
         else
         {
-            return Simple.getTrans(R.string.setup_subysystems_subsystem_inactive, subsystem);
+            return Simple.getTrans(R.string.setup_state_inactive, subsystem);
+        }
+    }
+
+    public static String getTextForSubsystemEnabled(String subsystem, int state, int mode)
+    {
+        if (mode == SubSystemHandler.SUBSYSTEM_MODE_IMPOSSIBLE)
+        {
+            return Simple.getTrans(R.string.setup_state_impossible, subsystem);
+        }
+
+        if (state == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
+        {
+            return Simple.getTrans(R.string.setup_state_active, subsystem);
+        }
+        else
+        {
+            return Simple.getTrans(R.string.setup_state_inactive, subsystem);
         }
     }
 
@@ -555,10 +572,10 @@ public class GUISetup
     {
         switch (runstate)
         {
-            case SubSystemHandler.SUBSYSTEM_RUN_STARTED: return R.string.setup_subysystems_runstates_started;
-            case SubSystemHandler.SUBSYSTEM_RUN_STOPPED: return R.string.setup_subysystems_runstates_stopped;
-            case SubSystemHandler.SUBSYSTEM_RUN_FAILED: return R.string.setup_subysystems_runstates_failed;
-            case SubSystemHandler.SUBSYSTEM_RUN_ZOMBIE: return R.string.setup_subysystems_runstates_zombie;
+            case SubSystemHandler.SUBSYSTEM_RUN_STARTED: return R.string.setup_runstates_started;
+            case SubSystemHandler.SUBSYSTEM_RUN_STOPPED: return R.string.setup_runstates_stopped;
+            case SubSystemHandler.SUBSYSTEM_RUN_FAILED: return R.string.setup_runstates_failed;
+            case SubSystemHandler.SUBSYSTEM_RUN_ZOMBIE: return R.string.setup_runstates_zombie;
         }
 
         return R.string.setup_ukn;

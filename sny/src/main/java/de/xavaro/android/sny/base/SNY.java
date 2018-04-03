@@ -68,10 +68,14 @@ public class SNY extends OnInterfacesStubs implements
 
         JSONObject channeledit = new JSONObject();
 
+        int mode = Simple.isTV() && Simple.isSony()
+                ? SubSystemHandler.SUBSYSTEM_MODE_VOLUNTARY
+                : SubSystemHandler.SUBSYSTEM_MODE_IMPOSSIBLE;
+
         Json.put(channeledit, "tag", "channeledit");
         Json.put(channeledit, "name", Simple.getTrans(R.string.subsystem_service_channeledit_name));
         Json.put(channeledit, "type", SubSystemHandler.SUBSYSTEM_TYPE_FEATURE);
-        Json.put(channeledit, "mode", SubSystemHandler.SUBSYSTEM_MODE_VOLUNTARY);
+        Json.put(channeledit, "mode", mode);
         Json.put(channeledit, "info", Simple.getTrans(R.string.subsystem_service_channeledit_info));
         Json.put(channeledit, "icon", Simple.getImageResourceBase64(R.drawable.wizzard_channeledit_440));
         Json.put(channeledit, "need", "ext+usb+dev+adb");
