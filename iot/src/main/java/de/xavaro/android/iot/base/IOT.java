@@ -71,6 +71,7 @@ public class IOT implements
         JSONObject info = new JSONObject();
 
         Json.put(info, "drv", "iot");
+        Json.put(info, "mode", SubSystemHandler.SUBSYSTEM_MODE_MANDATORY);
         Json.put(info, "name", Simple.getTrans(R.string.subsystem_name));
         Json.put(info, "info", Simple.getTrans(R.string.subsystem_info));
         Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_iot_200));

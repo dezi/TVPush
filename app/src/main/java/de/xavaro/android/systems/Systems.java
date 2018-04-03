@@ -15,11 +15,11 @@ public class Systems
 {
     public static void initialize(Application application)
     {
-        IOT.instance = new SystemsIOT(application);
-        IOT.instance.startSubsystem();
-
         GUI.instance = new SystemsGUI(application);
         GUI.instance.startSubsystem();
+
+        IOT.instance = new SystemsIOT(application);
+        IOT.instance.startSubsystem();
 
         SystemsIAM iam = new SystemsIAM(application);
 

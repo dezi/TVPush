@@ -4,6 +4,9 @@ import org.json.JSONObject;
 
 public interface SubSystemHandler
 {
+    public final static int SUBSYSTEM_MODE_MANDATORY = 0;
+    public final static int SUBSYSTEM_MODE_VOLUNTARY = 1;
+
     public final static int SUBSYSTEM_RUN_STOPPED = 0;
     public final static int SUBSYSTEM_RUN_STARTED = 1;
     public final static int SUBSYSTEM_RUN_FAILED = 2;

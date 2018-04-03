@@ -10,6 +10,7 @@ import java.util.Map;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Log;
 import de.xavaro.android.gui.simple.Simple;
+import pub.android.interfaces.all.SubSystemHandler;
 
 public class GUISubSystems
 {
@@ -19,18 +20,17 @@ public class GUISubSystems
     public final static int SUBSYSTEM_STATE_ACTIVATED = 1;
     public final static int SUBSYSTEM_STATE_DISABLED = 2;
 
-    private final ArrayList<JSONObject> subSystemsInfos = new ArrayList<>();
-
+    private final Map<String, JSONObject> subSystemsInfos = new HashMap<>();
     private final Map<String, Integer> subSystemsRunstates = new HashMap<>();
 
     public void registerSubsystem(JSONObject driverInfo)
     {
+        String driver = Json.getString(driverInfo, "drv");
+        if (driver == null) return;
+
         synchronized (subSystemsInfos)
         {
-            if (!subSystemsInfos.contains(driverInfo))
-            {
-                subSystemsInfos.add(driverInfo);
-            }
+            subSystemsInfos.put(driver, driverInfo);
         }
     }
 
@@ -46,9 +46,9 @@ public class GUISubSystems
     {
         JSONArray subsys = new JSONArray();
 
-        for (JSONObject subSystem : subSystemsInfos)
+        for (Map.Entry<String, JSONObject> entry : subSystemsInfos.entrySet())
         {
-            subsys.put(subSystem);
+            subsys.put(entry.getValue());
         }
 
         return subsys;
@@ -63,6 +63,18 @@ public class GUISubSystems
 
     public int getSubsystemState(String drv)
     {
+        JSONObject subsystem = Simple.getMapJSONObject(subSystemsInfos, drv);
+
+        if (subsystem != null)
+        {
+            int mode = Json.getInt(subsystem, "mode");
+
+            if (mode == SubSystemHandler.SUBSYSTEM_MODE_MANDATORY)
+            {
+                return SUBSYSTEM_STATE_ACTIVATED;
+            }
+        }
+
         String key = "subsystem." + drv;
 
         JSONObject pref = GUIPrefs.readPref(key);
@@ -72,6 +84,18 @@ public class GUISubSystems
 
     public void setSubsystemState(String drv, int state)
     {
+        JSONObject subsystem = Simple.getMapJSONObject(subSystemsInfos, drv);
+
+        if (subsystem != null)
+        {
+            int mode = Json.getInt(subsystem, "mode");
+
+            if (mode == SubSystemHandler.SUBSYSTEM_MODE_MANDATORY)
+            {
+                return;
+            }
+        }
+
         String key = "subsystem." + drv;
 
         JSONObject pref = GUIPrefs.readPref(key);
@@ -81,6 +105,18 @@ public class GUISubSystems
 
     public boolean isSubsystemActivated(String drv)
     {
+        JSONObject subsystem = Simple.getMapJSONObject(subSystemsInfos, drv);
+
+        if (subsystem != null)
+        {
+            int mode = Json.getInt(subsystem, "mode");
+
+            if (mode == SubSystemHandler.SUBSYSTEM_MODE_MANDATORY)
+            {
+                return true;
+            }
+        }
+
         String key = "subsystem." + drv;
 
         JSONObject pref = GUIPrefs.readPref(key);

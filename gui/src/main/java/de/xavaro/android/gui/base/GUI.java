@@ -38,13 +38,14 @@ public class GUI implements
     public GUISpeechListener speechListener;
     public GUIDesktopActivity desktopActivity;
 
-    public GUI(Application application)
+    public GUI(Application appcontext)
     {
-        if (application instanceof GUIApplication)
+        if (appcontext instanceof GUIApplication)
         {
             instance = this;
 
-            this.application = (GUIApplication) application;
+            application = (GUIApplication) appcontext;
+            subSystems = new GUISubSystems();
         }
         else
         {
@@ -58,9 +59,10 @@ public class GUI implements
         JSONObject info = new JSONObject();
 
         Json.put(info, "drv", "gui");
-        Json.put(info, "name", Simple.getTrans(R.string.subsystem_name));
-        Json.put(info, "info", Simple.getTrans(R.string.subsystem_info));
-        Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_iot_200));
+        Json.put(info, "mode", SubSystemHandler.SUBSYSTEM_MODE_MANDATORY);
+        Json.put(info, "name", Simple.getTrans(R.string.subsystem_gui_name));
+        Json.put(info, "info", Simple.getTrans(R.string.subsystem_gui_info));
+        Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_gui_220));
 
         return info;
     }
@@ -68,15 +70,16 @@ public class GUI implements
     @Override
     public void startSubsystem()
     {
-        this.subSystems = new GUISubSystems();
-
         this.speechListener = new GUISpeechListener(application);
         this.speechListener.startListening();
+
+        onSubsystemStarted("gui", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
     }
 
     @Override
     public void stopSubsystem()
     {
+        onSubsystemStopped("gui", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
     }
 
     @Override

@@ -43,6 +43,7 @@ public class P2P implements
         JSONObject info = new JSONObject();
 
         Json.put(info, "drv", "p2p");
+        Json.put(info, "mode", SubSystemHandler.SUBSYSTEM_MODE_VOLUNTARY);
         Json.put(info, "name", Simple.getTrans(R.string.subsystem_p2p_name));
         Json.put(info, "info", Simple.getTrans(R.string.subsystem_p2p_info));
         Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_yi_home_190));

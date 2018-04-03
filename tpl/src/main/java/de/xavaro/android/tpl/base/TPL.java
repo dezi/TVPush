@@ -55,6 +55,7 @@ public class TPL extends OnInterfacesStubs implements
         JSONObject info = new JSONObject();
 
         Json.put(info, "drv", "tpl");
+        Json.put(info, "mode", SubSystemHandler.SUBSYSTEM_MODE_VOLUNTARY);
         Json.put(info, "name", Simple.getTrans(R.string.subsystem_tpl_name));
         Json.put(info, "info", Simple.getTrans(R.string.subsystem_tpl_info));
         Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_tp_link_410));

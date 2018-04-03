@@ -10,10 +10,12 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Base64;
 import android.widget.LinearLayout;
 import android.content.Context;
 import android.view.ViewGroup;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import de.xavaro.android.gui.skills.GUICanDip;
@@ -221,7 +223,22 @@ public class GUIImageView extends AppCompatImageView implements
         setImageResource(resid, 0);
     }
 
+    public void setImageResource(String base64)
+    {
+        byte[] rawdata = Base64.decode(base64, Base64.DEFAULT);
+        ByteArrayInputStream is = new ByteArrayInputStream(rawdata);
+
+        setImageResource(is, 0);
+    }
+
     public void setImageResource(int resid, int color)
+    {
+        InputStream is = getResources().openRawResource(+resid);
+
+        setImageResource(is, color);
+    }
+
+    public void setImageResource(InputStream rawstream, int color)
     {
         //
         // Fuck dat. Fucking ImageView takes some
@@ -231,8 +248,7 @@ public class GUIImageView extends AppCompatImageView implements
         // R.drawable. Otherwise nagging shit.
         //
 
-        InputStream is = getResources().openRawResource(+resid);
-        Bitmap bitmap = BitmapFactory.decodeStream(is);
+        Bitmap bitmap = BitmapFactory.decodeStream(rawstream);
 
         if (getLayoutParams() != null)
         {

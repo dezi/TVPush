@@ -42,6 +42,8 @@ import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import org.json.JSONObject;
+
 import java.io.InputStream;
 import java.math.RoundingMode;
 import java.net.InetAddress;
@@ -667,6 +669,26 @@ public class Simple
 
     @Nullable
     public static String getMapString(Map<String, String> map, String key)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        {
+            return map.getOrDefault(key, null);
+        }
+        else
+        {
+            try
+            {
+                return map.get(key);
+            }
+            catch (Exception ignore)
+            {
+                return null;
+            }
+        }
+    }
+
+    @Nullable
+    public static JSONObject getMapJSONObject(Map<String, JSONObject> map, String key)
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
         {

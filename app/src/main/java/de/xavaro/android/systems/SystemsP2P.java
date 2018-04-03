@@ -4,9 +4,8 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
-import de.xavaro.android.gui.base.GUI;
-
 import de.xavaro.android.gui.base.GUISubSystems;
+import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.iot.base.IOT;
 import zz.top.p2p.base.P2P;
 

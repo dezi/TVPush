@@ -4,8 +4,8 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.iot.base.IOT;
-import zz.top.utl.Json;
 
 public class SystemsIOT extends IOT
 {
@@ -14,6 +14,20 @@ public class SystemsIOT extends IOT
     public SystemsIOT(Application appcontext)
     {
         super(appcontext);
+
+        GUI.instance.subSystems.registerSubsystem(getSubsystemInfo());
+    }
+
+    @Override
+    public void onSubsystemStarted(String subsystem, int state)
+    {
+        GUI.instance.subSystems.registerSubsystemRunstate(subsystem, state);
+    }
+
+    @Override
+    public void onSubsystemStopped(String subsystem, int state)
+    {
+        GUI.instance.subSystems.registerSubsystemRunstate(subsystem, state);
     }
 
     @Override

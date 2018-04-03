@@ -4,6 +4,7 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.bcn.base.BCN;
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.simple.Json;
 
@@ -28,6 +29,20 @@ public class SystemsGUI extends GUI
         super(appcontext);
 
         this.appcontext = appcontext;
+
+        GUI.instance.subSystems.registerSubsystem(getSubsystemInfo());
+    }
+
+    @Override
+    public void onSubsystemStarted(String subsystem, int state)
+    {
+        GUI.instance.subSystems.registerSubsystemRunstate(subsystem, state);
+    }
+
+    @Override
+    public void onSubsystemStopped(String subsystem, int state)
+    {
+        GUI.instance.subSystems.registerSubsystemRunstate(subsystem, state);
     }
 
     @Override
@@ -39,6 +54,15 @@ public class SystemsGUI extends GUI
             {
                 IAM.instance = new SystemsIAM(appcontext);
                 IAM.instance.startSubsystem();
+            }
+        }
+
+        if (drv.equals("bcn"))
+        {
+            if (BCN.instance == null)
+            {
+                BCN.instance = new SystemsBCN(appcontext);
+                BCN.instance.startSubsystem();
             }
         }
 

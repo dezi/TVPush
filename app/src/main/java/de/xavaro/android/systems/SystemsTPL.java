@@ -6,7 +6,6 @@ import org.json.JSONObject;
 
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.iot.base.IOT;
-
 import de.xavaro.android.tpl.base.TPL;
 
 public class SystemsTPL extends TPL

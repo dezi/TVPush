@@ -43,9 +43,6 @@ public class GUISetupWizzard extends GUIPluginTitleList
 
     public void collectEntries(GUIListView listView, boolean todo)
     {
-        collectServices(listView, todo);
-        collectPermissions(listView, todo);
-        collectFeatures(listView, todo);
         collectSubsystems(listView, todo);
     }
 
@@ -171,6 +168,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
 
             String drv = Json.getString(subsystem, "drv");
             String name = Json.getString(subsystem, "name");
+            String icon = Json.getString(subsystem, "icon");
 
             int state = GUISetup.getSubsystemState(drv);
             int runstate = GUISetup.getSubsystemRunState(drv);
@@ -182,16 +180,12 @@ public class GUISetupWizzard extends GUIPluginTitleList
             entry.setOnClickListener(onSubsystemClickListener);
             entry.setTag(subsystem);
 
-            String head = Simple.getTrans(GUISetup.getTextSubsystemResid())
-                    + ": "
-                    + name;
-
             String info = GUISetup.getTextForSubsystemEnabled(name, state)
                     + " - "
                     + Simple.getTrans(GUISetup.getTextForSubsystemRunstateResid(runstate));
 
-            entry.iconView.setImageResource(GUISetup.getIconForSubsystemResid(drv));
-            entry.headerViev.setText(head);
+            entry.iconView.setImageResource(icon);
+            entry.headerViev.setText(name);
 
             entry.infoView.setText(info);
 
