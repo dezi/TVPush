@@ -4,10 +4,8 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
-import de.xavaro.android.gui.base.GUISubSystems;
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.iot.base.IOT;
-import pub.android.interfaces.all.SubSystemHandler;
 import zz.top.p2p.base.P2P;
 
 public class SystemsP2P extends P2P
@@ -24,13 +22,13 @@ public class SystemsP2P extends P2P
     @Override
     public void onSubsystemStarted(String subsystem, int state)
     {
-        GUI.instance.subSystems.registerSubsystemRunstate(subsystem, state);
+        GUI.instance.subSystems.setSubsystemRunstate(subsystem, state);
     }
 
     @Override
     public void onSubsystemStopped(String subsystem, int state)
     {
-        GUI.instance.subSystems.registerSubsystemRunstate(subsystem, state);
+        GUI.instance.subSystems.setSubsystemRunstate(subsystem, state);
     }
 
     @Override

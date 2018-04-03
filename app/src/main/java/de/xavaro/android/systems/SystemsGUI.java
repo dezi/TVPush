@@ -36,13 +36,13 @@ public class SystemsGUI extends GUI
     @Override
     public void onSubsystemStarted(String subsystem, int state)
     {
-        GUI.instance.subSystems.registerSubsystemRunstate(subsystem, state);
+        GUI.instance.subSystems.setSubsystemRunstate(subsystem, state);
     }
 
     @Override
     public void onSubsystemStopped(String subsystem, int state)
     {
-        GUI.instance.subSystems.registerSubsystemRunstate(subsystem, state);
+        GUI.instance.subSystems.setSubsystemRunstate(subsystem, state);
     }
 
     @Override

@@ -32,14 +32,6 @@ public class GUISubSystems
         }
     }
 
-    public void registerSubsystemRunstate(String subsystem, int runstate)
-    {
-        synchronized (subSystemsRunstates)
-        {
-            subSystemsRunstates.put(subsystem, runstate);
-        }
-    }
-
     public JSONArray getRegisteredSubsystems()
     {
         JSONArray subsys = new JSONArray();
@@ -84,12 +76,6 @@ public class GUISubSystems
         return subsystemInfo;
     }
 
-    public int getSubsystemRunState(String subsystem)
-    {
-        Integer val = Simple.getMapInteger(subSystemsRunstates, subsystem);
-        return (val != null) ? val : SubSystemHandler.SUBSYSTEM_RUN_STOPPED;
-    }
-
     public int getSubsystemState(String subsystem)
     {
         if (getSubsystemMode(subsystem) == SubSystemHandler.SUBSYSTEM_MODE_MANDATORY)
@@ -114,6 +100,20 @@ public class GUISubSystems
         JSONObject pref = GUIPrefs.readPref(key);
         Json.put(pref, "state", state);
         GUIPrefs.savePref(key, pref);
+    }
+
+    public int getSubsystemRunState(String subsystem)
+    {
+        Integer val = Simple.getMapInteger(subSystemsRunstates, subsystem);
+        return (val != null) ? val : SubSystemHandler.SUBSYSTEM_RUN_STOPPED;
+    }
+
+    public void setSubsystemRunstate(String subsystem, int runstate)
+    {
+        synchronized (subSystemsRunstates)
+        {
+            subSystemsRunstates.put(subsystem, runstate);
+        }
     }
 
     public boolean isSubsystemActivated(String subsystem)
