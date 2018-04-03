@@ -28,6 +28,44 @@ public class GUISetup
 {
     private final static String LOGTAG = GUISetup.class.getSimpleName();
 
+    public static int getIconForNeededResid(String need)
+    {
+        switch (need)
+        {
+            case "mic": return R.drawable.mic_540;
+            case "ext": return R.drawable.read_write_340;
+            case "cam": return R.drawable.camera_shutter_820;
+            case "ble": return R.drawable.bluetooth_450;
+            case "loc": return R.drawable.gps_530;
+            case "dev": return R.drawable.developer_512;
+            case "usb": return R.drawable.usb_stick_400;
+            case "ssd": return R.drawable.ssd_120;
+            case "adb": return R.drawable.adb_220;
+            case "pin": return R.drawable.setting_pincode_270;
+        }
+
+        return R.drawable.unknown_550;
+    }
+
+    public static int getTextForNeededResid(String need)
+    {
+        switch (need)
+        {
+            case "mic": return R.string.setup_services_service_mic;
+            case "ext": return R.string.setup_services_service_ext;
+            case "cam": return R.string.setup_services_service_cam;
+            case "ble": return R.string.setup_services_service_ble;
+            case "loc": return R.string.setup_services_service_loc;
+            case "dev": return R.string.setup_services_service_dev;
+            case "usb": return R.string.setup_features_feature_usb;
+            case "ssd": return R.string.setup_features_feature_ssd;
+            case "adb": return R.string.setup_features_feature_adb;
+            case "pin": return R.string.setup_features_feature_pin;
+        }
+
+        return R.string.setup_ukn;
+    }
+
     //region Services.
 
     public static JSONObject getRequiredServices()

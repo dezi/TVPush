@@ -12,6 +12,7 @@ public class GUIListEntry extends GUILinearLayout
     public String idtag;
     public boolean isinuse;
 
+    public GUIFrameLayout levelView;
     public GUIIconViewIOT iconView;
     public GUITextView headerViev;
     public GUITextView infoView;
@@ -26,6 +27,10 @@ public class GUIListEntry extends GUILinearLayout
         setOrientation(HORIZONTAL);
         setPaddingDip(GUIDefs.PADDING_TINY);
         setBackgroundColor(GUIDefs.COLOR_LIGHT_TRANSPARENT);
+
+        levelView = new GUIFrameLayout(context);
+        levelView.setVisibility(GONE);
+        addView(levelView);
 
         iconView = new GUIIconViewIOT(context);
         addView(iconView);
@@ -55,6 +60,19 @@ public class GUIListEntry extends GUILinearLayout
         infoView.setEllipsize(TextUtils.TruncateAt.END);
 
         entryBox.addView(infoView);
+    }
+
+    public void setLevel(int level)
+    {
+        if (level == 0)
+        {
+            levelView.setVisibility(GONE);
+        }
+        else
+        {
+            levelView.setVisibility(VISIBLE);
+            levelView.setSizeDip(GUIDefs.PADDING_XLARGE, Simple.MP);
+        }
     }
 }
 

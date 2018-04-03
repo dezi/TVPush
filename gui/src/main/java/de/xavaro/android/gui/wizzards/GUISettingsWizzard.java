@@ -7,7 +7,12 @@ import android.view.View;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import pub.android.interfaces.all.SubSystemHandler;
+
+import de.xavaro.android.gui.base.GUIDefs;
+import de.xavaro.android.gui.base.GUISetup;
 import de.xavaro.android.gui.plugin.GUIPluginTitleList;
+import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUIListEntry;
 import de.xavaro.android.gui.views.GUIListView;
 import de.xavaro.android.gui.simple.Json;
@@ -37,54 +42,88 @@ public class GUISettingsWizzard extends GUIPluginTitleList
     public void collectEntries(GUIListView listView, boolean todo)
     {
         JSONObject subsystemInfo = GUI.instance.subSystems.getSubsystemInfos(objectTag);
+        if (subsystemInfo == null) return;
 
+        String subsystem = Json.getString(subsystemInfo, "drv");
         String subsystemName = Json.getString(subsystemInfo, "name");
         String subsystemIcon = Json.getString(subsystemInfo, "icon");
         setTitleIcon(subsystemIcon);
         setTitleText(subsystemName);
 
-        JSONArray services = Json.getArray(subsystemInfo, "services");
+        JSONArray settings = Json.getArray(subsystemInfo, "settings");
 
-        if (services != null)
+        if (settings != null)
         {
-            for (int inx = 0; inx < services.length(); inx++)
+            for (int inx = 0; inx < settings.length(); inx++)
             {
-                JSONObject service = Json.getObject(services, inx);
-                if (service == null) continue;
+                JSONObject setting = Json.getObject(settings, inx);
+                if (setting == null) continue;
 
-                String tag = Json.getString(service, "tag");
-                String name = Json.getString(service, "name");
+                String tag = Json.getString(setting, "tag");
+                String type = Json.getString(setting, "type");
+                String name = Json.getString(setting, "name");
+                String icon = Json.getString(setting, "icon");
+                if ((tag == null) || (type == null) || (name == null)) continue;
 
-                GUIListEntry entry = listView.findGUIListEntryOrCreate(tag);
-                entry.setOnClickListener(onSubServiceClickListener);
-                entry.setTag(tag);
+                String subtag = subsystem + "." + tag;
+                int state = GUISetup.getSubsystemState(subtag);
+                int runstate = GUISetup.getSubsystemRunState(subtag);
 
+                GUIListEntry entry = listView.findGUIListEntryOrCreate(subtag);
+                entry.setOnClickListener(onSubServiceSettingClickListener);
+                entry.setTag(subtag);
+
+                entry.iconView.setImageResource(icon);
                 entry.headerViev.setText(name);
+
+                String info = GUISetup.getTextForSubsystemEnabled(name, state);
+
+                if (state == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
+                {
+                    if (type.equals(SubSystemHandler.SUBSYSTEM_TYPE_SERVICE))
+                    {
+                        info += " - " + Simple.getTrans(GUISetup.getTextForSubsystemRunstateResid(runstate));
+                    }
+                }
+
+                entry.infoView.setText(info);
+
+                int color = (state == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
+                        ? GUIDefs.TEXT_COLOR_SPECIAL
+                        : (runstate == SubSystemHandler.SUBSYSTEM_RUN_STARTED)
+                        ? GUIDefs.TEXT_COLOR_INFOS
+                        : GUIDefs.TEXT_COLOR_ALERTS;
+
+                entry.infoView.setTextColor(color);
+
+                String need = Json.getString(setting, "need");
+                collectSubsystemsNeeds(listView, subtag, need, todo);
             }
         }
+   }
 
-        JSONArray features = Json.getArray(subsystemInfo, "features");
+    private void collectSubsystemsNeeds(GUIListView listView, String subtag, String needString, boolean todo)
+    {
+        if (needString == null) return;
 
-        if (features != null)
+        String[] needs = needString.split("\\+");
+
+        for (String need : needs)
         {
-            for (int inx = 0; inx < features.length(); inx++)
-            {
-                JSONObject feature = Json.getObject(features, inx);
-                if (feature == null) continue;
+            int icon = GUISetup.getIconForNeededResid(need);
+            int text = GUISetup.getTextForNeededResid(need);
 
-                String tag = Json.getString(feature, "tag");
-                String name = Json.getString(feature, "name");
+            GUIListEntry entry = listView.findGUIListEntryOrCreate(subtag + "." + need);
+            entry.setOnClickListener(onSubServiceSettingClickListener);
+            entry.setTag(subtag);
 
-                GUIListEntry entry = listView.findGUIListEntryOrCreate(tag);
-                entry.setOnClickListener(onSubServiceClickListener);
-                entry.setTag(tag);
-
-                entry.headerViev.setText(name);
-            }
+            entry.iconView.setImageResource(icon);
+            entry.headerViev.setText(text);
+            entry.setLevel(1);
         }
     }
 
-    private final OnClickListener onSubServiceClickListener = new OnClickListener()
+    private final OnClickListener onSubServiceSettingClickListener = new OnClickListener()
     {
         @Override
         public void onClick(View view)

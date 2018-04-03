@@ -15,6 +15,9 @@ public interface SubSystemHandler
     int SUBSYSTEM_RUN_FAILED = 2;
     int SUBSYSTEM_RUN_ZOMBIE = 3;
 
+    String SUBSYSTEM_TYPE_SERVICE = "service";
+    String SUBSYSTEM_TYPE_FEATURE = "feature";
+
     JSONObject getSubsystemInfo();
 
     void startSubsystem();

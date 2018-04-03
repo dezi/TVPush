@@ -70,15 +70,15 @@ public class GUISetupWizzard extends GUIPluginTitleList
             entry.setOnClickListener(onClickListener);
             entry.setTag(subsystem);
 
+            entry.iconView.setImageResource(icon);
+            entry.headerViev.setText(name);
+
             String info = GUISetup.getTextForSubsystemEnabled(name, state);
 
             if (state == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
             {
                 info += " - " + Simple.getTrans(GUISetup.getTextForSubsystemRunstateResid(runstate));
             }
-
-            entry.iconView.setImageResource(icon);
-            entry.headerViev.setText(name);
 
             entry.infoView.setText(info);
 

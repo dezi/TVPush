@@ -225,10 +225,13 @@ public class GUIImageView extends AppCompatImageView implements
 
     public void setImageResource(String base64)
     {
-        byte[] rawdata = Base64.decode(base64, Base64.DEFAULT);
-        ByteArrayInputStream is = new ByteArrayInputStream(rawdata);
+        if (base64 != null)
+        {
+            byte[] rawdata = Base64.decode(base64, Base64.DEFAULT);
+            ByteArrayInputStream is = new ByteArrayInputStream(rawdata);
 
-        setImageResource(is, 0);
+            setImageResource(is, 0);
+        }
     }
 
     public void setImageResource(int resid, int color)

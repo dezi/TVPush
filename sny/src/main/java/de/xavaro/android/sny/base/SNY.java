@@ -49,50 +49,32 @@ public class SNY extends OnInterfacesStubs implements
         Json.put(info, "info", Simple.getTrans(R.string.subsystem_sny_info));
         Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_sony_600));
 
-        JSONArray services = new JSONArray();
-        Json.put(info, "services", services);
+        JSONArray settings = new JSONArray();
+        Json.put(info, "settings", settings);
 
         JSONObject tvremote = new JSONObject();
 
         Json.put(tvremote, "tag", "tvremote");
         Json.put(tvremote, "name", Simple.getTrans(R.string.subsystem_service_tvremote_name));
+        Json.put(tvremote, "type", SubSystemHandler.SUBSYSTEM_TYPE_SERVICE);
+        Json.put(tvremote, "mode", SubSystemHandler.SUBSYSTEM_MODE_VOLUNTARY);
         Json.put(tvremote, "info", Simple.getTrans(R.string.subsystem_service_tvremote_info));
+        Json.put(tvremote, "icon", Simple.getImageResourceBase64(R.drawable.device_tvremote_550));
+        Json.put(tvremote, "need", "pin");
 
-        Json.put(services, tvremote);
+        Json.put(settings, tvremote);
 
         JSONObject channeledit = new JSONObject();
 
         Json.put(channeledit, "tag", "channeledit");
         Json.put(channeledit, "name", Simple.getTrans(R.string.subsystem_service_channeledit_name));
+        Json.put(channeledit, "type", SubSystemHandler.SUBSYSTEM_TYPE_FEATURE);
+        Json.put(channeledit, "mode", SubSystemHandler.SUBSYSTEM_MODE_VOLUNTARY);
         Json.put(channeledit, "info", Simple.getTrans(R.string.subsystem_service_channeledit_info));
-        Json.put(channeledit, "service", "dev");
-        Json.put(channeledit, "feature", "usb+adb");
-        Json.put(channeledit, "permission", "ext");
+        Json.put(channeledit, "icon", Simple.getImageResourceBase64(R.drawable.wizzard_channeledit_440));
+        Json.put(channeledit, "need", "ext+usb+dev+adb");
 
-        Json.put(services, channeledit);
-
-        JSONArray features = new JSONArray();
-        Json.put(info, "features", features);
-
-        JSONObject usbstick = new JSONObject();
-
-        Json.put(usbstick, "tag", "usbstick");
-        Json.put(usbstick, "name", Simple.getTrans(R.string.subsystem_feature_usbstick_name));
-        Json.put(usbstick, "info", Simple.getTrans(R.string.subsystem_feature_usbstick_info));
-        Json.put(usbstick, "feature", "usb");
-        Json.put(usbstick, "permission", "ext");
-
-        Json.put(features, usbstick);
-
-        JSONObject adbaccess = new JSONObject();
-
-        Json.put(adbaccess, "tag", "adbaccess");
-        Json.put(adbaccess, "name", Simple.getTrans(R.string.subsystem_feature_adbaccess_name));
-        Json.put(adbaccess, "info", Simple.getTrans(R.string.subsystem_feature_adbaccess_info));
-        Json.put(adbaccess, "service", "dev");
-        Json.put(adbaccess, "feature", "adb");
-
-        Json.put(features, adbaccess);
+        Json.put(settings, channeledit);
 
         return info;
     }

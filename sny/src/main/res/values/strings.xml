@@ -17,34 +17,23 @@
         in den Aktivierungs-Dialog ein.
     </string>
 
-    <string name="subsystem_feature_usbstick_name">USB-Stick</string>
-    <string name="subsystem_feature_usbstick_info">
-        Wenn Sie einen USB-Stick an dem TV-Gerät eingesteckt haben,
-        können Sie die Programmliste exporten, bearbeiten und wieder
-        importieren.
-        \n\n
-        Stecken Sie dazu einen FAT32 formatierten USB-Stick in
-        einen Anschluss des Fernsehers.
-    </string>
-
-    <string name="subsystem_feature_adbaccess_name">ADB-Zugriff</string>
-    <string name="subsystem_feature_adbaccess_info">
-        Um eine sortierte Programmliste in den Fernseher importieren
-        zu können, muss diese auf dem USB-Stick abgespeichert werden.
-        \n\n
-        Dazu muss zuerst der Entwickler-Dienst aktiviert werden. Sobald
-        der Entwickler-Dienst aktiv ist, können Sie den ADB-Zugriff hier
-        aktivieren.
-        \n\n
-        Wenn Sie diesen das erste mal dieses Feature aktivieren, erscheint
-        auf dem Fernseher ein Fenster zur Genehmigung des Zurgiffs.
-    </string>
-
     <string name="subsystem_service_channeledit_name">Programm-Editor</string>
     <string name="subsystem_service_channeledit_info">
         Mit diesem Feature können Sie die Programmliste Ihres
         Sony-Fernsehers charmant bearbeiten. Nix fünfhundert mal
-        klicken um ein Programm zu verschieben.
+        klicken um ein Programm zu verschieben. Folgende Berechtigungen
+        und Services werden benötigt:
+        \n\n
+        Zugriff auf den externen Speicher umd Kanallisten lesen zu können.
+        \n\n
+        Einen eingesteckten und funktionsfähigen USB-Stick, damit die Kanalliste
+        exportiert werden kann.
+        \n\n
+        Der Entickler-Service muss aktiviert sein, um schreibenden Zugriff auf
+        den USB-Stick zu erhalten.
+        \n\n
+        Das ADB-Tool muss aktiviert sein, um eine Kanalliste auf den USB-Stick
+        exportieren zu können.
     </string>
 
 </resources>
