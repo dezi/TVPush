@@ -52,17 +52,8 @@ public class IOT implements
 
     public IOT(Application appcontext)
     {
-        if (instance == null)
-        {
-            instance = this;
-
-            this.appcontext = appcontext;
-            Simple.initialize(appcontext);
-        }
-        else
-        {
-            throw new RuntimeException("IOT system already initialized.");
-        }
+        this.appcontext = appcontext;
+        Simple.initialize(appcontext);
     }
 
     @Override

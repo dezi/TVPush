@@ -29,8 +29,8 @@ public class SystemsGUI extends GUI
         super(appcontext);
 
         this.appcontext = appcontext;
-
-        GUI.instance.subSystems.registerSubsystem(getSubsystemInfo());
+        
+        subSystems.registerSubsystem(getSubsystemInfo());
     }
 
     @Override
@@ -52,76 +52,66 @@ public class SystemsGUI extends GUI
     }
 
     @Override
-    public void onStartSubsystemRequest(String drv)
+    public void onStartSubsystemRequest(String subsystem)
     {
-        if (drv.equals("iam"))
+        if (subsystem.startsWith("iam"))
         {
-            if (IAM.instance == null)
-            {
-                IAM.instance = new SystemsIAM(appcontext);
-                IAM.instance.startSubsystem();
-            }
+            if (IAM.instance == null) IAM.instance = new SystemsIAM(appcontext);
+
+            IAM.instance.startSubsystem();
         }
 
-        if (drv.equals("bcn"))
+        if (subsystem.startsWith("bcn"))
         {
-            if (BCN.instance == null)
-            {
-                BCN.instance = new SystemsBCN(appcontext);
-                BCN.instance.startSubsystem();
-            }
+            if (BCN.instance == null) BCN.instance = new SystemsBCN(appcontext);
+
+            BCN.instance.startSubsystem();
         }
 
-        if (drv.equals("sny"))
+        if (subsystem.startsWith("sny"))
         {
-            if (SNY.instance == null)
-            {
-                SNY.instance = new SystemsSNY(appcontext);
-                SNY.instance.startSubsystem();
-            }
+            if (SNY.instance == null) SNY.instance = new SystemsSNY(appcontext);
+
+            SNY.instance.startSubsystem();
         }
 
-        if (drv.equals("tpl"))
+        if (subsystem.startsWith("tpl"))
         {
-            if (TPL.instance == null)
-            {
-                TPL.instance = new SystemsTPL(appcontext);
-                TPL.instance.startSubsystem();
-            }
+            if (TPL.instance == null) TPL.instance = new SystemsTPL(appcontext);
+
+            TPL.instance.startSubsystem();
         }
 
-        if (drv.equals("p2p"))
+        if (subsystem.startsWith("p2p"))
         {
-            if (P2P.instance == null)
-            {
-                P2P.instance = new SystemsP2P(appcontext);
-                P2P.instance.startSubsystem();
-            }
+            if (P2P.instance == null) P2P.instance = new SystemsP2P(appcontext);
+
+            P2P.instance.startSubsystem();
         }
     }
 
     @Override
-    public void onStopSubsystemRequest(String drv)
+    public void onStopSubsystemRequest(String subsystem)
     {
-        if (drv.equals("iam"))
+        if (subsystem.startsWith("iam"))
         {
             if (IAM.instance != null)
             {
                 IAM.instance.stopSubsystem();
-                IAM.instance = null;
+                if (subsystem.equals("iam")) IAM.instance = null;
             }
         }
 
-        if (drv.equals("sny"))
+        if (subsystem.startsWith("sny"))
         {
             if (SNY.instance != null)
             {
                 SNY.instance.stopSubsystem();
-                SNY.instance = null;
+                if (subsystem.equals("sny")) SNY.instance = null;
             }
         }
 
-        if (drv.equals("tpl"))
+        if (subsystem.startsWith("tpl"))
         {
             if (TPL.instance != null)
             {
@@ -130,7 +120,7 @@ public class SystemsGUI extends GUI
             }
         }
 
-        if (drv.equals("p2p"))
+        if (subsystem.startsWith("p2p"))
         {
             if (P2P.instance != null)
             {

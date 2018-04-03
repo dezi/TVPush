@@ -40,17 +40,8 @@ public class GUI implements
 
     public GUI(Application appcontext)
     {
-        if (appcontext instanceof GUIApplication)
-        {
-            instance = this;
-
-            application = (GUIApplication) appcontext;
-            subSystems = new GUISubSystems();
-        }
-        else
-        {
-            throw new RuntimeException("Application does not extend GUIApplication.");
-        }
+        application = (GUIApplication) appcontext;
+        subSystems = new GUISubSystems();
     }
 
     @Override
