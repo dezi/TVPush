@@ -1,5 +1,8 @@
 package de.xavaro.android.sny.simple;
 
+import android.app.UiModeManager;
+import android.content.res.Configuration;
+import android.os.Build;
 import android.support.annotation.Nullable;
 
 import android.content.ContentResolver;
@@ -21,17 +24,40 @@ public class Simple
     private static WifiManager wifiManager;
     private static ContentResolver contentResolver;
 
+    private static boolean istv;
+    private static boolean issony;
+
     public static void initialize(Application app)
     {
         handler = new Handler();
         resources = app.getResources();
         wifiManager = (WifiManager) app.getSystemService(Context.WIFI_SERVICE);
         contentResolver = app.getContentResolver();
+
+        UiModeManager uiModeManager = (UiModeManager) app.getSystemService(Context.UI_MODE_SERVICE);
+        istv = (uiModeManager != null) && (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION);
+
+        issony = istv && getDeviceModelName().startsWith("BRAVIA");
+    }
+
+    public static boolean isTV()
+    {
+        return istv;
+    }
+
+    public static boolean isSony()
+    {
+        return issony;
     }
 
     public static Handler getHandler()
     {
         return handler;
+    }
+
+    public static String getDeviceModelName()
+    {
+        return Build.MODEL.toUpperCase();
     }
 
     @Nullable
