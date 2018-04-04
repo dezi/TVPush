@@ -638,18 +638,6 @@ public class GUISetup
         return GUI.instance.subSystems.getSubsystemRunState(subsystem);
     }
 
-    public static String getTextForSubsystemEnabled(String subsystem, int state)
-    {
-        if (state == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
-        {
-            return Simple.getTrans(R.string.setup_state_active, subsystem);
-        }
-        else
-        {
-            return Simple.getTrans(R.string.setup_state_inactive, subsystem);
-        }
-    }
-
     public static String getTextForSubsystemEnabled(String subsystem, int state, int mode)
     {
         if (mode == SubSystemHandler.SUBSYSTEM_MODE_IMPOSSIBLE)

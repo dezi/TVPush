@@ -52,13 +52,14 @@ public class GUISetupWizzard extends GUIPluginTitleList
 
         for (int inx = 0; inx < subsystems.length(); inx++)
         {
-            JSONObject subsystemInfo = Json.getObject(subsystems, inx);
-            if (subsystemInfo == null) continue;
+            JSONObject infos = Json.getObject(subsystems, inx);
+            if (infos == null) continue;
 
-            String subsystem = Json.getString(subsystemInfo, "drv");
-            String name = Json.getString(subsystemInfo, "name");
-            String icon = Json.getString(subsystemInfo, "icon");
+            String subsystem = Json.getString(infos, "drv");
+            String name = Json.getString(infos, "name");
+            String icon = Json.getString(infos, "icon");
 
+            int mode = Json.getInt(infos, "mode");
             int state = GUISetup.getSubsystemState(subsystem);
             int runstate = GUISetup.getSubsystemRunState(subsystem);
 
@@ -71,7 +72,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
             entry.iconView.setImageResource(icon);
             entry.headerViev.setText(name);
 
-            String info = GUISetup.getTextForSubsystemEnabled(name, state);
+            String info = GUISetup.getTextForSubsystemEnabled(name, state, mode);
 
             if (state == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
             {
@@ -80,11 +81,12 @@ public class GUISetupWizzard extends GUIPluginTitleList
 
             entry.infoView.setText(info);
 
-            int color = (state == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
-                    ? GUIDefs.TEXT_COLOR_SPECIAL
-                    : (runstate == SubSystemHandler.SUBSYSTEM_RUN_STARTED)
+            int color = ((runstate == SubSystemHandler.SUBSYSTEM_RUN_STARTED)
+                    || (mode == SubSystemHandler.SUBSYSTEM_MODE_IMPOSSIBLE))
                     ? GUIDefs.TEXT_COLOR_INFOS
-                    : GUIDefs.TEXT_COLOR_ALERTS;
+                    : (state == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
+                    ? GUIDefs.TEXT_COLOR_ALERTS
+                    : GUIDefs.TEXT_COLOR_SPECIAL;
 
             entry.infoView.setTextColor(color);
         }

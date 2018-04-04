@@ -53,7 +53,7 @@
 
     <string name="setup_state_active">Aktiviert</string>
     <string name="setup_state_inactive">Nicht aktiviert</string>
-    <string name="setup_state_impossible">Nicht aktivierbar</string>
+    <string name="setup_state_impossible">Nicht verfügbar</string>
 
     <string name="setup_runstates_stopped">Gestoppt</string>
     <string name="setup_runstates_started">Gestartet</string>

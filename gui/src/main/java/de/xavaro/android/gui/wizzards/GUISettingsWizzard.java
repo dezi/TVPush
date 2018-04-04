@@ -8,6 +8,7 @@ import android.view.View;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import de.xavaro.android.gui.simple.Log;
 import pub.android.interfaces.all.SubSystemHandler;
 
 import de.xavaro.android.gui.plugin.GUIPluginTitleList;
@@ -54,18 +55,20 @@ public class GUISettingsWizzard extends GUIPluginTitleList
         String need = Json.getString(infos, "need");
         if (name == null) return;
 
+        int mode = Json.getInt(infos, "mode");
         int state = GUISetup.getSubsystemState(subsystem);
         int runstate = GUISetup.getSubsystemRunState(subsystem);
         boolean enabled = (state == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED);
 
-        String info = GUISetup.getTextForSubsystemEnabled(name, state);
+        String info = GUISetup.getTextForSubsystemEnabled(name, state, mode);
 
         if (enabled)
         {
             info += " - " + Simple.getTrans(GUISetup.getTextForSubsystemRunstateResid(runstate));
         }
 
-        int color = (runstate == SubSystemHandler.SUBSYSTEM_RUN_STARTED)
+        int color = ((runstate == SubSystemHandler.SUBSYSTEM_RUN_STARTED)
+                        || (mode == SubSystemHandler.SUBSYSTEM_MODE_IMPOSSIBLE))
                 ? GUIDefs.TEXT_COLOR_INFOS
                 : enabled
                 ? GUIDefs.TEXT_COLOR_ALERTS
@@ -235,7 +238,10 @@ public class GUISettingsWizzard extends GUIPluginTitleList
             dialog.setTitleText(Json.getString(infos, "name"));
             dialog.setInfoText(Json.getString(infos, "info"));
 
-            if (Json.getInt(infos, "mode") == SubSystemHandler.SUBSYSTEM_MODE_MANDATORY)
+            int mode = Json.getInt(infos, "mode");
+
+            if ((mode == SubSystemHandler.SUBSYSTEM_MODE_MANDATORY)
+                    || (mode == SubSystemHandler.SUBSYSTEM_MODE_IMPOSSIBLE))
             {
                 dialog.setPositiveButton(R.string.basic_ok);
                 dialog.positiveButton.requestFocus();
