@@ -69,8 +69,7 @@ public class GUIToastBar extends GUIPlugin implements OnSpeechHandler
             centerIcon.setSizeDip(Simple.MP, Simple.WC);
             centerIcon.setGravity(Gravity.CENTER_VERTICAL + Gravity.CENTER_HORIZONTAL);
             centerIcon.setOrientation(LinearLayout.VERTICAL);
-            centerIcon.setPaddingDip(GUIDefs.PADDING_XLARGE);
-            centerIcon.setMarginTopDip(GUIDefs.PADDING_MEDIUM);
+            centerIcon.setPaddingDip(GUIDefs.PADDING_XXLARGE);
 
             contentFrame.addView(centerIcon);
 
