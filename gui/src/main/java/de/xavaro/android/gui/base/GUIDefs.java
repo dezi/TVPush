@@ -42,6 +42,7 @@ public class GUIDefs
     public final static int COLOR_DARK_TRANSPARENT   = 0x88000000;
     public static final int COLOR_BACKGROUND_DIM     = 0x77000000;
     public static final int COLOR_LIGHT_GRAY         = 0xffcccccc;
+    public static final int COLOR_GRAY               = 0xff777777;
 
     public final static int COLOR_PLUGIN_INNER_TRANSPARENT = 0x88888888;
     public final static int COLOR_PLUGIN_FRAME_NORMAL      = 0xffffffff;

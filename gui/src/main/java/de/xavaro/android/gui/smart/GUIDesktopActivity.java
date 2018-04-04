@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import de.xavaro.android.gui.plugin.GUIPluginTitle;
+import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.wizzards.GUILocationsWizzard;
 import de.xavaro.android.gui.wizzards.GUICamerasWizzard;
 import de.xavaro.android.gui.wizzards.GUIChannelWizzard;
@@ -74,11 +75,14 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
 
         // @formatter:on
 
-        //displayWizzard(GUICamerasWizzard.class.getSimpleName());
-        //displayWizzard(GUIPingWizzard.class.getSimpleName());
-        //displayWizzard(GUILocationsWizzard.class.getSimpleName());
-        displayWizzard(GUISetupWizzard.class.getSimpleName());
-        //displayWizzard(GUIStreetviewWizzard.class.getSimpleName());
+        if (!Simple.isPhone())
+        {
+            //displayWizzard(GUICamerasWizzard.class.getSimpleName());
+            //displayWizzard(GUIPingWizzard.class.getSimpleName());
+            //displayWizzard(GUILocationsWizzard.class.getSimpleName());
+            displayWizzard(GUISetupWizzard.class.getSimpleName());
+            //displayWizzard(GUIStreetviewWizzard.class.getSimpleName());
+        }
 
         checkWindowSize();
    }
@@ -252,6 +256,14 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
     {
         if (show)
         {
+        }
+    }
+
+    public void displayMenu(boolean show)
+    {
+        if (show)
+        {
+            displayWizzard(GUIMenuWizzard.class.getSimpleName());
         }
     }
 

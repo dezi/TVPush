@@ -15,7 +15,7 @@ public class GUIPlugin extends GUIFrameLayout
 
     public static int DEFAULT_HORZ_MARGIN = 50;
     public static int DEFAULT_TOP_MARGIN = 50;;
-    public static int DEFAULT_BOTTOM_MARGIN = 80;
+    public static int DEFAULT_BOTTOM_MARGIN = Simple.isPhone()? 50 : 80;
 
     public GUIFrameLayout contentFrame;
 

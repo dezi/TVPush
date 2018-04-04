@@ -1,25 +1,30 @@
 package de.xavaro.android.gui.plugin;
 
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.FrameLayout;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import de.xavaro.android.gui.base.GUI;
-import de.xavaro.android.gui.base.GUIDefs;
-import de.xavaro.android.gui.views.GUIRainbowLayout;
-import de.xavaro.android.gui.views.GUIRelativeLayout;
-import de.xavaro.android.gui.views.GUITextView;
-
-import de.xavaro.android.gui.simple.Json;
-import de.xavaro.android.gui.simple.Simple;
 import pub.android.interfaces.ext.OnSpeechHandler;
+
+import de.xavaro.android.gui.views.GUILinearLayout;
+import de.xavaro.android.gui.views.GUIRainbowLayout;
+import de.xavaro.android.gui.views.GUITextView;
+import de.xavaro.android.gui.views.GUIIconView;
+import de.xavaro.android.gui.base.GUIDefs;
+import de.xavaro.android.gui.base.GUI;
+import de.xavaro.android.gui.R;
+
+import de.xavaro.android.gui.simple.Simple;
+import de.xavaro.android.gui.simple.Json;
 
 public class GUIToastBar extends GUIPlugin implements OnSpeechHandler
 {
@@ -27,9 +32,12 @@ public class GUIToastBar extends GUIPlugin implements OnSpeechHandler
 
     private final Handler handler = new Handler();
 
-    private GUIRelativeLayout centerCont;
     private GUIRainbowLayout colorFrame;
+    private GUILinearLayout centerIcon;
+    private GUILinearLayout iconBack;
+    private GUILinearLayout centerCont;
     private GUITextView toastText;
+    private GUIIconView menuIcon;
 
     private String toastMessage;
     private boolean hadResult;
@@ -42,8 +50,9 @@ public class GUIToastBar extends GUIPlugin implements OnSpeechHandler
 
         contentFrame.addView(colorFrame);
 
-        centerCont = new GUIRelativeLayout(getContext());
+        centerCont = new GUILinearLayout(getContext());
         centerCont.setGravity(Gravity.CENTER_VERTICAL + Gravity.CENTER_HORIZONTAL);
+        centerCont.setOrientation(LinearLayout.VERTICAL);
 
         colorFrame.addView(centerCont);
 
@@ -56,6 +65,36 @@ public class GUIToastBar extends GUIPlugin implements OnSpeechHandler
 
         if (Simple.isPhone())
         {
+            centerIcon = new GUILinearLayout(getContext());
+            centerIcon.setSizeDip(Simple.MP, Simple.WC);
+            centerIcon.setGravity(Gravity.CENTER_VERTICAL + Gravity.CENTER_HORIZONTAL);
+            centerIcon.setOrientation(LinearLayout.VERTICAL);
+            centerIcon.setPaddingDip(GUIDefs.PADDING_XLARGE);
+            centerIcon.setMarginTopDip(GUIDefs.PADDING_MEDIUM);
+
+            contentFrame.addView(centerIcon);
+
+            iconBack = new GUILinearLayout(getContext());
+            iconBack.setSizeDip(Simple.WC, Simple.WC);
+            iconBack.setPaddingDip(GUIDefs.PADDING_SMALL);
+            iconBack.setRoundedCorners(GUIDefs.ROUNDED_NORMAL, GUIDefs.COLOR_GRAY);
+
+            iconBack.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    GUI.instance.desktopActivity.displayMenu(true);
+                }
+            });
+
+            centerIcon.addView(iconBack);
+
+            menuIcon = new GUIIconView(getContext());
+            menuIcon.setImageResource(R.drawable.menu_400);
+
+            iconBack.addView(menuIcon);
+
             toastText.setMinLines(3);
 
             contentFrame.setBackgroundColor(Color.BLACK);
