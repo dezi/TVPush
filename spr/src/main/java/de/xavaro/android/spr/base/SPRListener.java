@@ -163,6 +163,8 @@ public class SPRListener implements RecognitionListener
         @Override
         public void run()
         {
+            Log.d(LOGTAG, "restartListeningRunnable:");
+
             stopListening();
 
             handler.postDelayed(startListeningRunnable, 250);

@@ -204,6 +204,14 @@ public class Simple
         return (netInfo != null) && netInfo.isConnectedOrConnecting();
     }
 
+    public static boolean isDeveloper()
+    {
+        int devEnabled = Settings.Global.getInt(contentResolver,
+                Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
+
+        return (devEnabled == 1);
+    }
+
     public static int getDeviceOrientation()
     {
         int orientation = Configuration.ORIENTATION_PORTRAIT;

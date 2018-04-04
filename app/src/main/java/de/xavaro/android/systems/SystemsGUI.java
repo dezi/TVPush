@@ -4,6 +4,7 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.adb.base.ADB;
 import de.xavaro.android.bcn.base.BCN;
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.simple.Json;
@@ -24,14 +25,14 @@ public class SystemsGUI extends GUI
 {
     private static final String LOGTAG = SystemsGUI.class.getSimpleName();
 
-    Application appcontext;
+    private Application appcontext;
 
     public SystemsGUI(Application appcontext)
     {
         super(appcontext);
 
         this.appcontext = appcontext;
-        
+
         subSystems.registerSubsystem(getSubsystemInfo());
     }
 
@@ -56,6 +57,13 @@ public class SystemsGUI extends GUI
     @Override
     public void onStartSubsystemRequest(String subsystem)
     {
+        if (subsystem.startsWith("adb"))
+        {
+            if (ADB.instance == null) ADB.instance = new SystemsADB(appcontext);
+
+            ADB.instance.startSubsystem();
+        }
+
         if (subsystem.startsWith("gui"))
         {
             if (GUI.instance == null) GUI.instance = new SystemsGUI(appcontext);
@@ -116,6 +124,16 @@ public class SystemsGUI extends GUI
     @Override
     public void onStopSubsystemRequest(String subsystem)
     {
+        if (subsystem.startsWith("adb"))
+        {
+            if (ADB.instance != null)
+            {
+                ADB.instance.stopSubsystem();
+
+                if (subsystem.equals("adb")) ADB.instance = null;
+            }
+        }
+
         if (subsystem.startsWith("gui"))
         {
             if (GUI.instance != null)

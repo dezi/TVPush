@@ -2,14 +2,15 @@ package de.xavaro.android.systems;
 
 import android.app.Application;
 
+import de.xavaro.android.adb.base.ADB;
 import de.xavaro.android.bcn.base.BCN;
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.iam.base.IAM;
 import de.xavaro.android.iot.base.IOT;
-
 import de.xavaro.android.sny.base.SNY;
 import de.xavaro.android.spr.base.SPR;
 import de.xavaro.android.tpl.base.TPL;
+
 import zz.top.p2p.base.P2P;
 
 public class Systems
@@ -44,6 +45,14 @@ public class Systems
         {
             IAM.instance = iam;
             IAM.instance.startSubsystem();
+        }
+
+        SystemsADB adb = new SystemsADB(application);
+
+        if (GUI.instance.subSystems.isSubsystemActivated("adb"))
+        {
+            ADB.instance = adb;
+            ADB.instance.startSubsystem();
         }
 
         SystemsSNY sny = new SystemsSNY(application);

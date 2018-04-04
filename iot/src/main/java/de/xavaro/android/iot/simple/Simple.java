@@ -191,6 +191,14 @@ public class Simple
         return (netInfo != null) && netInfo.isConnectedOrConnecting();
     }
 
+    public static boolean isDeveloper()
+    {
+        int devEnabled = Settings.Global.getInt(contentResolver,
+                Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
+
+        return (devEnabled == 1);
+    }
+
     public static int getDeviceOrientation()
     {
         int orientation = Configuration.ORIENTATION_PORTRAIT;
@@ -322,6 +330,11 @@ public class Simple
         if ((getFCMToken() != null) && ! getFCMToken().isEmpty())
         {
             caps += "|fcm";
+        }
+
+        if (isDeveloper() && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP))
+        {
+            caps += "|adb";
         }
 
         return caps;
