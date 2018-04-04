@@ -6,12 +6,12 @@
       <module fileurl="file://$PROJECT_DIR$/adb/adb.iml" filepath="$PROJECT_DIR$/adb/adb.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/bcn/bcn.iml" filepath="$PROJECT_DIR$/bcn/bcn.iml" />
-      <module fileurl="file://$PROJECT_DIR$/bcn/bcn.iml" filepath="$PROJECT_DIR$/bcn/bcn.iml" />
       <module fileurl="file://$PROJECT_DIR$/gui/gui.iml" filepath="$PROJECT_DIR$/gui/gui.iml" />
       <module fileurl="file://$PROJECT_DIR$/iam/iam.iml" filepath="$PROJECT_DIR$/iam/iam.iml" />
       <module fileurl="file://$PROJECT_DIR$/iot/iot.iml" filepath="$PROJECT_DIR$/iot/iot.iml" />
       <module fileurl="file://$PROJECT_DIR$/pub/pub.iml" filepath="$PROJECT_DIR$/pub/pub.iml" />
       <module fileurl="file://$PROJECT_DIR$/sny/sny.iml" filepath="$PROJECT_DIR$/sny/sny.iml" />
+      <module fileurl="file://$PROJECT_DIR$/spr/spr.iml" filepath="$PROJECT_DIR$/spr/spr.iml" />
       <module fileurl="file://$PROJECT_DIR$/tpl/tpl.iml" filepath="$PROJECT_DIR$/tpl/tpl.iml" />
       <module fileurl="file://$PROJECT_DIR$/zztop/zztop.iml" filepath="$PROJECT_DIR$/zztop/zztop.iml" />
     </modules>

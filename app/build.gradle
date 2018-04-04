@@ -57,6 +57,7 @@ dependencies {
     implementation project(':pub')
     implementation project(':bcn')
     implementation project(':sny')
+    implementation project(':spr')
     implementation project(':tpl')
     implementation project(':zztop')
 }

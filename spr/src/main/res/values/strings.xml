@@ -1,0 +1,9 @@
+<resources>
+
+    <string name="subsystem_spr_name">Speech Recognition</string>
+
+    <string name="subsystem_spr_info">
+        Dieses System enthält die Spracherkennung.
+    </string>
+
+</resources>
