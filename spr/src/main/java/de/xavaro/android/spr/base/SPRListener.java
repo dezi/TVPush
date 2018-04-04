@@ -260,6 +260,14 @@ public class SPRListener implements RecognitionListener
             case SpeechRecognizer.ERROR_SERVER:
                 message = "Error from server";
                 millis = 10 * 1000;
+
+                //
+                // Fall back to network speech.
+                //
+
+                recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+
                 break;
         }
 

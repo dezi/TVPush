@@ -313,10 +313,10 @@ public class GUIDialogView extends GUIRelativeLayout
                 buttonFrame.setOrientation(LinearLayout.VERTICAL);
 
                 negativeButton.setMarginRightDip(GUIDefs.PADDING_ZERO);
-                negativeButton.setMarginBottomDip(GUIDefs.PADDING_MEDIUM);
+                negativeButton.setMarginBottomDip(GUIDefs.PADDING_SMALL);
 
                 positiveButton.setMarginLeftDip(GUIDefs.PADDING_ZERO);
-                positiveButton.setMarginTopDip(GUIDefs.PADDING_MEDIUM);
+                positiveButton.setMarginTopDip(GUIDefs.PADDING_SMALL);
             }
             else
             {
@@ -327,7 +327,6 @@ public class GUIDialogView extends GUIRelativeLayout
 
                 positiveButton.setMarginLeftDip(GUIDefs.PADDING_MEDIUM);
                 positiveButton.setMarginTopDip(GUIDefs.PADDING_ZERO);
-
             }
         }
         else
