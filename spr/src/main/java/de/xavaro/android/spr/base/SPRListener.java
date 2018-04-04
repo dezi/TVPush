@@ -62,9 +62,13 @@ public class SPRListener implements RecognitionListener
             recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
             recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) && ! Simple.isTV())
             {
-                recognizerIntent.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true);
+                //
+                // Intent working but not defined...
+                //
+
+                recognizerIntent.putExtra("android.speech.extra.PREFER_OFFLINE", true);
             }
 
             Log.d(LOGTAG, "startListening: create");
@@ -103,17 +107,16 @@ public class SPRListener implements RecognitionListener
             return;
         }
 
-        Log.d(LOGTAG, "startListening:");
-
         handler.removeCallbacks(restartListeningRunnable);
 
         isEnabled = true;
 
         if (! lockStart && (recognizer != null))
         {
+            Log.d(LOGTAG, "startListening:");
+
             lockStart = true;
 
-            Log.d(LOGTAG, "startListening: real.");
             recognizer.startListening(recognizerIntent);
         }
 

@@ -1,6 +1,7 @@
 package de.xavaro.android.bcn.base;
 
 import android.app.Application;
+import android.os.Build;
 
 import org.json.JSONObject;
 
@@ -28,10 +29,15 @@ public class BCN extends OnInterfacesStubs implements
     @Override
     public JSONObject getSubsystemInfo()
     {
+        int mode = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            ? SubSystemHandler.SUBSYSTEM_MODE_VOLUNTARY
+            : SubSystemHandler.SUBSYSTEM_MODE_IMPOSSIBLE
+            ;
+
         JSONObject info = new JSONObject();
 
         Json.put(info, "drv", "bcn");
-        Json.put(info, "mode", SubSystemHandler.SUBSYSTEM_MODE_VOLUNTARY);
+        Json.put(info, "mode", mode);
         Json.put(info, "name", Simple.getTrans(R.string.subsystem_bcn_name));
         Json.put(info, "info", Simple.getTrans(R.string.subsystem_bcn_info));
         Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_beacon_220));

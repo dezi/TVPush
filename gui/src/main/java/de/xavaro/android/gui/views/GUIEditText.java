@@ -157,7 +157,7 @@ public class GUIEditText extends AppCompatEditText implements
     @Override
     public Drawable getBackground()
     {
-        return canRB.getBackground();
+        return (canRB == null) ? super.getBackground() : canRB.getBackground();
     }
 
     @Override

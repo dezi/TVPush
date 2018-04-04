@@ -163,7 +163,10 @@ public class IOTProximLocation implements LocationListener
 
             IOTStatus.list.addEntry(status, false, true);
 
-            IOT.instance.proximServer.advertiseGPSCoarse();
+            if (IOT.instance.proximServer != null)
+            {
+                IOT.instance.proximServer.advertiseGPSCoarse();
+            }
 
             JSONObject locmeasurement = new JSONObject();
             Json.put(locmeasurement, "akey", IOT.device.uuid);

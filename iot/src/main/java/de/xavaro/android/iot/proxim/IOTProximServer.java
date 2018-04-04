@@ -36,20 +36,19 @@ public class IOTProximServer
 
     static public void startService()
     {
-        if (IOT.instance == null) return;
-
-        if (IOT.instance.proximServer == null)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
-            IOT.instance.proximServer = new IOTProximServer();
-            IOT.instance.proximServer.startAdvertising();
+            if ((IOT.instance != null) && (IOT.instance.proximServer == null))
+            {
+                IOT.instance.proximServer = new IOTProximServer();
+                IOT.instance.proximServer.startAdvertising();
+            }
         }
     }
 
     static public void stopService()
     {
-        if (IOT.instance == null) return;
-
-        if (IOT.instance.proximServer != null)
+        if ((IOT.instance != null) && (IOT.instance.proximServer != null))
         {
             IOT.instance.proximServer.stopAdvertising();
             IOT.instance.proximServer = null;

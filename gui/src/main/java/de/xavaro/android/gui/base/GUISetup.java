@@ -302,7 +302,7 @@ public class GUISetup
 
         if (need.equals("sro"))
         {
-            have = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1);
+            have = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) && ! Simple.isTV();
         }
 
         //
@@ -312,6 +312,8 @@ public class GUISetup
         if (need.equals("adb"))
         {
             // Todo: get adb check.
+
+            have = true;
         }
 
         return have;

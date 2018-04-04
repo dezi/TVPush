@@ -46,22 +46,25 @@ public class IOTProximScanner
 
     public static void startService(Context appcontext)
     {
-        if ((IOT.instance != null) && (IOT.instance.proximScanner == null))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
-            IOT.instance.proximScanner = new IOTProximScanner(appcontext);
-
-            IOT.instance.proximScanner.startLEScanner();
-
-            if (Simple.isSony())
+            if ((IOT.instance != null) && (IOT.instance.proximScanner == null))
             {
-                //
-                // Fucked up BLE daemons by Sony.
-                // They tend to work better, if a
-                // legacy scan is also requested.
-                //
+                IOT.instance.proximScanner = new IOTProximScanner(appcontext);
 
-                //IOT.instance.proximScanner.startReceiver();
-                //IOT.instance.proximScanner.startDiscovery();
+                IOT.instance.proximScanner.startLEScanner();
+
+                if (Simple.isSony())
+                {
+                    //
+                    // Fucked up BLE daemons by Sony.
+                    // They tend to work better, if a
+                    // legacy scan is also requested.
+                    //
+
+                    //IOT.instance.proximScanner.startReceiver();
+                    //IOT.instance.proximScanner.startDiscovery();
+                }
             }
         }
     }
