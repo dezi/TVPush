@@ -30,6 +30,7 @@ public class Simple
             InputStream is = resources.openRawResource(+resid);
             byte[] buffer = new byte[16 * 1024];
             int xfer = is.read(buffer);
+            is.close();
 
             return Base64.encodeToString(buffer, 0 ,xfer, android.util.Base64.NO_WRAP);
         }

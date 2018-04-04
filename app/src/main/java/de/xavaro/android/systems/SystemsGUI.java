@@ -10,6 +10,7 @@ import de.xavaro.android.gui.simple.Json;
 
 import de.xavaro.android.iam.base.IAM;
 
+import de.xavaro.android.spr.base.SPR;
 import pub.android.interfaces.pub.PUBCamera;
 import pub.android.interfaces.pub.PUBSmartBulb;
 import pub.android.interfaces.pub.PUBSmartPlug;
@@ -75,6 +76,13 @@ public class SystemsGUI extends GUI
             SNY.instance.startSubsystem();
         }
 
+        if (subsystem.startsWith("spr"))
+        {
+            if (SPR.instance == null) SPR.instance = new SystemsSPR(appcontext);
+
+            SPR.instance.startSubsystem();
+        }
+
         if (subsystem.startsWith("tpl"))
         {
             if (TPL.instance == null) TPL.instance = new SystemsTPL(appcontext);
@@ -102,6 +110,24 @@ public class SystemsGUI extends GUI
             }
         }
 
+        if (subsystem.startsWith("bcn"))
+        {
+            if (BCN.instance != null)
+            {
+                BCN.instance.stopSubsystem();
+                if (subsystem.equals("bcn")) BCN.instance = null;
+            }
+        }
+
+        if (subsystem.startsWith("spr"))
+        {
+            if (SPR.instance != null)
+            {
+                SPR.instance.stopSubsystem();
+                if (subsystem.equals("spr")) SPR.instance = null;
+            }
+        }
+
         if (subsystem.startsWith("sny"))
         {
             if (SNY.instance != null)
@@ -116,7 +142,7 @@ public class SystemsGUI extends GUI
             if (TPL.instance != null)
             {
                 TPL.instance.stopSubsystem();
-                TPL.instance = null;
+                if (subsystem.equals("tpl")) TPL.instance = null;
             }
         }
 
@@ -125,7 +151,7 @@ public class SystemsGUI extends GUI
             if (P2P.instance != null)
             {
                 P2P.instance.stopSubsystem();
-                P2P.instance = null;
+                if (subsystem.equals("p2p")) P2P.instance = null;
             }
         }
     }

@@ -10,8 +10,11 @@ import de.xavaro.android.spr.simple.Simple;
 import de.xavaro.android.spr.simple.Json;
 import de.xavaro.android.spr.simple.Log;
 import de.xavaro.android.spr.R;
+import pub.android.interfaces.ext.OnSpeechHandler;
 
-public class SPR implements SubSystemHandler
+public class SPR implements
+        SubSystemHandler,
+        OnSpeechHandler
 {
     private static final String LOGTAG = SPR.class.getSimpleName();
 
@@ -27,12 +30,13 @@ public class SPR implements SubSystemHandler
     {
         JSONObject info = new JSONObject();
 
-        Json.put(info, "drv", "sny");
+        Json.put(info, "drv", "spr");
 
         Json.put(info, "name", Simple.getTrans(R.string.subsystem_spr_name));
         Json.put(info, "mode", SubSystemHandler.SUBSYSTEM_MODE_VOLUNTARY);
         Json.put(info, "info", Simple.getTrans(R.string.subsystem_spr_info));
         Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_speechrec_170));
+        Json.put(info, "need", "mic");
 
         return info;
     }
@@ -42,7 +46,6 @@ public class SPR implements SubSystemHandler
     {
         if (onGetSubsystemState("spr") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
         {
-            //SNYDiscover.startService();
             onSubsystemStarted("spr", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
         }
     }
@@ -52,11 +55,11 @@ public class SPR implements SubSystemHandler
     {
         if (onGetSubsystemState("spr") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
         {
-            //SNYDiscover.stopService();
             onSubsystemStopped("spr", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
         }
     }
 
+    @Override
     public int onGetSubsystemState(String subsystem)
     {
         Log.d(LOGTAG, "onGetSubsystemState: STUB!");
@@ -64,13 +67,33 @@ public class SPR implements SubSystemHandler
         return SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED;
     }
 
+    @Override
     public void onSubsystemStarted(String subsystem, int runstate)
     {
         Log.d(LOGTAG, "onSubsystemStarted: STUB!");
     }
 
+    @Override
     public void onSubsystemStopped(String subsystem, int runstate)
     {
         Log.d(LOGTAG, "onSubsystemStopped: STUB!");
+    }
+
+    @Override
+    public void onActivateRemote()
+    {
+        Log.d(LOGTAG, "onActivateRemote: STUB!");
+    }
+
+    @Override
+    public void onSpeechReady()
+    {
+        Log.d(LOGTAG, "onSpeechReady: STUB!");
+    }
+
+    @Override
+    public void onSpeechResults(JSONObject results)
+    {
+        Log.d(LOGTAG, "onSpeechResults: STUB!");
     }
 }

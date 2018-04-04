@@ -22,7 +22,7 @@ public class GLSFaceDetect
 {
     private static final String LOGTAG = GLSFaceDetect.class.getSimpleName();
 
-    public FaceDetector detector;
+    private FaceDetector detector;
 
     public GLSFaceDetect(Context context)
     {
@@ -145,5 +145,4 @@ public class GLSFaceDetect
             }
         }
     }
-
 }
