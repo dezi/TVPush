@@ -8,6 +8,7 @@ import de.xavaro.android.iam.base.IAM;
 import de.xavaro.android.iot.base.IOT;
 
 import de.xavaro.android.sny.base.SNY;
+import de.xavaro.android.spr.base.SPR;
 import de.xavaro.android.tpl.base.TPL;
 import zz.top.p2p.base.P2P;
 
@@ -27,6 +28,14 @@ public class Systems
         {
             IAM.instance = iam;
             IAM.instance.startSubsystem();
+        }
+
+        SystemsSPR spr = new SystemsSPR(application);
+
+        if (GUI.instance.subSystems.isSubsystemActivated("spr"))
+        {
+            SPR.instance = spr;
+            SPR.instance.startSubsystem();
         }
 
         SystemsBCN bcn = new SystemsBCN(application);
