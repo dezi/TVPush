@@ -1,28 +1,28 @@
 package de.xavaro.android.gui.base;
 
 import android.Manifest;
-import android.app.Activity;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.app.ActivityCompat;
+import android.location.LocationManager;
 import android.bluetooth.BluetoothAdapter;
+import android.content.pm.PackageManager;
 import android.content.ComponentName;
+import android.provider.Settings;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.LocationManager;
+import android.app.Activity;
 import android.net.Uri;
-import android.os.Build;
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.File;
+
+import pub.android.interfaces.all.SubSystemHandler;
 
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.R;
-import pub.android.interfaces.all.SubSystemHandler;
 
 public class GUISetup
 {
@@ -42,6 +42,7 @@ public class GUISetup
             case "ssd": return R.drawable.ssd_120;
             case "adb": return R.drawable.adb_220;
             case "pin": return R.drawable.setting_pincode_270;
+            case "sro": return R.drawable.offline_500;
         }
 
         return R.drawable.unknown_550;
@@ -61,6 +62,7 @@ public class GUISetup
             case "ssd": return R.string.setup_need_head_ssd;
             case "adb": return R.string.setup_need_head_adb;
             case "pin": return R.string.setup_need_head_pin;
+            case "sro": return R.string.setup_need_head_sro;
         }
 
         return R.string.setup_ukn;
@@ -80,6 +82,7 @@ public class GUISetup
             case "ssd": return R.string.setup_need_info_ssd;
             case "adb": return R.string.setup_need_info_adb;
             case "pin": return R.string.setup_need_info_pin;
+            case "sro": return R.string.setup_need_info_sro;
         }
 
         return R.string.setup_ukn;
@@ -113,6 +116,13 @@ public class GUISetup
             return enabled
                     ? R.string.setup_need_status_pin_active
                     : R.string.setup_need_status_pin_inactive;
+        }
+
+        if (need.equals("sro"))
+        {
+            return enabled
+                    ? R.string.setup_need_status_sro_active
+                    : R.string.setup_need_status_sro_inactive;
         }
 
         return enabled
@@ -286,6 +296,19 @@ public class GUISetup
             }
         }
 
+        //
+        // Speech recognizer offline mode.
+        //
+
+        if (need.equals("sro"))
+        {
+            have = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1);
+        }
+
+        //
+        // Android developer bridge.
+        //
+
         if (need.equals("adb"))
         {
             // Todo: get adb check.
@@ -296,7 +319,7 @@ public class GUISetup
 
     public static boolean needHasService(String need)
     {
-        return need.equals("ble") || need.equals("loc") || need.equals("dev");
+        return need.equals("ble") || need.equals("loc") || need.equals("dev") || need.equals("sro");
     }
 
     public static boolean needHasInfos(String need)
@@ -396,6 +419,75 @@ public class GUISetup
 
     public static void startIntentForNeed(Context context, String service)
     {
+        if (service.equals("sro"))
+        {
+            try
+            {
+                //
+                // Recent systems.
+                //
+
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+
+                intent.setComponent(new ComponentName(
+                        "com.google.android.voicesearch",
+                        "com.google.android.voicesearch.VoiceSearchPreferences"));
+
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                context.startActivity(intent);
+
+                return;
+            }
+            catch (Exception ignore)
+            {
+            }
+
+            try
+            {
+                //
+                // Older systems.
+                //
+
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+
+                intent.setComponent(new ComponentName(
+                        "com.google.android.googlequicksearchbox",
+                        "com.google.android.voicesearch.VoiceSearchPreferences"));
+
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                context.startActivity(intent);
+
+                return;
+            }
+            catch (Exception ignore)
+            {
+            }
+
+            try
+            {
+                //
+                // Fucked up systems (SAMSUNG Table A).
+                //
+
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+
+                intent.setComponent(new ComponentName(
+                        "com.google.android.googlequicksearchbox",
+                        "com.google.android.apps.gsa.settingsui.VoiceSearchPreferences"));
+
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                context.startActivity(intent);
+
+                return;
+            }
+            catch (Exception ignore)
+            {
+            }
+        }
+
         try
         {
             if (service.equals("loc"))

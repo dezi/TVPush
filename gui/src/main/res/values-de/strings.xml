@@ -20,6 +20,7 @@
     <string name="setup_need_head_usb">USB-Stick</string>
     <string name="setup_need_head_ssd">SD-Karte</string>
     <string name="setup_need_head_pin">Pin-Code</string>
+    <string name="setup_need_head_sro">Offline Spracherkennung</string>
 
     <string name="setup_perm_head_ble">Bluetooth-Zugriff</string>
     <string name="setup_perm_head_loc">Standort-Zugriff</string>
@@ -46,6 +47,8 @@
     <string name="setup_need_status_adb_inactive">Nicht authorisiert</string>
     <string name="setup_need_status_pin_active">Authorisiert</string>
     <string name="setup_need_status_pin_inactive">Nicht authorisiert</string>
+    <string name="setup_need_status_sro_active">Verfügbar</string>
+    <string name="setup_need_status_sro_inactive">Nicht verfügbar</string>
 
     <string name="setup_state_active">Aktiviert</string>
     <string name="setup_state_inactive">Nicht aktiviert</string>

@@ -26,19 +26,19 @@
     <string name="setup_need_head_usb">USB-Stick</string>
     <string name="setup_need_head_ssd">SD-Card</string>
     <string name="setup_need_head_pin">Pin-Code</string>
+    <string name="setup_need_head_sro">Offline Speech Recognition</string>
 
     <string name="setup_need_info_ble">todo</string>
     <string name="setup_need_info_loc">todo</string>
     <string name="setup_need_info_dev">todo</string>
-
     <string name="setup_need_info_mic">todo</string>
     <string name="setup_need_info_ext">todo</string>
     <string name="setup_need_info_cam">todo</string>
-
     <string name="setup_need_info_adb">todo</string>
     <string name="setup_need_info_usb">todo</string>
     <string name="setup_need_info_ssd">todo</string>
     <string name="setup_need_info_pin">todo</string>
+    <string name="setup_need_info_sro">todo</string>
 
     <string name="setup_perm_head_ble">Bluetooth</string>
     <string name="setup_perm_head_loc">Geolocation</string>
@@ -71,6 +71,8 @@
     <string name="setup_need_status_adb_inactive">Not authorized</string>
     <string name="setup_need_status_pin_active">Authorized</string>
     <string name="setup_need_status_pin_inactive">Not authorized</string>
+    <string name="setup_need_status_sro_active">Available</string>
+    <string name="setup_need_status_sro_inactive">Not available</string>
 
     <string name="setup_state_active">Aktiviert</string>
     <string name="setup_state_inactive">Nicht aktiviert</string>

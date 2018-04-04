@@ -45,7 +45,7 @@ public class SPR implements
         Json.put(info, "mode", mode);
         Json.put(info, "info", Simple.getTrans(R.string.subsystem_spr_info));
         Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_speechrec_170));
-        Json.put(info, "need", "mic");
+        Json.put(info, "need", "mic+sro");
 
         return info;
     }
