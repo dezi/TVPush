@@ -2,8 +2,11 @@ package de.xavaro.android.systems;
 
 import android.app.Application;
 
+import org.json.JSONObject;
+
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.spr.base.SPR;
+import de.xavaro.android.spr.simple.Log;
 
 public class SystemsSPR extends SPR
 {
@@ -32,5 +35,23 @@ public class SystemsSPR extends SPR
     public void onSubsystemStopped(String subsystem, int state)
     {
         GUI.instance.subSystems.setSubsystemRunstate(subsystem, state);
+    }
+
+    @Override
+    public void onActivateRemote()
+    {
+        GUI.instance.onActivateRemote();
+    }
+
+    @Override
+    public void onSpeechReady()
+    {
+        GUI.instance.onSpeechReady();
+    }
+
+    @Override
+    public void onSpeechResults(JSONObject results)
+    {
+        GUI.instance.onSpeechResults(results);
     }
 }

@@ -11,6 +11,7 @@ import de.xavaro.android.gui.smart.GUISpeechListener;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.R;
 
+import pub.android.interfaces.ext.OnSpeechHandler;
 import pub.android.interfaces.pub.PUBCamera;
 import pub.android.interfaces.pub.PUBSmartBulb;
 import pub.android.interfaces.pub.PUBSmartPlug;
@@ -24,6 +25,7 @@ import pub.android.interfaces.all.SubSystemHandler;
 public class GUI implements
         SubSystemHandler,
         DesktopHandler,
+        OnSpeechHandler,
         OnSubsystemRequest,
         OnCameraHandlerRequest,
         OnSmartPlugHandlerRequest,
@@ -61,8 +63,8 @@ public class GUI implements
     @Override
     public void startSubsystem()
     {
-        this.speechListener = new GUISpeechListener(application);
-        this.speechListener.startListening();
+        //this.speechListener = new GUISpeechListener(application);
+        //this.speechListener.startListening();
 
         onSubsystemStarted("gui", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
     }
@@ -129,12 +131,6 @@ public class GUI implements
     }
 
     @Override
-    public void onSpeechResults(JSONObject speech)
-    {
-        Log.d(LOGTAG, "onSpeechResults: STUB! speech=" + speech.toString());
-    }
-
-    @Override
     public void displayCamera(boolean show, String uuid)
     {
         Log.d(LOGTAG, "displayCamera: uuid=" + uuid);
@@ -178,5 +174,23 @@ public class GUI implements
         Log.d(LOGTAG, "displayToastMessage: message=" + message);
 
         GUI.instance.desktopActivity.displayToastMessage(message, seconds, emphasis);
+    }
+
+    @Override
+    public void onActivateRemote()
+    {
+        GUI.instance.desktopActivity.onActivateRemote();
+    }
+
+    @Override
+    public void onSpeechReady()
+    {
+        GUI.instance.desktopActivity.onSpeechReady();
+    }
+
+    @Override
+    public void onSpeechResults(JSONObject results)
+    {
+        GUI.instance.desktopActivity.onSpeechResults(results);
     }
 }

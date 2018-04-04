@@ -20,20 +20,29 @@ public class SPR implements
 
     public static SPR instance;
 
+    public Application appcontext;
+    public SPRListener sprListener;
+
     public SPR(Application application)
     {
+        appcontext = application;
         Simple.initialize(application);
     }
 
     @Override
     public JSONObject getSubsystemInfo()
     {
+        int mode = Simple.isSpeechIn()
+                ? SubSystemHandler.SUBSYSTEM_MODE_VOLUNTARY
+                : SubSystemHandler.SUBSYSTEM_MODE_IMPOSSIBLE
+                ;
+
         JSONObject info = new JSONObject();
 
         Json.put(info, "drv", "spr");
 
         Json.put(info, "name", Simple.getTrans(R.string.subsystem_spr_name));
-        Json.put(info, "mode", SubSystemHandler.SUBSYSTEM_MODE_VOLUNTARY);
+        Json.put(info, "mode", mode);
         Json.put(info, "info", Simple.getTrans(R.string.subsystem_spr_info));
         Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_speechrec_170));
         Json.put(info, "need", "mic");
@@ -46,6 +55,8 @@ public class SPR implements
     {
         if (onGetSubsystemState("spr") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
         {
+            SPRListener.startService(appcontext);
+
             onSubsystemStarted("spr", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
         }
     }
@@ -55,6 +66,8 @@ public class SPR implements
     {
         if (onGetSubsystemState("spr") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
         {
+            SPRListener.stopService();
+
             onSubsystemStopped("spr", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
         }
     }

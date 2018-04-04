@@ -13,15 +13,15 @@ import org.json.JSONObject;
 
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIDefs;
-import de.xavaro.android.gui.smart.GUISpeechCallback;
 import de.xavaro.android.gui.views.GUIRainbowLayout;
 import de.xavaro.android.gui.views.GUIRelativeLayout;
 import de.xavaro.android.gui.views.GUITextView;
 
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
+import pub.android.interfaces.ext.OnSpeechHandler;
 
-public class GUIToastBar extends GUIPlugin implements GUISpeechCallback
+public class GUIToastBar extends GUIPlugin implements OnSpeechHandler
 {
     private final static String LOGTAG = GUIToastBar.class.getSimpleName();
 
@@ -29,7 +29,7 @@ public class GUIToastBar extends GUIPlugin implements GUISpeechCallback
 
     private GUIRelativeLayout centerCont;
     private GUIRainbowLayout colorFrame;
-    private GUITextView speechText;
+    private GUITextView toastText;
 
     private String toastMessage;
     private boolean hadResult;
@@ -47,54 +47,52 @@ public class GUIToastBar extends GUIPlugin implements GUISpeechCallback
 
         colorFrame.addView(centerCont);
 
-        speechText = new GUITextView(getContext());
-        speechText.setGravity(Gravity.CENTER_HORIZONTAL);
-        speechText.setTextColor(Color.WHITE);
-        speechText.setTextSizeDip(GUIDefs.FONTSIZE_SPEECH);
+        toastText = new GUITextView(getContext());
+        toastText.setGravity(Gravity.CENTER_HORIZONTAL);
+        toastText.setTextColor(Color.WHITE);
+        toastText.setTextSizeDip(GUIDefs.FONTSIZE_SPEECH);
 
-        centerCont.addView(speechText);
+        centerCont.addView(toastText);
 
         if (Simple.isPhone())
         {
-            speechText.setMinLines(3);
+            toastText.setMinLines(3);
 
             contentFrame.setBackgroundColor(Color.BLACK);
             colorFrame.setBackgroundColor(Color.BLACK);
-            speechText.setBackgroundColor(Color.BLACK);
+            toastText.setBackgroundColor(Color.BLACK);
 
             centerCont.setRoundedCornersDip(GUIDefs.ROUNDED_XLARGE, Color.BLACK);
 
             colorFrame.setSizeDip(Simple.MP, Simple.MP);
             centerCont.setSizeDip(Simple.MP, Simple.MP);
-            speechText.setSizeDip(Simple.MP, Simple.WC);
+            toastText.setSizeDip(Simple.MP, Simple.WC);
 
             contentFrame.setPaddingDip(GUIDefs.PADDING_LARGE);
             colorFrame.setPaddingDip(GUIDefs.PADDING_LARGE);
             centerCont.setPaddingDip(GUIDefs.PADDING_LARGE);
-            speechText.setPaddingDip(GUIDefs.PADDING_LARGE);
+            toastText.setPaddingDip(GUIDefs.PADDING_LARGE);
         }
         else
         {
-            speechText.setSingleLine(true);
-            speechText.setEllipsize(TextUtils.TruncateAt.START);
+            toastText.setSingleLine(true);
+            toastText.setEllipsize(TextUtils.TruncateAt.START);
 
             contentFrame.setBackgroundColor(Color.TRANSPARENT);
             colorFrame.setBackgroundColor(Color.TRANSPARENT);
-            speechText.setBackgroundColor(Color.TRANSPARENT);
+            toastText.setBackgroundColor(Color.TRANSPARENT);
 
             centerCont.setRoundedCornersDip(GUIDefs.ROUNDED_MEDIUM, GUIDefs.COLOR_LIGHT_TRANSPARENT);
 
             colorFrame.setSizeDip(Simple.MP, Simple.WC);
             centerCont.setSizeDip(Simple.MP, Simple.WC);
-            speechText.setSizeDip(Simple.WC, Simple.WC);
+            toastText.setSizeDip(Simple.WC, Simple.WC);
 
             contentFrame.setPaddingDip(GUIDefs.PADDING_SMALL);
             colorFrame.setPaddingDip(GUIDefs.PADDING_SMALL);
             centerCont.setPaddingDip(GUIDefs.PADDING_SMALL);
-            speechText.setPaddingDip(GUIDefs.PADDING_ZERO);
+            toastText.setPaddingDip(GUIDefs.PADDING_ZERO);
         }
-
-        GUI.instance.speechListener.setCallback(this);
     }
 
     public FrameLayout.LayoutParams getPreferredLayout()
@@ -119,8 +117,8 @@ public class GUIToastBar extends GUIPlugin implements GUISpeechCallback
     {
         if (toastMessage == null)
         {
-            speechText.setTextColor(Color.GRAY);
-            speechText.setText("Bitte drücken Sie die Mikrofon-Taste auf der Fernbedienung");
+            toastText.setTextColor(Color.GRAY);
+            toastText.setText("Bitte drücken Sie die Mikrofon-Taste auf der Fernbedienung");
         }
     }
 
@@ -148,8 +146,8 @@ public class GUIToastBar extends GUIPlugin implements GUISpeechCallback
 
         toastMessage = null;
 
-        speechText.setTextColor(Color.WHITE);
-        speechText.setText(text);
+        toastText.setTextColor(Color.WHITE);
+        toastText.setText(text);
         colorFrame.start();
 
         hadResult = true;
@@ -169,8 +167,8 @@ public class GUIToastBar extends GUIPlugin implements GUISpeechCallback
 
         toastMessage = message;
 
-        speechText.setText(toastMessage);
-        speechText.setTextColor(Color.LTGRAY);
+        toastText.setText(toastMessage);
+        toastText.setTextColor(Color.LTGRAY);
         centerCont.setRoundedCornersDip(GUIDefs.ROUNDED_MEDIUM, GUIDefs.COLOR_DARK_TRANSPARENT);
 
         if (emphasis)
@@ -207,8 +205,8 @@ public class GUIToastBar extends GUIPlugin implements GUISpeechCallback
             if (toastMessage == null)
             {
                 colorFrame.stop();
-                speechText.setTextColor(Color.GRAY);
-                speechText.setText("Bitte sprechen Sie jetzt");
+                toastText.setTextColor(Color.GRAY);
+                toastText.setText("Bitte sprechen Sie jetzt");
                 centerCont.setRoundedCornersDip(GUIDefs.ROUNDED_MEDIUM, GUIDefs.COLOR_LIGHT_TRANSPARENT);
             }
             else

@@ -1,26 +1,46 @@
 package de.xavaro.android.spr.base;
 
+import android.support.annotation.Nullable;
+
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.speech.RecognitionListener;
-import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
-import android.support.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import de.xavaro.android.spr.simple.Json;
 import de.xavaro.android.spr.simple.Log;
+import de.xavaro.android.spr.simple.Json;
 import de.xavaro.android.spr.simple.Simple;
 
 public class SPRListener implements RecognitionListener
 {
     private static final String LOGTAG = SPRListener.class.getSimpleName();
+
+    public static void startService(Context context)
+    {
+        if (SPR.instance.sprListener == null)
+        {
+            SPR.instance.sprListener = new SPRListener(context);
+            SPR.instance.sprListener.startListening();
+        }
+    }
+
+    public static void stopService()
+    {
+        if (SPR.instance.sprListener != null)
+        {
+            SPR.instance.sprListener.cancel();
+            SPR.instance.sprListener.close();
+            SPR.instance.sprListener = null;
+        }
+    }
 
     private Handler handler = new Handler();
 
@@ -48,12 +68,35 @@ public class SPRListener implements RecognitionListener
         }
         else
         {
-            Log.d(LOGTAG, "SpeechRecognizer: no speech.");
+            Log.d(LOGTAG, "SpeechRecognizer: no speech available.");
+        }
+    }
+
+    public void cancel()
+    {
+        if (recognizer != null)
+        {
+            recognizer.cancel();
+        }
+    }
+
+    public void close()
+    {
+        if (recognizer != null)
+        {
+            recognizer.destroy();
+            recognizer = null;
         }
     }
 
     public void startListening()
     {
+        if (recognizer == null)
+        {
+            Log.d(LOGTAG, "startListening: no speech available.");
+            return;
+        }
+
         Log.d(LOGTAG, "startListening:");
 
         handler.removeCallbacks(restartListeningRunnable);
@@ -120,12 +163,16 @@ public class SPRListener implements RecognitionListener
     public void onPleaseActivate()
     {
         Log.d(LOGTAG, "onPleaseActivate:");
+
+        SPR.instance.onActivateRemote();
     }
 
     @Override
     public void onReadyForSpeech(Bundle params)
     {
         Log.d(LOGTAG, "onReadyForSpeech:");
+
+        SPR.instance.onSpeechReady();
     }
 
     @Override
@@ -156,7 +203,6 @@ public class SPRListener implements RecognitionListener
     public void onError(int error)
     {
         String message = "Unknown";
-        boolean restart = true;
         long millis = 200;
 
         switch (error)
@@ -199,12 +245,12 @@ public class SPRListener implements RecognitionListener
 
             case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
                 message = "RecognitionService busy";
-                restart = false;
+                millis = 10 * 1000;
                 break;
 
             case SpeechRecognizer.ERROR_SERVER:
                 message = "Error from server";
-                millis = 5 * 1000;
+                millis = 10 * 1000;
                 break;
         }
 
@@ -212,7 +258,7 @@ public class SPRListener implements RecognitionListener
 
         lockStart = false;
 
-        if (restart && isEnabled)
+        if (isEnabled)
         {
             handler.removeCallbacks(startListeningRunnable);
             handler.postDelayed(startListeningRunnable, millis);

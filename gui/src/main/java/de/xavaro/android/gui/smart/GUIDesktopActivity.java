@@ -9,6 +9,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.util.Log;
 
+import org.json.JSONObject;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -33,12 +35,14 @@ import de.xavaro.android.gui.views.GUIDialogView;
 
 import de.xavaro.android.gui.base.GUIActivity;
 import de.xavaro.android.gui.base.GUI;
+import pub.android.interfaces.ext.OnSpeechHandler;
 
-public class GUIDesktopActivity extends GUIActivity
+public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
+
 {
     private final static String LOGTAG = GUIDesktopActivity.class.getSimpleName();
 
-    private GUIToastBar speechRecognition;
+    private GUIToastBar toastBar;
 
     private Map<String,GUIPlugin> wizzards;
 
@@ -49,8 +53,8 @@ public class GUIDesktopActivity extends GUIActivity
 
         GUI.instance.desktopActivity = this;
 
-        speechRecognition = new GUIToastBar(this);
-        topframe.addView(speechRecognition, speechRecognition.getPreferredLayout());
+        toastBar = new GUIToastBar(this);
+        topframe.addView(toastBar, toastBar.getPreferredLayout());
 
         wizzards = new LinkedHashMap<>();
 
@@ -147,7 +151,7 @@ public class GUIDesktopActivity extends GUIActivity
         for (int inx = 0; inx < topframe.getChildCount(); inx++)
         {
             View plugin = topframe.getChildAt(inx);
-            if (plugin == speechRecognition) continue;
+            if (plugin == toastBar) continue;
 
             if (topframe.getChildAt(inx) instanceof GUIDialogView)
             {
@@ -166,7 +170,7 @@ public class GUIDesktopActivity extends GUIActivity
         for (int inx = 0; inx < topframe.getChildCount(); inx++)
         {
             View plugin = topframe.getChildAt(inx);
-            if (plugin == speechRecognition) continue;
+            if (plugin == toastBar) continue;
 
             if (plugin instanceof GUIPlugin)
             {
@@ -184,7 +188,7 @@ public class GUIDesktopActivity extends GUIActivity
         for (int inx = 0; inx < topframe.getChildCount(); inx++)
         {
             View plugin = topframe.getChildAt(inx);
-            if (plugin == speechRecognition) continue;
+            if (plugin == toastBar) continue;
 
             if ((plugin instanceof GUIPlugin) && ((GUIPlugin) plugin).isHelper())
             {
@@ -203,7 +207,7 @@ public class GUIDesktopActivity extends GUIActivity
         for (int inx = 0; inx < topframe.getChildCount(); inx++)
         {
             View plugin = topframe.getChildAt(inx);
-            if (plugin == speechRecognition) continue;
+            if (plugin == toastBar) continue;
 
             if ((plugin instanceof GUIPlugin) && ((GUIPlugin) plugin).isWizzard())
             {
@@ -286,16 +290,16 @@ public class GUIDesktopActivity extends GUIActivity
         {
             bringToFront();
 
-            if (speechRecognition.getParent() == null)
+            if (toastBar.getParent() == null)
             {
-                topframe.addView(speechRecognition);
+                topframe.addView(toastBar);
             }
         }
         else
         {
-            if (speechRecognition.getParent() != null)
+            if (toastBar.getParent() != null)
             {
-                topframe.removeView(speechRecognition);
+                topframe.removeView(toastBar);
             }
         }
 
@@ -304,24 +308,24 @@ public class GUIDesktopActivity extends GUIActivity
 
     public void displayPinCodeMessage(int timeout)
     {
-        speechRecognition.displayPinCodeMessage(timeout);
+        toastBar.displayPinCodeMessage(timeout);
     }
 
     public void displayToastMessage(String message)
     {
-        speechRecognition.displayToastMessage(message, 10, false);
+        toastBar.displayToastMessage(message, 10, false);
     }
 
     public void displayToastMessage(String message, int seconds, boolean emphasis)
     {
-        speechRecognition.displayToastMessage(message, seconds, emphasis);
+        toastBar.displayToastMessage(message, seconds, emphasis);
     }
 
     private void checkWindowSize()
     {
         /*
         if ((topframe.getChildCount() == 0)
-                || (speechRecognition.getParent() != null) && (topframe.getChildCount() == 1))
+                || (toastBar.getParent() != null) && (topframe.getChildCount() == 1))
         {
             setWindowHeightDip(Simple.WC);
         }
@@ -365,5 +369,23 @@ public class GUIDesktopActivity extends GUIActivity
         Log.d(LOGTAG, "onKeyDown: event=" + event);
 
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onActivateRemote()
+    {
+        toastBar.onActivateRemote();
+    }
+
+    @Override
+    public void onSpeechReady()
+    {
+        toastBar.onSpeechReady();
+    }
+
+    @Override
+    public void onSpeechResults(JSONObject results)
+    {
+        toastBar.onSpeechResults(results);
     }
 }
