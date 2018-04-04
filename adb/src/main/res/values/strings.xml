@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">adb</string>
+
+    <string name="subsystem_adb_name">Android Developer Bridge</string>
+
+    <string name="subsystem_adb_info">
+        Dieses System ermöglicht den Zugriff auf externe
+        Speichergeräte und andere Systemfunktion unter Android.
+    </string>
+
 </resources>

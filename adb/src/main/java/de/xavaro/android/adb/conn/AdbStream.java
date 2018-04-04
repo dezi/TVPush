@@ -1,4 +1,4 @@
-package de.xavaro.android.adb;
+package de.xavaro.android.adb.conn;
 
 import android.support.annotation.Nullable;
 

@@ -1,4 +1,4 @@
-package de.xavaro.android.adb;
+package de.xavaro.android.adb.conn;
 
 import java.nio.ByteBuffer;
 

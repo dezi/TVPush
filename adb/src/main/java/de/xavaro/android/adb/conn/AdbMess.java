@@ -1,10 +1,9 @@
-package de.xavaro.android.adb;
+package de.xavaro.android.adb.conn;
 
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.InputStream;
-import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 

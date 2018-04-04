@@ -1,9 +1,7 @@
-package de.xavaro.android.adb;
+package de.xavaro.android.adb.conn;
 
 import android.content.Context;
 import android.util.Log;
-
-import java.io.ByteArrayOutputStream;
 
 public class AdbServicePull extends AdbService
 {
