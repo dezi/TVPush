@@ -1,25 +1,23 @@
 package de.xavaro.android.gui.wizzards;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.Iterator;
+import pub.android.interfaces.all.SubSystemHandler;
 
-import de.xavaro.android.gui.R;
-import de.xavaro.android.gui.base.GUI;
-import de.xavaro.android.gui.simple.Json;
-import de.xavaro.android.gui.simple.Simple;
-import de.xavaro.android.gui.base.GUIDefs;
-import de.xavaro.android.gui.base.GUISetup;
 import de.xavaro.android.gui.plugin.GUIPluginTitleList;
-import de.xavaro.android.gui.views.GUIDialogView;
 import de.xavaro.android.gui.views.GUIListEntry;
 import de.xavaro.android.gui.views.GUIListView;
-import pub.android.interfaces.all.SubSystemHandler;
+import de.xavaro.android.gui.base.GUIDefs;
+import de.xavaro.android.gui.base.GUISetup;
+import de.xavaro.android.gui.base.GUI;
+
+import de.xavaro.android.gui.simple.Simple;
+import de.xavaro.android.gui.simple.Json;
+import de.xavaro.android.gui.R;
 
 public class GUISetupWizzard extends GUIPluginTitleList
 {

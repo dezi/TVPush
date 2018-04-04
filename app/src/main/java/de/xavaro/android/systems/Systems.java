@@ -22,14 +22,6 @@ public class Systems
         IOT.instance = new SystemsIOT(application);
         IOT.instance.startSubsystem();
 
-        SystemsIAM iam = new SystemsIAM(application);
-
-        if (GUI.instance.subSystems.isSubsystemActivated("iam"))
-        {
-            IAM.instance = iam;
-            IAM.instance.startSubsystem();
-        }
-
         SystemsSPR spr = new SystemsSPR(application);
 
         if (GUI.instance.subSystems.isSubsystemActivated("spr"))
@@ -44,6 +36,14 @@ public class Systems
         {
             BCN.instance = bcn;
             BCN.instance.startSubsystem();
+        }
+
+        SystemsIAM iam = new SystemsIAM(application);
+
+        if (GUI.instance.subSystems.isSubsystemActivated("iam"))
+        {
+            IAM.instance = iam;
+            IAM.instance.startSubsystem();
         }
 
         SystemsSNY sny = new SystemsSNY(application);
