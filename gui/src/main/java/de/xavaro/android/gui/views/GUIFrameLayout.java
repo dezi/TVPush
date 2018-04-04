@@ -113,6 +113,17 @@ public class GUIFrameLayout extends FrameLayout implements
         ((MarginLayoutParams) getLayoutParams()).rightMargin = Simple.dipToPx(margin);
     }
 
+    @Override
+    public void setMarginBottomDip(int margin)
+    {
+        if (getLayoutParams() == null)
+        {
+            setLayoutParams(new LinearLayout.LayoutParams(Simple.WC, Simple.WC));
+        }
+
+        ((ViewGroup.MarginLayoutParams) getLayoutParams()).bottomMargin = Simple.dipToPx(margin);
+    }
+
     //endregion CanDip implementation.
 
     //region Skills implementation.

@@ -5,6 +5,7 @@
     <string name="basic_activiate">Activate</string>
     <string name="basic_deactiviate">De-activate</string>
     <string name="basic_postpone">Postpone</string>
+    <string name="basic_configure">Configure</string>
 
     <string name="subsystem_gui_name">GUI Desktop</string>
 

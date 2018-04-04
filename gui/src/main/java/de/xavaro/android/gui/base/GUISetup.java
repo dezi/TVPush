@@ -321,7 +321,12 @@ public class GUISetup
 
     public static boolean needHasService(String need)
     {
-        return need.equals("ble") || need.equals("loc") || need.equals("dev") || need.equals("sro");
+        return need.equals("ble") || need.equals("loc") || need.equals("dev");
+    }
+
+    public static boolean needHasConfig(String need)
+    {
+        return need.equals("sro");
     }
 
     public static boolean needHasInfos(String need)

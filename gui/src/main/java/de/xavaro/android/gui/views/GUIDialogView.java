@@ -272,6 +272,8 @@ public class GUIDialogView extends GUIRelativeLayout
         });
 
         buttonFrame.addView(positiveButton);
+
+        setButtonsSpacing();
     }
 
     @Override
@@ -302,20 +304,38 @@ public class GUIDialogView extends GUIRelativeLayout
         return true;
     }
 
-    public void setButtonsVertical(boolean set)
+    public void setButtonsSpacing()
     {
-        if (set)
+        if ((positiveButton.getVisibility() == VISIBLE) && (negativeButton.getVisibility() == VISIBLE))
         {
-            buttonFrame.setOrientation(LinearLayout.VERTICAL);
+            if (Simple.isPhone())
+            {
+                buttonFrame.setOrientation(LinearLayout.VERTICAL);
 
-            positiveButton.setMarginLeftDip(GUIDefs.PADDING_ZERO);
-            positiveButton.setMarginTopDip(GUIDefs.PADDING_SMALL);
+                negativeButton.setMarginRightDip(GUIDefs.PADDING_ZERO);
+                negativeButton.setMarginBottomDip(GUIDefs.PADDING_MEDIUM);
+
+                positiveButton.setMarginLeftDip(GUIDefs.PADDING_ZERO);
+                positiveButton.setMarginTopDip(GUIDefs.PADDING_MEDIUM);
+            }
+            else
+            {
+                buttonFrame.setOrientation(LinearLayout.HORIZONTAL);
+
+                negativeButton.setMarginRightDip(GUIDefs.PADDING_MEDIUM);
+                negativeButton.setMarginBottomDip(GUIDefs.PADDING_ZERO);
+
+                positiveButton.setMarginLeftDip(GUIDefs.PADDING_MEDIUM);
+                positiveButton.setMarginTopDip(GUIDefs.PADDING_ZERO);
+
+            }
         }
         else
         {
-            buttonFrame.setOrientation(LinearLayout.HORIZONTAL);
+            negativeButton.setMarginRightDip(GUIDefs.PADDING_ZERO);
+            negativeButton.setMarginBottomDip(GUIDefs.PADDING_ZERO);
 
-            positiveButton.setMarginLeftDip(GUIDefs.PADDING_SMALL);
+            positiveButton.setMarginLeftDip(GUIDefs.PADDING_ZERO);
             positiveButton.setMarginTopDip(GUIDefs.PADDING_ZERO);
         }
     }
@@ -370,11 +390,7 @@ public class GUIDialogView extends GUIRelativeLayout
         positiveButton.setVisibility(VISIBLE);
         positiveButtonOnClick = onClickListener;
 
-        if ((positiveButton.getVisibility() == VISIBLE) && (negativeButton.getVisibility() == VISIBLE))
-        {
-            negativeButton.setMarginRightDip(GUIDefs.PADDING_MEDIUM);
-            positiveButton.setMarginLeftDip(GUIDefs.PADDING_MEDIUM);
-        }
+        setButtonsSpacing();
     }
 
     public void setNegativeButton(int resid)
@@ -389,11 +405,7 @@ public class GUIDialogView extends GUIRelativeLayout
         negativeButton.setVisibility(VISIBLE);
         negativeButtonOnClick = onClickListener;
 
-        if ((positiveButton.getVisibility() == VISIBLE) && (negativeButton.getVisibility() == VISIBLE))
-        {
-            negativeButton.setMarginRightDip(GUIDefs.PADDING_MEDIUM);
-            positiveButton.setMarginLeftDip(GUIDefs.PADDING_MEDIUM);
-        }
+        setButtonsSpacing();
     }
 
     public void setCloseButton(boolean enable)

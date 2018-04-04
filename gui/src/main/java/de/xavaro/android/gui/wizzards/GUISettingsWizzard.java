@@ -153,6 +153,7 @@ public class GUISettingsWizzard extends GUIPluginTitleList
         {
             if (GUISetup.needHasAuth(need)
                     || GUISetup.needHasInfos(need)
+                    || GUISetup.needHasConfig(need)
                     || GUISetup.needHasService(need))
             {
                 boolean enabled = GUISetup.haveNeed(need);
@@ -378,16 +379,16 @@ public class GUISettingsWizzard extends GUIPluginTitleList
             dialog.setTitleText(GUISetup.getTextForNeedResid(need));
             dialog.setInfoText(GUISetup.getInfoForNeedResid(need));
 
-            if (! GUISetup.needHasService(need))
+            if (! (GUISetup.needHasService(need) || GUISetup.needHasConfig(need)))
             {
                 dialog.setPositiveButton(R.string.basic_ok, null);
                 dialog.positiveButton.requestFocus();
             }
             else
             {
-                if (GUISetup.haveNeed(need))
+                if (GUISetup.needHasConfig(need))
                 {
-                    dialog.setPositiveButton(R.string.basic_deactiviate, new OnClickListener()
+                    dialog.setPositiveButton(R.string.basic_configure, new OnClickListener()
                     {
                         @Override
                         public void onClick(View view)
@@ -402,18 +403,36 @@ public class GUISettingsWizzard extends GUIPluginTitleList
                 }
                 else
                 {
-                    dialog.setPositiveButton(R.string.basic_activiate, new OnClickListener()
+                    if (GUISetup.haveNeed(need))
                     {
-                        @Override
-                        public void onClick(View view)
+                        dialog.setPositiveButton(R.string.basic_deactiviate, new OnClickListener()
                         {
-                            GUISetup.startIntentForNeed(getContext(), need);
-                        }
-                    });
+                            @Override
+                            public void onClick(View view)
+                            {
+                                GUISetup.startIntentForNeed(getContext(), need);
+                            }
+                        });
 
-                    dialog.setNegativeButton(R.string.basic_postpone);
+                        dialog.setNegativeButton(R.string.basic_cancel);
 
-                    dialog.positiveButton.requestFocus();
+                        dialog.negativeButton.requestFocus();
+                    }
+                    else
+                    {
+                        dialog.setPositiveButton(R.string.basic_activiate, new OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View view)
+                            {
+                                GUISetup.startIntentForNeed(getContext(), need);
+                            }
+                        });
+
+                        dialog.setNegativeButton(R.string.basic_postpone);
+
+                        dialog.positiveButton.requestFocus();
+                    }
                 }
             }
 
