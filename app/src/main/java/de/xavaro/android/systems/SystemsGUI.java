@@ -157,15 +157,15 @@ public class SystemsGUI extends GUI
     }
 
     @Override
-    public void onSpeechResults(JSONObject results)
+    public void onSpeechResults(JSONObject speech)
     {
-        Log.d(LOGTAG, "onSpeechResults: results=" + results.toString());
+        Log.d(LOGTAG, "onSpeechResults: speech=" + speech.toString());
 
-        super.onSpeechResults(results);
+        super.onSpeechResults(speech);
 
         if (IAM.instance != null)
         {
-            IAM.instance.evaluateSpeech(results);
+            IAM.instance.evaluateSpeech(speech);
         }
     }
 

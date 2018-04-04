@@ -50,8 +50,8 @@ public class SystemsSPR extends SPR
     }
 
     @Override
-    public void onSpeechResults(JSONObject results)
+    public void onSpeechResults(JSONObject speech)
     {
-        GUI.instance.onSpeechResults(results);
+        GUI.instance.onSpeechResults(speech);
     }
 }

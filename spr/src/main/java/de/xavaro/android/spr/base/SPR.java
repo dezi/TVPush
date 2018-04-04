@@ -105,7 +105,7 @@ public class SPR implements
     }
 
     @Override
-    public void onSpeechResults(JSONObject results)
+    public void onSpeechResults(JSONObject speech)
     {
         Log.d(LOGTAG, "onSpeechResults: STUB!");
     }

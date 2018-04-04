@@ -384,8 +384,8 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
     }
 
     @Override
-    public void onSpeechResults(JSONObject results)
+    public void onSpeechResults(JSONObject speech)
     {
-        toastBar.onSpeechResults(results);
+        toastBar.onSpeechResults(speech);
     }
 }

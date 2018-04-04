@@ -1,5 +1,6 @@
 package de.xavaro.android.spr.base;
 
+import android.os.Build;
 import android.support.annotation.Nullable;
 
 import android.speech.RecognitionListener;
@@ -60,6 +61,11 @@ public class SPRListener implements RecognitionListener
 
             recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
             recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            {
+                recognizerIntent.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true);
+            }
 
             Log.d(LOGTAG, "startListening: create");
 
@@ -290,6 +296,18 @@ public class SPRListener implements RecognitionListener
     {
         JSONObject speech = resultsToJSON(resultsBundle, false);
         if (speech != null) SPR.instance.onSpeechResults(speech);
+
+        JSONArray results = Json.getArray(speech, "results");
+
+        if ((results != null) && (results.length() > 0))
+        {
+            JSONObject result = Json.getObject(results, 0);
+
+            Log.d(LOGTAG, "onResults:"
+                    + " text=" + Json.getString(result, "text")
+                    + " conf=" + Json.getFloat(result, "conf")
+            );
+        }
 
         lockStart = false;
 

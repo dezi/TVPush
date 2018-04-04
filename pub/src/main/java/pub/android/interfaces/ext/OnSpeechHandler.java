@@ -8,5 +8,5 @@ public interface OnSpeechHandler
 
     void onSpeechReady();
 
-    void onSpeechResults(JSONObject results);
+    void onSpeechResults(JSONObject speech);
 }

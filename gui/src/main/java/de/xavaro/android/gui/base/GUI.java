@@ -7,7 +7,6 @@ import org.json.JSONObject;
 
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.smart.GUIDesktopActivity;
-import de.xavaro.android.gui.smart.GUISpeechListener;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.R;
 
@@ -37,7 +36,6 @@ public class GUI implements
 
     public GUISubSystems subSystems;
     public GUIApplication application;
-    public GUISpeechListener speechListener;
     public GUIDesktopActivity desktopActivity;
 
     public GUI(Application appcontext)
@@ -189,8 +187,8 @@ public class GUI implements
     }
 
     @Override
-    public void onSpeechResults(JSONObject results)
+    public void onSpeechResults(JSONObject speech)
     {
-        GUI.instance.desktopActivity.onSpeechResults(results);
+        GUI.instance.desktopActivity.onSpeechResults(speech);
     }
 }
