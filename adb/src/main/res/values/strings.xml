@@ -1,9 +1,9 @@
 <resources>
 
-    <string name="subsystem_adb_name">Android Developer Bridge</string>
+    <string name="subsystem_adb_name">ADB Werkzeug</string>
 
     <string name="subsystem_adb_info">
-        Dieses System ermöglicht den Zugriff auf externe
+        Dieses Werkzeug ermöglicht den Zugriff auf externe
         Speichergeräte und andere Systemfunktion unter Android.
     </string>
 

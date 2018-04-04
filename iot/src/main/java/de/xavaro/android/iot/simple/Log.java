@@ -8,7 +8,7 @@ public class Log
             {
                     "IOTProxim*-",
                     "IOTStatus*",
-                    "IOTDevice*-"
+                    "IOTDevice*"
             };
 
     public static void d(String logtag, String message)

@@ -2,8 +2,14 @@ package de.xavaro.android.systems;
 
 import android.app.Application;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import de.xavaro.android.iot.things.IOTDevice;
+
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.adb.base.ADB;
+import de.xavaro.android.iot.base.IOT;
 
 public class SystemsADB extends ADB
 {
@@ -32,5 +38,18 @@ public class SystemsADB extends ADB
     public void onSubsystemStopped(String subsystem, int state)
     {
         GUI.instance.subSystems.setSubsystemRunstate(subsystem, state);
+    }
+
+    @Override
+    public JSONObject onDeviceRequest(String uuid)
+    {
+        IOTDevice device = IOTDevice.list.getEntry(uuid);
+        return (device != null) ? device.toJson() : null;
+    }
+
+    @Override
+    public JSONArray onDeviceCapabilityRequest(String capability)
+    {
+        return IOT.instance.getDeviceWithCapability(capability);
     }
 }

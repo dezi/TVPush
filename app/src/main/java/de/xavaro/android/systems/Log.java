@@ -7,6 +7,7 @@ public class Log
     public static String[] allow = new String[]
             {
                     "SystemsIAM*",
+                    "SystemsADB*",
                     "SystemsIOT*-"
             };
 
