@@ -10,6 +10,7 @@ import de.xavaro.android.gui.simple.Json;
 
 import de.xavaro.android.iam.base.IAM;
 
+import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.spr.base.SPR;
 import pub.android.interfaces.pub.PUBCamera;
 import pub.android.interfaces.pub.PUBSmartBulb;
@@ -55,6 +56,20 @@ public class SystemsGUI extends GUI
     @Override
     public void onStartSubsystemRequest(String subsystem)
     {
+        if (subsystem.startsWith("gui"))
+        {
+            if (GUI.instance == null) GUI.instance = new SystemsGUI(appcontext);
+
+            GUI.instance.startSubsystem();
+        }
+
+        if (subsystem.startsWith("iot"))
+        {
+            if (IOT.instance == null) IOT.instance = new SystemsIOT(appcontext);
+
+            IOT.instance.startSubsystem();
+        }
+
         if (subsystem.startsWith("iam"))
         {
             if (IAM.instance == null) IAM.instance = new SystemsIAM(appcontext);
@@ -101,11 +116,32 @@ public class SystemsGUI extends GUI
     @Override
     public void onStopSubsystemRequest(String subsystem)
     {
+        if (subsystem.startsWith("gui"))
+        {
+            if (GUI.instance != null)
+            {
+                GUI.instance.stopSubsystem();
+
+                if (subsystem.equals("GUI")) GUI.instance = null;
+            }
+        }
+
+        if (subsystem.startsWith("iot"))
+        {
+            if (IOT.instance != null)
+            {
+                IOT.instance.stopSubsystem();
+
+                if (subsystem.equals("IOT")) IOT.instance = null;
+            }
+        }
+
         if (subsystem.startsWith("iam"))
         {
             if (IAM.instance != null)
             {
                 IAM.instance.stopSubsystem();
+
                 if (subsystem.equals("iam")) IAM.instance = null;
             }
         }
@@ -115,6 +151,7 @@ public class SystemsGUI extends GUI
             if (BCN.instance != null)
             {
                 BCN.instance.stopSubsystem();
+
                 if (subsystem.equals("bcn")) BCN.instance = null;
             }
         }
@@ -124,6 +161,7 @@ public class SystemsGUI extends GUI
             if (SPR.instance != null)
             {
                 SPR.instance.stopSubsystem();
+
                 if (subsystem.equals("spr")) SPR.instance = null;
             }
         }
@@ -133,6 +171,7 @@ public class SystemsGUI extends GUI
             if (SNY.instance != null)
             {
                 SNY.instance.stopSubsystem();
+
                 if (subsystem.equals("sny")) SNY.instance = null;
             }
         }
@@ -142,6 +181,7 @@ public class SystemsGUI extends GUI
             if (TPL.instance != null)
             {
                 TPL.instance.stopSubsystem();
+
                 if (subsystem.equals("tpl")) TPL.instance = null;
             }
         }

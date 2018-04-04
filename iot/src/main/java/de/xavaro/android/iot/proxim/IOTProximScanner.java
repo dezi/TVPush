@@ -533,7 +533,10 @@ public class IOTProximScanner
 
         addLocationMeasurement(uuid, rssi, txpo, macAddr);
 
-        IOTAlive.setAliveNetwork(uuid);
+        if (IOT.instance.alive != null)
+        {
+            IOT.instance.alive.setAliveNetwork(uuid);
+        }
 
         return true;
     }
@@ -631,7 +634,10 @@ public class IOTProximScanner
 
         addLocationMeasurement(uuid, rssi, txpo, macAddr);
 
-        IOTAlive.setAliveNetwork(uuid);
+        if (IOT.instance.alive != null)
+        {
+            IOT.instance.alive.setAliveNetwork(uuid);
+        }
 
         return true;
     }
@@ -756,7 +762,10 @@ public class IOTProximScanner
 
         addLocationMeasurement(uuid, rssi, txpo, macAddr);
 
-        IOTAlive.setAliveNetwork(uuid);
+        if (IOT.instance.alive != null)
+        {
+            IOT.instance.alive.setAliveNetwork(uuid);
+        }
 
         return true;
     }

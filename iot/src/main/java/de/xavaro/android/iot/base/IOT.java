@@ -42,6 +42,7 @@ public class IOT implements
 
     public static IOTMessageHandler message;
 
+    public IOTAlive alive;
     public IOTRegister register;
 
     public IOTProximServer proximServer;
@@ -63,10 +64,24 @@ public class IOT implements
 
         Json.put(info, "drv", "iot");
         Json.put(info, "mode", SubSystemHandler.SUBSYSTEM_MODE_MANDATORY);
-        Json.put(info, "name", Simple.getTrans(R.string.subsystem_name));
-        Json.put(info, "info", Simple.getTrans(R.string.subsystem_info));
+        Json.put(info, "name", Simple.getTrans(R.string.subsystem_iot_name));
+        Json.put(info, "info", Simple.getTrans(R.string.subsystem_iot_info));
         Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_iot_200));
         Json.put(info, "need", "loc");
+
+        JSONArray settings = new JSONArray();
+        Json.put(info, "settings", settings);
+
+        JSONObject alive = new JSONObject();
+
+        Json.put(alive, "tag", "alive");
+        Json.put(alive, "name", Simple.getTrans(R.string.subsystem_iot_alive_name));
+        Json.put(alive, "type", SubSystemHandler.SUBSYSTEM_TYPE_SERVICE);
+        Json.put(alive, "mode", SubSystemHandler.SUBSYSTEM_MODE_DEFAULTACT);
+        Json.put(alive, "info", Simple.getTrans(R.string.subsystem_iot_alive_info));
+        Json.put(alive, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_iot_alive_440));
+
+        Json.put(settings, alive);
 
         return info;
     }
@@ -74,55 +89,73 @@ public class IOT implements
     @Override
     public void startSubsystem()
     {
-        IOTHuman.list = new IOTList<>((new IOTHuman()).getClassKey());
-        IOTDevice.list = new IOTList<>((new IOTDevice()).getClassKey());
-        IOTDomain.list = new IOTList<>((new IOTDomain()).getClassKey());
-        IOTLocation.list = new IOTList<>((new IOTLocation()).getClassKey());
+        if (onGetSubsystemState("iot") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
+        {
+            IOTHuman.list = new IOTList<>((new IOTHuman()).getClassKey());
+            IOTDevice.list = new IOTList<>((new IOTDevice()).getClassKey());
+            IOTDomain.list = new IOTList<>((new IOTDomain()).getClassKey());
+            IOTLocation.list = new IOTList<>((new IOTLocation()).getClassKey());
 
-        IOTStatus.list = new IOTList<>((new IOTStatus()).getClassKey());
-        IOTMetadata.list = new IOTList<>((new IOTMetadata()).getClassKey());
-        IOTCredential.list = new IOTList<>((new IOTCredential()).getClassKey());
+            IOTStatus.list = new IOTList<>((new IOTStatus()).getClassKey());
+            IOTMetadata.list = new IOTList<>((new IOTMetadata()).getClassKey());
+            IOTCredential.list = new IOTList<>((new IOTCredential()).getClassKey());
 
-        register = new IOTRegister();
+            register = new IOTRegister();
 
-        IOTBoot.initialize();
+            IOTBoot.initialize();
 
-        IOTService.startService(appcontext);
+            IOTService.startService(appcontext);
 
-        IOTMessageHandler.initialize();
+            IOTMessageHandler.initialize();
 
-        IOTProximServer.startService();
+            IOTProximServer.startService();
 
-        IOTProximScanner.startService(appcontext);
+            IOTProximScanner.startService(appcontext);
 
-        IOTProximLocation.startService(appcontext);
+            IOTProximLocation.startService(appcontext);
 
-        IOTAlive.startService();
+            IOTHandleHelo.sendHELO();
 
-        IOTHandleHelo.sendHELO();
+            onSubsystemStarted("iot", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
 
-        onSubsystemStarted("iot", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
+            if (onGetSubsystemState("iot.alive") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
+            {
+                IOTAlive.startService();
+
+                onSubsystemStarted("iot.alive", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
+            }
+        }
     }
 
     @Override
     public void stopSubsystem()
     {
-        IOTAlive.stopService();
+        if (onGetSubsystemState("iot") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
+        {
+            IOTAlive.stopService();
 
-        IOTProximLocation.stopService();
+            IOTProximLocation.stopService();
 
-        IOTProximServer.stopService();
+            IOTProximServer.stopService();
 
-        IOTHuman.list = null;
-        IOTDevice.list = null;
-        IOTDomain.list = null;
-        IOTLocation.list = null;
+            IOTHuman.list = null;
+            IOTDevice.list = null;
+            IOTDomain.list = null;
+            IOTLocation.list = null;
 
-        IOTStatus.list = null;
-        IOTMetadata.list = null;
-        IOTCredential.list = null;
+            IOTStatus.list = null;
+            IOTMetadata.list = null;
+            IOTCredential.list = null;
 
-        onSubsystemStopped("iot", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
+            onSubsystemStopped("iot", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
+        }
+
+        if (onGetSubsystemState("iot.alive") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
+        {
+            IOTAlive.stopService();
+
+            onSubsystemStopped("iot.alive", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
+        }
     }
 
     @Override

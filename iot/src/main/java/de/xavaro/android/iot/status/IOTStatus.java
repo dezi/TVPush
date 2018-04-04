@@ -2,6 +2,7 @@ package de.xavaro.android.iot.status;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.base.IOTAlive;
 import de.xavaro.android.iot.base.IOTList;
 import de.xavaro.android.iot.base.IOTObject;
@@ -102,7 +103,10 @@ public class IOTStatus extends IOTObject
 
         // @formatter:on
 
-        IOTAlive.setAliveStatus(uuid);
+        if (IOT.instance.alive != null)
+        {
+            IOT.instance.alive.setAliveStatus(uuid);
+        }
 
         return saveIfChanged(publish);
     }

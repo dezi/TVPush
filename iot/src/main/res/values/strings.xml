@@ -1,8 +1,8 @@
 <resources>
 
-    <string name="subsystem_name">I.O.T System</string>
+    <string name="subsystem_iot_name">I.O.T System</string>
 
-    <string name="subsystem_info">
+    <string name="subsystem_iot_info">
         Dieses System enthält benötigte Dienste für diese Anwendung.
         Dieses System kann nicht deaktiviert werden.
         Folgende Dienste und Berechtigungen werden benötigt:
@@ -11,6 +11,12 @@
         Geo-Position versehen zu können.
         \n\n
         - Zugriff auf den Standort.
+    </string>
+
+    <string name="subsystem_iot_alive_name">Ping Service</string>
+
+    <string name="subsystem_iot_alive_info">
+        Dieser Service überprüft verfügbare Geräte im lokalen Netzwerk.
     </string>
 
 </resources>

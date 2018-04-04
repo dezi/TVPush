@@ -3,6 +3,7 @@ package de.xavaro.android.gui.views;
 import android.content.Context;
 import android.graphics.Color;
 
+import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.base.IOTAlive;
 
 import de.xavaro.android.iot.things.IOTDevice;
@@ -147,7 +148,7 @@ public class GUIIconViewIOT extends GUIIconView
                 && (device.type != null)
                 && device.type.equals("beacon"))
             {
-                Long lastPing = IOTAlive.getAliveNetwork(device.uuid);
+                Long lastPing = (IOT.instance.alive != null) ? IOT.instance.alive.getAliveNetwork(device.uuid) : null;
 
                 if (lastPing != null)
                 {

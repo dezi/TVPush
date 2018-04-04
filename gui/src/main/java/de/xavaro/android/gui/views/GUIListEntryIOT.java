@@ -9,6 +9,7 @@ import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.simple.Log;
 import de.xavaro.android.gui.simple.Simple;
 
+import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.status.IOTCredential;
 import de.xavaro.android.iot.status.IOTStatus;
 
@@ -120,7 +121,7 @@ public class GUIListEntryIOT extends GUIListEntry
         {
             headerViev.setText(iotThing.name);
 
-            Long lastPing = IOTAlive.getAliveNetwork(uuid);
+            Long lastPing = (IOT.instance.alive != null) ? IOT.instance.alive.getAliveNetwork(uuid) : null;
 
             if (lastPing != null)
             {

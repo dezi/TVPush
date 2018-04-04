@@ -9,91 +9,52 @@ import org.json.JSONArray;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.xavaro.android.iot.simple.Json;
-import de.xavaro.android.iot.simple.Simple;
-import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
+import de.xavaro.android.iot.status.IOTStatus;
+import de.xavaro.android.iot.simple.Simple;
+import de.xavaro.android.iot.simple.Json;
 
 public class IOTAlive
 {
     private final static String LOGTAG = IOTAlive.class.getSimpleName();
 
-    private final static Map<String, Long> alivesStatus = new HashMap<>();
-    private final static Map<String, Long> alivesNetwork = new HashMap<>();
-    private final static Map<String, Long> alivesRequest = new HashMap<>();
-
-    private static Thread worker;
-
     public static void startService()
     {
-        if (worker == null)
+        if ((IOT.instance != null) && (IOT.instance.alive == null))
         {
-            worker = new Thread(runner);
-            worker.start();
+            IOT.instance.alive = new IOTAlive();
         }
     }
 
     public static void stopService()
     {
-        if (worker != null)
+        if ((IOT.instance != null) && (IOT.instance.alive != null))
         {
-            worker.interrupt();
-            worker = null;
+            IOTAlive alive = IOT.instance.alive;
+
+            if (alive.aliveThread != null)
+            {
+                alive.aliveThread.interrupt();
+                alive.aliveThread = null;
+            }
+
+            IOT.instance.alive = null;
         }
     }
 
-    public static void setAliveStatus(String uuid)
+    private final static Map<String, Long> alivesStatus = new HashMap<>();
+    private final static Map<String, Long> alivesNetwork = new HashMap<>();
+    private final static Map<String, Long> alivesRequest = new HashMap<>();
+
+    private Thread aliveThread;
+
+    public IOTAlive()
     {
-        synchronized (alivesStatus)
-        {
-            alivesStatus.put(uuid, System.currentTimeMillis());
-        }
+        aliveThread = new Thread(runner);
+        aliveThread.start();
     }
 
-    @Nullable
-    public static Long getAliveStatus(String uuid)
-    {
-        synchronized (alivesStatus)
-        {
-            return Simple.getMapLong(alivesStatus, uuid);
-        }
-    }
-
-    public static void setAliveNetwork(String uuid)
-    {
-        synchronized (alivesNetwork)
-        {
-            alivesNetwork.put(uuid, System.currentTimeMillis());
-        }
-    }
-
-    @Nullable
-    public static Long getAliveNetwork(String uuid)
-    {
-        synchronized (alivesNetwork)
-        {
-            return Simple.getMapLong(alivesNetwork, uuid);
-        }
-    }
-
-    public static void setRequested(String tag)
-    {
-        synchronized (alivesRequest)
-        {
-            alivesRequest.put(tag, System.currentTimeMillis());
-        }
-    }
-
-    @Nullable
-    public static Long getRequested(String tag)
-    {
-        synchronized (alivesRequest)
-        {
-            return Simple.getMapLong(alivesRequest, tag);
-        }
-    }
-
-    private final static Runnable runner = new Runnable()
+    private final Runnable runner = new Runnable()
     {
         @Override
         public void run()
@@ -103,7 +64,7 @@ public class IOTAlive
             int index = 0;
             JSONArray list = null;
 
-            while (worker != null)
+            while (aliveThread != null)
             {
                 Simple.sleep(40);
 
@@ -128,7 +89,7 @@ public class IOTAlive
         }
     };
 
-    private static void performPing(String uuid, String ipaddr)
+    private void performPing(String uuid, String ipaddr)
     {
         Long lastRequest = getRequested(ipaddr);
 
@@ -149,7 +110,7 @@ public class IOTAlive
         }
     }
 
-    private static void performStatus(String uuid)
+    private void performStatus(String uuid)
     {
         Long lastRequest = getRequested(uuid);
 
@@ -166,5 +127,56 @@ public class IOTAlive
         if (! device.driver.equals("tpl")) return;
 
         IOT.instance.onDeviceStatusRequest(device.toJson());
+    }
+
+    @Nullable
+    private Long getRequested(String tag)
+    {
+        synchronized (alivesRequest)
+        {
+            return Simple.getMapLong(alivesRequest, tag);
+        }
+    }
+
+    private void setRequested(String tag)
+    {
+        synchronized (alivesRequest)
+        {
+            alivesRequest.put(tag, System.currentTimeMillis());
+        }
+    }
+
+    public void setAliveStatus(String uuid)
+    {
+        synchronized (alivesStatus)
+        {
+            alivesStatus.put(uuid, System.currentTimeMillis());
+        }
+    }
+
+    @Nullable
+    public Long getAliveStatus(String uuid)
+    {
+        synchronized (alivesStatus)
+        {
+            return Simple.getMapLong(alivesStatus, uuid);
+        }
+    }
+
+    public void setAliveNetwork(String uuid)
+    {
+        synchronized (alivesNetwork)
+        {
+            alivesNetwork.put(uuid, System.currentTimeMillis());
+        }
+    }
+
+    @Nullable
+    public Long getAliveNetwork(String uuid)
+    {
+        synchronized (alivesNetwork)
+        {
+            return Simple.getMapLong(alivesNetwork, uuid);
+        }
     }
 }
