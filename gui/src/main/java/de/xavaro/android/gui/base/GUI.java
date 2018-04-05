@@ -59,6 +59,12 @@ public class GUI implements
     }
 
     @Override
+    public JSONObject getSubsystemSettings()
+    {
+        return getSubsystemInfo();
+    }
+
+    @Override
     public void startSubsystem()
     {
         //this.speechListener = new GUISpeechListener(application);

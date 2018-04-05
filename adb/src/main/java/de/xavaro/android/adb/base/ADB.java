@@ -46,6 +46,14 @@ public class ADB implements
         Json.put(info, "info", Simple.getTrans(R.string.subsystem_adb_info));
         Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_adb_280));
 
+        return info;
+    }
+
+    @Override
+    public JSONObject getSubsystemSettings()
+    {
+        JSONObject info = getSubsystemInfo();
+
         JSONArray adbDevices = onGetDevicesCapabilityRequest("adb");
 
         if ((adbDevices != null) && (adbDevices.length() > 0))

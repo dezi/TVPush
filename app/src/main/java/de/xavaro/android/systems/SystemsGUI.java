@@ -4,22 +4,21 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
+import pub.android.interfaces.pub.PUBSmartBulb;
+import pub.android.interfaces.pub.PUBSmartPlug;
+import pub.android.interfaces.pub.PUBCamera;
+
+import de.xavaro.android.gui.simple.Json;
+
 import de.xavaro.android.adb.base.ADB;
 import de.xavaro.android.bcn.base.BCN;
 import de.xavaro.android.gui.base.GUI;
-import de.xavaro.android.gui.simple.Json;
-
 import de.xavaro.android.iam.base.IAM;
-
 import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.spr.base.SPR;
-import pub.android.interfaces.pub.PUBCamera;
-import pub.android.interfaces.pub.PUBSmartBulb;
-import pub.android.interfaces.pub.PUBSmartPlug;
-
-import zz.top.p2p.base.P2P;
 import de.xavaro.android.sny.base.SNY;
 import de.xavaro.android.tpl.base.TPL;
+import zz.top.p2p.base.P2P;
 
 public class SystemsGUI extends GUI
 {
@@ -32,8 +31,6 @@ public class SystemsGUI extends GUI
         super(appcontext);
 
         this.appcontext = appcontext;
-
-        subSystems.registerSubsystem(getSubsystemInfo());
     }
 
     @Override

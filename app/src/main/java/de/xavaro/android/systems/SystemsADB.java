@@ -5,8 +5,6 @@ import android.app.Application;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import de.xavaro.android.iot.things.IOTDevice;
-
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.adb.base.ADB;
 import de.xavaro.android.iot.base.IOT;
@@ -18,8 +16,6 @@ public class SystemsADB extends ADB
     public SystemsADB(Application application)
     {
         super(application);
-
-        GUI.instance.subSystems.registerSubsystem(getSubsystemInfo());
     }
 
     @Override

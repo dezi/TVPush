@@ -75,6 +75,14 @@ public class IOT implements
         Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_iot_200));
         Json.put(info, "need", "loc");
 
+        return info;
+    }
+
+    @Override
+    public JSONObject getSubsystemSettings()
+    {
+        JSONObject info = getSubsystemInfo();
+
         JSONArray settings = new JSONArray();
         Json.put(info, "settings", settings);
 

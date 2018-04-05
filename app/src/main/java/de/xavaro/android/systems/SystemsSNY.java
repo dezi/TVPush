@@ -5,10 +5,10 @@ import android.app.Application;
 import org.json.JSONObject;
 
 import de.xavaro.android.gui.simple.Simple;
+
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.sny.base.SNY;
-import pub.android.interfaces.all.SubSystemHandler;
 
 public class SystemsSNY extends SNY
 {
@@ -17,8 +17,6 @@ public class SystemsSNY extends SNY
     public SystemsSNY(Application application)
     {
         super(application);
-
-        GUI.instance.subSystems.registerSubsystem(getSubsystemInfo());
     }
 
     @Override

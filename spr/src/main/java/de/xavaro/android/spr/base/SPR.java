@@ -51,6 +51,12 @@ public class SPR implements
     }
 
     @Override
+    public JSONObject getSubsystemSettings()
+    {
+        return getSubsystemInfo();
+    }
+
+    @Override
     public void startSubsystem()
     {
         if (getSubsystemState("spr") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)

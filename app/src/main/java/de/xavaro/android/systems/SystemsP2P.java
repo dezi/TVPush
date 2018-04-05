@@ -15,8 +15,6 @@ public class SystemsP2P extends P2P
     public SystemsP2P(Application application)
     {
         super(application);
-
-        GUI.instance.subSystems.registerSubsystem(getSubsystemInfo());
     }
 
     @Override

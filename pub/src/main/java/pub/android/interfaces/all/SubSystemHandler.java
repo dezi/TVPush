@@ -21,6 +21,8 @@ public interface SubSystemHandler
     String SUBSYSTEM_TYPE_FEATURE = "feature";
 
     JSONObject getSubsystemInfo();
+    JSONObject getSubsystemSettings();
+
     int getSubsystemState(String subsystem);
 
     void startSubsystem();

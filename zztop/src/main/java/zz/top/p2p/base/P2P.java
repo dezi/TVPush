@@ -52,6 +52,12 @@ public class P2P implements
     }
 
     @Override
+    public JSONObject getSubsystemSettings()
+    {
+        return getSubsystemInfo();
+    }
+
+    @Override
     public void startSubsystem()
     {
         if (cloud == null)

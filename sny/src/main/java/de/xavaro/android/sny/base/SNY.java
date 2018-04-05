@@ -51,6 +51,14 @@ public class SNY extends OnInterfacesStubs implements
         Json.put(info, "info", Simple.getTrans(R.string.subsystem_sny_info));
         Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_sony_600));
 
+        return info;
+    }
+
+    @Override
+    public JSONObject getSubsystemSettings()
+    {
+        JSONObject info = getSubsystemInfo();
+
         JSONArray settings = new JSONArray();
         Json.put(info, "settings", settings);
 

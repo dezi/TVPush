@@ -15,8 +15,6 @@ public class SystemsTPL extends TPL
     public SystemsTPL(Application application)
     {
         super(application);
-
-        GUI.instance.subSystems.registerSubsystem(getSubsystemInfo());
     }
 
     @Override

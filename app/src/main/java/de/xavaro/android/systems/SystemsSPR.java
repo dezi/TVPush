@@ -6,7 +6,6 @@ import org.json.JSONObject;
 
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.spr.base.SPR;
-import de.xavaro.android.spr.simple.Log;
 
 public class SystemsSPR extends SPR
 {
@@ -15,8 +14,6 @@ public class SystemsSPR extends SPR
     public SystemsSPR(Application application)
     {
         super(application);
-
-        GUI.instance.subSystems.registerSubsystem(getSubsystemInfo());
     }
 
     @Override

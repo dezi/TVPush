@@ -46,6 +46,12 @@ public class BCN extends OnInterfacesStubs implements
     }
 
     @Override
+    public JSONObject getSubsystemSettings()
+    {
+        return getSubsystemInfo();
+    }
+
+    @Override
     public void startSubsystem()
     {
         onSubsystemStarted("bcn", SubSystemHandler.SUBSYSTEM_RUN_STARTED);

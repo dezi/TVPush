@@ -42,6 +42,12 @@ public class IAM implements
     }
 
     @Override
+    public JSONObject getSubsystemSettings()
+    {
+        return getSubsystemInfo();
+    }
+
+    @Override
     public void startSubsystem()
     {
         Log.d(LOGTAG, "Subsystem started...");

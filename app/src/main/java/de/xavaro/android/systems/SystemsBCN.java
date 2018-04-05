@@ -15,8 +15,6 @@ public class SystemsBCN extends BCN
     public SystemsBCN(Application application)
     {
         super(application);
-
-        GUI.instance.subSystems.registerSubsystem(getSubsystemInfo());
     }
 
     @Override

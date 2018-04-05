@@ -4,10 +4,11 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
+import pub.android.interfaces.pub.PUBADBTool;
+
 import de.xavaro.android.adb.base.ADB;
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.iot.base.IOT;
-import pub.android.interfaces.pub.PUBADBTool;
 
 public class SystemsIOT extends IOT
 {
@@ -16,8 +17,6 @@ public class SystemsIOT extends IOT
     public SystemsIOT(Application appcontext)
     {
         super(appcontext);
-
-        GUI.instance.subSystems.registerSubsystem(getSubsystemInfo());
     }
 
     @Override

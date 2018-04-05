@@ -19,11 +19,14 @@ public class Systems
     {
         GUI.instance = new SystemsGUI(application);
         GUI.instance.startSubsystem();
+        GUI.instance.subSystems.registerSubsystem(GUI.instance.getSubsystemInfo());
 
         IOT.instance = new SystemsIOT(application);
         IOT.instance.startSubsystem();
+        GUI.instance.subSystems.registerSubsystem(IOT.instance.getSubsystemInfo());
 
         SystemsSPR spr = new SystemsSPR(application);
+        GUI.instance.subSystems.registerSubsystem(spr.getSubsystemInfo());
 
         if (GUI.instance.subSystems.isSubsystemActivated("spr"))
         {
@@ -32,6 +35,7 @@ public class Systems
         }
 
         SystemsBCN bcn = new SystemsBCN(application);
+        GUI.instance.subSystems.registerSubsystem(bcn.getSubsystemInfo());
 
         if (GUI.instance.subSystems.isSubsystemActivated("bcn"))
         {
@@ -40,6 +44,7 @@ public class Systems
         }
 
         SystemsIAM iam = new SystemsIAM(application);
+        GUI.instance.subSystems.registerSubsystem(iam.getSubsystemInfo());
 
         if (GUI.instance.subSystems.isSubsystemActivated("iam"))
         {
@@ -48,6 +53,7 @@ public class Systems
         }
 
         SystemsADB adb = new SystemsADB(application);
+        GUI.instance.subSystems.registerSubsystem(adb.getSubsystemInfo());
 
         if (GUI.instance.subSystems.isSubsystemActivated("adb"))
         {
@@ -56,6 +62,7 @@ public class Systems
         }
 
         SystemsSNY sny = new SystemsSNY(application);
+        GUI.instance.subSystems.registerSubsystem(sny.getSubsystemInfo());
 
         if (GUI.instance.subSystems.isSubsystemActivated("sny"))
         {
@@ -64,6 +71,7 @@ public class Systems
         }
 
         SystemsTPL tpl = new SystemsTPL(application);
+        GUI.instance.subSystems.registerSubsystem(tpl.getSubsystemInfo());
 
         if (GUI.instance.subSystems.isSubsystemActivated("tpl"))
         {
@@ -72,6 +80,7 @@ public class Systems
         }
 
         SystemsP2P p2p = new SystemsP2P(application);
+        GUI.instance.subSystems.registerSubsystem(p2p.getSubsystemInfo());
 
         if (GUI.instance.subSystems.isSubsystemActivated("p2p"))
         {

@@ -26,8 +26,6 @@ public class SystemsIAM extends IAM
     public SystemsIAM(Application application)
     {
         super(application);
-
-        GUI.instance.subSystems.registerSubsystem(getSubsystemInfo());
     }
 
     @Override
