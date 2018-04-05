@@ -49,7 +49,7 @@ public class AdbTest
         AdbServiceCheck adbServiceCheck = new AdbServiceCheck(context, ipaddr, ipport);
 
         boolean authorized = adbServiceCheck.startSync();
-        
+
         Log.d(LOGTAG, "getADBAuthorized: authorized=" + authorized);
 
         return authorized;
