@@ -1,8 +1,14 @@
 package pub.android.interfaces.gui;
 
+import android.support.annotation.Nullable;
+
+import org.json.JSONObject;
+
 public interface OnSubsystemRequest
 {
-    void onStartSubsystemRequest(String drv);
+    JSONObject onGetSubsystemSettings(String subsystem);
 
-    void onStopSubsystemRequest(String drv);
+    void onStartSubsystemRequest(String subsystem);
+
+    void onStopSubsystemRequest(String subsystem);
 }

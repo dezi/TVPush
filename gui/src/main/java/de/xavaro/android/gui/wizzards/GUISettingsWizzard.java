@@ -48,7 +48,7 @@ public class GUISettingsWizzard extends GUIPluginTitleList
         String subsystem = objectTag;
         if (subsystem == null) return;
 
-        JSONObject infos = GUI.instance.subSystems.getSubsystemInfos(subsystem);
+        JSONObject infos = GUI.instance.onGetSubsystemSettings(subsystem);
         if (infos == null) return;
 
         String name = Json.getString(infos, "name");
@@ -95,7 +95,7 @@ public class GUISettingsWizzard extends GUIPluginTitleList
 
     private void collectSubsystemsSettings(GUIListView listView, String subsystem, boolean todo)
     {
-        JSONObject infos = GUI.instance.subSystems.getSubsystemInfos(subsystem);
+        JSONObject infos = GUI.instance.onGetSubsystemSettings(subsystem);
         if (infos == null) return;
 
         JSONArray settings = Json.getArray(infos, "settings");

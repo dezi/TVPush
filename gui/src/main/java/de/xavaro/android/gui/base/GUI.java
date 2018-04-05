@@ -102,6 +102,14 @@ public class GUI implements
     }
 
     @Override
+    public JSONObject onGetSubsystemSettings(String subsystem)
+    {
+        Log.d(LOGTAG, "onGetSubsystemSettings: STUB! subsystem=" + subsystem);
+
+        return null;
+    }
+
+    @Override
     public void onStartSubsystemRequest(String drv)
     {
         Log.d(LOGTAG, "onStartSubsystemRequest: STUB!");

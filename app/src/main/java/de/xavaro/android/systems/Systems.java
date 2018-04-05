@@ -147,4 +147,28 @@ public class Systems
             subSystems.remove(drv);
         }
     }
+
+    public static JSONObject getSubsystemSettings(String subsystem)
+    {
+        String[] parts = subsystem.split("\\.");
+        String drv = parts[0];
+
+        SubSystemHandler sub = null;
+
+        try
+        {
+            sub = subSystems.get(drv);
+        }
+        catch (Exception ignore)
+        {
+        }
+
+        if (sub == null)
+        {
+            Log.e(LOGTAG, "stopSubsystem: UNKNOWN subsystem=" + subsystem);
+            return null;
+        }
+
+        return sub.getSubsystemSettings();
+    }
 }

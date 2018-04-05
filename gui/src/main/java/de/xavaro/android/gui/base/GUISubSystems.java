@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.xavaro.android.gui.simple.Log;
 import pub.android.interfaces.all.SubSystemHandler;
 
 import de.xavaro.android.gui.simple.Simple;
