@@ -177,7 +177,7 @@ public class SNY extends OnInterfacesStubs implements
             {
                 String username = Simple.getDeviceUserName();
 
-                boolean authorized = SNYAuthorize.requestAuth(ipaddr, uuid, name, username);
+                boolean authorized = SNYAuthorize.requestAuth(ipaddr, "hallo" + uuid , name, username);
 
                 Log.d(LOGTAG, "startSubsystem:"
                         + " subsystem=" + subsystem

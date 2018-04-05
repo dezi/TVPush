@@ -6,8 +6,6 @@ public class Log
 
     public static String[] allow = new String[]
             {
-                    "GLSRenderer",
-                    "p2p*",
                     "sny*"
             };
 
