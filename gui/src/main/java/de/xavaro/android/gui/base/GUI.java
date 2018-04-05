@@ -90,6 +90,12 @@ public class GUI implements
     }
 
     @Override
+    public void setSubsystemState(String subsystem, int state)
+    {
+        Log.d(LOGTAG, "setSubsystemState: STUB!");
+    }
+
+    @Override
     public void onSubsystemStarted(String subsystem, int state)
     {
         Log.d(LOGTAG, "onSubsystemStarted: STUB! state=" + state);

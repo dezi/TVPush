@@ -5,6 +5,7 @@ import android.app.Application;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import de.xavaro.android.adb.conn.AdbTest;
 import pub.android.interfaces.all.SubSystemHandler;
 import pub.android.interfaces.adb.GetADBToolHandler;
 import pub.android.interfaces.ext.GetDevicesRequest;
@@ -94,9 +95,47 @@ public class ADB implements
     @Override
     public void startSubsystem(String subsystem)
     {
-        if (getSubsystemState("adb") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
+        String[] parts = subsystem.split("\\.");
+        String drv = parts[0];
+
+        if (getSubsystemState(drv) == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
         {
-            onSubsystemStarted("adb", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
+            onSubsystemStarted(drv, SubSystemHandler.SUBSYSTEM_RUN_STARTED);
+
+            //
+            // Check for subservices. Means target devices. Starting
+            // means check, if they are configured and ready to use.
+            //
+
+            if (parts.length > 1)
+            {
+                String uuid = parts[1];
+
+                JSONObject status = onGetStatusRequest(uuid);
+                String ipaddr = Json.getString(status, "ipaddr");
+
+                Log.d(LOGTAG, "startSubsystem: uuid=" + uuid + " ipaddr=" + ipaddr);
+
+                if (ipaddr != null)
+                {
+                    ADBToolHandler adbtool = new ADBToolHandler(ipaddr);
+                    boolean configured = adbtool.isConfigured();
+
+                    Log.d(LOGTAG, "startSubsystem:"
+                            + " subsystem=" + subsystem
+                            + " ipaddr=" + ipaddr
+                            + " configured=" + configured);
+
+                    if (configured)
+                    {
+                        setSubsystemState(subsystem, SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED);
+                    }
+                    else
+                    {
+                        setSubsystemState(subsystem, SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED);
+                    }
+                }
+            }
         }
     }
 
@@ -115,6 +154,12 @@ public class ADB implements
         Log.d(LOGTAG, "getSubsystemState: STUB!");
 
         return SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED;
+    }
+
+    @Override
+    public void setSubsystemState(String subsystem, int state)
+    {
+        Log.d(LOGTAG, "setSubsystemState: STUB!");
     }
 
     @Override
@@ -149,6 +194,30 @@ public class ADB implements
     public JSONObject onGetDeviceRequest(String uuid)
     {
         Log.d(LOGTAG, "onGetDeviceRequest: STUB!");
+
+        return null;
+    }
+
+    @Override
+    public JSONObject onGetStatusRequest(String uuid)
+    {
+        Log.d(LOGTAG, "onGetStatusRequest: STUB!");
+
+        return null;
+    }
+
+    @Override
+    public JSONObject onGetCredentialRequest(String uuid)
+    {
+        Log.d(LOGTAG, "onGetCredentialRequest: STUB!");
+
+        return null;
+    }
+
+    @Override
+    public JSONObject onGetMetaRequest(String uuid)
+    {
+        Log.d(LOGTAG, "onGetMetaRequest: STUB!");
 
         return null;
     }

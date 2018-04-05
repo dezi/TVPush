@@ -26,6 +26,7 @@ public interface SubSystemHandler
     JSONObject getSubsystemSettings();
 
     int getSubsystemState(String subsystem);
+    void setSubsystemState(String subsystem, int state);
 
     void startSubsystem(String subsystem);
     void stopSubsystem(String subsystem);

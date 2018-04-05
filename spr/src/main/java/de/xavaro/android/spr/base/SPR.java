@@ -93,6 +93,12 @@ public class SPR implements
     }
 
     @Override
+    public void setSubsystemState(String subsystem, int state)
+    {
+        Log.d(LOGTAG, "setSubsystemState: STUB! state=" + state);
+    }
+
+    @Override
     public void onSubsystemStarted(String subsystem, int runstate)
     {
         Log.d(LOGTAG, "onSubsystemStarted: STUB!");

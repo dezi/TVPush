@@ -11,5 +11,14 @@ public interface GetDevicesRequest
     JSONObject onGetDeviceRequest(String uuid);
 
     @Nullable
+    JSONObject onGetStatusRequest(String uuid);
+
+    @Nullable
+    JSONObject onGetCredentialRequest(String uuid);
+
+    @Nullable
+    JSONObject onGetMetaRequest(String uuid);
+
+    @Nullable
     JSONArray onGetDevicesCapabilityRequest(String capability);
 }

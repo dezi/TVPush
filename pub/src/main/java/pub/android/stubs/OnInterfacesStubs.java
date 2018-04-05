@@ -21,6 +21,12 @@ public class OnInterfacesStubs
         return SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED;
     }
 
+    public void setSubsystemState(String subsystem, int state)
+    {
+        Log.d(LOGTAG(), "setSubsystemState: STUB!");
+        Log.d(LOGTAG(), Log.getStackTraceString(new Exception()));
+    }
+
     public void onSubsystemStarted(String subsystem, int runstate)
     {
         Log.d(LOGTAG(), "onSubsystemStarted: STUB!");

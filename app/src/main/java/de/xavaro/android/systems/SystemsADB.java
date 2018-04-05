@@ -5,9 +5,10 @@ import android.app.Application;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import de.xavaro.android.adb.simple.Log;
 import de.xavaro.android.gui.base.GUI;
-import de.xavaro.android.adb.base.ADB;
 import de.xavaro.android.iot.base.IOT;
+import de.xavaro.android.adb.base.ADB;
 
 public class SystemsADB extends ADB
 {
@@ -22,6 +23,12 @@ public class SystemsADB extends ADB
     public int getSubsystemState(String subsystem)
     {
         return GUI.instance.subSystems.getSubsystemState(subsystem);
+    }
+
+    @Override
+    public void setSubsystemState(String subsystem, int state)
+    {
+        GUI.instance.subSystems.setSubsystemState(subsystem, state);
     }
 
     @Override
@@ -40,6 +47,24 @@ public class SystemsADB extends ADB
     public JSONObject onGetDeviceRequest(String uuid)
     {
         return IOT.instance.getDevice(uuid);
+    }
+
+    @Override
+    public JSONObject onGetStatusRequest(String uuid)
+    {
+        return IOT.instance.getStatus(uuid);
+    }
+
+    @Override
+    public JSONObject onGetCredentialRequest(String uuid)
+    {
+        return IOT.instance.getCredential(uuid);
+    }
+
+    @Override
+    public JSONObject onGetMetaRequest(String uuid)
+    {
+        return IOT.instance.getMetadata(uuid);
     }
 
     @Override

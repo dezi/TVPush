@@ -2,6 +2,8 @@ package de.xavaro.android.iot.base;
 
 import android.util.Log;
 
+import de.xavaro.android.iot.simple.Simple;
+import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTLocation;
 import de.xavaro.android.iot.things.IOTHuman;
@@ -78,6 +80,21 @@ public class IOTBoot extends IOTObject
             IOT.device = new IOTDevice(IOT.boot.bootDeviceUUID);
             IOT.device.checkAndMergeContent(localDevice, false, false);
         }
+
+        //
+        // Check local network for status.
+        //
+
+        IOTStatus localStatus = new IOTStatus();
+        localStatus.wifi = Simple.getConnectedWifiName();
+        localStatus.ipaddr = Simple.getConnectedWifiIPAddress();
+
+        IOTStatus status = new IOTStatus(IOT.boot.bootDeviceUUID);
+        status.checkAndMergeContent(localStatus, false, true);
+
+        //
+        // Check or create human.
+        //
 
         if ((IOT.boot.bootHumanUUID == null) || IOT.boot.bootHumanUUID.isEmpty())
         {

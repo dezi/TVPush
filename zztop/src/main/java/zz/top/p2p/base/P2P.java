@@ -95,6 +95,12 @@ public class P2P implements
     }
 
     @Override
+    public void setSubsystemState(String subsystem, int state)
+    {
+        Log.d(LOGTAG, "setSubsystemState: STUB! state=" + state);
+    }
+
+    @Override
     public void onSubsystemStarted(String subsystem, int state)
     {
         Log.d(LOGTAG, "onSubsystemStarted: STUB! state=" + state);

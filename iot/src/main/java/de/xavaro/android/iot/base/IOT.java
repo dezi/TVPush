@@ -186,6 +186,12 @@ public class IOT implements
     }
 
     @Override
+    public void setSubsystemState(String subsystem, int state)
+    {
+        Log.d(LOGTAG, "setSubsystemState: STUB!");
+    }
+
+    @Override
     public void onSubsystemStarted(String subsystem, int state)
     {
         Log.d(LOGTAG, "onSubsystemStarted: STUB! state=" + state);
@@ -206,6 +212,27 @@ public class IOT implements
     {
         IOTDevice device = IOTDevice.list.getEntry(uuid);
         return (device != null) ? device.toJson() : null;
+    }
+
+    @Override
+    public JSONObject getStatus(String uuid)
+    {
+        IOTStatus status = IOTStatus.list.getEntry(uuid);
+        return (status != null) ? status.toJson() : null;
+    }
+
+    @Override
+    public JSONObject getCredential(String uuid)
+    {
+        IOTCredential credential = IOTCredential.list.getEntry(uuid);
+        return (credential != null) ? credential.toJson() : null;
+    }
+
+    @Override
+    public JSONObject getMetadata(String uuid)
+    {
+        IOTMetadata metadata = IOTMetadata.list.getEntry(uuid);
+        return (metadata != null) ? metadata.toJson() : null;
     }
 
     @Override

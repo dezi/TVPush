@@ -17,7 +17,7 @@ public class AdbTest
             Log.d(LOGTAG, "getADBConfigured: ipaddr=" + ipaddr + " ipport=" + ipport);
 
             Socket socket = new Socket(ipaddr, ipport);
-            socket.setTcpNoDelay(true);
+            socket.setSoTimeout(3000);
 
             Log.d(LOGTAG, "getADBConfigured: open socket done.");
 
@@ -38,8 +38,6 @@ public class AdbTest
         catch (Exception ex)
         {
             Log.d(LOGTAG, "getADBConfigured: not configured.");
-
-            ex.printStackTrace();
         }
 
         return false;
