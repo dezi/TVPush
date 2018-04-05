@@ -556,6 +556,16 @@ public class Simple
         }
     }
 
+    public static void showSoftKeyBoard(View view)
+    {
+        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(INPUT_METHOD_SERVICE);
+
+        if (imm != null)
+        {
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        }
+    }
+
     public static String getTrans(int resid, Object... args)
     {
         return String.format(resources.getString(resid), args);

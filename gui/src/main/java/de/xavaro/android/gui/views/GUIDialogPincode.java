@@ -62,6 +62,15 @@ public class GUIDialogPincode extends GUIDialogView
         setCustomView(numberBox);
 
         pin1.requestFocus();
+
+        Simple.getHandler().postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                Simple.showSoftKeyBoard(pin1);
+            }
+        }, 250);
     }
 
     private GUIEditText createPin()

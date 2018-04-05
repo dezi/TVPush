@@ -166,7 +166,7 @@ public class IOTDevice extends IOTThing
         {
             caps += "|devel";
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             {
                 caps += "|adb";
             }
