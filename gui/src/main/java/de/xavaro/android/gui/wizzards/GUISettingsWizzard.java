@@ -321,10 +321,12 @@ public class GUISettingsWizzard extends GUIPluginTitleList
             if (subsystem == null) return;
 
             JSONObject infos = (JSONObject) entry.getTag();
-            String tag = Json.getString(infos, "tag");
-            if (tag == null) return;
 
-            final String subtag = subsystem + "." + tag;
+            String tag = Json.getString(infos, "tag");
+            String uuid = Json.getString(infos, "uuid");
+            if ((tag == null) && (uuid == null)) return;
+
+            final String subtag = subsystem + "." + ((tag != null) ? tag : uuid);
 
             GUIDialogView dialog = new GUIDialogView(entry.getContext());
 
@@ -348,9 +350,8 @@ public class GUISettingsWizzard extends GUIPluginTitleList
                         @Override
                         public void onClick(View view)
                         {
-                            GUI.instance.subSystems.setSubsystemState(subtag, SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED);
-                            GUIPluginTitleList.updateContentinParentPlugin(entry);
                             GUI.instance.onStopSubsystemRequest(subtag);
+                            GUIPluginTitleList.updateContentinParentPlugin(entry);
                         }
                     });
 
@@ -365,21 +366,12 @@ public class GUISettingsWizzard extends GUIPluginTitleList
                         @Override
                         public void onClick(View view)
                         {
-                            GUI.instance.subSystems.setSubsystemState(subtag, SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED);
-                            GUIPluginTitleList.updateContentinParentPlugin(entry);
                             GUI.instance.onStartSubsystemRequest(subtag);
+                            GUIPluginTitleList.updateContentinParentPlugin(entry);
                         }
                     });
 
-                    dialog.setNegativeButton(R.string.basic_postpone, new OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View view)
-                        {
-                            GUI.instance.subSystems.setSubsystemState(subtag, SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED);
-                            GUIPluginTitleList.updateContentinParentPlugin(entry);
-                        }
-                    });
+                    dialog.setNegativeButton(R.string.basic_postpone);
 
                     dialog.positiveButton.requestFocus();
                 }

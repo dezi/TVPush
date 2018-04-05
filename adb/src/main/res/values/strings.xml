@@ -4,7 +4,16 @@
 
     <string name="subsystem_adb_info">
         Dieses Werkzeug ermöglicht den Zugriff auf externe
-        Speichergeräte und andere Systemfunktion unter Android.
+        Speichergeräte und andere Systemfunktionen von Android
+        Geräten über das lokale Netzwerk.
+    </string>
+
+    <string name="subsystem_adb_auth">
+        Sie können hier den Zugriff auf das Gerät authentifizieren.
+        \n\n
+        Wenn das Gerät erreichbar ist und noch nicht authentifiziert
+        ist, poppt auf dem Gerät ein Fenster hoch, in dem Sie den
+        Zugriff bestätigen müssen.
     </string>
 
 </resources>

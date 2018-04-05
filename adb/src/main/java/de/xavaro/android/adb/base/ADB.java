@@ -68,7 +68,7 @@ public class ADB implements
                 Json.put(setting, "name", name);
                 Json.put(setting, "type", SubSystemHandler.SUBSYSTEM_TYPE_FEATURE);
                 Json.put(setting, "mode", SubSystemHandler.SUBSYSTEM_MODE_VOLUNTARY);
-                Json.put(setting, "info", "nix");
+                Json.put(setting, "info", Simple.getTrans(R.string.subsystem_adb_auth));
 
                 Json.put(settings, setting);
             }
