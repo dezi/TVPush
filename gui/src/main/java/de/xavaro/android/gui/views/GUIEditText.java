@@ -34,10 +34,19 @@ public class GUIEditText extends AppCompatEditText implements
 
         initSkills();
 
-        setFocusable(false);
-        setEnabled(false);
-        setInputType(InputType.TYPE_NULL);
         setTextColor(Color.BLACK);
+
+        if (Simple.isTV())
+        {
+            setFocusable(false);
+            setEnabled(false);
+            setInputType(InputType.TYPE_NULL);
+        }
+    }
+
+    public void setTypeNumber()
+    {
+        setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
     }
 
     public void setTextSizeDip(int textSizeDip)

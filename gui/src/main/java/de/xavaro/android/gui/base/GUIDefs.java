@@ -16,11 +16,11 @@ public class GUIDefs
     public final static double MAP_MOVE_STEP = 0.000002;
 
     public static final int PADDING_ZERO     = Simple.isTablet() ?  0 :  0;
-    public static final int PADDING_TINY     = Simple.isTablet() ?  4 :  2;
-    public static final int PADDING_SMALL    = Simple.isTablet() ?  8 :  4;
-    public static final int PADDING_MEDIUM   = Simple.isTablet() ? 16 : 12;
-    public static final int PADDING_NORMAL   = Simple.isTablet() ? 24 : 18;
-    public static final int PADDING_LARGE    = Simple.isTablet() ? 32 : 26;
+    public static final int PADDING_TINY     = Simple.isTablet() ?  4 :  4;
+    public static final int PADDING_SMALL    = Simple.isTablet() ?  8 :  8;
+    public static final int PADDING_MEDIUM   = Simple.isTablet() ? 16 : 16;
+    public static final int PADDING_NORMAL   = Simple.isTablet() ? 24 : 24;
+    public static final int PADDING_LARGE    = Simple.isTablet() ? 32 : 28;
     public static final int PADDING_XLARGE   = Simple.isTablet() ? 40 : 30;
     public static final int PADDING_XXLARGE  = Simple.isTablet() ? 60 : 50;
 
@@ -32,10 +32,10 @@ public class GUIDefs
 
     public final static int FONTSIZE_LARGE   = Simple.isTablet() ? 36 : 30;
     public final static int FONTSIZE_SPEECH  = Simple.isTablet() ? 24 : 30;
+    public final static int FONTSIZE_TITLE   = Simple.isTablet() ? 24 : 24;
     public final static int FONTSIZE_HEADERS = Simple.isTablet() ? 16 : 16;
-    public final static int FONTSIZE_INFOS   = Simple.isTablet() ? 14 : 12;
-    public final static int FONTSIZE_BUTTONS = Simple.isTablet() ? 16 : 16;
-    public final static int FONTSIZE_TITLE   = Simple.isTablet() ? 18 : 16;
+    public final static int FONTSIZE_INFOS   = Simple.isTablet() ? 14 : 14;
+    public final static int FONTSIZE_BUTTONS = Simple.isTablet() ? 16 : 18;
 
     public final static int COLOR_LIGHT_TRANSPARENT  = 0x22000000;
     public final static int COLOR_MEDIUM_TRANSPARENT = 0x44000000;

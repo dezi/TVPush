@@ -92,12 +92,15 @@ public class GUICanFocusDelegate
                         gf.setHighlight(false);
                     }
 
-                    if (view instanceof GUIEditText)
+                    if (Simple.isTV())
                     {
-                        GUIEditText et = (GUIEditText) view;
+                        if (view instanceof GUIEditText)
+                        {
+                            GUIEditText et = (GUIEditText) view;
 
-                        et.setEnabled(false);
-                        et.setInputType(InputType.TYPE_NULL);
+                            et.setEnabled(false);
+                            et.setInputType(InputType.TYPE_NULL);
+                        }
                     }
                 }
 
@@ -154,7 +157,7 @@ public class GUICanFocusDelegate
 
     public static void setupOnFocusChangeListener(View view, boolean focusable)
     {
-        //if (Simple.isTV())
+        if (Simple.isTV())
         {
             if (view instanceof GUICanFocus)
             {
@@ -188,7 +191,8 @@ public class GUICanFocusDelegate
     {
         GUICanFocus gf = view instanceof GUICanFocus ? (GUICanFocus) view : null;
 
-        if ((gf != null)
+        if (Simple.isTV()
+                && (gf != null)
                 && gf.getHasFocus()
                 && gf.getHighlightable()
                 && (keyCode == KeyEvent.KEYCODE_DPAD_CENTER))

@@ -107,7 +107,7 @@ public class GUIDialogView extends GUIRelativeLayout
     protected GUILinearLayout padView;
     protected GUITextView titleView;
     protected GUITextView infoView;
-    protected GUIRelativeLayout customView;
+    protected GUILinearLayout customView;
     protected GUILinearLayout buttonFrame;
 
     protected OnClickListener positiveButtonOnClick;
@@ -221,9 +221,9 @@ public class GUIDialogView extends GUIRelativeLayout
 
         padView.addView(infoView);
 
-        customView = new GUIRelativeLayout(context);
+        customView = new GUILinearLayout(context);
         customView.setVisibility(GONE);
-        customView.setSizeDip(Simple.WC, Simple.WC, 1.0f);
+        customView.setSizeDip(Simple.WC, Simple.WC);
 
         padView.addView(customView);
 

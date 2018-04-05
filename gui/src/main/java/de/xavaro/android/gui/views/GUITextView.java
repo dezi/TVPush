@@ -2,15 +2,15 @@ package de.xavaro.android.gui.views;
 
 import android.support.v7.widget.AppCompatTextView;
 import android.graphics.drawable.Drawable;
-import android.graphics.Color;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.content.Context;
 import android.util.TypedValue;
+import android.graphics.Color;
+import android.view.ViewGroup;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 
-import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.skills.GUICanDip;
 import de.xavaro.android.gui.skills.GUICanFocus;
 import de.xavaro.android.gui.skills.GUICanFocusDelegate;
@@ -19,6 +19,7 @@ import de.xavaro.android.gui.skills.GUICanRestoreBackgroundDelegate;
 import de.xavaro.android.gui.skills.GUICanRoundedCorners;
 import de.xavaro.android.gui.skills.GUICanRoundedCornersDelegate;
 import de.xavaro.android.gui.skills.GUICanToast;
+import de.xavaro.android.gui.simple.Simple;
 
 //
 // adb shell setprop log.tag.TextView WARN
@@ -44,9 +45,10 @@ public class GUITextView extends AppCompatTextView implements
 
     public void setTextSizeDip(int textSizeDip)
     {
-        float real = textSizeDip / getContext().getResources().getConfiguration().fontScale;
+        //float real = textSizeDip / getContext().getResources().getConfiguration().fontScale;
+        //setTextSize(TypedValue.COMPLEX_UNIT_DIP, real);
 
-        setTextSize(TypedValue.COMPLEX_UNIT_DIP, real);
+        setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSizeDip);
     }
 
     //region CanDip implementation.
