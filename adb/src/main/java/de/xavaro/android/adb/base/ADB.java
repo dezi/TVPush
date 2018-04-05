@@ -98,42 +98,52 @@ public class ADB implements
         String[] parts = subsystem.split("\\.");
         String drv = parts[0];
 
-        if (getSubsystemState(drv) == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
+        if (parts.length == 1)
         {
-            onSubsystemStarted(drv, SubSystemHandler.SUBSYSTEM_RUN_STARTED);
+            //
+            // Activate service as such.
+            //
 
+            if (getSubsystemState(drv) == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
+            {
+                //
+                // Not much to be done.
+                //
+
+                onSubsystemStarted(drv, SubSystemHandler.SUBSYSTEM_RUN_STARTED);
+            }
+        }
+        else
+        {
             //
             // Check for subservices. Means target devices. Starting
             // means check, if they are configured and ready to use.
             //
 
-            if (parts.length > 1)
+            String uuid = parts[1];
+
+            JSONObject status = onGetStatusRequest(uuid);
+            String ipaddr = Json.getString(status, "ipaddr");
+
+            Log.d(LOGTAG, "startSubsystem: uuid=" + uuid + " ipaddr=" + ipaddr);
+
+            if (ipaddr != null)
             {
-                String uuid = parts[1];
+                ADBToolHandler adbtool = new ADBToolHandler(ipaddr);
+                boolean configured = adbtool.isConfigured();
 
-                JSONObject status = onGetStatusRequest(uuid);
-                String ipaddr = Json.getString(status, "ipaddr");
+                Log.d(LOGTAG, "startSubsystem:"
+                        + " subsystem=" + subsystem
+                        + " ipaddr=" + ipaddr
+                        + " configured=" + configured);
 
-                Log.d(LOGTAG, "startSubsystem: uuid=" + uuid + " ipaddr=" + ipaddr);
-
-                if (ipaddr != null)
+                if (configured)
                 {
-                    ADBToolHandler adbtool = new ADBToolHandler(ipaddr);
-                    boolean configured = adbtool.isConfigured();
-
-                    Log.d(LOGTAG, "startSubsystem:"
-                            + " subsystem=" + subsystem
-                            + " ipaddr=" + ipaddr
-                            + " configured=" + configured);
-
-                    if (configured)
-                    {
-                        setSubsystemState(subsystem, SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED);
-                    }
-                    else
-                    {
-                        setSubsystemState(subsystem, SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED);
-                    }
+                    setSubsystemState(subsystem, SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED);
+                }
+                else
+                {
+                    setSubsystemState(subsystem, SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED);
                 }
             }
         }
@@ -142,9 +152,32 @@ public class ADB implements
     @Override
     public void stopSubsystem(String subsystem)
     {
-        if (getSubsystemState("adb") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
+        String[] parts = subsystem.split("\\.");
+        String drv = parts[0];
+
+        if (parts.length == 1)
         {
-            onSubsystemStopped("adb", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
+            //
+            // Deactivate service as such.
+            //
+
+            if (getSubsystemState(drv) == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
+            {
+                //
+                // Not much to be done.
+                //
+
+                onSubsystemStopped(drv, SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
+            }
+        }
+        else
+        {
+            //
+            // Check for subservices. Means target devices.
+            // Stopping simply set state to deactivated.
+            //
+
+            setSubsystemState(subsystem, SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED);
         }
     }
 
