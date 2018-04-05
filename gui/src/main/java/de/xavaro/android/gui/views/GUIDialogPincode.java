@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 
 import de.xavaro.android.gui.base.GUIDefs;
@@ -101,7 +102,7 @@ public class GUIDialogPincode extends GUIDialogView
                     if (pin == pin1) pin2.requestFocus();
                     if (pin == pin2) pin3.requestFocus();
                     if (pin == pin3) pin4.requestFocus();
-                    if (pin == pin4) pin1.requestFocus();
+                    if (pin == pin4) Simple.hideSoftKeyBoard(pin4);
                 }
             }
         });

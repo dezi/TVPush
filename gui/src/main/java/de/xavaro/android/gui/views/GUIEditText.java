@@ -38,8 +38,8 @@ public class GUIEditText extends AppCompatEditText implements
 
         if (Simple.isTV())
         {
-            setFocusable(false);
             setEnabled(false);
+            setFocusable(false);
             setInputType(InputType.TYPE_NULL);
         }
     }
