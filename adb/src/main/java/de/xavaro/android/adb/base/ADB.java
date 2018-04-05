@@ -133,13 +133,11 @@ public class ADB implements
             if (ipaddr != null)
             {
                 ADBToolHandler adbtool = new ADBToolHandler(ipaddr);
-                boolean configured = adbtool.isConfigured();
                 boolean authorized = adbtool.isAuthorized(appcontext);
 
                 Log.d(LOGTAG, "startSubsystem:"
                         + " subsystem=" + subsystem
                         + " ipaddr=" + ipaddr
-                        + " configured=" + configured
                         + " authorized=" + authorized);
 
                 if (authorized)

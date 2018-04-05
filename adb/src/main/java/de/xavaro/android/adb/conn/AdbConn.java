@@ -70,8 +70,8 @@ public class AdbConn implements Closeable
                 Log.d(LOGTAG, "connect: open socket...");
 
                 socket = new Socket(ipaddr, ipport);
+                socket.setSoTimeout(30 * 1000);
                 socket.setTcpNoDelay(true);
-                //socket.setSoTimeout(3000);
 
                 Log.d(LOGTAG, "connect: open socket done.");
 
