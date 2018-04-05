@@ -1,14 +1,14 @@
 package de.xavaro.android.systems;
 
-import android.app.Application;
 import android.support.annotation.Nullable;
+
+import android.app.Application;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import de.xavaro.android.adb.base.ADB;
 import pub.android.interfaces.all.SubSystemHandler;
 
 import de.xavaro.android.gui.base.GUI;
@@ -148,7 +148,7 @@ public class Systems
         }
     }
 
-    public static JSONObject getSubsystemSettings(String subsystem)
+    public static JSONObject getSubsystemSettings(Application application, String subsystem)
     {
         String[] parts = subsystem.split("\\.");
         String drv = parts[0];
@@ -161,6 +161,16 @@ public class Systems
         }
         catch (Exception ignore)
         {
+        }
+
+        if (sub == null)
+        {
+            //
+            // Completely new subsystem for infos.
+            // Will be released soon after again.
+            //
+
+            sub = createSubsystem(application, drv);
         }
 
         if (sub == null)

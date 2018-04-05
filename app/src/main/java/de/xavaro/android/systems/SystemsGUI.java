@@ -54,7 +54,7 @@ public class SystemsGUI extends GUI
     @Override
     public JSONObject onGetSubsystemSettings(String subsystem)
     {
-        return Systems.getSubsystemSettings(subsystem);
+        return Systems.getSubsystemSettings(appcontext, subsystem);
     }
 
     @Override

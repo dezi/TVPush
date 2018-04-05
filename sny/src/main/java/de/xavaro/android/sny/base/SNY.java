@@ -65,6 +65,7 @@ public class SNY extends OnInterfacesStubs implements
     {
         JSONObject info = getSubsystemInfo();
 
+        /*
         JSONArray settings = new JSONArray();
         Json.put(info, "settings", settings);
 
@@ -79,7 +80,9 @@ public class SNY extends OnInterfacesStubs implements
         Json.put(tvremote, "need", "pin");
 
         Json.put(settings, tvremote);
+        */
 
+        /*
         JSONObject channeledit = new JSONObject();
 
         int mode = Simple.isTV() && Simple.isSony()
@@ -95,6 +98,7 @@ public class SNY extends OnInterfacesStubs implements
         Json.put(channeledit, "need", "ext+usb+dev+adb");
 
         Json.put(settings, channeledit);
+        */
 
         return info;
     }
@@ -104,14 +108,10 @@ public class SNY extends OnInterfacesStubs implements
     {
         if (getSubsystemState("sny") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
         {
+            SNYRemote.startService();
             SNYDiscover.startService();
-            onSubsystemStarted("sny", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
 
-            if (getSubsystemState("sny.tvremote") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
-            {
-                SNYRemote.startService();
-                onSubsystemStarted("sny.tvremote", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
-            }
+            onSubsystemStarted("sny", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
         }
     }
 
@@ -120,19 +120,10 @@ public class SNY extends OnInterfacesStubs implements
     {
         if (getSubsystemState("sny") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
         {
+            SNYRemote.stopService();
             SNYDiscover.stopService();
+
             onSubsystemStopped("sny", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
-
-            SNYRemote.stopService();
-            onSubsystemStopped("sny.tvremote", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
-
-            return;
-        }
-
-        if (getSubsystemState("sny.tvremote") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
-        {
-            SNYRemote.stopService();
-            onSubsystemStopped("sny.tvremote", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
         }
     }
 
