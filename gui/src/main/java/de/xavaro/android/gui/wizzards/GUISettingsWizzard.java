@@ -52,8 +52,10 @@ public class GUISettingsWizzard extends GUIPluginTitleList
         if (infos == null) return;
 
         String name = Json.getString(infos, "name");
+        if (name == null) return;
+
         String type = Json.getString(infos, "type");
-        if ((name == null) || (type == null)) return;
+        if (type == null) type = SubSystemHandler.SUBSYSTEM_TYPE_SERVICE;
 
         int mode = Json.getInt(infos, "mode");
         String icon = Json.getString(infos, "icon");

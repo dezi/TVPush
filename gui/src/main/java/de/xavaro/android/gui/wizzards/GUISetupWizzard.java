@@ -55,10 +55,10 @@ public class GUISetupWizzard extends GUIPluginTitleList
 
             String subsystem = Json.getString(infos, "drv");
             String name = Json.getString(infos, "name");
+            if ((subsystem == null) || (name == null)) continue;
+
             String type = Json.getString(infos, "type");
             if (type == null) type = SubSystemHandler.SUBSYSTEM_TYPE_SERVICE;
-
-            if ((subsystem == null) || (name == null)) continue;
 
             String icon = Json.getString(infos, "icon");
 
