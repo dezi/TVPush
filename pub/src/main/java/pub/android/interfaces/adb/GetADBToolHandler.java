@@ -1,4 +1,4 @@
-package pub.android.interfaces.ext;
+package pub.android.interfaces.adb;
 
 import org.json.JSONObject;
 

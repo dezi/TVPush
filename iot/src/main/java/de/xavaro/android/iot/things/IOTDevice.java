@@ -5,12 +5,15 @@ import android.os.Build;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.base.IOTList;
 import de.xavaro.android.iot.base.IOTObject;
 
 import de.xavaro.android.iot.simple.Simple;
 import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.simple.Log;
+import de.xavaro.android.iot.status.IOTStatus;
+import pub.android.interfaces.pub.PUBADBTool;
 
 @SuppressWarnings("WeakerAccess")
 public class IOTDevice extends IOTThing
@@ -86,6 +89,8 @@ public class IOTDevice extends IOTThing
     {
         IOTDevice local = new IOTDevice();
 
+        local.driver = "iot";
+
         local.did = Simple.getDeviceId();
         local.type = Simple.getDeviceType();
         local.nick = Simple.getDeviceUserName();
@@ -94,15 +99,12 @@ public class IOTDevice extends IOTThing
         local.model = Simple.getDeviceModelName();
         local.version =  Simple.getAndroidVersion();
         local.location = Simple.getConnectedWifiName();
-
-        local.driver = "iot";
-
-        local.capabilities = Json.jsonArrayFromSeparatedString(getDeviceCapabilities(), "\\|");
+        local.capabilities = getDeviceCapabilities();
 
         return local;
     }
 
-    private static String getDeviceCapabilities()
+    private static JSONArray getDeviceCapabilities()
     {
         String caps = "";
 
@@ -170,7 +172,7 @@ public class IOTDevice extends IOTThing
             }
         }
 
-        return caps;
+        return Json.jsonArrayFromSeparatedString(caps, "\\|");
     }
 
     @Override

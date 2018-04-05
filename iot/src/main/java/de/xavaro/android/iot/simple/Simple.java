@@ -23,6 +23,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.speech.SpeechRecognizer;
 import android.support.v4.app.ActivityCompat;
+import android.text.format.Formatter;
 import android.util.Base64;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -263,6 +264,16 @@ public class Simple
     {
         String wifi = wifiManager.getConnectionInfo().getSSID();
         return wifi.replace("\"", "");
+    }
+
+    @Nullable
+    @SuppressWarnings("deprecation")
+    public static String getConnectedWifiIPAddress()
+    {
+        if (wifiManager == null) return null;
+
+        int ipint = wifiManager.getConnectionInfo().getIpAddress();
+        return Formatter.formatIpAddress(ipint);
     }
 
     public static String getDeviceType()

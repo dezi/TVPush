@@ -4,8 +4,10 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.adb.base.ADB;
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.iot.base.IOT;
+import pub.android.interfaces.pub.PUBADBTool;
 
 public class SystemsIOT extends IOT
 {
@@ -34,6 +36,17 @@ public class SystemsIOT extends IOT
     public void onSubsystemStopped(String subsystem, int state)
     {
         GUI.instance.subSystems.setSubsystemRunstate(subsystem, state);
+    }
+
+    @Override
+    public PUBADBTool onADBToolHandlerRequest(JSONObject device, JSONObject status, JSONObject credentials)
+    {
+        if (ADB.instance != null)
+        {
+            return ADB.instance.getADBToolHandler(device, status, credentials);
+        }
+
+        return null;
     }
 
     @Override

@@ -6,15 +6,20 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import pub.android.interfaces.all.SubSystemHandler;
+import pub.android.interfaces.adb.GetADBToolHandler;
 import pub.android.interfaces.ext.GetDevicesRequest;
+import pub.android.interfaces.pub.PUBADBTool;
 
-import de.xavaro.android.adb.R;
+import de.xavaro.android.adb.publics.ADBToolHandler;
+
+import de.xavaro.android.adb.simple.Simple;
 import de.xavaro.android.adb.simple.Json;
 import de.xavaro.android.adb.simple.Log;
-import de.xavaro.android.adb.simple.Simple;
+import de.xavaro.android.adb.R;
 
 public class ADB implements
         SubSystemHandler,
+        GetADBToolHandler,
         GetDevicesRequest
 {
     private static final String LOGTAG = ADB.class.getSimpleName();
@@ -70,8 +75,6 @@ public class ADB implements
             }
         }
 
-        Log.d(LOGTAG, "getSubsystemInfo: json=" + Json.toPretty(info));
-
         return info;
     }
 
@@ -114,6 +117,18 @@ public class ADB implements
     }
 
     //endregion SubSystemHandler
+
+    //region GetADBToolHandler
+
+    @Override
+    public PUBADBTool getADBToolHandler(JSONObject device, JSONObject status, JSONObject credentials)
+    {
+        String ipaddr = Json.getString(status, "ipaddr");
+
+        return (ipaddr != null) ? new ADBToolHandler(ipaddr) : null;
+    }
+
+    //endregion GetADBToolHandler
 
     //region GetDevicesRequest
 

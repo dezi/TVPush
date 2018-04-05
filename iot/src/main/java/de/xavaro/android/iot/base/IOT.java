@@ -1,6 +1,7 @@
 package de.xavaro.android.iot.base;
 
 import android.app.Application;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -23,13 +24,16 @@ import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.R;
 
 import pub.android.interfaces.all.SubSystemHandler;
+import pub.android.interfaces.iot.OnADBToolHandlerRequest;
 import pub.android.interfaces.iot.OnStatusRequest;
 import pub.android.interfaces.iot.GetDevices;
+import pub.android.interfaces.pub.PUBADBTool;
 
 public class IOT implements
         SubSystemHandler,
         GetDevices,
-        OnStatusRequest
+        OnStatusRequest,
+        OnADBToolHandlerRequest
 {
     private static final String LOGTAG = IOT.class.getSimpleName();
 
@@ -215,6 +219,18 @@ public class IOT implements
     }
 
     //endregion GetDevices
+
+    //region OnADBToolHandlerRequest
+
+    @Override
+    public PUBADBTool onADBToolHandlerRequest(JSONObject device, JSONObject status, JSONObject credentials)
+    {
+        Log.d(LOGTAG, "onADBToolHandlerRequest: STUB!");
+
+        return null;
+    }
+
+    //endregion OnADBToolHandlerRequest
 
     @Override
     public boolean onDeviceStatusRequest(JSONObject iotDevice)
