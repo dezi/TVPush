@@ -113,6 +113,7 @@ public class IOTDevice extends IOTThing
         changed = false;
 
         if (nequals(did,          check.did         )) did          = check.did;
+        if (nequals(name,         check.name        )) name         = check.name;
         if (nequals(type,         check.type        )) type         = check.type;
         if (nequals(brand,        check.brand       )) brand        = check.brand;
         if (nequals(model,        check.model       )) model        = check.model;
@@ -137,7 +138,6 @@ public class IOTDevice extends IOTThing
             changed = false;
 
             if (nequals(nick,     check.nick    )) nick     = check.nick;
-            if (nequals(name,     check.name    )) name     = check.name;
             if (nequals(location, check.location)) location = check.location;
 
             if (nequals(fixedLatFine, check.fixedLatFine)) fixedLatFine = check.fixedLatFine;

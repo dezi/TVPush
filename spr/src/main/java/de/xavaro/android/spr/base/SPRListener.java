@@ -50,6 +50,7 @@ public class SPRListener implements RecognitionListener
 
     private boolean lockStart;
     private boolean isEnabled;
+    private boolean isBeginn;
 
     public SPRListener(Context context)
     {
@@ -183,6 +184,8 @@ public class SPRListener implements RecognitionListener
     {
         Log.d(LOGTAG, "onReadyForSpeech:");
 
+        isBeginn = false;
+
         SPR.instance.onSpeechReady();
     }
 
@@ -190,6 +193,8 @@ public class SPRListener implements RecognitionListener
     public void onBeginningOfSpeech()
     {
         Log.d(LOGTAG, "onBeginningOfSpeech:");
+
+        isBeginn = true;
     }
 
     @Override
@@ -293,15 +298,30 @@ public class SPRListener implements RecognitionListener
     @Override
     public void onPartialResults(Bundle resultsBundle)
     {
-        JSONObject jresults = resultsToJSON(resultsBundle, true);
-        if (jresults != null) SPR.instance.onSpeechResults(jresults);
+        if (isBeginn)
+        {
+            JSONObject speech = resultsToJSON(resultsBundle, true);
+            if (speech != null) SPR.instance.onSpeechResults(speech);
+
+            JSONArray results = Json.getArray(speech, "results");
+
+            if ((results != null) && (results.length() > 0))
+            {
+                JSONObject result = Json.getObject(results, 0);
+
+                Log.d(LOGTAG, "onPartialResults:"
+                        + " text=" + Json.getString(result, "text")
+                        + " conf=" + Json.getFloat(result, "conf")
+                );
+            }
+        }
 
         //
         // Sometimes the speechListener hangs here forever.
         //
 
-        handler.removeCallbacks(restartListeningRunnable);
-        handler.postDelayed(restartListeningRunnable, 10 * 1000);
+        //handler.removeCallbacks(restartListeningRunnable);
+        //handler.postDelayed(restartListeningRunnable, 10 * 1000);
     }
 
     @Override
@@ -324,7 +344,10 @@ public class SPRListener implements RecognitionListener
 
         lockStart = false;
 
-        if (isEnabled) startListening();
+        if (isEnabled)
+        {
+            handler.post(startListeningRunnable);
+        }
     }
 
     @Nullable
