@@ -30,6 +30,12 @@ public class SPR implements
     }
 
     @Override
+    public void setInstance()
+    {
+        SPR.instance = this;
+    }
+
+    @Override
     public JSONObject getSubsystemInfo()
     {
         int mode = Simple.isSpeechIn()
@@ -57,7 +63,7 @@ public class SPR implements
     }
 
     @Override
-    public void startSubsystem()
+    public void startSubsystem(String subsystem)
     {
         if (getSubsystemState("spr") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
         {
@@ -68,7 +74,7 @@ public class SPR implements
     }
 
     @Override
-    public void stopSubsystem()
+    public void stopSubsystem(String subsystem)
     {
         if (getSubsystemState("spr") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
         {

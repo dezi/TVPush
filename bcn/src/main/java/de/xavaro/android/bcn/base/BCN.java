@@ -27,6 +27,12 @@ public class BCN extends OnInterfacesStubs implements
     }
 
     @Override
+    public void setInstance()
+    {
+        BCN.instance = this;
+    }
+    
+    @Override
     public JSONObject getSubsystemInfo()
     {
         int mode = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
@@ -52,13 +58,13 @@ public class BCN extends OnInterfacesStubs implements
     }
 
     @Override
-    public void startSubsystem()
+    public void startSubsystem(String subsystem)
     {
         onSubsystemStarted("bcn", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
     }
 
     @Override
-    public void stopSubsystem()
+    public void stopSubsystem(String subsystem)
     {
         onSubsystemStopped("bcn", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
     }

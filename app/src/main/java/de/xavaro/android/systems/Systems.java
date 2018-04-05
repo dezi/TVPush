@@ -1,91 +1,150 @@
 package de.xavaro.android.systems;
 
 import android.app.Application;
+import android.support.annotation.Nullable;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import de.xavaro.android.adb.base.ADB;
-import de.xavaro.android.bcn.base.BCN;
-import de.xavaro.android.gui.base.GUI;
-import de.xavaro.android.iam.base.IAM;
-import de.xavaro.android.iot.base.IOT;
-import de.xavaro.android.sny.base.SNY;
-import de.xavaro.android.spr.base.SPR;
-import de.xavaro.android.tpl.base.TPL;
+import pub.android.interfaces.all.SubSystemHandler;
 
-import zz.top.p2p.base.P2P;
+import de.xavaro.android.gui.base.GUI;
 
 public class Systems
 {
+    private static final String LOGTAG = Systems.class.getSimpleName();
+
+    private static Map<String, SubSystemHandler> subSystems = new HashMap<>();
+
     public static void initialize(Application application)
     {
-        GUI.instance = new SystemsGUI(application);
-        GUI.instance.startSubsystem();
-        GUI.instance.subSystems.registerSubsystem(GUI.instance.getSubsystemInfo());
+        startSubsystem(application, "gui");
+        startSubsystem(application, "iot");
 
-        IOT.instance = new SystemsIOT(application);
-        IOT.instance.startSubsystem();
-        GUI.instance.subSystems.registerSubsystem(IOT.instance.getSubsystemInfo());
+        startSubsystem(application, "spr");
+        startSubsystem(application, "iam");
+        startSubsystem(application, "bcn");
+        startSubsystem(application, "adb");
 
-        SystemsSPR spr = new SystemsSPR(application);
-        GUI.instance.subSystems.registerSubsystem(spr.getSubsystemInfo());
+        startSubsystem(application, "sny");
+        startSubsystem(application, "tpl");
+        startSubsystem(application, "p2p");
+    }
 
-        if (GUI.instance.subSystems.isSubsystemActivated("spr"))
+    @Nullable
+    private static SubSystemHandler createSubsystem(Application application, String drv)
+    {
+        switch (drv)
         {
-            SPR.instance = spr;
-            SPR.instance.startSubsystem();
+            case "gui" : return new SystemsGUI(application);
+            case "iot" : return new SystemsIOT(application);
+
+            case "spr" : return new SystemsSPR(application);
+            case "iam" : return new SystemsIAM(application);
+            case "bcn" : return new SystemsBCN(application);
+            case "adb" : return new SystemsADB(application);
+
+            case "sny" : return new SystemsSNY(application);
+            case "tpl" : return new SystemsTPL(application);
+            case "p2p" : return new SystemsP2P(application);
         }
 
-        SystemsBCN bcn = new SystemsBCN(application);
-        GUI.instance.subSystems.registerSubsystem(bcn.getSubsystemInfo());
+        return null;
+    }
 
-        if (GUI.instance.subSystems.isSubsystemActivated("bcn"))
+    public static void startSubsystem(Application application, String subsystem)
+    {
+        String[] parts = subsystem.split("\\.");
+        String drv = parts[ 0 ];
+
+        SubSystemHandler sub = null;
+
+        try
         {
-            BCN.instance = bcn;
-            BCN.instance.startSubsystem();
+            sub = subSystems.get(drv);
+        }
+        catch (Exception ignore)
+        {
         }
 
-        SystemsIAM iam = new SystemsIAM(application);
-        GUI.instance.subSystems.registerSubsystem(iam.getSubsystemInfo());
-
-        if (GUI.instance.subSystems.isSubsystemActivated("iam"))
+        if (sub == null)
         {
-            IAM.instance = iam;
-            IAM.instance.startSubsystem();
+            //
+            // Completely new subsystem.
+            //
+
+            sub = createSubsystem(application, drv);
         }
 
-        SystemsADB adb = new SystemsADB(application);
-        GUI.instance.subSystems.registerSubsystem(adb.getSubsystemInfo());
-
-        if (GUI.instance.subSystems.isSubsystemActivated("adb"))
+        if (sub == null)
         {
-            ADB.instance = adb;
-            ADB.instance.startSubsystem();
+            Log.e(LOGTAG, "startSubsystem: UNKNOWN subsystem=" + subsystem);
+
+            return;
         }
 
-        SystemsSNY sny = new SystemsSNY(application);
-        GUI.instance.subSystems.registerSubsystem(sny.getSubsystemInfo());
+        JSONObject infos = sub.getSubsystemInfo();
+        int mode = Json.getInt(infos, "mode");
 
-        if (GUI.instance.subSystems.isSubsystemActivated("sny"))
+        if (mode == SubSystemHandler.SUBSYSTEM_MODE_MANDATORY)
         {
-            SNY.instance = sny;
-            SNY.instance.startSubsystem();
+            //
+            // Important to bootstrap system.
+            //
+
+            sub.setInstance();
+
+            GUI.instance.subSystems.registerSubsystem(infos);
+
+            sub.startSubsystem(subsystem);
+        }
+        else
+        {
+            GUI.instance.subSystems.registerSubsystem(infos);
+
+            if (GUI.instance.subSystems.isSubsystemActivated(drv))
+            {
+                sub.setInstance();
+                sub.startSubsystem(subsystem);
+            }
         }
 
-        SystemsTPL tpl = new SystemsTPL(application);
-        GUI.instance.subSystems.registerSubsystem(tpl.getSubsystemInfo());
+        subSystems.put(drv, sub);
+    }
 
-        if (GUI.instance.subSystems.isSubsystemActivated("tpl"))
+    public static void stopSubsystem(String subsystem)
+    {
+        String[] parts = subsystem.split("\\.");
+        String drv = parts[ 0 ];
+
+        SubSystemHandler sub = null;
+
+        try
         {
-            TPL.instance = tpl;
-            TPL.instance.startSubsystem();
+            sub = subSystems.get(drv);
+        }
+        catch (Exception ignore)
+        {
         }
 
-        SystemsP2P p2p = new SystemsP2P(application);
-        GUI.instance.subSystems.registerSubsystem(p2p.getSubsystemInfo());
-
-        if (GUI.instance.subSystems.isSubsystemActivated("p2p"))
+        if (sub == null)
         {
-            P2P.instance = p2p;
-            P2P.instance.startSubsystem();
+            Log.e(LOGTAG, "stopSubsystem: UNKNOWN subsystem=" + subsystem);
+            return;
+        }
+
+        sub.stopSubsystem(subsystem);
+
+        if (drv.equals(subsystem))
+        {
+            //
+            // Completely unload subsystem.
+            //
+
+            subSystems.remove(drv);
         }
     }
 }

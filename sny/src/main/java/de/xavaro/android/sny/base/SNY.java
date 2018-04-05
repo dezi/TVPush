@@ -40,6 +40,12 @@ public class SNY extends OnInterfacesStubs implements
     }
 
     @Override
+    public void setInstance()
+    {
+        SNY.instance = this;
+    }
+
+    @Override
     public JSONObject getSubsystemInfo()
     {
         JSONObject info = new JSONObject();
@@ -94,7 +100,7 @@ public class SNY extends OnInterfacesStubs implements
     }
 
     @Override
-    public void startSubsystem()
+    public void startSubsystem(String subsystem)
     {
         if (getSubsystemState("sny") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
         {
@@ -110,7 +116,7 @@ public class SNY extends OnInterfacesStubs implements
     }
 
     @Override
-    public void stopSubsystem()
+    public void stopSubsystem(String subsystem)
     {
         if (getSubsystemState("sny") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
         {

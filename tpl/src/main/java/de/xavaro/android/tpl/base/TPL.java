@@ -50,6 +50,12 @@ public class TPL extends OnInterfacesStubs implements
     }
 
     @Override
+    public void setInstance()
+    {
+        TPL.instance = this;
+    }
+
+    @Override
     public JSONObject getSubsystemInfo()
     {
         JSONObject info = new JSONObject();
@@ -70,7 +76,7 @@ public class TPL extends OnInterfacesStubs implements
     }
 
     @Override
-    public void startSubsystem()
+    public void startSubsystem(String subsystem)
     {
         TPLMessageHandler.startService();
         TPLMessageService.startService();
@@ -82,7 +88,7 @@ public class TPL extends OnInterfacesStubs implements
     }
 
     @Override
-    public void stopSubsystem()
+    public void stopSubsystem(String subsystem)
     {
         TPLDatagrammService.stopService();
         TPLMessageService.stopService();

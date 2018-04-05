@@ -6,6 +6,7 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.iam.eval.IAMEval;
 import de.xavaro.android.iam.simple.Simple;
 import de.xavaro.android.iam.simple.Json;
@@ -25,6 +26,12 @@ public class IAM implements
     public IAM(Application appcontext)
     {
         Simple.initialize(appcontext);
+    }
+
+    @Override
+    public void setInstance()
+    {
+        IAM.instance = this;
     }
 
     @Override
@@ -48,7 +55,7 @@ public class IAM implements
     }
 
     @Override
-    public void startSubsystem()
+    public void startSubsystem(String subsystem)
     {
         Log.d(LOGTAG, "Subsystem started...");
 
@@ -56,7 +63,7 @@ public class IAM implements
     }
 
     @Override
-    public void stopSubsystem()
+    public void stopSubsystem(String subsystem)
     {
         Log.d(LOGTAG, "Subsystem stopped...");
 

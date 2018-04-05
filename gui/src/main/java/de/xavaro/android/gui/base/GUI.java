@@ -45,6 +45,12 @@ public class GUI implements
     }
 
     @Override
+    public void setInstance()
+    {
+        GUI.instance = this;
+    }
+
+    @Override
     public JSONObject getSubsystemInfo()
     {
         JSONObject info = new JSONObject();
@@ -65,16 +71,13 @@ public class GUI implements
     }
 
     @Override
-    public void startSubsystem()
+    public void startSubsystem(String subsystem)
     {
-        //this.speechListener = new GUISpeechListener(application);
-        //this.speechListener.startListening();
-
         onSubsystemStarted("gui", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
     }
 
     @Override
-    public void stopSubsystem()
+    public void stopSubsystem(String subsystem)
     {
         onSubsystemStopped("gui", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
     }

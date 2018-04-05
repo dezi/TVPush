@@ -20,13 +20,15 @@ public interface SubSystemHandler
     String SUBSYSTEM_TYPE_SERVICE = "service";
     String SUBSYSTEM_TYPE_FEATURE = "feature";
 
+    void setInstance();
+
     JSONObject getSubsystemInfo();
     JSONObject getSubsystemSettings();
 
     int getSubsystemState(String subsystem);
 
-    void startSubsystem();
-    void stopSubsystem();
+    void startSubsystem(String subsystem);
+    void stopSubsystem(String subsystem);
 
     void onSubsystemStarted(String subsystem, int runstate);
     void onSubsystemStopped(String subsystem, int runstate);

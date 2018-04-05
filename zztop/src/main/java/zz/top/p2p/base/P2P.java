@@ -38,6 +38,12 @@ public class P2P implements
     }
 
     @Override
+    public void setInstance()
+    {
+        P2P.instance = this;
+    }
+
+    @Override
     public JSONObject getSubsystemInfo()
     {
         JSONObject info = new JSONObject();
@@ -58,7 +64,7 @@ public class P2P implements
     }
 
     @Override
-    public void startSubsystem()
+    public void startSubsystem(String subsystem)
     {
         if (cloud == null)
         {
@@ -71,7 +77,7 @@ public class P2P implements
     }
 
     @Override
-    public void stopSubsystem()
+    public void stopSubsystem(String subsystem)
     {
         if (cloud != null)
         {

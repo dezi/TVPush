@@ -34,6 +34,12 @@ public class ADB implements
     //region SubSystemHandler
 
     @Override
+    public void setInstance()
+    {
+        ADB.instance = this;
+    }
+
+    @Override
     public JSONObject getSubsystemInfo()
     {
         JSONObject info = new JSONObject();
@@ -86,7 +92,7 @@ public class ADB implements
     }
 
     @Override
-    public void startSubsystem()
+    public void startSubsystem(String subsystem)
     {
         if (getSubsystemState("adb") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
         {
@@ -95,7 +101,7 @@ public class ADB implements
     }
 
     @Override
-    public void stopSubsystem()
+    public void stopSubsystem(String subsystem)
     {
         if (getSubsystemState("adb") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
         {

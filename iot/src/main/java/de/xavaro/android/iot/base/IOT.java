@@ -64,6 +64,12 @@ public class IOT implements
     //region SubSystemHandler
 
     @Override
+    public void setInstance()
+    {
+        IOT.instance = this;
+    }
+
+    @Override
     public JSONObject getSubsystemInfo()
     {
         JSONObject info = new JSONObject();
@@ -101,7 +107,7 @@ public class IOT implements
     }
 
     @Override
-    public void startSubsystem()
+    public void startSubsystem(String subsystem)
     {
         if (getSubsystemState("iot") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
         {
@@ -142,7 +148,7 @@ public class IOT implements
     }
 
     @Override
-    public void stopSubsystem()
+    public void stopSubsystem(String subsystem)
     {
         if (getSubsystemState("iot") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
         {
