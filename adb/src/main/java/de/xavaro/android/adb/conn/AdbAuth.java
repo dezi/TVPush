@@ -108,15 +108,18 @@ public class AdbAuth
         {
             boolean ok;
 
-            byte[] pubKeyBytes;
-            byte[] privKeyBytes;
+            byte[] pubKeyBytes = null;
+            byte[] privKeyBytes = null;
 
             if (saveToPrefs)
             {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
-                pubKeyBytes = Base64.decode(prefs.getString(pubKeyName, null), Base64.DEFAULT);
-                privKeyBytes = Base64.decode(prefs.getString(privKeyName, null), Base64.DEFAULT);
+                String pubKeyString = prefs.getString(pubKeyName, null);
+                if (pubKeyString != null) pubKeyBytes = Base64.decode(pubKeyString, Base64.DEFAULT);
+
+                String privKeyString = prefs.getString(privKeyName, null);
+                if (privKeyString != null) privKeyBytes = Base64.decode(privKeyString, Base64.DEFAULT);
 
                 ok = (pubKeyBytes != null) && (privKeyBytes != null);
             }

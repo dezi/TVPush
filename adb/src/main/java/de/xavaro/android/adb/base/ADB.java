@@ -5,7 +5,6 @@ import android.app.Application;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import de.xavaro.android.adb.conn.AdbTest;
 import pub.android.interfaces.all.SubSystemHandler;
 import pub.android.interfaces.adb.GetADBToolHandler;
 import pub.android.interfaces.ext.GetDevicesRequest;
@@ -27,8 +26,12 @@ public class ADB implements
 
     public static ADB instance;
 
+    private final Application appcontext;
+
     public ADB(Application application)
     {
+        appcontext = application;
+
         Simple.initialize(application);
     }
 
@@ -131,13 +134,15 @@ public class ADB implements
             {
                 ADBToolHandler adbtool = new ADBToolHandler(ipaddr);
                 boolean configured = adbtool.isConfigured();
+                boolean authorized = adbtool.isAuthorized(appcontext);
 
                 Log.d(LOGTAG, "startSubsystem:"
                         + " subsystem=" + subsystem
                         + " ipaddr=" + ipaddr
-                        + " configured=" + configured);
+                        + " configured=" + configured
+                        + " authorized=" + authorized);
 
-                if (configured)
+                if (authorized)
                 {
                     setSubsystemState(subsystem, SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED);
                 }

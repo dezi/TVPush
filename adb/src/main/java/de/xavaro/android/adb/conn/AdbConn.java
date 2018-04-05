@@ -160,18 +160,6 @@ public class AdbConn implements Closeable
 
         closeStreams();
 
-        if (connThread != null)
-        {
-            try
-            {
-                connThread.interrupt();
-                connThread.join();
-            }
-            catch (Exception ignore)
-            {
-            }
-        }
-
         if (socket != null)
         {
             try
@@ -199,6 +187,18 @@ public class AdbConn implements Closeable
             try
             {
                 inputStream.close();
+            }
+            catch (Exception ignore)
+            {
+            }
+        }
+
+        if (connThread != null)
+        {
+            try
+            {
+                connThread.interrupt();
+                connThread.join();
             }
             catch (Exception ignore)
             {

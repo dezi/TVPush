@@ -1,5 +1,6 @@
 package de.xavaro.android.adb.conn;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.io.InputStream;
@@ -41,5 +42,16 @@ public class AdbTest
         }
 
         return false;
+    }
+
+    public static boolean getADBAuthorized(Context context, String ipaddr, int ipport)
+    {
+        AdbServiceCheck adbServiceCheck = new AdbServiceCheck(context, ipaddr, ipport);
+
+        boolean authorized = adbServiceCheck.startSync();
+        
+        Log.d(LOGTAG, "getADBAuthorized: authorized=" + authorized);
+
+        return authorized;
     }
 }

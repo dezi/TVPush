@@ -1,5 +1,7 @@
 package de.xavaro.android.adb.publics;
 
+import android.content.Context;
+
 import pub.android.interfaces.pub.PUBADBTool;
 
 import de.xavaro.android.adb.conn.AdbTest;
@@ -18,5 +20,10 @@ public class ADBToolHandler implements PUBADBTool
     public boolean isConfigured()
     {
         return AdbTest.getADBConfigured(ipaddr, ipport);
+    }
+
+    public boolean isAuthorized(Context context)
+    {
+        return AdbTest.getADBAuthorized(context, ipaddr, ipport);
     }
 }

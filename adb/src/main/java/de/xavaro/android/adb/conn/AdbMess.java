@@ -88,9 +88,8 @@ public class AdbMess
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception ignore)
             {
-                ex.printStackTrace();
             }
         }
 
