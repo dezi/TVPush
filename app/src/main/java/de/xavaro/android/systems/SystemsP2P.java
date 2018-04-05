@@ -20,7 +20,7 @@ public class SystemsP2P extends P2P
     }
 
     @Override
-    public int onGetSubsystemState(String subsystem)
+    public int getSubsystemState(String subsystem)
     {
         return GUI.instance.subSystems.getSubsystemState(subsystem);
     }

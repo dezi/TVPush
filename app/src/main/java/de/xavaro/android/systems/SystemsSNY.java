@@ -22,7 +22,7 @@ public class SystemsSNY extends SNY
     }
 
     @Override
-    public int onGetSubsystemState(String subsystem)
+    public int getSubsystemState(String subsystem)
     {
         return GUI.instance.subSystems.getSubsystemState(subsystem);
     }

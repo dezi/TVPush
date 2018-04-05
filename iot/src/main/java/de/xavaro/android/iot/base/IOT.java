@@ -89,7 +89,7 @@ public class IOT implements
     @Override
     public void startSubsystem()
     {
-        if (onGetSubsystemState("iot") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
+        if (getSubsystemState("iot") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
         {
             IOTHuman.list = new IOTList<>((new IOTHuman()).getClassKey());
             IOTDevice.list = new IOTList<>((new IOTDevice()).getClassKey());
@@ -118,7 +118,7 @@ public class IOT implements
 
             onSubsystemStarted("iot", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
 
-            if (onGetSubsystemState("iot.alive") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
+            if (getSubsystemState("iot.alive") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
             {
                 IOTAlive.startService();
 
@@ -130,7 +130,7 @@ public class IOT implements
     @Override
     public void stopSubsystem()
     {
-        if (onGetSubsystemState("iot") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
+        if (getSubsystemState("iot") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
         {
             IOTAlive.stopService();
 
@@ -150,7 +150,7 @@ public class IOT implements
             onSubsystemStopped("iot", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
         }
 
-        if (onGetSubsystemState("iot.alive") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
+        if (getSubsystemState("iot.alive") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
         {
             IOTAlive.stopService();
 
@@ -159,9 +159,9 @@ public class IOT implements
     }
 
     @Override
-    public int onGetSubsystemState(String subsystem)
+    public int getSubsystemState(String subsystem)
     {
-        Log.d(LOGTAG, "onGetSubsystemState: STUB! subsystem=" + subsystem);
+        Log.d(LOGTAG, "getSubsystemState: STUB! subsystem=" + subsystem);
         return SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED;
     }
 

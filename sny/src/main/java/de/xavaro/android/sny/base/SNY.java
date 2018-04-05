@@ -88,12 +88,12 @@ public class SNY extends OnInterfacesStubs implements
     @Override
     public void startSubsystem()
     {
-        if (onGetSubsystemState("sny") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
+        if (getSubsystemState("sny") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
         {
             SNYDiscover.startService();
             onSubsystemStarted("sny", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
 
-            if (onGetSubsystemState("sny.tvremote") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
+            if (getSubsystemState("sny.tvremote") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
             {
                 SNYRemote.startService();
                 onSubsystemStarted("sny.tvremote", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
@@ -104,7 +104,7 @@ public class SNY extends OnInterfacesStubs implements
     @Override
     public void stopSubsystem()
     {
-        if (onGetSubsystemState("sny") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
+        if (getSubsystemState("sny") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
         {
             SNYDiscover.stopService();
             onSubsystemStopped("sny", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
@@ -115,7 +115,7 @@ public class SNY extends OnInterfacesStubs implements
             return;
         }
 
-        if (onGetSubsystemState("sny.tvremote") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
+        if (getSubsystemState("sny.tvremote") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
         {
             SNYRemote.stopService();
             onSubsystemStopped("sny.tvremote", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);

@@ -37,7 +37,7 @@ public class SystemsGUI extends GUI
     }
 
     @Override
-    public int onGetSubsystemState(String subsystem)
+    public int getSubsystemState(String subsystem)
     {
         return GUI.instance.subSystems.getSubsystemState(subsystem);
     }

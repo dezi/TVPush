@@ -21,11 +21,10 @@ public interface SubSystemHandler
     String SUBSYSTEM_TYPE_FEATURE = "feature";
 
     JSONObject getSubsystemInfo();
+    int getSubsystemState(String subsystem);
 
     void startSubsystem();
     void stopSubsystem();
-
-    int onGetSubsystemState(String subsystem);
 
     void onSubsystemStarted(String subsystem, int runstate);
     void onSubsystemStopped(String subsystem, int runstate);

@@ -19,7 +19,7 @@ public class SystemsIOT extends IOT
     }
 
     @Override
-    public int onGetSubsystemState(String subsystem)
+    public int getSubsystemState(String subsystem)
     {
         return GUI.instance.subSystems.getSubsystemState(subsystem);
     }

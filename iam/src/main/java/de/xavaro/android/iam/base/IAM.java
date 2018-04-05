@@ -58,9 +58,9 @@ public class IAM implements
     }
 
     @Override
-    public int onGetSubsystemState(String subsystem)
+    public int getSubsystemState(String subsystem)
     {
-        Log.d(LOGTAG, "onGetSubsystemState: STUB! subsystem=" + subsystem);
+        Log.d(LOGTAG, "getSubsystemState: STUB! subsystem=" + subsystem);
         return SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED;
     }
 

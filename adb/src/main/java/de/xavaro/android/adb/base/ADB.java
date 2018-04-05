@@ -75,7 +75,7 @@ public class ADB implements
     @Override
     public void startSubsystem()
     {
-        if (onGetSubsystemState("adb") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
+        if (getSubsystemState("adb") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
         {
             onSubsystemStarted("adb", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
         }
@@ -84,16 +84,16 @@ public class ADB implements
     @Override
     public void stopSubsystem()
     {
-        if (onGetSubsystemState("adb") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
+        if (getSubsystemState("adb") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
         {
             onSubsystemStopped("adb", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
         }
     }
 
     @Override
-    public int onGetSubsystemState(String subsystem)
+    public int getSubsystemState(String subsystem)
     {
-        Log.d(LOGTAG, "onGetSubsystemState: STUB!");
+        Log.d(LOGTAG, "getSubsystemState: STUB!");
 
         return SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED;
     }

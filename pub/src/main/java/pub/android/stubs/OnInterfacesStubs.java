@@ -13,9 +13,9 @@ public class OnInterfacesStubs
         return this.getClass().getSimpleName();
     }
 
-    public int onGetSubsystemState(String subsystem)
+    public int getSubsystemState(String subsystem)
     {
-        Log.d(LOGTAG(), "onGetSubsystemState: STUB!");
+        Log.d(LOGTAG(), "getSubsystemState: STUB!");
         Log.d(LOGTAG(), Log.getStackTraceString(new Exception()));
 
         return SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED;

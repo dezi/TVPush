@@ -53,7 +53,7 @@ public class SPR implements
     @Override
     public void startSubsystem()
     {
-        if (onGetSubsystemState("spr") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
+        if (getSubsystemState("spr") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
         {
             SPRListener.startService(appcontext);
 
@@ -64,7 +64,7 @@ public class SPR implements
     @Override
     public void stopSubsystem()
     {
-        if (onGetSubsystemState("spr") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
+        if (getSubsystemState("spr") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
         {
             SPRListener.stopService();
 
@@ -73,9 +73,9 @@ public class SPR implements
     }
 
     @Override
-    public int onGetSubsystemState(String subsystem)
+    public int getSubsystemState(String subsystem)
     {
-        Log.d(LOGTAG, "onGetSubsystemState: STUB!");
+        Log.d(LOGTAG, "getSubsystemState: STUB!");
 
         return SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED;
     }
