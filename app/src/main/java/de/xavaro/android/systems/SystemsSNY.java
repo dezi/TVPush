@@ -2,6 +2,7 @@ package de.xavaro.android.systems;
 
 import android.app.Application;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import de.xavaro.android.gui.simple.Simple;
@@ -19,10 +20,18 @@ public class SystemsSNY extends SNY
         super(application);
     }
 
+    //region SubSystemHandler
+
     @Override
     public int getSubsystemState(String subsystem)
     {
         return GUI.instance.subSystems.getSubsystemState(subsystem);
+    }
+
+    @Override
+    public void setSubsystemState(String subsystem, int state)
+    {
+        GUI.instance.subSystems.setSubsystemState(subsystem, state);
     }
 
     @Override
@@ -36,6 +45,8 @@ public class SystemsSNY extends SNY
     {
         GUI.instance.subSystems.setSubsystemRunstate(subsystem, state);
     }
+
+    //endregion SubSystemHandler
 
     @Override
     public void onDeviceFound(JSONObject device)
@@ -92,4 +103,38 @@ public class SystemsSNY extends SNY
     {
         GUI.instance.desktopActivity.sendToBack();
     }
+
+    //region GetDevicesRequest
+
+    @Override
+    public JSONObject onGetDeviceRequest(String uuid)
+    {
+        return IOT.instance.getDevice(uuid);
+    }
+
+    @Override
+    public JSONObject onGetStatusRequest(String uuid)
+    {
+        return IOT.instance.getStatus(uuid);
+    }
+
+    @Override
+    public JSONObject onGetCredentialRequest(String uuid)
+    {
+        return IOT.instance.getCredential(uuid);
+    }
+
+    @Override
+    public JSONObject onGetMetaRequest(String uuid)
+    {
+        return IOT.instance.getMetadata(uuid);
+    }
+
+    @Override
+    public JSONArray onGetDevicesCapabilityRequest(String capability)
+    {
+        return IOT.instance.getDevicesWithCapability(capability);
+    }
+
+    //endregion GetDevicesRequest
 }

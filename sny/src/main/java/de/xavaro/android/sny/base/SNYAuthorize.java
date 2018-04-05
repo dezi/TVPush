@@ -72,13 +72,15 @@ public class SNYAuthorize
         return ok;
     }
 
-    public static void requestAuth(String ipaddr, String snytvuuid, String devname, String username)
+    public static boolean requestAuth(String ipaddr, String snytvuuid, String devname, String username)
     {
         JSONObject credentials = authHandler(ipaddr, snytvuuid, devname, username, null);
 
         if (credentials != null)
         {
             SNY.instance.onDeviceCredentials(credentials);
+
+            return true;
         }
         else
         {
@@ -89,6 +91,8 @@ public class SNYAuthorize
 
             SNY.instance.onPincodeRequest(snytvuuid);
         }
+
+        return false;
     }
 
     private static boolean registerPincode(String ipaddr, String snytvuuid, String devname, String username, String pincode)

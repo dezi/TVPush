@@ -19,6 +19,8 @@ public class SystemsADB extends ADB
         super(application);
     }
 
+    //region SubSystemHandler
+
     @Override
     public int getSubsystemState(String subsystem)
     {
@@ -42,6 +44,10 @@ public class SystemsADB extends ADB
     {
         GUI.instance.subSystems.setSubsystemRunstate(subsystem, state);
     }
+
+    //endregion SubSystemHandler
+
+    //region GetDevicesRequest
 
     @Override
     public JSONObject onGetDeviceRequest(String uuid)
@@ -72,4 +78,6 @@ public class SystemsADB extends ADB
     {
         return IOT.instance.getDevicesWithCapability(capability);
     }
+
+    //endregion GetDevicesRequest
 }

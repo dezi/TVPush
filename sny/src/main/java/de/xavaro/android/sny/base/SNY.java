@@ -5,6 +5,7 @@ import android.app.Application;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import pub.android.interfaces.ext.GetDevicesRequest;
 import pub.android.stubs.OnInterfacesStubs;
 
 import pub.android.interfaces.all.SubSystemHandler;
@@ -25,7 +26,8 @@ public class SNY extends OnInterfacesStubs implements
         GetDeviceCredentials,
         DoSomethingHandler,
         OnPincodeRequest,
-        OnBackgroundRequest
+        OnBackgroundRequest,
+        GetDevicesRequest
 {
     private static final String LOGTAG = SNY.class.getSimpleName();
 
@@ -64,6 +66,34 @@ public class SNY extends OnInterfacesStubs implements
     public JSONObject getSubsystemSettings()
     {
         JSONObject info = getSubsystemInfo();
+
+        JSONArray adbDevices = onGetDevicesCapabilityRequest("tvremote");
+
+        if ((adbDevices != null) && (adbDevices.length() > 0))
+        {
+            JSONArray settings = new JSONArray();
+            Json.put(info, "settings", settings);
+
+            for (int inx = 0; inx < adbDevices.length(); inx++)
+            {
+                String uuid = Json.getString(adbDevices, inx);
+
+                JSONObject adbDevice = onGetDeviceRequest(uuid);
+                if (adbDevice == null) continue;
+
+                String name = Json.getString(adbDevice, "name");
+
+                JSONObject setting = new JSONObject();
+
+                Json.put(setting, "uuid",  uuid);
+                Json.put(setting, "name", name);
+                Json.put(setting, "type", SubSystemHandler.SUBSYSTEM_TYPE_FEATURE);
+                Json.put(setting, "mode", SubSystemHandler.SUBSYSTEM_MODE_VOLUNTARY);
+                Json.put(setting, "info", Simple.getTrans(R.string.subsystem_sny_auth));
+
+                Json.put(settings, setting);
+            }
+        }
 
         /*
         JSONArray settings = new JSONArray();
@@ -106,24 +136,95 @@ public class SNY extends OnInterfacesStubs implements
     @Override
     public void startSubsystem(String subsystem)
     {
-        if (getSubsystemState("sny") == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
-        {
-            SNYRemote.startService();
-            SNYDiscover.startService();
+        String[] parts = subsystem.split("\\.");
+        String drv = parts[0];
 
-            onSubsystemStarted("sny", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
+        if (parts.length == 1)
+        {
+            //
+            // Activate service as such.
+            //
+
+            if (getSubsystemState(drv) == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
+            {
+                SNYRemote.startService();
+                SNYDiscover.startService();
+
+                onSubsystemStarted(drv, SubSystemHandler.SUBSYSTEM_RUN_STARTED);
+            }
         }
+        else
+        {
+            //
+            // Check for subservices. Means target devices. Starting
+            // means check, if they are configured and ready to use.
+            //
+
+            String uuid = parts[1];
+
+            JSONObject device = onGetDeviceRequest(uuid);
+            String name = Json.getString(device, "name");
+
+            JSONObject status = onGetStatusRequest(uuid);
+            String ipaddr = Json.getString(status, "ipaddr");
+
+            Log.d(LOGTAG, "startSubsystem:"
+                    + " uuid=" + uuid
+                    + " name=" + name
+                    + " ipaddr=" + ipaddr);
+
+            if ((ipaddr != null) && (name != null))
+            {
+                String username = Simple.getDeviceUserName();
+
+                boolean authorized = SNYAuthorize.requestAuth(ipaddr, uuid, name, username);
+
+                Log.d(LOGTAG, "startSubsystem:"
+                        + " subsystem=" + subsystem
+                        + " ipaddr=" + ipaddr
+                        + " authorized=" + authorized);
+
+                if (authorized)
+                {
+                    setSubsystemState(subsystem, SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED);
+                }
+                else
+                {
+                    setSubsystemState(subsystem, SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED);
+                }
+            }
+        }
+
     }
 
     @Override
     public void stopSubsystem(String subsystem)
     {
-        if (getSubsystemState("sny") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
-        {
-            SNYRemote.stopService();
-            SNYDiscover.stopService();
+        String[] parts = subsystem.split("\\.");
+        String drv = parts[0];
 
-            onSubsystemStopped("sny", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
+        if (parts.length == 1)
+        {
+            //
+            // Deactivate service as such.
+            //
+
+            if (getSubsystemState(drv) == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
+            {
+                SNYRemote.stopService();
+                SNYDiscover.stopService();
+
+                onSubsystemStopped(drv, SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
+            }
+        }
+        else
+        {
+            //
+            // Check for subservices. Means target devices.
+            // Stopping simply set state to deactivated.
+            //
+
+            setSubsystemState(subsystem, SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED);
         }
     }
 
@@ -210,4 +311,48 @@ public class SNY extends OnInterfacesStubs implements
 
         return false;
     }
+
+    //region GetDevicesRequest
+
+    @Override
+    public JSONObject onGetDeviceRequest(String uuid)
+    {
+        Log.d(LOGTAG, "onGetDeviceRequest: STUB!");
+
+        return null;
+    }
+
+    @Override
+    public JSONObject onGetStatusRequest(String uuid)
+    {
+        Log.d(LOGTAG, "onGetStatusRequest: STUB!");
+
+        return null;
+    }
+
+    @Override
+    public JSONObject onGetCredentialRequest(String uuid)
+    {
+        Log.d(LOGTAG, "onGetCredentialRequest: STUB!");
+
+        return null;
+    }
+
+    @Override
+    public JSONObject onGetMetaRequest(String uuid)
+    {
+        Log.d(LOGTAG, "onGetMetaRequest: STUB!");
+
+        return null;
+    }
+
+    @Override
+    public JSONArray onGetDevicesCapabilityRequest(String capability)
+    {
+        Log.d(LOGTAG, "onGetDevicesCapabilityRequest: STUB!");
+
+        return null;
+    }
+
+    //endregion GetDevicesRequest
 }

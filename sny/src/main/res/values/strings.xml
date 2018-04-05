@@ -8,13 +8,13 @@
         und das Fernsteuern des Geräts über das lokale Wifi und über Internet.
     </string>
 
-    <string name="subsystem_service_tvremote_name">Fernsteuerung</string>
-    <string name="subsystem_service_tvremote_info">
-        Mit diesem Service können Sie den Fernseher per App bedienen.
+    <string name="subsystem_sny_auth">
+        Sie können hier den Zugriff auf das Fernbedienung authentifizieren.
         \n\n
-        Wenn Sie diesen diesen Service zum Ersten mal aktivieren, erscheint
-        auf dem Fernseher ein Pin-Code. Bitte geben Sie diesen Pin-Code
-        in den Aktivierungs-Dialog ein.
+        Wenn das Gerät erreichbar ist und noch nicht authentifiziert
+        ist, poppt auf dem Gerät ein Fenster hoch, in dem ein Pincode
+        angezeigt wird. Diesen Pincode müssen sie entweder einsprechen
+        oder eingeben.
     </string>
 
     <string name="subsystem_service_channeledit_name">Programm-Editor</string>
