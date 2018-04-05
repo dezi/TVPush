@@ -41,15 +41,14 @@ public class SystemsADB extends ADB
     }
 
     @Override
-    public JSONObject onDeviceRequest(String uuid)
+    public JSONObject onGetDeviceRequest(String uuid)
     {
-        IOTDevice device = IOTDevice.list.getEntry(uuid);
-        return (device != null) ? device.toJson() : null;
+        return IOT.instance.getDevice(uuid);
     }
 
     @Override
-    public JSONArray onDeviceCapabilityRequest(String capability)
+    public JSONArray onGetDevicesCapabilityRequest(String capability)
     {
-        return IOT.instance.getDeviceWithCapability(capability);
+        return IOT.instance.getDevicesWithCapability(capability);
     }
 }

@@ -57,6 +57,8 @@ public class IOT implements
         Simple.initialize(appcontext);
     }
 
+    //region SubSystemHandler
+
     @Override
     public JSONObject getSubsystemInfo()
     {
@@ -177,23 +179,19 @@ public class IOT implements
         Log.d(LOGTAG, "onSubsystemStopped: STUB! state=" + state);
     }
 
+    //endregion SubSystemHandler
+
+    //region GetDevices
+
     @Override
-    public boolean onDeviceStatusRequest(JSONObject iotDevice)
+    public JSONObject getDevice(String uuid)
     {
-        Log.d(LOGTAG, "onDeviceStatusRequest: STUB!");
-
-        return false;
-    }
-
-    public boolean doSomething(JSONObject action, JSONObject device, JSONObject status, JSONObject credentials)
-    {
-        Log.d(LOGTAG, "doSomething: action=" + Json.toPretty(action));
-
-        return false;
+        IOTDevice device = IOTDevice.list.getEntry(uuid);
+        return (device != null) ? device.toJson() : null;
     }
 
     @Override
-    public JSONArray getDeviceWithCapability(String capability)
+    public JSONArray getDevicesWithCapability(String capability)
     {
         JSONArray result = new JSONArray();
 
@@ -214,5 +212,15 @@ public class IOT implements
         }
 
         return result;
+    }
+
+    //endregion GetDevices
+
+    @Override
+    public boolean onDeviceStatusRequest(JSONObject iotDevice)
+    {
+        Log.d(LOGTAG, "onDeviceStatusRequest: STUB!");
+
+        return false;
     }
 }

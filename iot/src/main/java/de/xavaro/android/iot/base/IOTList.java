@@ -1,5 +1,7 @@
 package de.xavaro.android.iot.base;
 
+import android.support.annotation.Nullable;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -60,6 +62,7 @@ public class IOTList<T>
         return result;
     }
 
+    @Nullable
     public T getEntry(String uuid)
     {
         synchronized (list)

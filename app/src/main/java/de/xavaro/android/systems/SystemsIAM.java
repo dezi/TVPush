@@ -37,7 +37,7 @@ public class SystemsIAM extends IAM
 
         JSONObject channelsForDevices = new JSONObject();
 
-        JSONArray tvremotes = SystemsIOT.instance.getDeviceWithCapability("tvremote");
+        JSONArray tvremotes = SystemsIOT.instance.getDevicesWithCapability("tvremote");
 
         for (int inx = 0; inx < tvremotes.length(); inx++)
         {

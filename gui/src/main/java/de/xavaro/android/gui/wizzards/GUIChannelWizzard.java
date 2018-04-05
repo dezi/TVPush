@@ -185,7 +185,7 @@ public class GUIChannelWizzard extends GUIPluginTitle
 
     private JSONArray getChannels()
     {
-        JSONArray tvremotes = IOT.instance.getDeviceWithCapability("tvremote");
+        JSONArray tvremotes = IOT.instance.getDevicesWithCapability("tvremote");
 
         for (int inx = 0; inx < tvremotes.length(); inx++)
         {
