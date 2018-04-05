@@ -1,5 +1,7 @@
 package de.xavaro.android.iot.things;
 
+import android.os.Build;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -95,9 +97,80 @@ public class IOTDevice extends IOTThing
 
         local.driver = "iot";
 
-        local.capabilities = Json.jsonArrayFromSeparatedString(Simple.getDeviceCapabilities(), "\\|");
+        local.capabilities = Json.jsonArrayFromSeparatedString(getDeviceCapabilities(), "\\|");
 
         return local;
+    }
+
+    private static String getDeviceCapabilities()
+    {
+        String caps = "";
+
+        if (Simple.isTV())
+        {
+            caps += "tv|fixed|hd";
+
+            if (Simple.getDeviceModelName().contains("BRAVIA 4K"))
+            {
+                caps += "|1080p|uhd|4k|mic";
+            }
+            else
+            {
+                if (Simple.getDeviceWidth() >= 1080)
+                {
+                    caps += "|1080p";
+                }
+                else
+                {
+                    caps += "|720p";
+                }
+            }
+        }
+        else
+        {
+            if (Simple.isTablet())
+            {
+                caps += "tablet|mic";
+            }
+            else
+            {
+                if (Simple.isPhone())
+                {
+                    caps += "phone|mic";
+                }
+                else
+                {
+                    caps += "unknown";
+                }
+            }
+        }
+
+        caps += "|speaker|tcp|wifi";
+
+        if (Simple.isGps()) caps += "|gps";
+        if (Simple.isTouch()) caps += "|touch";
+        if (Simple.isIscamera()) caps += "|camera";
+        if (Simple.isWideScreen()) caps += "|widescreen";
+
+        if (Simple.isSpeechIn() && caps.contains("|mic|")) caps += "|spechin";
+        if (caps.contains("|speaker|")) caps += "|spechout";
+
+        if ((Simple.getFCMToken() != null) && ! Simple.getFCMToken().isEmpty())
+        {
+            caps += "|fcm";
+        }
+
+        if (Simple.isDeveloper())
+        {
+            caps += "|devel";
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            {
+                caps += "|adb";
+            }
+        }
+
+        return caps;
     }
 
     @Override

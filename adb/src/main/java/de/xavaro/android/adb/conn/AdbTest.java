@@ -1,108 +1,47 @@
 package de.xavaro.android.adb.conn;
 
-import android.content.Context;
 import android.util.Log;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 
 public class AdbTest
 {
     private static final String LOGTAG = AdbTest.class.getSimpleName();
 
-    public static void testCheck(final Context context, final String ipaddr, final int ipport)
+    public static boolean getADBConfigured(String ipaddr, int ipport)
     {
-        AdbServiceCheck adbServiceCheck = new AdbServiceCheck(context, ipaddr, ipport);
-
-        Log.d(LOGTAG, "onCreate: adbServiceCheck:" + adbServiceCheck.startSync());
-    }
-
-    public static void testShell(final Context context, final String ipaddr, final int ipport)
-    {
-        Thread test = new Thread(new Runnable()
+        try
         {
-            @Override
-            public void run()
-            {
-                Log.d(LOGTAG, "testShell: ip=" + ipaddr + " port=" + ipport);
+            Log.d(LOGTAG, "getADBConfigured: ipaddr=" + ipaddr + " ipport=" + ipport);
 
-                AdbConn adb = new AdbConn(context, ipaddr, ipport);
+            Socket socket = new Socket(ipaddr, ipport);
+            socket.setTcpNoDelay(true);
 
-                Log.d(LOGTAG, "testShell: connect.");
+            Log.d(LOGTAG, "getADBConfigured: open socket done.");
 
-                if (adb.connect())
-                {
-                    Log.d(LOGTAG, "testShell: connected.");
+            InputStream inputStream = socket.getInputStream();
+            OutputStream outputStream = socket.getOutputStream();
 
-                    AdbStream stream = adb.openService("shell:ls -al /storage/E06D-EF93");
+            Log.d(LOGTAG, "getADBConfigured: get streams done.");
 
-                    Log.d(LOGTAG, "testShell: open service.");
+            inputStream.close();
+            outputStream.close();
 
-                    if (stream != null)
-                    {
-                        Log.d(LOGTAG, "testShell: service opened.");
+            socket.close();
 
-                        while (!stream.isClosed())
-                        {
-                            byte[] data = stream.read();
+            Log.d(LOGTAG, "getADBConfigured: is configured.");
 
-                            Log.d(LOGTAG, "testShell: read=\n"
-                                    + ((data == null) ? null : new String(data)));
-                        }
-
-                        Log.d(LOGTAG, "testShell: service closed.");
-                    }
-
-                    adb.close();
-
-                    Log.d(LOGTAG, "testShell: connection closed.");
-                }
-                else
-                {
-                    Log.e(LOGTAG, "testShell: connection failed.");
-                }
-            }
-        });
-
-        test.start();
-    }
-
-    public static void testPullPush(final Context context, final String ipaddr, final int ipport)
-    {
-        Thread test = new Thread(new Runnable()
+            return true;
+        }
+        catch (Exception ex)
         {
-            @Override
-            public void run()
-            {
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Log.d(LOGTAG, "getADBConfigured: not configured.");
 
-                AdbServicePull adbServicePull = new AdbServicePull(
-                        context, ipaddr, ipport,
-                        "/storage/E06D-EF93/sdb.xml");
+            ex.printStackTrace();
+        }
 
-                adbServicePull.setOutputStream(outputStream);
-                boolean success = adbServicePull.startSync();
-
-                Log.d(LOGTAG, "onCreate: AdbServicePull: startsync: success=" + success);
-
-                if (success)
-                {
-                    Log.d(LOGTAG, "onCreate: AdbServicePull: startsync: size=" + adbServicePull.outputStream.size());
-
-                    ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-
-                    AdbServicePush adbServicePush = new AdbServicePush(
-                            context, ipaddr, ipport,
-                            "/storage/E06D-EF93/sdb.push.xml");
-
-                    adbServicePush.setInputStream(inputStream);
-
-                    success = adbServicePush.startSync();
-                    Log.d(LOGTAG, "onCreate: AdbServicePush: startsync: success=" + success);
-                }
-            }
-        });
-
-        test.start();
+        return false;
     }
 }

@@ -26,6 +26,8 @@ public class ADB implements
         Simple.initialize(application);
     }
 
+    //region SubSystemHandler
+
     @Override
     public JSONObject getSubsystemInfo()
     {
@@ -111,6 +113,10 @@ public class ADB implements
         Log.d(LOGTAG, "onSubsystemStopped: STUB!");
     }
 
+    //endregion SubSystemHandler
+
+    //region GetDevicesRequest
+
     @Override
     public JSONObject onGetDeviceRequest(String uuid)
     {
@@ -126,4 +132,6 @@ public class ADB implements
 
         return null;
     }
+
+    //endregion GetDevicesRequest
 }
