@@ -8,6 +8,7 @@ import android.view.View;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import de.xavaro.android.gui.base.GUIIcons;
 import de.xavaro.android.gui.simple.Log;
 import pub.android.interfaces.all.SubSystemHandler;
 
@@ -51,18 +52,20 @@ public class GUISettingsWizzard extends GUIPluginTitleList
         if (infos == null) return;
 
         String name = Json.getString(infos, "name");
-        String icon = Json.getString(infos, "icon");
-        String need = Json.getString(infos, "need");
-        if (name == null) return;
+        String type = Json.getString(infos, "type");
+        if ((name == null) || (type == null)) return;
 
         int mode = Json.getInt(infos, "mode");
+        String icon = Json.getString(infos, "icon");
+        String need = Json.getString(infos, "need");
+
         int state = GUISetup.getSubsystemState(subsystem);
         int runstate = GUISetup.getSubsystemRunState(subsystem);
         boolean enabled = (state == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED);
 
         String info = GUISetup.getTextForSubsystemEnabled(name, state, mode);
 
-        if (enabled)
+        if (enabled && type.equals(SubSystemHandler.SUBSYSTEM_TYPE_SERVICE))
         {
             info += " - " + Simple.getTrans(GUISetup.getTextForSubsystemRunstateResid(runstate));
         }
@@ -102,13 +105,15 @@ public class GUISettingsWizzard extends GUIPluginTitleList
             if (setting == null) continue;
 
             String tag = Json.getString(setting, "tag");
+            String uuid = Json.getString(setting, "uuid");
             String type = Json.getString(setting, "type");
             String name = Json.getString(setting, "name");
+
+            if (((tag == null) && (uuid == null)) || (type == null) || (name == null)) continue;
+
             String icon = Json.getString(setting, "icon");
 
-            if ((tag == null) || (type == null) || (name == null)) continue;
-
-            String subtag = subsystem + "." + tag;
+            String subtag = subsystem + "." + ((tag != null) ? tag : uuid);
 
             int mode = Json.getInt(setting, "mode");
             int state = GUISetup.getSubsystemState(subtag);
@@ -134,7 +139,18 @@ public class GUISettingsWizzard extends GUIPluginTitleList
             entry.setOnClickListener(onSettingClickListener);
             entry.setTag(setting);
 
-            entry.iconView.setImageResource(icon);
+            if (icon != null)
+            {
+                entry.iconView.setImageResource(icon);
+            }
+            else
+            {
+                if (uuid != null)
+                {
+                    entry.iconView.setImageResource(GUIIcons.getImageResid(uuid));
+                }
+            }
+
             entry.headerViev.setText(name);
             entry.infoView.setText(info);
 

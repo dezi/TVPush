@@ -64,12 +64,11 @@ public class ADB implements
 
                 JSONObject setting = new JSONObject();
 
-                Json.put(setting, "tag",  uuid);
+                Json.put(setting, "uuid",  uuid);
                 Json.put(setting, "name", name);
                 Json.put(setting, "type", SubSystemHandler.SUBSYSTEM_TYPE_FEATURE);
                 Json.put(setting, "mode", SubSystemHandler.SUBSYSTEM_MODE_VOLUNTARY);
                 Json.put(setting, "info", "nix");
-                Json.put(setting, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_adb_280));
 
                 Json.put(settings, setting);
             }

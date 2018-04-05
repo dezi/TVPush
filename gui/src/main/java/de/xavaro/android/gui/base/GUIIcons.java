@@ -1,14 +1,26 @@
 package de.xavaro.android.gui.base;
 
+import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDomain;
 import de.xavaro.android.iot.things.IOTHuman;
 import de.xavaro.android.iot.things.IOTLocation;
 import de.xavaro.android.gui.R;
+import de.xavaro.android.iot.things.IOTThing;
 
 public class GUIIcons
 {
+    public static int getImageResid(String uuid)
+    {
+        return getImageResid(uuid, false);
+    }
+
+    public static int getImageResid(String uuid, boolean bunt)
+    {
+        return getImageResid(IOTThing.getEntry(uuid), bunt);
+    }
+
     public static int getImageResid(IOTObject iotobject)
     {
         return getImageResid(iotobject, false);

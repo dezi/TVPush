@@ -55,13 +55,20 @@ public class GUISetupWizzard extends GUIPluginTitleList
 
             String subsystem = Json.getString(infos, "drv");
             String name = Json.getString(infos, "name");
+            String type = Json.getString(infos, "type");
+            if (type == null) type = SubSystemHandler.SUBSYSTEM_TYPE_SERVICE;
+
+            if ((subsystem == null) || (name == null)) continue;
+
             String icon = Json.getString(infos, "icon");
 
             int mode = Json.getInt(infos, "mode");
+
             int state = GUISetup.getSubsystemState(subsystem);
             int runstate = GUISetup.getSubsystemRunState(subsystem);
+            boolean enabled = (state == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED);
 
-            if (todo && (state != SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)) continue;
+            if (todo && enabled) continue;
 
             GUIListEntry entry = listView.findGUIListEntryOrCreate(subsystem);
             entry.setOnClickListener(onClickListener);
@@ -72,7 +79,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
 
             String info = GUISetup.getTextForSubsystemEnabled(name, state, mode);
 
-            if (state == SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED)
+            if (enabled && type.equals(SubSystemHandler.SUBSYSTEM_TYPE_SERVICE))
             {
                 info += " - " + Simple.getTrans(GUISetup.getTextForSubsystemRunstateResid(runstate));
             }
