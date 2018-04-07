@@ -6,9 +6,7 @@ public class Log
 
     public static String[] allow = new String[]
             {
-                    "SystemsIAM*",
-                    "SystemsADB*",
-                    "SystemsIOT*-"
+                    "Sys*"
             };
 
     public static void d(String logtag, String message)

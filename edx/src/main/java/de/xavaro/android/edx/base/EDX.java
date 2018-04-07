@@ -37,7 +37,7 @@ public class EDX extends OnInterfacesStubs implements
     {
         JSONObject info = new JSONObject();
 
-        Json.put(info, "drv", "brl");
+        Json.put(info, "drv", "edx");
         Json.put(info, "mode", SubSystemHandler.SUBSYSTEM_MODE_VOLUNTARY);
         Json.put(info, "name", Simple.getTrans(R.string.subsystem_edx_name));
         Json.put(info, "info", Simple.getTrans(R.string.subsystem_edx_info));
