@@ -16,7 +16,7 @@ import java.util.Map;
 
 import de.xavaro.android.gui.plugin.GUIPluginTitle;
 import de.xavaro.android.gui.simple.Simple;
-import de.xavaro.android.gui.views.GUIDialogPincode;
+import de.xavaro.android.gui.views.GUIDialogViewPincode;
 import de.xavaro.android.gui.wizzards.GUILocationsWizzard;
 import de.xavaro.android.gui.wizzards.GUICamerasWizzard;
 import de.xavaro.android.gui.wizzards.GUIChannelWizzard;
@@ -81,8 +81,8 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
             displayWizzard(GUISetupWizzard.class.getSimpleName());
         }
 
-        GUIDialogPincode pincode = new GUIDialogPincode(this);
-        topframe.addView(pincode);
+        //GUIDialogViewPincode pincode = new GUIDialogViewPincode(this);
+        //topframe.addView(pincode);
 
         checkWindowSize();
    }

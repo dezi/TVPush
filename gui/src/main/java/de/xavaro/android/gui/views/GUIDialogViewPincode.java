@@ -8,23 +8,22 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.R;
 
-public class GUIDialogPincode extends GUIDialogView
+public class GUIDialogViewPincode extends GUIDialogView
 {
-    private static final String LOGTAG = GUIDialogPincode.class.getSimpleName();
+    private static final String LOGTAG = GUIDialogViewPincode.class.getSimpleName();
 
     private GUIEditText pin1;
     private GUIEditText pin2;
     private GUIEditText pin3;
     private GUIEditText pin4;
 
-    public GUIDialogPincode(Context context)
+    public GUIDialogViewPincode(Context context)
     {
         super(context);
 
@@ -108,10 +107,16 @@ public class GUIDialogPincode extends GUIDialogView
 
                 if (str.length() == 1)
                 {
-                    if (pin == pin1) pin2.requestFocus();
-                    if (pin == pin2) pin3.requestFocus();
-                    if (pin == pin3) pin4.requestFocus();
-                    if (pin == pin4) Simple.hideSoftKeyBoard(pin4);
+                    if (pin == pin1) { pin2.selectAll(); pin2.requestFocus(); }
+                    if (pin == pin2) { pin3.selectAll(); pin3.requestFocus(); }
+                    if (pin == pin3) { pin4.selectAll(); pin4.requestFocus(); }
+
+                    if (pin == pin4)
+                    {
+                        pin1.selectAll();
+                        pin4.clearFocus();
+                        Simple.hideSoftKeyBoard(pin4);
+                    }
                 }
             }
         });
