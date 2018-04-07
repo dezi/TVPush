@@ -6,6 +6,8 @@
       <module fileurl="file://$PROJECT_DIR$/adb/adb.iml" filepath="$PROJECT_DIR$/adb/adb.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/bcn/bcn.iml" filepath="$PROJECT_DIR$/bcn/bcn.iml" />
+      <module fileurl="file://$PROJECT_DIR$/brl/brl.iml" filepath="$PROJECT_DIR$/brl/brl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/edx/edx.iml" filepath="$PROJECT_DIR$/edx/edx.iml" />
       <module fileurl="file://$PROJECT_DIR$/gui/gui.iml" filepath="$PROJECT_DIR$/gui/gui.iml" />
       <module fileurl="file://$PROJECT_DIR$/iam/iam.iml" filepath="$PROJECT_DIR$/iam/iam.iml" />
       <module fileurl="file://$PROJECT_DIR$/iot/iot.iml" filepath="$PROJECT_DIR$/iot/iot.iml" />

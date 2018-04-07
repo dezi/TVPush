@@ -1,0 +1,12 @@
+<resources>
+
+    <string name="subsystem_edx_name">EDIMAX Smart Home</string>
+
+    <string name="subsystem_edx_info">
+        Dieses System enthält eine Schnittstelle zu intelligenten
+        Steckdosen des Herstellers EDIMAX.
+        \n\n
+        Wenn dieses System aktiviert ist, können Sie diese Geräte per App bedienen.
+    </string>
+
+</resources>

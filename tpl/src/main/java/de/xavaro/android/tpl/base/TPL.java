@@ -28,7 +28,6 @@ import de.xavaro.android.tpl.simple.Simple;
 import de.xavaro.android.tpl.simple.Json;
 import de.xavaro.android.tpl.R;
 
-
 public class TPL extends OnInterfacesStubs implements
         SubSystemHandler,
         OnDeviceHandler,

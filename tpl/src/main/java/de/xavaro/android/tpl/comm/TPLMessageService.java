@@ -67,7 +67,7 @@ public class TPLMessageService extends Thread
 
                 if (message == null)
                 {
-                    Thread.sleep(5);
+                    Thread.sleep(40);
 
                     continue;
                 }
