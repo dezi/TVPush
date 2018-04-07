@@ -13,6 +13,8 @@ import de.xavaro.android.edx.simple.Simple;
 import de.xavaro.android.edx.simple.Json;
 import de.xavaro.android.edx.R;
 
+import static de.xavaro.android.edx.comm.EDXDiscovery.discoverDevices;
+
 public class EDX extends OnInterfacesStubs implements
         SubSystemHandler,
         OnDeviceHandler
@@ -55,6 +57,8 @@ public class EDX extends OnInterfacesStubs implements
     @Override
     public void startSubsystem(String subsystem)
     {
+        discoverDevices();
+
         onSubsystemStarted(subsystem, SubSystemHandler.SUBSYSTEM_RUN_STARTED);
     }
 
