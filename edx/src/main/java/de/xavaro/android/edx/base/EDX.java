@@ -9,11 +9,11 @@ import pub.android.interfaces.ext.OnDeviceHandler;
 import pub.android.interfaces.all.SubSystemHandler;
 import pub.android.stubs.OnInterfacesStubs;
 
+import de.xavaro.android.edx.comm.EDXDiscover;
+
 import de.xavaro.android.edx.simple.Simple;
 import de.xavaro.android.edx.simple.Json;
 import de.xavaro.android.edx.R;
-
-import static de.xavaro.android.edx.comm.EDXDiscovery.discoverDevices;
 
 public class EDX extends OnInterfacesStubs implements
         SubSystemHandler,
@@ -22,6 +22,8 @@ public class EDX extends OnInterfacesStubs implements
     private static final String LOGTAG = EDX.class.getSimpleName();
 
     public static EDX instance;
+
+    public EDXDiscover discover;
 
     public EDX(Application application)
     {
@@ -57,7 +59,7 @@ public class EDX extends OnInterfacesStubs implements
     @Override
     public void startSubsystem(String subsystem)
     {
-        discoverDevices();
+        EDXDiscover.startService();
 
         onSubsystemStarted(subsystem, SubSystemHandler.SUBSYSTEM_RUN_STARTED);
     }
@@ -65,6 +67,8 @@ public class EDX extends OnInterfacesStubs implements
     @Override
     public void stopSubsystem(String subsystem)
     {
+        EDXDiscover.stopService();
+
         onSubsystemStopped(subsystem, SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
     }
 }
