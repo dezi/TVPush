@@ -28,6 +28,7 @@ public class EDXUtil
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
+            /*
             if ((user != null) && (pass != null) && ! pass.isEmpty())
             {
                 String uspw = user + ":" + pass;
@@ -37,6 +38,7 @@ public class EDXUtil
 
                 Log.d(LOGTAG, "getPost: user=" + user + " pass=" + pass + " auth=" + auth);
             }
+            */
 
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Connection", "close");

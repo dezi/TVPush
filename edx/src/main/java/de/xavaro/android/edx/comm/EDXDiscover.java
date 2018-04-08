@@ -264,10 +264,7 @@ public class EDXDiscover
 
         Log.d(LOGTAG, "buildDeviceDescription: status=" + Json.toPretty(status));
 
-        if (name.equals("Plug4b18a1"))
-        {
-            EDXCommand.setName(ipaddr, ipport, "Edi One");
-        }
+        EDXCommand.getSystemInfo(ipaddr, ipport);
     }
 
     private static String getCapabilities(String model)
