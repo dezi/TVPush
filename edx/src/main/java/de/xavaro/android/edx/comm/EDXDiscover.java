@@ -241,6 +241,7 @@ public class EDXDiscover
         Json.put(device, "driver", "edx");
         Json.put(device, "brand", "edimax");
         Json.put(device, "macaddr", macaddr);
+        Json.put(device, "version", version);
 
         Json.put(device, "capabilities", caps);
         Json.put(device, "location", ssid);

@@ -1,5 +1,7 @@
 package de.xavaro.android.edx.comm;
 
+import org.json.JSONObject;
+
 import de.xavaro.android.edx.simple.Log;
 
 public class EDXCommand
@@ -45,7 +47,7 @@ public class EDXCommand
 
         Log.d(LOGTAG, "getSystemInfo: xml=" + xml);
 
-        String result = EDXUtil.getPost(url, xml, null, "admin", "hallo1234");
+        String result = EDXUtil.getPost(url, xml, new JSONObject(), "admin", "1234");
 
         Log.d(LOGTAG, "getSystemInfo: result=" + result);
     }

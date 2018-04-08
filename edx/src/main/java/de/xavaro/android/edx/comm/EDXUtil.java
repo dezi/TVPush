@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import de.xavaro.android.edx.simple.Json;
 
@@ -48,22 +49,6 @@ public class EDXUtil
             connection.setDoInput(true);
             connection.connect();
 
-            OutputStream os = connection.getOutputStream();
-            os.write(post.getBytes());
-            os.flush();
-            os.close();
-
-            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
-            {
-                //
-                // File cannot be loaded.
-                //
-
-                Log.e(LOGTAG, "getPostInternal: ERR=" + connection.getResponseCode());
-
-                return null;
-            }
-
             //
             // Dump repsonse headers.
             //
@@ -82,6 +67,22 @@ public class EDXUtil
                         Json.put(headers, key, val);
                     }
                 }
+            }
+
+            OutputStream os = connection.getOutputStream();
+            os.write(post.getBytes());
+            os.flush();
+            os.close();
+
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
+            {
+                //
+                // File cannot be loaded.
+                //
+
+                Log.e(LOGTAG, "getPostInternal: ERR=" + connection.getResponseCode());
+
+                return null;
             }
 
             //
@@ -134,5 +135,48 @@ public class EDXUtil
         }
 
         return null;
+    }
+
+    /*
+    private String digestAuth()
+    {
+        String digestAuthStr = null;
+
+        String uri = getURL().getPath();
+        String nonce = authFields.get("nonce");
+        String realm = authFields.get("realm");
+        String qop = authFields.get("qop");
+        String algorithm = authFields.get("algorithm");
+        String cnonce = generateCNonce();
+        String nc = "1";
+        String ha1 = toMD5DigestString(concatWithSeparator(":", username, realm, password));
+        String ha2 = toMD5DigestString(concatWithSeparator(":", requestMethod, uri));
+        String response = null;
+        if (!TextUtils.isEmpty(ha1) && !TextUtils.isEmpty(ha2))
+            response = toMD5DigestString(concatWithSeparator(":", ha1, nonce, nc, cnonce, qop, ha2));
+
+        if (response != null) {
+            StringBuilder sb = new StringBuilder(128);
+            sb.append("Digest ");
+            sb.append("username").append("=\"").append(username).append("\", ");
+            sb.append("realm").append("=\"").append(realm).append("\", ");
+            sb.append("nonce").append("=\"").append(nonce).append("\", ");
+            sb.append("uri").append("=\"").append(uri).append("\", ");
+            sb.append("qop").append("=\"").append(qop).append("\", ");
+            sb.append("nc").append("=\"").append(nc).append("\", ");
+            sb.append("cnonce").append("=\"").append(cnonce).append("\"");
+            sb.append("response").append("=\"").append(response).append("\"");
+            sb.append("algorithm").append("=\"").append(algorithm).append("\"");
+            digestAuthStr = sb.toString();
+        }
+    }
+    */
+
+    private static String generateCNonce()
+    {
+        String s = "";
+        for (int i = 0; i < 8; i++)
+            s += Integer.toHexString(new Random().nextInt(16));
+        return s;
     }
 }
