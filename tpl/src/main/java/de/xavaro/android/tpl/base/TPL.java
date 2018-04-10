@@ -107,8 +107,10 @@ public class TPL extends OnInterfacesStubs implements
     @Override
     public PUBSmartPlug getSmartPlugHandler(JSONObject device, JSONObject status, JSONObject credentials)
     {
+        String uuid = Json.getString(device, "uuid");
         String ipaddr = Json.getString(status, "ipaddr");
-        return (ipaddr != null) ? new SmartPlugHandler(ipaddr) : null;
+
+        return ((uuid != null) && (ipaddr != null)) ? new SmartPlugHandler(uuid, ipaddr) : null;
     }
 
     @Override
