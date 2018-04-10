@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
 
 import de.xavaro.android.edx.simple.Json;
 
@@ -36,20 +35,21 @@ public class EDXUtil
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
             connection.setRequestMethod("POST");
-            //connection.setRequestProperty("Connection", "close");
             connection.setConnectTimeout(4000);
             connection.setUseCaches(false);
             connection.setDoOutput(true);
             connection.setDoInput(true);
 
+            connection.setRequestProperty("User-Agent", "Parse Android SDK 1.15.8 (com.edimax.edismart/4) API Level 25");
+
             connection.setRequestProperty("X-Parse-Application-Id", "R2SBa8tVBeMHzKRY8yIlle2dEMBNPQbRfsrImkcz");
+            connection.setRequestProperty("X-Parse-Client-Key", "vydx1cfuzIkzGYbuHolAh5MzmVMPKkLEXBdbQsbA");
             connection.setRequestProperty("X-Parse-Client-Version", "a1.15.8");
             connection.setRequestProperty("X-Parse-App-Build-Version", "4");
             connection.setRequestProperty("X-Parse-App-Display-Version", "1.0.1");
             connection.setRequestProperty("X-Parse-OS-Version", "7.1.1");
+
             //connection.setRequestProperty("X-Parse-Installation-Id", "faae759a-7358-4d6c-aa48-20d62ec7f344");
-            connection.setRequestProperty("X-Parse-Client-Key", "vydx1cfuzIkzGYbuHolAh5MzmVMPKkLEXBdbQsbA");
-            connection.setRequestProperty("User-Agent", "Parse Android SDK 1.15.8 (com.edimax.edismart/4) API Level 25");
 
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("Content-Length", "" + post.getBytes().length);
@@ -293,41 +293,6 @@ public class EDXUtil
         return "";
     }
 
-    /*
-    private String digestAuth()
-    {
-        String digestAuthStr = null;
-
-        String uri = getURL().getPath();
-        String nonce = authFields.get("nonce");
-        String realm = authFields.get("realm");
-        String qop = authFields.get("qop");
-        String algorithm = authFields.get("algorithm");
-        String cnonce = generateCNonce();
-        String nc = "1";
-        String ha1 = toMD5DigestString(concatWithSeparator(":", username, realm, password));
-        String ha2 = toMD5DigestString(concatWithSeparator(":", requestMethod, uri));
-        String response = null;
-        if (!TextUtils.isEmpty(ha1) && !TextUtils.isEmpty(ha2))
-            response = toMD5DigestString(concatWithSeparator(":", ha1, nonce, nc, cnonce, qop, ha2));
-
-        if (response != null) {
-            StringBuilder sb = new StringBuilder(128);
-            sb.append("Digest ");
-            sb.append("username").append("=\"").append(username).append("\", ");
-            sb.append("realm").append("=\"").append(realm).append("\", ");
-            sb.append("nonce").append("=\"").append(nonce).append("\", ");
-            sb.append("uri").append("=\"").append(uri).append("\", ");
-            sb.append("qop").append("=\"").append(qop).append("\", ");
-            sb.append("nc").append("=\"").append(nc).append("\", ");
-            sb.append("cnonce").append("=\"").append(cnonce).append("\"");
-            sb.append("response").append("=\"").append(response).append("\"");
-            sb.append("algorithm").append("=\"").append(algorithm).append("\"");
-            digestAuthStr = sb.toString();
-        }
-    }
-    */
-
     private static String generateCNonce()
     {
         String nonce = "";
@@ -338,5 +303,17 @@ public class EDXUtil
         }
 
         return nonce;
+    }
+
+    public static String getCapabilities(String model)
+    {
+        String caps = "smartplug|fixed|tcp|wifi|stupid|timer|plugonoff|ledonoff";
+
+        if ("SP2101W".equals(model) || "SP2101W_V2".equals(model))
+        {
+            caps += "|energy";
+        }
+
+        return caps;
     }
 }

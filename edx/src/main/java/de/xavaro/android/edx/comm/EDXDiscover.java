@@ -120,7 +120,6 @@ public class EDXDiscover
 
             EDXCloud.updateSettings();
 
-            /*
             ArrayList<String> dupstuff = new ArrayList<>();
 
             while ((searchThread != null) && (System.currentTimeMillis() < exittime))
@@ -149,7 +148,6 @@ public class EDXDiscover
             {
                 searchThread = null;
             }
-            */
 
             Log.d(LOGTAG, "searchRunnable: done.");
         }
@@ -227,7 +225,7 @@ public class EDXDiscover
 
         String uuid = Simple.hmacSha1UUID(model, macaddr);
         String ssid = Simple.getConnectedWifiName();
-        String caps = getCapabilities(model);
+        String caps = EDXUtil.getCapabilities(model);
 
         JSONObject edimax = new JSONObject();
 
@@ -241,7 +239,7 @@ public class EDXDiscover
         Json.put(device, "name", name);
         Json.put(device, "nick", name);
         Json.put(device, "model", model);
-        Json.put(device, "type", "tvremote");
+        Json.put(device, "type", "smartplug");
         Json.put(device, "driver", "edx");
         Json.put(device, "brand", "edimax");
         Json.put(device, "macaddr", macaddr);
@@ -269,18 +267,6 @@ public class EDXDiscover
 
         Log.d(LOGTAG, "buildDeviceDescription: status=" + Json.toPretty(status));
 
-        EDXCommand.getSystemInfo(ipaddr, ipport);
-    }
-
-    private static String getCapabilities(String model)
-    {
-        String caps = "smartplug|fixed|tcp|wifi|stupid|timer|plugonoff|ledonoff";
-
-        if ("SP2101W_V2".equals(model))
-        {
-            caps += "|energy";
-        }
-
-        return caps;
+        //EDXCommand.getSystemInfo(ipaddr, ipport);
     }
 }
