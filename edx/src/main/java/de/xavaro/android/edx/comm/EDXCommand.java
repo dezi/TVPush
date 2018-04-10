@@ -27,7 +27,7 @@ public class EDXCommand
 
         Log.d(LOGTAG, "setName: xml=" + xml);
 
-        String result = EDXUtil.getPost(url, xml, null, "admin", "12345678");
+        String result = EDXPostDevice.getPost(url, xml, null, "admin", "12345678");
 
         Log.d(LOGTAG, "setName: result=" + result);
     }
@@ -47,7 +47,7 @@ public class EDXCommand
 
         Log.d(LOGTAG, "getSystemInfo: xml=" + xml);
 
-        String result = EDXUtil.getPost(url, xml, new JSONObject(), "admin", ipaddr.equals("192.168.2.104") ? "11138B1d311748a17550": "4CEA84974ee81edfddbf");
+        String result = EDXPostDevice.getPost(url, xml, new JSONObject(), "admin", ipaddr.equals("192.168.2.104") ? "11138B1d311748a17550": "4CEA84974ee81edfddbf");
 
         if (result != null)
         {
