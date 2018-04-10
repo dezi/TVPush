@@ -1,7 +1,7 @@
 package de.xavaro.android.edx.comm;
 
-import android.annotation.SuppressLint;
 import android.support.annotation.Nullable;
+import android.annotation.SuppressLint;
 
 import org.json.JSONObject;
 

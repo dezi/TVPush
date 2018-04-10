@@ -4,8 +4,9 @@ import org.json.JSONObject;
 
 import pub.android.interfaces.pub.PUBSmartPlug;
 
-import de.xavaro.android.edx.base.EDX;
 import de.xavaro.android.edx.comm.EDXCommand;
+import de.xavaro.android.edx.base.EDX;
+
 import de.xavaro.android.edx.simple.Json;
 
 public class SmartPlugHandler implements PUBSmartPlug
