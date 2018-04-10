@@ -1,5 +1,6 @@
 package de.xavaro.android.tpl.simple;
 
+import android.os.Looper;
 import android.support.annotation.Nullable;
 
 import android.net.wifi.WifiManager;
@@ -107,5 +108,22 @@ public class Simple
         }
 
         return null;
+    }
+
+    public static boolean isUIThread()
+    {
+        return (Looper.getMainLooper().getThread() == Thread.currentThread());
+    }
+
+    public static void runBackground(Runnable runnable)
+    {
+        if (isUIThread())
+        {
+            new Thread(runnable).start();
+        }
+        else
+        {
+            runnable.run();
+        }
     }
 }

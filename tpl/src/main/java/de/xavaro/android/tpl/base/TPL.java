@@ -125,25 +125,25 @@ public class TPL extends OnInterfacesStubs implements
         {
             if (actioncmd.equals("switchonled"))
             {
-                TPLHandlerSmartPlug.sendLEDOnOff(ipaddr, true);
+                TPLHandlerSmartPlug.sendLEDOnOff(ipaddr, 1);
                 return true;
             }
 
             if (actioncmd.equals("switchoffled"))
             {
-                TPLHandlerSmartPlug.sendLEDOnOff(ipaddr, false);
+                TPLHandlerSmartPlug.sendLEDOnOff(ipaddr, 0);
                 return true;
             }
 
             if (actioncmd.equals("switchonplug"))
             {
-                TPLHandlerSmartPlug.sendPlugOnOff(ipaddr, true);
+                TPLHandlerSmartPlug.sendPlugOnOff(ipaddr, 1);
                 return true;
             }
 
             if (actioncmd.equals("switchoffplug"))
             {
-                TPLHandlerSmartPlug.sendPlugOnOff(ipaddr, false);
+                TPLHandlerSmartPlug.sendPlugOnOff(ipaddr, 0);
                 return true;
             }
 
@@ -240,7 +240,6 @@ public class TPL extends OnInterfacesStubs implements
     @Override
     public boolean getDeviceStatusRequest(JSONObject device, JSONObject status, JSONObject credential)
     {
-        TPLHandlerSysInfo.sendAllGetSysinfo();
 
         return true;
     }

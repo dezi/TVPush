@@ -152,7 +152,7 @@ public class EDX extends OnInterfacesStubs implements
 
     //endregion GetSmartPlugHandler
 
-    //region PutStatusRequest
+    //region GetDeviceStatusRequest
 
     @Override
     public boolean getDeviceStatusRequest(JSONObject device, final JSONObject status, JSONObject credential)
@@ -191,5 +191,5 @@ public class EDX extends OnInterfacesStubs implements
         return false;
     }
 
-    //endregion PutStatusRequest
+    //endregion GetDeviceStatusRequest
 }

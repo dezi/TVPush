@@ -15,11 +15,6 @@ public class TPLHandlerSmartBulb extends TPLHandler
     public static final String STATE_LIGHT_MODE_NORMAL = "normal";
     public static final String STATE_LIGHT_MODE_CIRCADIAN = "circadian";
 
-    public static void sendAllBulbsOnOff(boolean on)
-    {
-        sendBulbOnOff(null, on);
-    }
-
     public static void sendBulbOnOff(String ipaddr, boolean on)
     {
         JSONObject message = new JSONObject();
@@ -40,11 +35,6 @@ public class TPLHandlerSmartBulb extends TPLHandler
         }
 
         TPL.instance.message.sendMessage(message);
-    }
-
-    public static void sendAllBulbsHSB(int hue, int saturation, int brightness)
-    {
-        sendBulbHSB(null, hue, saturation, brightness);
     }
 
     public static void sendBulbHSB(String ipaddr, int hue, int saturation, int brightness)
@@ -115,11 +105,6 @@ public class TPLHandlerSmartBulb extends TPLHandler
         TPL.instance.message.sendMessage(message);
     }
 
-    public static void sendAllBulbsBrightness(int brightness)
-    {
-        sendBulbBrightness(null, brightness);
-    }
-
     public static void sendBulbBrightness(String ipaddr, int brightness)
     {
         if (brightness < 0) brightness = 0;
@@ -148,7 +133,6 @@ public class TPLHandlerSmartBulb extends TPLHandler
         TPL.instance.message.sendMessage(message);
     }
 
-    @Override
     public void onMessageReived(JSONObject message)
     {
         Log.d(LOGTAG, Json.toPretty(message));

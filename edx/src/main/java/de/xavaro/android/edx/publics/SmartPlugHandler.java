@@ -2,6 +2,7 @@ package de.xavaro.android.edx.publics;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.edx.simple.Simple;
 import pub.android.interfaces.pub.PUBSmartPlug;
 
 import de.xavaro.android.edx.comm.EDXCommand;
@@ -33,7 +34,7 @@ public class SmartPlugHandler implements PUBSmartPlug
     @Override
     public boolean setPlugState(final int onoff)
     {
-        Thread thread = new Thread(new Runnable()
+        Runnable runnable = new Runnable()
         {
             @Override
             public void run()
@@ -50,9 +51,9 @@ public class SmartPlugHandler implements PUBSmartPlug
                     EDX.instance.onDeviceStatus(status);
                 }
             }
-        });
+        };
 
-        thread.start();
+        Simple.runBackground(runnable);
 
         return true;
     }

@@ -4,9 +4,10 @@ import org.json.JSONObject;
 
 import pub.android.interfaces.pub.PUBSmartPlug;
 
-import de.xavaro.android.tpl.base.TPL;
-import de.xavaro.android.tpl.simple.Json;
 import de.xavaro.android.tpl.handler.TPLHandlerSmartPlug;
+import de.xavaro.android.tpl.simple.Simple;
+import de.xavaro.android.tpl.simple.Json;
+import de.xavaro.android.tpl.base.TPL;
 
 public class SmartPlugHandler implements PUBSmartPlug
 {
@@ -22,12 +23,12 @@ public class SmartPlugHandler implements PUBSmartPlug
     @Override
     public boolean setPlugState(final int onoff)
     {
-        Thread thread = new Thread(new Runnable()
+        Runnable runnable = new Runnable()
         {
             @Override
             public void run()
             {
-                if (TPLHandlerSmartPlug.sendPlugOnOff(ipaddr, (onoff == 1)))
+                if (TPLHandlerSmartPlug.sendPlugOnOff(ipaddr, onoff) >= 0)
                 {
                     JSONObject status = new JSONObject();
 
@@ -37,9 +38,9 @@ public class SmartPlugHandler implements PUBSmartPlug
                     TPL.instance.onDeviceStatus(status);
                 }
             }
-        });
+        };
 
-        thread.start();
+        Simple.runBackground(runnable);
 
         return true;
     }
@@ -47,12 +48,12 @@ public class SmartPlugHandler implements PUBSmartPlug
     @Override
     public boolean setLEDState(final int onoff)
     {
-        Thread thread = new Thread(new Runnable()
+        Runnable runnable = new Runnable()
         {
             @Override
             public void run()
             {
-                if (TPLHandlerSmartPlug.sendLEDOnOff(ipaddr, (onoff == 1)))
+                if (TPLHandlerSmartPlug.sendLEDOnOff(ipaddr, onoff) >= 0)
                 {
                     JSONObject status = new JSONObject();
 
@@ -62,9 +63,9 @@ public class SmartPlugHandler implements PUBSmartPlug
                     TPL.instance.onDeviceStatus(status);
                 }
             }
-        });
+        };
 
-        thread.start();
+        Simple.runBackground(runnable);
 
         return true;
     }

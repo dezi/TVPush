@@ -1,6 +1,7 @@
 package de.xavaro.android.tpl.publics;
 
 import pub.android.interfaces.pub.PUBSmartBulb;
+
 import de.xavaro.android.tpl.handler.TPLHandlerSmartBulb;
 
 public class SmartBulbHandler implements PUBSmartBulb
