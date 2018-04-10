@@ -208,6 +208,12 @@ public class EDXCloud
             return;
         }
 
+        //
+        // Tune device name and mac addr for consistency
+        // with local device response because our device
+        // uuid depends on theses values.
+        //
+
         model = model.toUpperCase().replace("-", "");
 
         macaddr = macaddr.toLowerCase();
@@ -246,16 +252,14 @@ public class EDXCloud
 
         android.util.Log.d(LOGTAG, "buildDeviceDescription: device=" + Json.toPretty(edimax));
 
-        JSONObject credential = new JSONObject();
         JSONObject credentials = new JSONObject();
 
-        Json.put(credential, "uuid", uuid);
-        Json.put(credential, "credentials", credentials);
+        Json.put(credentials, "uuid", uuid);
         Json.put(credentials, "localUser", "admin");
         Json.put(credentials, "localPass", localPass);
 
-        EDX.instance.onDeviceCredentials(credential);
+        EDX.instance.onDeviceCredentials(credentials);
 
-        android.util.Log.d(LOGTAG, "buildDeviceDescription: credential=" + Json.toPretty(credential));
+        android.util.Log.d(LOGTAG, "buildDeviceDescription: credential=" + Json.toPretty(credentials));
     }
 }

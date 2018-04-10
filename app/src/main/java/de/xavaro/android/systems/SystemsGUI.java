@@ -4,6 +4,7 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.edx.base.EDX;
 import pub.android.interfaces.pub.PUBSmartBulb;
 import pub.android.interfaces.pub.PUBSmartPlug;
 import pub.android.interfaces.pub.PUBCamera;
@@ -113,6 +114,11 @@ public class SystemsGUI extends GUI
         if (driver.equals("tpl") && (TPL.instance != null))
         {
             return TPL.instance.getSmartPlugHandler(device, status, credentials);
+        }
+
+        if (driver.equals("edx") && (EDX.instance != null))
+        {
+            return EDX.instance.getSmartPlugHandler(device, status, credentials);
         }
 
         return null;

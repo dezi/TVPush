@@ -265,7 +265,9 @@ public class EDXDiscover
 
         EDX.instance.onDeviceFound(edimax);
 
-        Log.d(LOGTAG, "buildDeviceDescription: device=" + Json.toPretty(edimax));
+        //
+        // Device status.
+        //
 
         JSONObject status = new JSONObject();
 
@@ -274,10 +276,25 @@ public class EDXDiscover
         Json.put(status, "ipaddr", ipaddr);
         Json.put(status, "ipport", ipport);
 
+        Log.d(LOGTAG, "buildDeviceDescription: device=" + Json.toPretty(edimax));
+
+        //
+        // Check for credentials and aquire status if all set.
+        //
+
+        JSONObject credential = EDX.instance.onGetCredentialRequest(uuid);
+        JSONObject credentials = Json.getObject(credential, "credentials");
+        String user = Json.getString(credentials, "localUser");
+        String pass = Json.getString(credentials, "localPass");
+
+        if ((user != null) && (pass != null))
+        {
+            boolean on = EDXCommand.getPowerStatus(ipaddr, ipport, user, pass);
+            Json.put(status, "plugstate", on ? 1 : 0);
+        }
+
         EDX.instance.onDeviceStatus(status);
 
         Log.d(LOGTAG, "buildDeviceDescription: status=" + Json.toPretty(status));
-
-        //EDXCommand.getSystemInfo(ipaddr, ipport);
     }
 }
