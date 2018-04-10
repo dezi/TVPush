@@ -31,21 +31,28 @@ public class SmartPlugHandler implements PUBSmartPlug
     }
 
     @Override
-    public boolean setPlugState(int onoff)
+    public boolean setPlugState(final int onoff)
     {
-        boolean success = EDXCommand.setPowerStatus(ipaddr, ipport, user, pass, (onoff == 1));
-
-        if (success)
+        Thread thread = new Thread(new Runnable()
         {
-            JSONObject status = new JSONObject();
+            @Override
+            public void run()
+            {
+                if (EDXCommand.setPowerStatus(ipaddr, ipport, user, pass, (onoff == 1)))
+                {
+                    JSONObject status = new JSONObject();
 
-            Json.put(status, "uuid", uuid);
-            Json.put(status, "plugstate", onoff);
+                    Json.put(status, "uuid", uuid);
+                    Json.put(status, "plugstate", onoff);
 
-            EDX.instance.onDeviceStatus(status);
-        }
+                    EDX.instance.onDeviceStatus(status);
+                }
+            }
+        });
 
-        return success;
+        thread.start();
+
+        return true;
     }
 
     @Override
