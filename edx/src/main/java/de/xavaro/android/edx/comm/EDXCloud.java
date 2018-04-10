@@ -1,49 +1,41 @@
 package de.xavaro.android.edx.comm;
 
-import android.support.annotation.Nullable;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
+import de.xavaro.android.edx.simple.Simple;
 import de.xavaro.android.edx.simple.Json;
 import de.xavaro.android.edx.simple.Log;
-import de.xavaro.android.edx.simple.Simple;
 
 public class EDXCloud
 {
     private static final String LOGTAG = EDXCloud.class.getSimpleName();
 
-    private static final String cloudurl = "https://pg-app-c9c8cz82iexbxxdeebtxheb03v6hvs.scalabl.cloud/1";
+    private static final String CLOUDURL = "https://pg-app-c9c8cz82iexbxxdeebtxheb03v6hvs.scalabl.cloud/1";
 
     private static String sessionToken;
     private static String userObjectId;
     private static String installationId = UUID.randomUUID().toString();
 
-    public static void updateSettings()
+    public static void updateDevices()
     {
         if (! getInstallation())
         {
-            Log.e(LOGTAG, "updateSettings: getInstallation failed!");
+            Log.e(LOGTAG, "updateDevices: getInstallation failed!");
             return;
         }
 
         if (! getSession())
         {
-            Log.e(LOGTAG, "updateSettings: getSession failed!");
+            Log.e(LOGTAG, "updateDevices: getSession failed!");
             return;
         }
 
         if (! getDevices())
         {
-            Log.e(LOGTAG, "updateSettings: getDevices failed!");
+            Log.e(LOGTAG, "updateDevices: getDevices failed!");
         }
     }
 
@@ -71,9 +63,9 @@ public class EDXCloud
         Json.put(body, "where", where.toString());
         Json.put(body, "_method", "GET");
 
-        String url = cloudurl + "/classes/Device";
+        String url = CLOUDURL + "/classes/Device";
 
-        String resultStr = getPost(url, body.toString(), null, null, null);
+        String resultStr = EDXPostCloud.getPost(url, body.toString(), sessionToken);
         Log.d(LOGTAG, "getDevices: resultStr=" + resultStr);
 
         JSONObject result = Json.fromStringObject(resultStr);
@@ -99,9 +91,9 @@ public class EDXCloud
         Json.put(body, "password", "hallo1234");
         Json.put(body, "_method", "GET");
 
-        String url = cloudurl + "/login";
+        String url = CLOUDURL + "/login";
 
-        String resultstr = getPost(url, body.toString(), null, null, null);
+        String resultstr = EDXPostCloud.getPost(url, body.toString(), sessionToken);
         Log.d(LOGTAG, "getSession: resultstr=" + resultstr);
 
         JSONObject result = Json.fromStringObject(resultstr);
@@ -129,9 +121,9 @@ public class EDXCloud
                 + "\"GCMSenderId\":\"id:869997638701\","
                 + "\"timeZone\":\"Europe/Berlin\"}";
 
-        String url = cloudurl + "/classes/_Installation";
+        String url = CLOUDURL + "/classes/_Installation";
 
-        String resultStr = getPost(url, body, null, null, null);
+        String resultStr = EDXPostCloud.getPost(url, body, sessionToken);
         Log.d(LOGTAG, "getInstallation: result=" + resultStr);
 
         JSONObject result = Json.fromStringObject(resultStr);
@@ -206,149 +198,5 @@ public class EDXCloud
         Json.put(credentials, "localPass", localPass);
 
         android.util.Log.d(LOGTAG, "buildDeviceDescription: credential=" + Json.toPretty(credential));
-    }
-
-    @Nullable
-    public static String getPost(String urlstr, String post, JSONObject headers, String user, String pass)
-    {
-        try
-        {
-            URL url = new URL(urlstr);
-
-            android.util.Log.d(LOGTAG, "getPost: urlstr=" + urlstr);
-
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-            connection.setRequestMethod("POST");
-            connection.setConnectTimeout(4000);
-            connection.setUseCaches(false);
-            connection.setDoOutput(true);
-            connection.setDoInput(true);
-
-            connection.setRequestProperty("User-Agent", "Parse Android SDK 1.15.8 (com.edimax.edismart/4) API Level 25");
-
-            connection.setRequestProperty("X-Parse-Application-Id", "R2SBa8tVBeMHzKRY8yIlle2dEMBNPQbRfsrImkcz");
-            connection.setRequestProperty("X-Parse-Client-Key", "vydx1cfuzIkzGYbuHolAh5MzmVMPKkLEXBdbQsbA");
-            connection.setRequestProperty("X-Parse-Client-Version", "a1.15.8");
-            connection.setRequestProperty("X-Parse-App-Build-Version", "4");
-            connection.setRequestProperty("X-Parse-App-Display-Version", "1.0.1");
-            connection.setRequestProperty("X-Parse-OS-Version", "7.1.1");
-
-            //https://pg-app-c9c8cz82iexbxxdeebtxheb03v6hvs.scalabl.cloud/1/classes/Device
-            if (sessionToken != null)
-            {
-                connection.setRequestProperty("X-Parse-Session-Token", sessionToken);
-            }
-            else
-            {
-                if (installationId != null)
-                {
-                    connection.setRequestProperty("X-Parse-Installation-Id", installationId);
-                }
-            }
-
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Content-Length", "" + post.getBytes().length);
-
-            //
-            // Dump request headers.
-            //
-
-            for (Map.Entry<String, List<String>> entries : connection.getRequestProperties().entrySet())
-            {
-                String key = entries.getKey();
-                if (key == null) key = "Status-Line";
-
-                for (String val : entries.getValue())
-                {
-                    android.util.Log.d(LOGTAG, "getPost: request key=" + key + " val=" + val);
-
-                    if (headers != null) Json.put(headers, key, val);
-                }
-            }
-
-            connection.connect();
-
-            android.util.Log.d(LOGTAG, "getPost: post=" + post);
-
-            OutputStream os = connection.getOutputStream();
-            os.write(post.getBytes());
-            os.flush();
-            os.close();
-
-            //
-            // Dump repsonse headers.
-            //
-
-            for (Map.Entry<String, List<String>> entries : connection.getHeaderFields().entrySet())
-            {
-                String key = entries.getKey();
-                if (key == null) key = "Status-Line";
-
-                for (String val : entries.getValue())
-                {
-                    android.util.Log.d(LOGTAG, "getPost: response key=" + key + " val=" + val);
-
-                    if (headers != null) Json.put(headers, key, val);
-                }
-            }
-
-            if ((connection.getResponseCode() != HttpURLConnection.HTTP_OK)
-                    && (connection.getResponseCode() != HttpURLConnection.HTTP_CREATED))
-            {
-                //
-                // File cannot be loaded.
-                //
-
-                android.util.Log.e(LOGTAG, "getPost: ERR=" + connection.getResponseCode());
-
-                return null;
-            }
-
-            //
-            // Fetch file.
-            //
-
-            int length = connection.getContentLength();
-            InputStream input = connection.getInputStream();
-            byte[] buffer;
-            int total = 0;
-
-            if (length > 0)
-            {
-                buffer = new byte[length];
-
-                for (int xfer; total < length; total += xfer)
-                {
-                    xfer = input.read(buffer, total, length - total);
-                }
-            } else
-            {
-                byte[] chunk = new byte[32 * 1024];
-
-                buffer = new byte[0];
-
-                for (int xfer; ; total += xfer)
-                {
-                    xfer = input.read(chunk, 0, chunk.length);
-                    if (xfer <= 0) break;
-
-                    byte[] temp = new byte[buffer.length + xfer];
-                    System.arraycopy(buffer, 0, temp, 0, buffer.length);
-                    System.arraycopy(chunk, 0, temp, buffer.length, xfer);
-                    buffer = temp;
-                }
-            }
-
-            input.close();
-
-            return new String(buffer);
-        }
-        catch (Exception ex)
-        {
-            android.util.Log.d(LOGTAG, ex.toString());
-        }
-
-        return null;
     }
 }

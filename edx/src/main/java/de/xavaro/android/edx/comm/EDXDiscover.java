@@ -84,7 +84,6 @@ public class EDXDiscover
 
     private Thread searchThread;
     private DatagramSocket socket;
-    private long exittime;
 
     private EDXDiscover()
     {
@@ -93,8 +92,6 @@ public class EDXDiscover
             socket = new DatagramSocket();
             socket.setSoTimeout(2000);
             socket.setBroadcast(true);
-
-            exittime = System.currentTimeMillis() + 10 * 1000;
 
             searchThread = new Thread(searchRunnable);
             searchThread.start();
@@ -118,9 +115,10 @@ public class EDXDiscover
         {
             Log.d(LOGTAG, "searchRunnable: start.");
 
-            EDXCloud.updateSettings();
+            EDXCloud.updateDevices();
 
             ArrayList<String> dupstuff = new ArrayList<>();
+            long exittime = System.currentTimeMillis() + 10 * 1000;
 
             while ((searchThread != null) && (System.currentTimeMillis() < exittime))
             {
