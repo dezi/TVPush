@@ -118,6 +118,9 @@ public class EDXDiscover
         {
             Log.d(LOGTAG, "searchRunnable: start.");
 
+            EDXCloud.updateSettings();
+
+            /*
             ArrayList<String> dupstuff = new ArrayList<>();
 
             while ((searchThread != null) && (System.currentTimeMillis() < exittime))
@@ -146,6 +149,7 @@ public class EDXDiscover
             {
                 searchThread = null;
             }
+            */
 
             Log.d(LOGTAG, "searchRunnable: done.");
         }
