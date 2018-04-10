@@ -69,10 +69,10 @@ public class EDXDiscover
 
             synchronized (discover.mutex)
             {
-                if (discover.searchThread != null)
+                if (discover.discoverThread != null)
                 {
-                    discover.searchThread.interrupt();
-                    discover.searchThread = null;
+                    discover.discoverThread.interrupt();
+                    discover.discoverThread = null;
                 }
             }
 
@@ -80,10 +80,9 @@ public class EDXDiscover
         }
     }
 
-    private final Object mutex = new Object();
-
-    private Thread searchThread;
+    private Thread discoverThread;
     private DatagramSocket socket;
+    private final Object mutex = new Object();
 
     private EDXDiscover()
     {
@@ -93,14 +92,8 @@ public class EDXDiscover
             socket.setSoTimeout(2000);
             socket.setBroadcast(true);
 
-            searchThread = new Thread(searchRunnable);
-            searchThread.start();
-
-            byte[] helloPacket = getDiscoveryHeader();
-            InetAddress ipbroadcast = InetAddress.getByName("255.255.255.255");
-            DatagramPacket hello = new DatagramPacket(helloPacket, helloPacket.length, ipbroadcast, DISCOVERY_AGENT_PORT);
-
-            socket.send(hello);
+            discoverThread = new Thread(discoverRunnable);
+            discoverThread.start();
         }
         catch (Exception ex)
         {
@@ -108,19 +101,39 @@ public class EDXDiscover
         }
     }
 
-    private final Runnable searchRunnable = new Runnable()
+    private final Runnable discoverRunnable = new Runnable()
     {
         @Override
         public void run()
         {
-            Log.d(LOGTAG, "searchRunnable: start.");
+            Log.d(LOGTAG, "discoverRunnable: start.");
 
-            EDXCloud.updateDevices();
+            //
+            // Discover devices and credentials from Edimax cloud.
+            //
+
+            EDXCloud.discoverDevices();
+
+            //
+            // Discover local LAN devices.
+            //
+
+            try
+            {
+                byte[] helloPacket = getDiscoveryHeader();
+                InetAddress ipbroadcast = InetAddress.getByName("255.255.255.255");
+                DatagramPacket hello = new DatagramPacket(helloPacket, helloPacket.length, ipbroadcast, DISCOVERY_AGENT_PORT);
+
+                socket.send(hello);
+            }
+            catch (Exception ignore)
+            {
+            }
 
             ArrayList<String> dupstuff = new ArrayList<>();
             long exittime = System.currentTimeMillis() + 10 * 1000;
 
-            while ((searchThread != null) && (System.currentTimeMillis() < exittime))
+            while ((discoverThread != null) && (System.currentTimeMillis() < exittime))
             {
                 try
                 {
@@ -144,10 +157,10 @@ public class EDXDiscover
 
             synchronized (mutex)
             {
-                searchThread = null;
+                discoverThread = null;
             }
 
-            Log.d(LOGTAG, "searchRunnable: done.");
+            Log.d(LOGTAG, "discoverRunnable: done.");
         }
     };
 

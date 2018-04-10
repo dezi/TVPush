@@ -19,23 +19,23 @@ public class EDXCloud
     private static String userObjectId;
     private static String installationId = UUID.randomUUID().toString();
 
-    public static void updateDevices()
+    public static void discoverDevices()
     {
         if (! getInstallation())
         {
-            Log.e(LOGTAG, "updateDevices: getInstallation failed!");
+            Log.e(LOGTAG, "discoverDevices: getInstallation failed!");
             return;
         }
 
         if (! getSession())
         {
-            Log.e(LOGTAG, "updateDevices: getSession failed!");
+            Log.e(LOGTAG, "discoverDevices: getSession failed!");
             return;
         }
 
         if (! getDevices())
         {
-            Log.e(LOGTAG, "updateDevices: getDevices failed!");
+            Log.e(LOGTAG, "discoverDevices: getDevices failed!");
         }
     }
 
@@ -195,6 +195,7 @@ public class EDXCloud
         JSONObject credentials = new JSONObject();
 
         Json.put(credential, "credentials", credentials);
+        Json.put(credentials, "localUser", "admin");
         Json.put(credentials, "localPass", localPass);
 
         android.util.Log.d(LOGTAG, "buildDeviceDescription: credential=" + Json.toPretty(credential));
