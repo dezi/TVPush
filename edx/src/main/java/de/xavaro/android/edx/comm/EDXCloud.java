@@ -1,5 +1,7 @@
 package de.xavaro.android.edx.comm;
 
+import android.annotation.SuppressLint;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -10,33 +12,65 @@ import de.xavaro.android.edx.simple.Simple;
 import de.xavaro.android.edx.simple.Json;
 import de.xavaro.android.edx.simple.Log;
 
+@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 public class EDXCloud
 {
     private static final String LOGTAG = EDXCloud.class.getSimpleName();
 
     private static final String CLOUDURL = "https://pg-app-c9c8cz82iexbxxdeebtxheb03v6hvs.scalabl.cloud/1";
 
+    private static final String EDX_USEROBJECTID_PREF = "edx.userobjectid";
+    private static final String EDX_SESSIONTOKEN_PREF = "edx.sessiontoken";
+    private static final String EDX_INSTALLATIONID_PREF = "edx.installationid";
+
     private static String sessionToken;
     private static String userObjectId;
-    private static String installationId = UUID.randomUUID().toString();
+    private static String installationId;
 
+    @SuppressLint("ApplySharedPref")
     public static void discoverDevices()
     {
+        userObjectId = Simple.getPrefs().getString(EDX_USEROBJECTID_PREF, null);
+        sessionToken = Simple.getPrefs().getString(EDX_SESSIONTOKEN_PREF, null);
+        installationId = Simple.getPrefs().getString(EDX_INSTALLATIONID_PREF, null);
+
         if (! getInstallation())
         {
             Log.e(LOGTAG, "discoverDevices: getInstallation failed!");
+
+            Simple.getPrefs().edit().remove(EDX_USEROBJECTID_PREF).commit();
+            Simple.getPrefs().edit().remove(EDX_SESSIONTOKEN_PREF).commit();
+            Simple.getPrefs().edit().remove(EDX_INSTALLATIONID_PREF).commit();
+
             return;
         }
 
         if (! getSession())
         {
             Log.e(LOGTAG, "discoverDevices: getSession failed!");
+
+            Simple.getPrefs().edit().remove(EDX_USEROBJECTID_PREF).commit();
+            Simple.getPrefs().edit().remove(EDX_SESSIONTOKEN_PREF).commit();
+
             return;
         }
 
         if (! getDevices())
         {
             Log.e(LOGTAG, "discoverDevices: getDevices failed!");
+
+            Simple.getPrefs().edit().remove(EDX_USEROBJECTID_PREF).commit();
+            Simple.getPrefs().edit().remove(EDX_SESSIONTOKEN_PREF).commit();
+            Simple.getPrefs().edit().remove(EDX_INSTALLATIONID_PREF).commit();
+
+            userObjectId = null;
+            sessionToken = null;
+            installationId = null;
+
+            if ((! getInstallation()) || (! getSession()) || (! getDevices()))
+            {
+                Log.e(LOGTAG, "discoverDevices: getDevices failed after refresh!");
+            }
         }
     }
 
@@ -84,8 +118,11 @@ public class EDXCloud
         return true;
     }
 
+    @SuppressLint("ApplySharedPref")
     private static boolean getSession()
     {
+        if ((sessionToken != null) && (userObjectId != null)) return true;
+
         JSONObject body = new JSONObject();
 
         Json.put(body, "username", "dezi@kappa-mm.de");
@@ -105,11 +142,21 @@ public class EDXCloud
 
         Log.d(LOGTAG, "getSession: userObjectId=" + userObjectId + " sessionToken=" + sessionToken);
 
-        return (userObjectId != null) && (sessionToken != null);
+        if ((userObjectId == null) || (sessionToken == null)) return false;
+
+        Simple.getPrefs().edit().putString(EDX_USEROBJECTID_PREF, userObjectId).commit();
+        Simple.getPrefs().edit().putString(EDX_SESSIONTOKEN_PREF, sessionToken).commit();
+
+        return true;
     }
 
+    @SuppressLint("ApplySharedPref")
     private static boolean getInstallation()
     {
+        if (installationId != null) return true;
+
+        installationId = UUID.randomUUID().toString();
+
         String body = ""
                 + "{\"pushType\":\"gcm\","
                 + "\"localeIdentifier\":\"de-DE\","
@@ -134,7 +181,11 @@ public class EDXCloud
 
         Log.d(LOGTAG, "getInstallation: installationObjectId=" + installationObjectId);
 
-        return (installationObjectId != null);
+        if (installationObjectId == null) return false;
+
+        Simple.getPrefs().edit().putString(EDX_INSTALLATIONID_PREF, installationId).commit();
+
+        return true;
     }
 
     private static void buildDeviceDescription(JSONObject edidev)

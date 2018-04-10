@@ -2,9 +2,11 @@ package de.xavaro.android.edx.simple;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Base64;
 
@@ -20,11 +22,13 @@ import javax.crypto.spec.SecretKeySpec;
 public class Simple
 {
     private static Resources resources;
+    private static SharedPreferences prefs;
     private static WifiManager wifiManager;
 
     public static void initialize(Application app)
     {
         resources = app.getResources();
+        prefs = PreferenceManager.getDefaultSharedPreferences(app);
         wifiManager = (WifiManager) app.getSystemService(Context.WIFI_SERVICE);
     }
 
@@ -55,6 +59,11 @@ public class Simple
         return null;
     }
 
+    public static SharedPreferences getPrefs()
+    {
+        return prefs;
+    }
+
     @Nullable
     public static String getConnectedWifiName()
     {
@@ -62,25 +71,6 @@ public class Simple
 
         String wifi = wifiManager.getConnectionInfo().getSSID();
         return wifi.replace("\"", "");
-    }
-
-    public static String getMapString(Map<String, String> map, String key)
-    {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-        {
-            return map.getOrDefault(key, null);
-        }
-        else
-        {
-            try
-            {
-                return map.get(key);
-            }
-            catch (Exception ignore)
-            {
-                return null;
-            }
-        }
     }
 
     public static String getTrans(int resid, Object... args)
