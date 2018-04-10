@@ -263,7 +263,7 @@ public class EDXDiscover
         Json.put(network, "ipaddr", ipaddr);
         Json.put(network, "ssid", ssid);
 
-        //EDX.instance.onDeviceFound(edimax);
+        EDX.instance.onDeviceFound(edimax);
 
         Log.d(LOGTAG, "buildDeviceDescription: device=" + Json.toPretty(edimax));
 
@@ -274,7 +274,7 @@ public class EDXDiscover
         Json.put(status, "ipaddr", ipaddr);
         Json.put(status, "ipport", ipport);
 
-        //EDX.instance.onDeviceStatus(status);
+        EDX.instance.onDeviceStatus(status);
 
         Log.d(LOGTAG, "buildDeviceDescription: status=" + Json.toPretty(status));
 

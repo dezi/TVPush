@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.util.UUID;
 
+import de.xavaro.android.edx.base.EDX;
 import de.xavaro.android.edx.simple.Simple;
 import de.xavaro.android.edx.simple.Json;
 import de.xavaro.android.edx.simple.Log;
@@ -139,13 +140,15 @@ public class EDXCloud
     private static void buildDeviceDescription(JSONObject edidev)
     {
         String name = Json.getString(edidev, "nickName");
-        String version = Json.getString(edidev, "fwVer");
         String model = Json.getString(edidev, "modelNumber");
+        String pnvId = Json.getString(edidev, "pnvId");
+        String version = Json.getString(edidev, "fwVer");
         String macaddr = Json.getString(edidev, "deviceMac");
         String localPass = Json.getString(edidev, "localPass");
 
         if ((name == null)
                 || (model == null)
+                || (pnvId == null)
                 || (version == null)
                 || (macaddr == null)
                 || (localPass == null))
@@ -184,19 +187,23 @@ public class EDXCloud
         Json.put(device, "brand", "edimax");
         Json.put(device, "macaddr", macaddr);
         Json.put(device, "version", version);
+        Json.put(device, "did", pnvId);
 
         Json.put(device, "capabilities", caps);
 
-        //EDX.instance.onDeviceFound(edimax);
+        EDX.instance.onDeviceFound(edimax);
 
         android.util.Log.d(LOGTAG, "buildDeviceDescription: device=" + Json.toPretty(edimax));
 
         JSONObject credential = new JSONObject();
         JSONObject credentials = new JSONObject();
 
+        Json.put(credential, "uuid", uuid);
         Json.put(credential, "credentials", credentials);
         Json.put(credentials, "localUser", "admin");
         Json.put(credentials, "localPass", localPass);
+
+        EDX.instance.onDeviceCredentials(credential);
 
         android.util.Log.d(LOGTAG, "buildDeviceDescription: credential=" + Json.toPretty(credential));
     }
