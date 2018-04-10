@@ -79,7 +79,7 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
         if (!Simple.isPhone())
         {
             displayWizzard(GUISetupWizzard.class.getSimpleName());
-            displayWizzard(GUIPingWizzard.class.getSimpleName());
+            //displayWizzard(GUIPingWizzard.class.getSimpleName());
         }
 
         //GUIDialogViewPincode pincode = new GUIDialogViewPincode(this);

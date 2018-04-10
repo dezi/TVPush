@@ -274,8 +274,8 @@ public class GUISettingsWizzard extends GUIPluginTitleList
                         public void onClick(View view)
                         {
                             GUI.instance.subSystems.setSubsystemState(subsystem, SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED);
-                            GUIPluginTitleList.updateContentinParentPlugin(entry);
                             GUI.instance.onStopSubsystemRequest(subsystem);
+                            GUIPluginTitleList.updateContentinParentPlugin(entry);
                         }
                     });
 
@@ -296,15 +296,7 @@ public class GUISettingsWizzard extends GUIPluginTitleList
                         }
                     });
 
-                    dialog.setNegativeButton(R.string.basic_postpone, new OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View view)
-                        {
-                            GUI.instance.subSystems.setSubsystemState(subsystem, SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED);
-                            GUIPluginTitleList.updateContentinParentPlugin(entry);
-                        }
-                    });
+                    dialog.setNegativeButton(R.string.basic_postpone);
 
                     dialog.positiveButton.requestFocus();
                 }
@@ -352,6 +344,7 @@ public class GUISettingsWizzard extends GUIPluginTitleList
                         @Override
                         public void onClick(View view)
                         {
+                            GUI.instance.subSystems.setSubsystemState(subtag, SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED);
                             GUI.instance.onStopSubsystemRequest(subtag);
                             GUIPluginTitleList.updateContentinParentPlugin(entry);
                         }
@@ -368,6 +361,7 @@ public class GUISettingsWizzard extends GUIPluginTitleList
                         @Override
                         public void onClick(View view)
                         {
+                            GUI.instance.subSystems.setSubsystemState(subtag, SubSystemHandler.SUBSYSTEM_STATE_ACTIVATED);
                             GUI.instance.onStartSubsystemRequest(subtag);
                             GUIPluginTitleList.updateContentinParentPlugin(entry);
                         }

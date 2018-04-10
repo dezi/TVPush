@@ -59,6 +59,10 @@ public class EDXCloud
         {
             Log.e(LOGTAG, "discoverDevices: getDevices failed!");
 
+            //
+            // Nuke all stored tokens and restart in a quick mode.
+            //
+
             Simple.getPrefs().edit().remove(EDX_USEROBJECTID_PREF).commit();
             Simple.getPrefs().edit().remove(EDX_SESSIONTOKEN_PREF).commit();
             Simple.getPrefs().edit().remove(EDX_INSTALLATIONID_PREF).commit();

@@ -20,8 +20,9 @@ public class EDXDiscover
 {
     private static final String LOGTAG = EDXDiscover.class.getSimpleName();
 
-    private static final int DISCOVERY_PACKET_LENGTH = 22;
     private static final int DISCOVERY_AGENT_PORT = 20560;
+
+    private static final int DISCOVERY_PACKET_LENGTH = 22;
 
     private static final int PACKET_STATUS_REQUEST = 0;
     private static final int PACKET_STATUS_RESPONSE = 1;
@@ -58,6 +59,7 @@ public class EDXDiscover
         if ((EDX.instance != null) && (EDX.instance.discover == null))
         {
             EDX.instance.discover = new EDXDiscover();
+            EDX.instance.discover.startThread();
         }
     }
 
@@ -65,17 +67,7 @@ public class EDXDiscover
     {
         if ((EDX.instance != null) && (EDX.instance.discover != null))
         {
-            EDXDiscover discover = EDX.instance.discover;
-
-            synchronized (discover.mutex)
-            {
-                if (discover.discoverThread != null)
-                {
-                    discover.discoverThread.interrupt();
-                    discover.discoverThread = null;
-                }
-            }
-
+            EDX.instance.discover.stopThread();
             EDX.instance.discover = null;
         }
     }
@@ -84,20 +76,27 @@ public class EDXDiscover
     private DatagramSocket socket;
     private final Object mutex = new Object();
 
-    private EDXDiscover()
+    private void startThread()
     {
-        try
+        synchronized (mutex)
         {
-            socket = new DatagramSocket();
-            socket.setSoTimeout(2000);
-            socket.setBroadcast(true);
-
-            discoverThread = new Thread(discoverRunnable);
-            discoverThread.start();
+            if (discoverThread == null)
+            {
+                discoverThread = new Thread(discoverRunnable);
+                discoverThread.start();
+            }
         }
-        catch (Exception ex)
+    }
+
+    private void stopThread()
+    {
+        synchronized (mutex)
         {
-            ex.printStackTrace();
+            if (discoverThread != null)
+            {
+                discoverThread.interrupt();
+                discoverThread = null;
+            }
         }
     }
 
@@ -120,9 +119,15 @@ public class EDXDiscover
 
             try
             {
+                socket = new DatagramSocket();
+                socket.setSoTimeout(2000);
+                socket.setBroadcast(true);
+
                 byte[] helloPacket = getDiscoveryHeader();
-                InetAddress ipbroadcast = InetAddress.getByName("255.255.255.255");
-                DatagramPacket hello = new DatagramPacket(helloPacket, helloPacket.length, ipbroadcast, DISCOVERY_AGENT_PORT);
+                DatagramPacket hello = new DatagramPacket(helloPacket, helloPacket.length);
+
+                hello.setAddress(InetAddress.getByName("255.255.255.255"));
+                hello.setPort(DISCOVERY_AGENT_PORT);
 
                 socket.send(hello);
             }
@@ -130,30 +135,37 @@ public class EDXDiscover
             {
             }
 
-            ArrayList<String> dupstuff = new ArrayList<>();
-            long exittime = System.currentTimeMillis() + 10 * 1000;
+            //
+            // Collect responses for a certain time.
+            //
 
-            while ((discoverThread != null) && (System.currentTimeMillis() < exittime))
+            if (socket != null)
             {
-                try
-                {
-                    byte[] rxbuf = new byte[1024];
-                    DatagramPacket packet = new DatagramPacket(rxbuf, rxbuf.length);
-                    socket.receive(packet);
+                ArrayList<String> dupstuff = new ArrayList<>();
+                long exittime = System.currentTimeMillis() + 10 * 1000;
 
-                    String dupkey = packet.getAddress() + ":" + packet.getPort();
-                    if (dupstuff.contains(dupkey)) continue;
-                    dupstuff.add(dupkey);
-
-                    buildDeviceDescription(packet);
-                }
-                catch (Exception ignore)
+                while ((discoverThread != null) && (System.currentTimeMillis() < exittime))
                 {
+                    try
+                    {
+                        byte[] rxbuf = new byte[1024];
+                        DatagramPacket packet = new DatagramPacket(rxbuf, rxbuf.length);
+                        socket.receive(packet);
+
+                        String dupkey = packet.getAddress() + ":" + packet.getPort();
+                        if (dupstuff.contains(dupkey)) continue;
+                        dupstuff.add(dupkey);
+
+                        buildDeviceDescription(packet);
+                    }
+                    catch (Exception ignore)
+                    {
+                    }
                 }
+
+                socket.close();
+                socket = null;
             }
-
-            socket.close();
-            socket = null;
 
             synchronized (mutex)
             {
@@ -164,7 +176,7 @@ public class EDXDiscover
         }
     };
 
-    private static byte[] getDiscoveryHeader()
+    private byte[] getDiscoveryHeader()
     {
         byte[] data = new byte[DISCOVERY_PACKET_LENGTH];
 
@@ -199,7 +211,7 @@ public class EDXDiscover
 
     @SuppressLint("DefaultLocale")
     @SuppressWarnings("PointlessArithmeticExpression")
-    private static void buildDeviceDescription(DatagramPacket packet)
+    private void buildDeviceDescription(DatagramPacket packet)
     {
         byte[] data = packet.getData();
         int dlen = packet.getLength();

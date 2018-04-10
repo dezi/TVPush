@@ -24,7 +24,7 @@ public class EDXPostDevice
     private static final String LOGTAG = EDXPostDevice.class.getSimpleName();
 
     @Nullable
-    public static String getPost(String urlstr, String post, JSONObject headers, String user, String pass)
+    public static String getPost(String urlstr, String post, String user, String pass)
     {
         try
         {
@@ -57,8 +57,6 @@ public class EDXPostDevice
                 for (String val : entries.getValue())
                 {
                     Log.d(LOGTAG, "getPost: request key=" + key + " val=" + val);
-
-                    if (headers != null) Json.put(headers, key, val);
                 }
             }
 
@@ -83,8 +81,6 @@ public class EDXPostDevice
                 for (String val : entries.getValue())
                 {
                     Log.d(LOGTAG, "getPost: response key=" + key + " val=" + val);
-
-                    if (headers != null) Json.put(headers, key, val);
                 }
             }
 

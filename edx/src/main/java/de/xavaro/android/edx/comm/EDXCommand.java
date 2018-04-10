@@ -76,7 +76,7 @@ public class EDXCommand
 
         Log.d(LOGTAG, "execCommand: xml=" + xml);
 
-        String result = EDXPostDevice.getPost(url, xml, new JSONObject(), user, pass);
+        String result = EDXPostDevice.getPost(url, xml, user, pass);
 
         if (result != null)
         {
