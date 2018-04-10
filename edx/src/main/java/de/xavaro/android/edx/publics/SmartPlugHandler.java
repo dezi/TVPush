@@ -38,12 +38,14 @@ public class SmartPlugHandler implements PUBSmartPlug
             @Override
             public void run()
             {
-                if (EDXCommand.setPowerStatus(ipaddr, ipport, user, pass, (onoff == 1)))
+                int res = EDXCommand.setPowerStatus(ipaddr, ipport, user, pass, onoff);
+
+                if (res >= 0)
                 {
                     JSONObject status = new JSONObject();
 
                     Json.put(status, "uuid", uuid);
-                    Json.put(status, "plugstate", onoff);
+                    Json.put(status, "plugstate", res);
 
                     EDX.instance.onDeviceStatus(status);
                 }

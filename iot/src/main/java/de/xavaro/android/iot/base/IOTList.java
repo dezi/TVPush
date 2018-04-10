@@ -71,6 +71,19 @@ public class IOTList<T>
         }
     }
 
+    @Nullable
+    public JSONObject getEntryJson(String uuid)
+    {
+        T entry;
+
+        synchronized (list)
+        {
+            entry = list.get(uuid);
+        }
+
+        return ((entry != null) && (entry instanceof IOTObject)) ? ((IOTObject) entry).toJson() : null;
+    }
+
     public void putEntry(T iotObject)
     {
         synchronized (list)

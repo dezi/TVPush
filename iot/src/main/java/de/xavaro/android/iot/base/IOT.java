@@ -288,7 +288,7 @@ public class IOT implements
     //endregion OnADBToolHandlerRequest
 
     @Override
-    public boolean onDeviceStatusRequest(JSONObject iotDevice)
+    public boolean onDeviceStatusRequest(JSONObject device)
     {
         Log.d(LOGTAG, "onDeviceStatusRequest: STUB!");
 

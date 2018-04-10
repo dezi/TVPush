@@ -4,5 +4,5 @@ import org.json.JSONObject;
 
 public interface OnStatusRequest
 {
-    boolean onDeviceStatusRequest(JSONObject iotDevice);
+    boolean onDeviceStatusRequest(JSONObject device);
 }

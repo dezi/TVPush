@@ -8,6 +8,7 @@ import org.json.JSONArray;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.status.IOTStatus;
@@ -23,6 +24,7 @@ public class IOTAlive
         if ((IOT.instance != null) && (IOT.instance.alive == null))
         {
             IOT.instance.alive = new IOTAlive();
+            IOT.instance.alive.startThread();
         }
     }
 
@@ -30,36 +32,41 @@ public class IOTAlive
     {
         if ((IOT.instance != null) && (IOT.instance.alive != null))
         {
-            IOTAlive alive = IOT.instance.alive;
-
-            if (alive.aliveThread != null)
-            {
-                alive.aliveThread.interrupt();
-                alive.aliveThread = null;
-            }
-
+            IOT.instance.alive.stopThread();
             IOT.instance.alive = null;
         }
     }
 
-    private final static Map<String, Long> alivesStatus = new HashMap<>();
-    private final static Map<String, Long> alivesNetwork = new HashMap<>();
-    private final static Map<String, Long> alivesRequest = new HashMap<>();
+    private final Map<String, Long> alivesStatus = new HashMap<>();
+    private final Map<String, Long> alivesNetwork = new HashMap<>();
+    private final Map<String, Long> alivesRequest = new HashMap<>();
 
     private Thread aliveThread;
 
-    public IOTAlive()
+    private void startThread()
     {
-        aliveThread = new Thread(runner);
-        aliveThread.start();
+        if (aliveThread == null)
+        {
+            aliveThread = new Thread(aliveRunnable);
+            aliveThread.start();
+        }
     }
 
-    private final Runnable runner = new Runnable()
+    private void stopThread()
+    {
+        if (aliveThread != null)
+        {
+            aliveThread.interrupt();
+            aliveThread = null;
+        }
+    }
+
+    private final Runnable aliveRunnable = new Runnable()
     {
         @Override
         public void run()
         {
-            Log.d(LOGTAG, "runner: start.");
+            Log.d(LOGTAG, "aliveRunnable: start.");
 
             int index = 0;
             JSONArray list = null;
@@ -85,7 +92,7 @@ public class IOTAlive
                 performStatus(uuid);
             }
 
-            Log.d(LOGTAG, "runner: finished.");
+            Log.d(LOGTAG, "aliveRunnable: finished.");
         }
     };
 
@@ -114,7 +121,9 @@ public class IOTAlive
     {
         Long lastRequest = getRequested(uuid);
 
-        if ((lastRequest != null) && ((System.currentTimeMillis() - lastRequest) < (10 * 1000)))
+        int secs = new Random().nextInt(6) + 6;
+
+        if ((lastRequest != null) && ((System.currentTimeMillis() - lastRequest) < (secs * 1000)))
         {
             return;
         }
@@ -123,8 +132,6 @@ public class IOTAlive
 
         IOTDevice device = IOTDevice.list.getEntry(uuid);
         if (device == null) return;
-
-        if (! device.driver.equals("tpl")) return;
 
         IOT.instance.onDeviceStatusRequest(device.toJson());
     }

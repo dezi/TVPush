@@ -4,6 +4,8 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.iot.status.IOTCredential;
+import de.xavaro.android.iot.status.IOTStatus;
 import pub.android.interfaces.pub.PUBADBTool;
 
 import de.xavaro.android.adb.base.ADB;
@@ -49,28 +51,27 @@ public class SystemsIOT extends IOT
     }
 
     @Override
-    public boolean onDeviceStatusRequest(JSONObject iotDevice)
+    public boolean onDeviceStatusRequest(JSONObject device)
     {
-        String uuid = Json.getString(iotDevice, "uuid");
-        String driver = Json.getString(iotDevice, "driver");
+        String uuid = Json.getString(device, "uuid");
+        String driver = Json.getString(device, "driver");
+        String nick = Json.getString(device, "nick");
 
-        Log.d(LOGTAG, "onDeviceStatusRequest: uuid=" + uuid + " driver=" + driver);
+        Log.d(LOGTAG, "onDeviceStatusRequest: uuid=" + uuid + " driver=" + driver + " nick=" + nick);
 
         if ((uuid == null) || (driver == null)) return false;
 
-        if (driver.equals("p2p") && (SystemsP2P.instance != null))
-        {
-
-        }
+        JSONObject status = IOTStatus.list.getEntryJson(uuid);
+        JSONObject credential = IOTCredential.list.getEntryJson(uuid);
 
         if (driver.equals("tpl") && (SystemsTPL.instance != null))
         {
-            return SystemsTPL.instance.putDeviceStatusRequest(iotDevice);
+            return SystemsTPL.instance.getDeviceStatusRequest(device, status, credential);
         }
 
-        if (driver.equals("sny") && (SystemsSNY.instance != null))
+        if (driver.equals("edx") && (SystemsEDX.instance != null))
         {
-
+            return SystemsEDX.instance.getDeviceStatusRequest(device, status, credential);
         }
 
         return false;

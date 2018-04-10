@@ -48,18 +48,18 @@ public class EDXCommand
         execCommand(ipaddr, ipport, user, pass, getSystemInfo);
     }
 
-    public static boolean getPowerStatus(String ipaddr, int ipport, String user, String pass)
+    public static int getPowerStatus(String ipaddr, int ipport, String user, String pass)
     {
         String result = execCommand(ipaddr, ipport, user, pass, getStatus);
 
-        return (result != null) && result.contains("<Device.System.Power.State>ON</Device.System.Power.State>");
+        return (result == null) ? -1 : result.contains("<Device.System.Power.State>ON</Device.System.Power.State>") ? 1 : 0;
     }
 
-    public static boolean setPowerStatus(String ipaddr, int ipport, String user, String pass, boolean onOff)
+    public static int setPowerStatus(String ipaddr, int ipport, String user, String pass, int onOff)
     {
-        String result = execCommand(ipaddr, ipport, user, pass, onOff ? switchOn : switchOff);
+        String result = execCommand(ipaddr, ipport, user, pass, (onOff == 1) ? switchOn : switchOff);
 
-        return (result != null) && result.contains("<CMD id=\"setup\">OK</CMD>");
+        return ((result == null) || ! result.contains("<CMD id=\"setup\">OK</CMD>")) ? -1 : onOff;
     }
 
     @Nullable

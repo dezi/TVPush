@@ -8,7 +8,7 @@ import org.json.JSONObject;
 import pub.android.interfaces.ext.GetSmartBulbHandler;
 import pub.android.interfaces.ext.GetSmartPlugHandler;
 import pub.android.interfaces.ext.OnDeviceHandler;
-import pub.android.interfaces.ext.PutStatusRequest;
+import pub.android.interfaces.ext.GetDeviceStatusRequest;
 import pub.android.interfaces.all.DoSomethingHandler;
 import pub.android.interfaces.all.SubSystemHandler;
 import pub.android.interfaces.pub.PUBSmartBulb;
@@ -31,7 +31,7 @@ import de.xavaro.android.tpl.R;
 public class TPL extends OnInterfacesStubs implements
         SubSystemHandler,
         OnDeviceHandler,
-        PutStatusRequest,
+        GetDeviceStatusRequest,
         DoSomethingHandler,
         GetSmartPlugHandler,
         GetSmartBulbHandler
@@ -94,14 +94,6 @@ public class TPL extends OnInterfacesStubs implements
         TPLMessageHandler.stopService();
 
         onSubsystemStopped("tpl", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
-    }
-
-    @Override
-    public boolean putDeviceStatusRequest(JSONObject iotDevice)
-    {
-        TPLHandlerSysInfo.sendAllGetSysinfo();
-
-        return true;
     }
 
     @Override
@@ -243,5 +235,13 @@ public class TPL extends OnInterfacesStubs implements
         }
 
         return false;
+    }
+
+    @Override
+    public boolean getDeviceStatusRequest(JSONObject device, JSONObject status, JSONObject credential)
+    {
+        TPLHandlerSysInfo.sendAllGetSysinfo();
+
+        return true;
     }
 }

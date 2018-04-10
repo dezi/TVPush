@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Base64;
@@ -96,5 +97,22 @@ public class Simple
         }
 
         return null;
+    }
+
+    public static boolean isUIThread()
+    {
+        return (Looper.getMainLooper().getThread() == Thread.currentThread());
+    }
+
+    public static void runBackground(Runnable runnable)
+    {
+        if (isUIThread())
+        {
+            new Thread(runnable).start();
+        }
+        else
+        {
+            runnable.run();
+        }
     }
 }

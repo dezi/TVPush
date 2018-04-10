@@ -6,13 +6,14 @@ import android.app.Application;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import de.xavaro.android.edx.comm.EDXCommand;
 import de.xavaro.android.edx.publics.SmartPlugHandler;
 import de.xavaro.android.edx.simple.Log;
-import pub.android.interfaces.ext.GetDeviceCredentials;
 import pub.android.interfaces.ext.GetDevicesRequest;
 import pub.android.interfaces.ext.GetSmartPlugHandler;
 import pub.android.interfaces.ext.OnDeviceHandler;
 import pub.android.interfaces.all.SubSystemHandler;
+import pub.android.interfaces.ext.GetDeviceStatusRequest;
 import pub.android.interfaces.pub.PUBSmartPlug;
 import pub.android.stubs.OnInterfacesStubs;
 
@@ -26,7 +27,8 @@ public class EDX extends OnInterfacesStubs implements
         SubSystemHandler,
         OnDeviceHandler,
         GetDevicesRequest,
-        GetSmartPlugHandler
+        GetSmartPlugHandler,
+        GetDeviceStatusRequest
 {
     private static final String LOGTAG = EDX.class.getSimpleName();
 
@@ -129,6 +131,8 @@ public class EDX extends OnInterfacesStubs implements
 
     //endregion GetDevicesRequest
 
+    //region GetSmartPlugHandler
+
     @Override
     public PUBSmartPlug getSmartPlugHandler(JSONObject device, JSONObject status, JSONObject credential)
     {
@@ -145,4 +149,47 @@ public class EDX extends OnInterfacesStubs implements
         return ((uuid != null) && (ipaddr != null) && (ipport !=0) && (user != null) && (pass != null))
                 ? new SmartPlugHandler(uuid, ipaddr, ipport, user, pass) : null;
     }
+
+    //endregion GetSmartPlugHandler
+
+    //region PutStatusRequest
+
+    @Override
+    public boolean getDeviceStatusRequest(JSONObject device, final JSONObject status, JSONObject credential)
+    {
+        JSONObject credentials = Json.getObject(credential, "credentials");
+
+        final String ipaddr = Json.getString(status, "ipaddr");
+        final int ipport = Json.getInt(status, "ipport");
+
+        final String user = Json.getString(credentials, "localUser");
+        final String pass = Json.getString(credentials, "localPass");
+
+        if ((ipaddr != null) && (ipport != 0) && (user != null) && (pass != null))
+        {
+            Runnable runnable = new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    int res = EDXCommand.getPowerStatus(ipaddr, ipport, user, pass);
+
+                    if (res >= 0)
+                    {
+                        Json.put(status, "plugstate", res);
+
+                        EDX.instance.onDeviceStatus(status);
+                    }
+                }
+            };
+
+            Simple.runBackground(runnable);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    //endregion PutStatusRequest
 }

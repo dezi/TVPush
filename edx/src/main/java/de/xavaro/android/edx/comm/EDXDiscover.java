@@ -301,8 +301,8 @@ public class EDXDiscover
 
         if ((user != null) && (pass != null))
         {
-            boolean on = EDXCommand.getPowerStatus(ipaddr, ipport, user, pass);
-            Json.put(status, "plugstate", on ? 1 : 0);
+            int res = EDXCommand.getPowerStatus(ipaddr, ipport, user, pass);
+            if (res >= 0) Json.put(status, "plugstate", res);
         }
 
         EDX.instance.onDeviceStatus(status);
