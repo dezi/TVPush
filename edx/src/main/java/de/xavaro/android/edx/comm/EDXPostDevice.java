@@ -5,19 +5,14 @@ import android.support.annotation.Nullable;
 import android.util.Base64;
 import android.util.Log;
 
-import org.json.JSONObject;
-
 import java.security.MessageDigest;
 import java.net.HttpURLConnection;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.List;
 import java.util.Map;
 import java.net.URL;
-
-import de.xavaro.android.edx.simple.Json;
 
 public class EDXPostDevice
 {
@@ -49,6 +44,7 @@ public class EDXPostDevice
             // Dump request headers.
             //
 
+            /*
             for (Map.Entry<String, List<String>> entries : connection.getRequestProperties().entrySet())
             {
                 String key = entries.getKey();
@@ -59,6 +55,7 @@ public class EDXPostDevice
                     Log.d(LOGTAG, "getPost: request key=" + key + " val=" + val);
                 }
             }
+            */
 
             connection.connect();
 
@@ -73,6 +70,7 @@ public class EDXPostDevice
             // Dump repsonse headers.
             //
 
+            /*
             for (Map.Entry<String, List<String>> entries : connection.getHeaderFields().entrySet())
             {
                 String key = entries.getKey();
@@ -83,6 +81,7 @@ public class EDXPostDevice
                     Log.d(LOGTAG, "getPost: response key=" + key + " val=" + val);
                 }
             }
+            */
 
             if (connection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED)
             {
@@ -181,8 +180,8 @@ public class EDXPostDevice
 
         connection.setRequestProperty("Authorization", "Basic " + auth);
 
-        Log.d(LOGTAG, "basicAuth: user=" + user + " pass=" + pass);
-        Log.d(LOGTAG, "basicAuth: Basic " + auth);
+        //Log.d(LOGTAG, "basicAuth: user=" + user + " pass=" + pass);
+        //Log.d(LOGTAG, "basicAuth: Basic " + auth);
     }
 
     private static void digestAuth(HttpURLConnection connection, String authrequest, String user, String pass)
@@ -204,23 +203,21 @@ public class EDXPostDevice
 
         String response = md5Hex(ha1 + ":" + nonce + ":" + nc + ":" + cnonce + ":" + qop + ":" + ha2);
 
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("username").append("=\"").append(user).append("\", ");
-        sb.append("realm").append("=\"").append(realm).append("\", ");
-        sb.append("nonce").append("=\"").append(nonce).append("\", ");
-        sb.append("uri").append("=\"").append(uri).append("\", ");
-        sb.append("qop").append("=\"").append(qop).append("\", ");
-        sb.append("nc").append("=\"").append(nc).append("\", ");
-        sb.append("cnonce").append("=\"").append(cnonce).append("\", ");
-        sb.append("response").append("=\"").append(response).append("\"");
-
-        String auth = sb.toString();
+        String auth = ""
+                + "username" + "=\"" + user + "\", "
+                + "realm" + "=\"" + realm + "\", "
+                + "nonce" + "=\"" + nonce + "\", "
+                + "uri" + "=\"" + uri + "\", "
+                + "qop" + "=\"" + qop + "\", "
+                + "nc" + "=\"" + nc + "\", "
+                + "cnonce" + "=\"" + cnonce + "\", "
+                + "response" + "=\"" + response + "\""
+                ;
 
         connection.setRequestProperty("Authorization", "Digest " + auth);
 
-        Log.d(LOGTAG, "digestAuth: user=" + user + " pass=" + pass);
-        Log.d(LOGTAG, "digestAuth: Digest " + auth);
+        //Log.d(LOGTAG, "digestAuth: user=" + user + " pass=" + pass);
+        //Log.d(LOGTAG, "digestAuth: Digest " + auth);
     }
 
     private static Map<String, String> parseAuthHeader(String headerString)
@@ -237,6 +234,7 @@ public class EDXPostDevice
             {
                 String key = keyval.substring(0, keyval.indexOf("=")).trim();
                 String val = keyval.substring(keyval.indexOf("=") + 1);
+
                 values.put(key.trim(), val.replaceAll("\"", "").trim());
             }
         }
@@ -270,6 +268,7 @@ public class EDXPostDevice
         return "";
     }
 
+    @SuppressWarnings("StringConcatenationInLoop")
     private static String generateNonce()
     {
         String nonce = "";

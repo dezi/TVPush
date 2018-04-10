@@ -3,8 +3,6 @@ package de.xavaro.android.edx.comm;
 import android.support.annotation.Nullable;
 import android.annotation.SuppressLint;
 
-import org.json.JSONObject;
-
 import de.xavaro.android.edx.simple.Log;
 
 public class EDXCommand
@@ -85,7 +83,7 @@ public class EDXCommand
             result = result.replaceAll(">@@</", "></");
         }
 
-        Log.d(LOGTAG, "execCommand: result=" + result);
+        //Log.d(LOGTAG, "execCommand: result=" + result);
 
         return result;
     }

@@ -1,7 +1,8 @@
 package de.xavaro.android.edx.comm;
 
-import android.os.Build;
 import android.support.annotation.Nullable;
+
+import android.os.Build;
 
 import java.net.HttpURLConnection;
 import java.io.InputStream;
