@@ -2,10 +2,11 @@ package de.xavaro.android.edx.publics;
 
 import org.json.JSONObject;
 
+import pub.android.interfaces.pub.PUBSmartPlug;
+
 import de.xavaro.android.edx.base.EDX;
 import de.xavaro.android.edx.comm.EDXCommand;
 import de.xavaro.android.edx.simple.Json;
-import pub.android.interfaces.pub.PUBSmartPlug;
 
 public class SmartPlugHandler implements PUBSmartPlug
 {
