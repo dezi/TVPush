@@ -72,7 +72,7 @@ public class EDXCommand
                 + " user=" + user
                 + " pass=" + pass);
 
-        Log.d(LOGTAG, "execCommand: xml=" + xml);
+        //Log.d(LOGTAG, "execCommand: xml=" + xml);
 
         String result = EDXPostDevice.getPost(url, xml, user, pass);
 

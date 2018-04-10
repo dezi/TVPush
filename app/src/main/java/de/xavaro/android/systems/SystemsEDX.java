@@ -47,8 +47,6 @@ public class SystemsEDX extends EDX
     @Override
     public void onDeviceStatus(JSONObject status)
     {
-        Log.d(LOGTAG, "onDeviceStatus:");
-
         IOT.instance.register.registerDeviceStatus(status);
     }
 

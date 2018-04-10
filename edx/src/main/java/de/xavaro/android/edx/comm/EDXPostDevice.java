@@ -59,7 +59,7 @@ public class EDXPostDevice
 
             connection.connect();
 
-            Log.d(LOGTAG, "getPost: post=" + post);
+            //Log.d(LOGTAG, "getPost: post=" + post);
 
             OutputStream os = connection.getOutputStream();
             os.write(post.getBytes());
