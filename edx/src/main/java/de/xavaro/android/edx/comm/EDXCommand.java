@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 
 import de.xavaro.android.edx.simple.Log;
 
+@SuppressWarnings("unused")
 public class EDXCommand
 {
     private final static String LOGTAG = EDXCommand.class.getSimpleName();
