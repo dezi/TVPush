@@ -2,13 +2,8 @@ package de.xavaro.android.bcn.beacon;
 
 import android.support.annotation.Nullable;
 
-import android.bluetooth.le.AdvertiseCallback;
-import android.bluetooth.le.AdvertiseSettings;
-
 public class BCNDefs
 {
-    private static final String LOGTAG = BCNDefs.class.getSimpleName();
-
     public final static int MANUFACTURER_IOT = 4711;
     public final static int MANUFACTURER_APPLE = 76;
     public final static int MANUFACTURER_SAMSUNG = 117;
