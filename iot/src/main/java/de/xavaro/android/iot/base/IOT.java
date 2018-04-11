@@ -134,8 +134,6 @@ public class IOT implements
 
                 IOTProximServer.startService();
 
-                IOTProximScanner.startService(appcontext);
-
                 IOTProximLocation.startService(appcontext);
 
                 IOTHandleHelo.sendHELO();

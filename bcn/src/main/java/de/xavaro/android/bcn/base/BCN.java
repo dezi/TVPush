@@ -29,10 +29,13 @@ public class BCN extends OnInterfacesStubs implements
 
     public static BCN instance;
 
+    public Application appcontext;
     public BCNScanner scanner;
 
     public BCN(Application application)
     {
+        appcontext = application;
+
         Simple.initialize(application);
     }
 
@@ -72,13 +75,17 @@ public class BCN extends OnInterfacesStubs implements
     @Override
     public void startSubsystem(String subsystem)
     {
-        onSubsystemStarted("bcn", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
+        BCNScanner.startService(appcontext);
+
+        onSubsystemStarted(subsystem, SubSystemHandler.SUBSYSTEM_RUN_STARTED);
     }
 
     @Override
     public void stopSubsystem(String subsystem)
     {
-        onSubsystemStopped("bcn", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
+        BCNScanner.stopService();
+
+        onSubsystemStopped(subsystem, SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
     }
 
     //endregion SubSystemHandler
