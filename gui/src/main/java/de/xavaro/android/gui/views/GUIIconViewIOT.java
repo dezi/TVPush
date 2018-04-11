@@ -148,11 +148,11 @@ public class GUIIconViewIOT extends GUIIconView
                 && (device.type != null)
                 && device.type.equals("beacon"))
             {
-                Long lastPing = (IOT.instance.alive != null) ? IOT.instance.alive.getAliveNetwork(device.uuid) : null;
+                Long lastAlive = (IOT.instance.alive != null) ? IOT.instance.alive.getAlive(device.uuid) : null;
 
-                if (lastPing != null)
+                if ((lastAlive != null) && (lastAlive > 0))
                 {
-                    long age = (System.currentTimeMillis() - lastPing) / 1000;
+                    long age = (System.currentTimeMillis() - lastAlive) / 1000;
 
                     if ((age > 15) || !blink)
                     {

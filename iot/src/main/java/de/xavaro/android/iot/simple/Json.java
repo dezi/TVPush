@@ -17,7 +17,7 @@ import java.util.Set;
 
 public class Json
 {
-    private static final String LOGTAG = Json.class.getSimpleName();
+    private static final String LOGTAG = Json.class.getSimpleName() + "IOT";
 
     @Nullable
     public static JSONObject fromStringObject(String jsonstr)
@@ -233,6 +233,7 @@ public class Json
         catch (Exception ex)
         {
             Log.d(LOGTAG, ex.toString());
+            ex.printStackTrace();
         }
     }
 

@@ -121,11 +121,11 @@ public class GUIListEntryIOT extends GUIListEntry
         {
             headerViev.setText(iotThing.name);
 
-            Long lastPing = (IOT.instance.alive != null) ? IOT.instance.alive.getAliveNetwork(uuid) : null;
+            Long lastAlive = (IOT.instance.alive != null) ? IOT.instance.alive.getAlive(uuid) : null;
 
-            if (lastPing != null)
+            if ((lastAlive != null) && (lastAlive > 0))
             {
-                boolean pingt = (System.currentTimeMillis() - lastPing) < (60 * 1000);
+                boolean pingt = (System.currentTimeMillis() - lastAlive) < (60 * 1000);
                 setStatusColor(pingt ? GUIDefs.STATUS_COLOR_GREEN : GUIDefs.STATUS_COLOR_RED);
             }
 

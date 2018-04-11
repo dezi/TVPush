@@ -24,6 +24,7 @@ public class IOTRegister
     {
         JSONObject device = Json.getObject(register, "device");
         JSONObject credentials = Json.getObject(register, "credentials");
+        if (device == null) device = register;
 
         String uuid = Json.getString(device, "uuid");
         String name = Json.getString(device, "name");

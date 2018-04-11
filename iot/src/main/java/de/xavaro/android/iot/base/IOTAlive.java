@@ -98,11 +98,14 @@ public class IOTAlive
 
     private void performPing(String uuid, String ipaddr)
     {
+        Long lastNetwork = getAliveNetwork(uuid);
         Long lastRequest = getRequested(ipaddr);
+
+        lastRequest = Math.max(lastNetwork, lastRequest);
 
         int secs = new Random().nextInt(6) + 6;
 
-        if ((lastRequest != null) && ((System.currentTimeMillis() - lastRequest) < (secs * 1000)))
+        if ((System.currentTimeMillis() - lastRequest) < (secs * 1000))
         {
             return;
         }
@@ -121,11 +124,14 @@ public class IOTAlive
 
     private void performStatus(String uuid)
     {
+        Long lastStatus = getAliveStatus(uuid);
         Long lastRequest = getRequested(uuid);
+
+        lastRequest = Math.max(lastStatus, lastRequest);
 
         int secs = new Random().nextInt(6) + 6;
 
-        if ((lastRequest != null) && ((System.currentTimeMillis() - lastRequest) < (secs * 1000)))
+        if ((System.currentTimeMillis() - lastRequest) < (secs * 1000))
         {
             return;
         }
@@ -138,12 +144,11 @@ public class IOTAlive
         IOT.instance.onDeviceStatusRequest(device.toJson());
     }
 
-    @Nullable
     private Long getRequested(String tag)
     {
         synchronized (alivesRequest)
         {
-            return Simple.getMapLong(alivesRequest, tag);
+            return (Simple.getMapLong(alivesRequest, tag) != null) ? Simple.getMapLong(alivesRequest, tag) : Long.valueOf(0);
         }
     }
 
@@ -163,12 +168,11 @@ public class IOTAlive
         }
     }
 
-    @Nullable
     public Long getAliveStatus(String uuid)
     {
         synchronized (alivesStatus)
         {
-            return Simple.getMapLong(alivesStatus, uuid);
+            return (Simple.getMapLong(alivesStatus, uuid) != null) ? Simple.getMapLong(alivesStatus, uuid) : Long.valueOf(0);
         }
     }
 
@@ -180,12 +184,19 @@ public class IOTAlive
         }
     }
 
-    @Nullable
     public Long getAliveNetwork(String uuid)
     {
         synchronized (alivesNetwork)
         {
-            return Simple.getMapLong(alivesNetwork, uuid);
+            return (Simple.getMapLong(alivesNetwork, uuid) != null) ? Simple.getMapLong(alivesNetwork, uuid) : Long.valueOf(0);
         }
+    }
+
+    public Long getAlive(String uuid)
+    {
+        Long lastStatus = getAliveStatus(uuid);
+        Long lastNetwork = getAliveNetwork(uuid);
+
+        return Math.max(lastStatus, lastNetwork);
     }
 }

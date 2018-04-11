@@ -6,7 +6,7 @@ public class Log
 
     public static String[] allow = new String[]
             {
-                    "tpl*"
+                    "bcn*"
             };
 
     public static void d(String logtag, String message)

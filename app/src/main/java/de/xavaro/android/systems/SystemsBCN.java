@@ -11,12 +11,12 @@ import de.xavaro.android.bcn.base.BCN;
 
 public class SystemsBCN extends BCN
 {
-    private static final String LOGTAG = SystemsBCN.class.getSimpleName();
-
     public SystemsBCN(Application application)
     {
         super(application);
     }
+
+    //region SubSystemHandler
 
     @Override
     public int getSubsystemState(String subsystem)
@@ -36,21 +36,23 @@ public class SystemsBCN extends BCN
         GUI.instance.subSystems.setSubsystemRunstate(subsystem, state);
     }
 
+    //endregion SubSystemHandler
+
+    //region OnDeviceHandler
+
     @Override
     public void onDeviceFound(JSONObject device)
     {
-        Log.d(LOGTAG, "onDeviceFound:");
-
         IOT.instance.register.registerDevice(device);
     }
 
     @Override
     public void onDeviceStatus(JSONObject status)
     {
-        Log.d(LOGTAG, "onDeviceStatus:");
-
         IOT.instance.register.registerDeviceStatus(status);
     }
+
+    //endregion OnDeviceHandler
 
     //region OnLocationHandler
 

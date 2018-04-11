@@ -265,6 +265,7 @@ public class BCNScanner
             }
         }
 
+        /*
         ParcelUuid serviceUuid = null;
         List<ParcelUuid> serviceUuids = result.getScanRecord().getServiceUuids();
 
@@ -307,6 +308,7 @@ public class BCNScanner
                 + " data=" + serviceDataUuid
                 + " scan=" + result.getScanRecord()
         );
+        */
     }
 
     @SuppressWarnings("SameReturnValue")
@@ -512,7 +514,7 @@ public class BCNScanner
             Json.put(beacondev, "nick", url);
             Json.put(beacondev, "model", name);
             Json.put(beacondev, "macaddr", macAddr);
-            Json.put(beacondev, "driver", "iot");
+            Json.put(beacondev, "driver", "bcn");
             Json.put(beacondev, "location", Simple.getConnectedWifiName());
 
             Json.put(beacondev, "capabilities", Json.jsonArrayFromSeparatedString(caps, "\\|"));
@@ -610,7 +612,7 @@ public class BCNScanner
             Json.put(beacondev, "nick", name);
             Json.put(beacondev, "vendor", BCNDefs.getAdvertiseVendor(vendor));
             Json.put(beacondev, "macaddr", macAddr);
-            Json.put(beacondev, "driver", "iot");
+            Json.put(beacondev, "driver", "bcn");
             Json.put(beacondev, "location", Simple.getConnectedWifiName());
 
             Json.put(beacondev, "capabilities", Json.jsonArrayFromSeparatedString(caps, "\\|"));
@@ -637,7 +639,7 @@ public class BCNScanner
     {
         Long lastUpdate = Simple.getMapLong(lastUpdates, uuid);
 
-        if ((lastUpdate == null) || ((System.currentTimeMillis() - lastUpdate) >= (30 * 1000)))
+        if ((lastUpdate == null) || ((System.currentTimeMillis() - lastUpdate) >= (5 * 1000)))
         {
             lastUpdates.put(uuid, System.currentTimeMillis());
 
@@ -733,7 +735,7 @@ public class BCNScanner
             Json.put(beacondev, "model", model);
             Json.put(beacondev, "vendor", BCNDefs.getAdvertiseVendor(vendor));
             Json.put(beacondev, "macaddr", macAddr);
-            Json.put(beacondev, "driver", "iot");
+            Json.put(beacondev, "driver", "bcn");
             Json.put(beacondev, "location", Simple.getConnectedWifiName());
 
             Json.put(beacondev, "capabilities", Json.jsonArrayFromSeparatedString(caps, "\\|"));

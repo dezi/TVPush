@@ -1,15 +1,6 @@
 package de.xavaro.android.gui.plugin;
 
 import android.content.Context;
-import android.graphics.Color;
-
-import de.xavaro.android.gui.views.GUIListEntryIOT;
-import de.xavaro.android.gui.base.GUIIcons;
-import de.xavaro.android.gui.simple.Simple;
-
-import de.xavaro.android.iot.things.IOTDevice;
-
-import de.xavaro.android.iot.base.IOTAlive;
 
 public class GUIPluginTitleListIOT extends GUIPluginTitleList
 {
