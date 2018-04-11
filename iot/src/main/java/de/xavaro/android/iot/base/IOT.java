@@ -1,15 +1,14 @@
 package de.xavaro.android.iot.base;
 
 import android.app.Application;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import de.xavaro.android.iot.proxim.IOTProximLocation;
+import de.xavaro.android.iot.proxim.IOTPosition;
 import de.xavaro.android.iot.comm.IOTMessageHandler;
-import de.xavaro.android.iot.proxim.IOTProximServer;
+import de.xavaro.android.iot.proxim.IOTAdvertiser;
 import de.xavaro.android.iot.status.IOTCredential;
 import de.xavaro.android.iot.status.IOTMetadata;
 import de.xavaro.android.iot.things.IOTLocation;
@@ -48,8 +47,8 @@ public class IOT implements
     public IOTAlive alive;
     public IOTRegister register;
 
-    public IOTProximServer proximServer;
-    public IOTProximLocation proximLocationListener;
+    public IOTAdvertiser proximServer;
+    public IOTPosition proximLocationListener;
 
     private Application appcontext;
 
@@ -130,9 +129,9 @@ public class IOT implements
 
                 IOTMessageHandler.initialize();
 
-                IOTProximServer.startService();
+                IOTAdvertiser.startService();
 
-                IOTProximLocation.startService(appcontext);
+                IOTPosition.startService(appcontext);
 
                 IOTHandleHelo.sendHELO();
 
@@ -170,9 +169,9 @@ public class IOT implements
         {
             if (getSubsystemState("iot") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
             {
-                IOTProximLocation.stopService();
+                IOTPosition.stopService();
 
-                IOTProximServer.stopService();
+                IOTAdvertiser.stopService();
 
                 IOTHuman.list = null;
                 IOTDevice.list = null;

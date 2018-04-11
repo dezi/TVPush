@@ -15,6 +15,7 @@ import android.util.Log;
 
 import de.xavaro.android.iot.simple.Simple;
 
+@SuppressWarnings("WeakerAccess")
 public class IOTProxim
 {
     private static final String LOGTAG = IOTProxim.class.getSimpleName();
@@ -50,21 +51,6 @@ public class IOTProxim
         }
 
         return "UNKNOWN_TYPE=" + type;
-    }
-
-    @Nullable
-    public static String getAdvertiseVendor(int vendor)
-    {
-        switch (vendor)
-        {
-            case MANUFACTURER_APPLE: return "Apple, Inc.";
-            case MANUFACTURER_SAMSUNG: return "Samsung Electronics Co. Ltd.";
-            case MANUFACTURER_GOOGLE: return "Google";
-            case MANUFACTURER_SONY: return "Sony Corporation";
-            case MANUFACTURER_IOT: return "IOT";
-        }
-
-        return null;
     }
 
     public static String getBTAdvertiserFailDescription(int error)
@@ -145,18 +131,5 @@ public class IOTProxim
         Log.d(LOGTAG, "checkBTPermissions: LOCATION=" + locman);
         Log.d(LOGTAG, "checkBTPermissions: GPS_PROVIDER=" + locgps);
         Log.d(LOGTAG, "checkBTPermissions: NETWORK_PROVIDER=" + locnet);
-    }
-
-    public static byte getEstimatedTxPowerFromPowerlevel(int powerlevel)
-    {
-        switch (powerlevel)
-        {
-            case AdvertiseSettings.ADVERTISE_TX_POWER_ULTRA_LOW: return -40;
-            case AdvertiseSettings.ADVERTISE_TX_POWER_LOW: return -30;
-            case AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM: return -23;
-            case AdvertiseSettings.ADVERTISE_TX_POWER_HIGH: return -15;
-        }
-
-        return -23;
     }
 }

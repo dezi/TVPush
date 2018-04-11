@@ -1,33 +1,34 @@
 package de.xavaro.android.iot.proxim;
 
 import android.support.annotation.Nullable;
+
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.Location;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.HttpURLConnection;
+import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Iterator;
+import java.net.URL;
 
-import de.xavaro.android.iot.base.IOT;
-import de.xavaro.android.iot.simple.Json;
-import de.xavaro.android.iot.simple.Simple;
+import de.xavaro.android.iot.simple.Log;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
+import de.xavaro.android.iot.simple.Simple;
+import de.xavaro.android.iot.simple.Json;
+import de.xavaro.android.iot.base.IOT;
 
-public class IOTProximLocation implements LocationListener
+public class IOTPosition implements LocationListener
 {
-    private static final String LOGTAG = IOTProximLocation.class.getSimpleName();
+    private static final String LOGTAG = IOTPosition.class.getSimpleName();
 
     private boolean gpsIsEnabled;
     private boolean networkIsEnabled;
@@ -38,7 +39,7 @@ public class IOTProximLocation implements LocationListener
     {
         if ((IOT.instance != null) && (IOT.instance.proximLocationListener == null))
         {
-            IOT.instance.proximLocationListener = new IOTProximLocation();
+            IOT.instance.proximLocationListener = new IOTPosition();
             IOT.instance.proximLocationListener.start(appcontext);
         }
     }
@@ -47,7 +48,7 @@ public class IOTProximLocation implements LocationListener
     {
         if ((IOT.instance != null) && (IOT.instance.proximLocationListener != null))
         {
-            IOT.instance.proximLocationListener.stop();;
+            IOT.instance.proximLocationListener.stop();
             IOT.instance.proximLocationListener = null;
         }
     }
@@ -295,7 +296,7 @@ public class IOTProximLocation implements LocationListener
 
         Iterator<String> keys = lastLocations.keys();
 
-        //Log.d(LOGTAG, "addLocationMeasurement: ------------");
+        Log.d(LOGTAG, "addLocationMeasurement: ------------");
 
         while (keys.hasNext())
         {
@@ -335,7 +336,6 @@ public class IOTProximLocation implements LocationListener
             dist = (dist >= 1000) ? 999: dist;
             fact = Math.round(fact * 100f) / 100f;
 
-            /*
             Log.d(LOGTAG, "addLocationMeasurement:"
                     + " ages=" + Simple.padLeft(ages, 3)
                     + " txpo=" + Simple.padLeft(txpo, 2)
@@ -345,7 +345,6 @@ public class IOTProximLocation implements LocationListener
                     + " prov=" + Simple.padRight(prov, 9)
                     + " lkey=" + lkey
             );
-            */
         }
     }
 }

@@ -56,40 +56,4 @@ public class BCNDefs
 
         return null;
     }
-
-    public static String getBTAdvertiserFailDescription(int error)
-    {
-        switch (error)
-        {
-            case AdvertiseCallback.ADVERTISE_FAILED_FEATURE_UNSUPPORTED:
-                return "ADVERTISE_FAILED_FEATURE_UNSUPPORTED";
-
-            case AdvertiseCallback.ADVERTISE_FAILED_TOO_MANY_ADVERTISERS:
-                return "ADVERTISE_FAILED_TOO_MANY_ADVERTISERS";
-
-            case AdvertiseCallback.ADVERTISE_FAILED_ALREADY_STARTED:
-                return "ADVERTISE_FAILED_ALREADY_STARTED";
-
-            case AdvertiseCallback.ADVERTISE_FAILED_DATA_TOO_LARGE:
-                return "ADVERTISE_FAILED_DATA_TOO_LARGE";
-
-            case AdvertiseCallback.ADVERTISE_FAILED_INTERNAL_ERROR:
-                return "ADVERTISE_FAILED_INTERNAL_ERROR";
-        }
-
-        return "UNKNOWN_ERROR=" + error;
-    }
-
-    public static byte getEstimatedTxPowerFromPowerlevel(int powerlevel)
-    {
-        switch (powerlevel)
-        {
-            case AdvertiseSettings.ADVERTISE_TX_POWER_ULTRA_LOW: return -40;
-            case AdvertiseSettings.ADVERTISE_TX_POWER_LOW: return -30;
-            case AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM: return -23;
-            case AdvertiseSettings.ADVERTISE_TX_POWER_HIGH: return -15;
-        }
-
-        return -23;
-    }
 }

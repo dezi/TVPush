@@ -19,19 +19,19 @@ import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.simple.Simple;
 import de.xavaro.android.iot.base.IOT;
 
-public class IOTProximServer
+public class IOTAdvertiser
 {
-    private static final String LOGTAG = IOTProximServer.class.getSimpleName();
+    private static final String LOGTAG = IOTAdvertiser.class.getSimpleName();
 
     private int powerLevel;
     private AdvertiseSettings settings;
     private BluetoothLeAdvertiser btLEAdvertiser;
 
-    private IOTProximCallback callbackGPSCoarse;
-    private IOTProximCallback callbackGPSFine;
-    private IOTProximCallback callbackIOTHuman;
-    private IOTProximCallback callbackIOTDevice;
-    private IOTProximCallback callbackIOTDevname;
+    private IOTAdvertiserCallback callbackGPSCoarse;
+    private IOTAdvertiserCallback callbackGPSFine;
+    private IOTAdvertiserCallback callbackIOTHuman;
+    private IOTAdvertiserCallback callbackIOTDevice;
+    private IOTAdvertiserCallback callbackIOTDevname;
 
     static public void startService()
     {
@@ -39,7 +39,7 @@ public class IOTProximServer
         {
             if ((IOT.instance != null) && (IOT.instance.proximServer == null))
             {
-                IOT.instance.proximServer = new IOTProximServer();
+                IOT.instance.proximServer = new IOTAdvertiser();
                 IOT.instance.proximServer.startAdvertising();
             }
         }
@@ -54,7 +54,7 @@ public class IOTProximServer
         }
     }
 
-    private IOTProximServer()
+    private IOTAdvertiser()
     {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
         {
@@ -173,7 +173,7 @@ public class IOTProximServer
                 byte[] bytes = ByteBuffer
                         .allocate(1 + 1 + 8 + 8 + 4)
                         .put(IOTProxim.ADVERTISE_GPS_FINE)
-                        .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
+                        .put(getEstimatedTxPowerFromPowerlevel(powerLevel))
                         .putDouble(lat)
                         .putDouble(lon)
                         .putFloat((float) (double) alt)
@@ -227,7 +227,7 @@ public class IOTProximServer
                 byte[] bytes = ByteBuffer
                         .allocate(1 + 1 + 8 + 8 + 4)
                         .put(IOTProxim.ADVERTISE_GPS_COARSE)
-                        .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
+                        .put(getEstimatedTxPowerFromPowerlevel(powerLevel))
                         .putDouble(lat)
                         .putDouble(lon)
                         .putFloat((float) (double) alt)
@@ -256,7 +256,7 @@ public class IOTProximServer
             byte[] bytes = ByteBuffer
                     .allocate(1 + 1 + 8 + 8)
                     .put(IOTProxim.ADVERTISE_IOT_HUMAN)
-                    .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
+                    .put(getEstimatedTxPowerFromPowerlevel(powerLevel))
                     .putLong(UUID.fromString(IOT.human.uuid).getMostSignificantBits())
                     .putLong(UUID.fromString(IOT.human.uuid).getLeastSignificantBits())
                     .array();
@@ -282,7 +282,7 @@ public class IOTProximServer
             byte[] bytes = ByteBuffer
                     .allocate(1 + 1 + 8 + 8)
                     .put(IOTProxim.ADVERTISE_IOT_DEVICE)
-                    .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
+                    .put(getEstimatedTxPowerFromPowerlevel(powerLevel))
                     .putLong(UUID.fromString(IOT.device.uuid).getMostSignificantBits())
                     .putLong(UUID.fromString(IOT.device.uuid).getLeastSignificantBits())
                     .array();
@@ -312,7 +312,7 @@ public class IOTProximServer
             byte[] bytes = ByteBuffer
                     .allocate(1 + 1 + devbytes.length)
                     .put(IOTProxim.ADVERTISE_IOT_DEVNAME)
-                    .put(IOTProxim.getEstimatedTxPowerFromPowerlevel(powerLevel))
+                    .put(getEstimatedTxPowerFromPowerlevel(powerLevel))
                     .put(devbytes)
                     .array();
 
@@ -323,7 +323,7 @@ public class IOTProximServer
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private IOTProximCallback advertiseDat(byte[] bytes)
+    private IOTAdvertiserCallback advertiseDat(byte[] bytes)
     {
         AdvertiseData data = new AdvertiseData.Builder()
                 .setIncludeDeviceName(false)
@@ -333,10 +333,23 @@ public class IOTProximServer
 
         //Log.d(LOGTAG, "advertiseDat: data=" + data.toString());
 
-        IOTProximCallback callback = new IOTProximCallback();
+        IOTAdvertiserCallback callback = new IOTAdvertiserCallback();
 
         btLEAdvertiser.startAdvertising(settings, data, callback);
 
         return callback;
+    }
+    
+    public static byte getEstimatedTxPowerFromPowerlevel(int powerlevel)
+    {
+        switch (powerlevel)
+        {
+            case AdvertiseSettings.ADVERTISE_TX_POWER_ULTRA_LOW: return -40;
+            case AdvertiseSettings.ADVERTISE_TX_POWER_LOW: return -30;
+            case AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM: return -23;
+            case AdvertiseSettings.ADVERTISE_TX_POWER_HIGH: return -15;
+        }
+
+        return -23;
     }
 }
