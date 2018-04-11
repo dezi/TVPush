@@ -24,6 +24,6 @@ public class GUITodoWizzard extends GUIPluginTitleList
     public void onCollectEntries(GUIListView listView, boolean todo)
     {
         (new GUISetupWizzard(listView.getContext())).collectEntries(listView, true);
-        (new GUILocationsWizzard(listView.getContext())).collectEntries(listView, true);
+        (new GUIGeoposWizzard(listView.getContext())).collectEntries(listView, true);
     }
 }

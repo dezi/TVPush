@@ -85,6 +85,12 @@ public class GUIPlugin extends GUIFrameLayout
 
         this.setPluginSizeDip(newwidth, height);
 
+        if (gravity == Gravity.CENTER)
+        {
+            int left = DEFAULT_HORZ_MARGIN + newwidth + DEFAULT_HORZ_MARGIN;
+            this.setPluginPositionDip(left, DEFAULT_TOP_MARGIN);
+        }
+
         if (gravity == Gravity.END)
         {
             int left = Simple.getDeviceWidthDip() - newwidth - DEFAULT_HORZ_MARGIN;

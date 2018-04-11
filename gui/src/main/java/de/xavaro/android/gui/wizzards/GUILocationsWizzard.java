@@ -1,25 +1,21 @@
 package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.View;
 
 import org.json.JSONArray;
 
+import de.xavaro.android.gui.R;
+import de.xavaro.android.gui.base.GUI;
+import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.plugin.GUIPluginTitleListIOT;
+import de.xavaro.android.gui.simple.Json;
+import de.xavaro.android.gui.simple.Log;
+import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.views.GUIListView;
-import de.xavaro.android.gui.base.GUIDefs;
-import de.xavaro.android.gui.base.GUI;
-import de.xavaro.android.gui.R;
-
-import de.xavaro.android.gui.simple.Simple;
-import de.xavaro.android.gui.simple.Json;
-
-import de.xavaro.android.iot.base.IOTObject;
-import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDomain;
-import de.xavaro.android.iot.things.IOTLocation;
-import de.xavaro.android.iot.things.IOTThing;
 
 public class GUILocationsWizzard extends GUIPluginTitleListIOT
 {
@@ -29,10 +25,27 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
     {
         super(context);
 
-        setIsWizzard(true, false);
+        setIsWizzard(true, true, 1, Gravity.CENTER);
 
-        setTitleIcon(R.drawable.position_560);
-        setTitleText("Geo-Positionen");
+        setTitleIcon(R.drawable.location_240);
+        setTitleText("Locations");
+
+        setAddIconVisible(true);
+    }
+
+    @Override
+    public void onAddIconClicked()
+    {
+        Log.d(LOGTAG, "onAddIconClicked:");
+
+        IOTDomain domain = new IOTDomain();
+
+        domain.fixedwifi = Simple.getConnectedWifiName();
+        domain.name = domain.fixedwifi;
+
+        IOTDomain.list.addEntry(domain, true, true);
+
+        updateContent();
     }
 
     @Override
@@ -43,20 +56,18 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
 
     public void collectEntries(GUIListView listView, boolean todo)
     {
-        JSONArray list = IOTDevice.list.getUUIDList();
+        JSONArray list = IOTDomain.list.getUUIDList();
 
         for (int inx = 0; inx < list.length(); inx++)
         {
             String uuid = Json.getString(list, inx);
-            IOTDevice device = IOTDevice.list.getEntry(uuid);
+            IOTDomain domain = IOTDomain.list.getEntry(uuid);
 
-            if (device == null) continue;
+            if (domain == null) continue;
 
-            if (! device.hasCapability("fixed")) continue;
-
-            boolean isnice = (device.fixedLatFine != null)
-                    && (device.fixedLonFine != null)
-                    && (device.fixedAltFine != null);
+            boolean isnice = (domain.fixedLatFine != null)
+                    && (domain.fixedLonFine != null)
+                    && (domain.fixedAltFine != null);
 
             if (todo && isnice) continue;
 
@@ -77,50 +88,24 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
 
             boolean isnice = false;
 
-            Double lat = null;
-            Double lon = null;
-            Double alt = null;
+            IOTDomain domain = IOTDomain.list.getEntry(entry.uuid);
 
-            IOTThing iotThing = IOTThing.getEntry(entry.uuid);
-
-            if (iotThing instanceof IOTDevice)
+            if (domain != null)
             {
-                IOTDevice device = (IOTDevice) iotThing;
+                isnice = (domain.fixedLatFine != null)
+                        && (domain.fixedLonFine != null)
+                        && (domain.fixedAltFine != null);
 
-                lat = device.fixedLatFine;
-                lon = device.fixedLonFine;
-                alt = device.fixedAltFine;
-           }
-
-            if (iotThing instanceof IOTDomain)
-            {
-                IOTDomain domain = (IOTDomain) iotThing;
-
-                lat = domain.fixedLatFine;
-                lon = domain.fixedLonFine;
-                alt = domain.fixedAltFine;
-            }
-
-            if (iotThing instanceof IOTLocation)
-            {
-                IOTLocation location = (IOTLocation) iotThing;
-
-                lat = location.fixedLatFine;
-                lon = location.fixedLonFine;
-                alt = location.fixedAltFine;
-            }
-
-            isnice = (lat != null) && (lon != null) && (alt != null);
-
-            if (isnice)
-            {
-                info = ""
-                        + Simple.getRounded3(lat)
-                        + " "
-                        + Simple.getRounded3(lon)
-                        + " "
-                        + Simple.getRounded3(alt)
-                        + " m";
+                if (isnice)
+                {
+                    info = ""
+                            + Simple.getRounded3(domain.fixedLatFine)
+                            + " "
+                            + Simple.getRounded3(domain.fixedLonFine)
+                            + " "
+                            + Simple.getRounded3(domain.fixedAltFine)
+                            + " m";
+                }
             }
 
             entry.infoView.setText(info);

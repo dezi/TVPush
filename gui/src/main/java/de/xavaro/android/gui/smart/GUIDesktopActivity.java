@@ -16,13 +16,13 @@ import java.util.Map;
 
 import de.xavaro.android.gui.plugin.GUIPluginTitle;
 import de.xavaro.android.gui.simple.Simple;
-import de.xavaro.android.gui.views.GUIDialogViewPincode;
 import de.xavaro.android.gui.wizzards.GUIDomainsWizzard;
-import de.xavaro.android.gui.wizzards.GUILocationsWizzard;
+import de.xavaro.android.gui.wizzards.GUIGeoposWizzard;
 import de.xavaro.android.gui.wizzards.GUICamerasWizzard;
 import de.xavaro.android.gui.wizzards.GUIChannelWizzard;
 import de.xavaro.android.gui.wizzards.GUIGeomapWizzard;
 import de.xavaro.android.gui.wizzards.GUICameraWizzard;
+import de.xavaro.android.gui.wizzards.GUILocationsWizzard;
 import de.xavaro.android.gui.wizzards.GUISettingsWizzard;
 import de.xavaro.android.gui.wizzards.GUISetupWizzard;
 import de.xavaro.android.gui.wizzards.GUIMenuWizzard;
@@ -68,11 +68,12 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
         wizzards.put(GUITodoWizzard.      class.getSimpleName(), new GUITodoWizzard      (this));
         wizzards.put(GUISetupWizzard.     class.getSimpleName(), new GUISetupWizzard     (this));
         wizzards.put(GUIDomainsWizzard.   class.getSimpleName(), new GUIDomainsWizzard   (this));
+        wizzards.put(GUILocationsWizzard. class.getSimpleName(), new GUILocationsWizzard (this));
         wizzards.put(GUISettingsWizzard.  class.getSimpleName(), new GUISettingsWizzard  (this));
         wizzards.put(GUICameraWizzard.    class.getSimpleName(), new GUICameraWizzard    (this));
         wizzards.put(GUICamerasWizzard.   class.getSimpleName(), new GUICamerasWizzard   (this));
         wizzards.put(GUIChannelWizzard.   class.getSimpleName(), new GUIChannelWizzard   (this));
-        wizzards.put(GUILocationsWizzard. class.getSimpleName(), new GUILocationsWizzard (this));
+        wizzards.put(GUIGeoposWizzard.    class.getSimpleName(), new GUIGeoposWizzard    (this));
         wizzards.put(GUIGeomapWizzard.    class.getSimpleName(), new GUIGeomapWizzard    (this));
         wizzards.put(GUIStreetviewWizzard.class.getSimpleName(), new GUIStreetviewWizzard(this));
 

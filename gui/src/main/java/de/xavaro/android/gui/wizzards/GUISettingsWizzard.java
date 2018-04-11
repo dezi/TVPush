@@ -9,7 +9,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import de.xavaro.android.gui.base.GUIIcons;
-import de.xavaro.android.gui.simple.Log;
 import pub.android.interfaces.all.SubSystemHandler;
 
 import de.xavaro.android.gui.plugin.GUIPluginTitleList;
