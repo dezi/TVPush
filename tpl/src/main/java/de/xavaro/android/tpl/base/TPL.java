@@ -108,8 +108,10 @@ public class TPL extends OnInterfacesStubs implements
     @Override
     public PUBSmartBulb getSmartBulbHandler(JSONObject device, JSONObject status, JSONObject credentials)
     {
+        String uuid = Json.getString(device, "uuid");
         String ipaddr = Json.getString(status, "ipaddr");
-        return (ipaddr != null) ? new SmartBulbHandler(ipaddr) : null;
+
+        return (ipaddr != null) ? new SmartBulbHandler(uuid, ipaddr) : null;
     }
 
     @Override
@@ -149,13 +151,13 @@ public class TPL extends OnInterfacesStubs implements
 
             if (actioncmd.equals("switchonbulb"))
             {
-                TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, true);
+                TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, 1);
                 return true;
             }
 
             if (actioncmd.equals("switchoffbulb"))
             {
-                TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, false);
+                TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, 0);
                 return true;
             }
 
@@ -164,7 +166,7 @@ public class TPL extends OnInterfacesStubs implements
                 int brightness = Json.getInt(status, "brightness");
                 brightness += 50;
 
-                TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, true);
+                TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, 1);
                 TPLHandlerSmartBulb.sendBulbBrightness(ipaddr, brightness);
                 return true;
             }
@@ -174,7 +176,7 @@ public class TPL extends OnInterfacesStubs implements
                 int brightness = Json.getInt(status, "brightness");
                 brightness -= 50;
 
-                TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, true);
+                TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, 1);
                 TPLHandlerSmartBulb.sendBulbBrightness(ipaddr, brightness);
                 return true;
             }
@@ -211,7 +213,7 @@ public class TPL extends OnInterfacesStubs implements
                             // Dimm intention.
                             //
 
-                            TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, true);
+                            TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, 1);
                             TPLHandlerSmartBulb.sendBulbBrightness(ipaddr, brightness);
                         }
                         else
@@ -220,7 +222,7 @@ public class TPL extends OnInterfacesStubs implements
                             // Color intention. Leave brightness untouched
                             //
 
-                            TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, true);
+                            TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, 1);
                             TPLHandlerSmartBulb.sendBulbHSOnly(ipaddr, hue, saturation);
                         }
 

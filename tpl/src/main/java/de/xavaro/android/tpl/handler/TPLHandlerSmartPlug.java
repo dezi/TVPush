@@ -9,7 +9,7 @@ public class TPLHandlerSmartPlug extends TPLHandler
 
         String result = sendToSocket(ipaddr, (onOff == 1) ? messOn : messOff);
 
-        return ((result == null) || ! result.contains("{\"err_code\":0}")) ? -1 : onOff;
+        return ((result == null) || ! result.contains("\"err_code\":0")) ? -1 : onOff;
     }
 
     public static int sendLEDOnOff(String ipaddr, int onOff)
@@ -19,6 +19,6 @@ public class TPLHandlerSmartPlug extends TPLHandler
 
         String result = sendToSocket(ipaddr, (onOff == 1) ? messOn : messOff);
 
-        return ((result == null) || ! result.contains("{\"err_code\":0}")) ? -1 : onOff;
+        return ((result == null) || ! result.contains("\"err_code\":0")) ? -1 : onOff;
     }
 }

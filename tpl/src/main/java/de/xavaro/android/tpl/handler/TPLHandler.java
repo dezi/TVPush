@@ -18,6 +18,11 @@ public class TPLHandler
 
     private static final int TPLINK_PORT = 9999;
 
+    public void onMessageReived(JSONObject message)
+    {
+
+    };
+
     @Nullable
     public static String sendToSocket(String ipaddr, JSONObject message)
     {

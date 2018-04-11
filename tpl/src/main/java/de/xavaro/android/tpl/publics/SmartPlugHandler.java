@@ -58,7 +58,7 @@ public class SmartPlugHandler implements PUBSmartPlug
                     JSONObject status = new JSONObject();
 
                     Json.put(status, "uuid", uuid);
-                    Json.put(status, "plugstate", onoff);
+                    Json.put(status, "ledstate", onoff);
 
                     TPL.instance.onDeviceStatus(status);
                 }

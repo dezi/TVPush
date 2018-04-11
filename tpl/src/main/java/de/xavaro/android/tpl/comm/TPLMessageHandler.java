@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.xavaro.android.tpl.handler.TPLHandlerSmartBulb;
-import de.xavaro.android.tpl.handler.TPLHandlerSmartPlug;
 import de.xavaro.android.tpl.handler.TPLHandlerSysInfo;
 import de.xavaro.android.tpl.handler.TPLHandler;
 import de.xavaro.android.tpl.base.TPL;

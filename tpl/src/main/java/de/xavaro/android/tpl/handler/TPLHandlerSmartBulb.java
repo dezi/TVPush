@@ -15,39 +15,8 @@ public class TPLHandlerSmartBulb extends TPLHandler
     public static final String STATE_LIGHT_MODE_NORMAL = "normal";
     public static final String STATE_LIGHT_MODE_CIRCADIAN = "circadian";
 
-    public static void sendBulbOnOff(String ipaddr, boolean on)
+    public static boolean sendBulb(String ipaddr, int onOff, int hue, int saturation, int brightness)
     {
-        JSONObject message = new JSONObject();
-        JSONObject service = new JSONObject();
-        JSONObject transition = new JSONObject();
-
-        Json.put(message, "smartlife.iot.smartbulb.lightingservice", service);
-        Json.put(service, "transition_light_state", transition);
-        Json.put(transition, "ignore_default", 1);
-        Json.put(transition, "on_off", on ? 1 : 0);
-
-        if ((ipaddr != null) && ! ipaddr.isEmpty())
-        {
-            JSONObject destination = new JSONObject();
-            Json.put(destination, "ipaddr", ipaddr);
-
-            Json.put(message, "destination", destination);
-        }
-
-        TPL.instance.message.sendMessage(message);
-    }
-
-    public static void sendBulbHSB(String ipaddr, int hue, int saturation, int brightness)
-    {
-        if (hue < 0) hue = 0;
-        if (hue > 360) hue = 360;
-
-        if (saturation < 0) saturation = 0;
-        if (saturation > 100) saturation = 100;
-
-        if (brightness < 0) brightness = 0;
-        if (brightness > 100) brightness = 100;
-
         JSONObject message = new JSONObject();
         JSONObject service = new JSONObject();
         JSONObject transition = new JSONObject();
@@ -57,80 +26,37 @@ public class TPLHandlerSmartBulb extends TPLHandler
         Json.put(transition, "ignore_default", 1);
         Json.put(transition, "transition_period", 1000);
         Json.put(transition, "mode", STATE_LIGHT_MODE_NORMAL);
-        Json.put(transition, "hue", hue);
-        Json.put(transition, "saturation", saturation);
-        Json.put(transition, "brightness", brightness);
         Json.put(transition, "color_temp", 0);
 
-        if ((ipaddr != null) && ! ipaddr.isEmpty())
-        {
-            JSONObject destination = new JSONObject();
-            Json.put(destination, "ipaddr", ipaddr);
+        if (onOff >= 0) Json.put(transition, "on_off", onOff);
 
-            Json.put(message, "destination", destination);
-        }
+        if (hue >= 0) Json.put(transition, "hue", hue);
+        if (saturation >= 0) Json.put(transition, "saturation", saturation);
+        if (brightness >= 0) Json.put(transition, "brightness", brightness);
 
-        TPL.instance.message.sendMessage(message);
+        String result = sendToSocket(ipaddr, message);
+
+        return ((result != null) && result.contains("\"err_code\":0"));
     }
 
-    public static void sendBulbHSOnly(String ipaddr, int hue, int saturation)
+    public static boolean sendBulbOnOff(String ipaddr, int onOff)
     {
-        if (hue < 0) hue = 0;
-        if (hue > 360) hue = 360;
-
-        if (saturation < 0) saturation = 0;
-        if (saturation > 100) saturation = 100;
-
-        JSONObject message = new JSONObject();
-        JSONObject service = new JSONObject();
-        JSONObject transition = new JSONObject();
-
-        Json.put(message, "smartlife.iot.smartbulb.lightingservice", service);
-        Json.put(service, "transition_light_state", transition);
-        Json.put(transition, "ignore_default", 1);
-        Json.put(transition, "transition_period", 1000);
-        Json.put(transition, "mode", STATE_LIGHT_MODE_NORMAL);
-        Json.put(transition, "hue", hue);
-        Json.put(transition, "saturation", saturation);
-        Json.put(transition, "color_temp", 0);
-
-        if ((ipaddr != null) && ! ipaddr.isEmpty())
-        {
-            JSONObject destination = new JSONObject();
-            Json.put(destination, "ipaddr", ipaddr);
-
-            Json.put(message, "destination", destination);
-        }
-
-        TPL.instance.message.sendMessage(message);
+        return sendBulb(ipaddr, onOff, -1, -1, -1);
     }
 
-    public static void sendBulbBrightness(String ipaddr, int brightness)
+    public static boolean sendBulbHSB(String ipaddr, int hue, int saturation, int brightness)
     {
-        if (brightness < 0) brightness = 0;
-        if (brightness > 100) brightness = 100;
+        return sendBulb(ipaddr, -1, hue, saturation, brightness);
+   }
 
-        JSONObject message = new JSONObject();
-        JSONObject service = new JSONObject();
-        JSONObject transition = new JSONObject();
+    public static boolean sendBulbHSOnly(String ipaddr, int hue, int saturation)
+    {
+        return sendBulb(ipaddr, -1, hue, saturation, -1);
+    }
 
-        Json.put(message, "smartlife.iot.smartbulb.lightingservice", service);
-        Json.put(service, "transition_light_state", transition);
-        Json.put(transition, "ignore_default", 1);
-        Json.put(transition, "transition_period", 1000);
-        Json.put(transition, "mode", STATE_LIGHT_MODE_NORMAL);
-        Json.put(transition, "brightness", brightness);
-        Json.put(transition, "color_temp", 0);
-
-        if ((ipaddr != null) && ! ipaddr.isEmpty())
-        {
-            JSONObject destination = new JSONObject();
-            Json.put(destination, "ipaddr", ipaddr);
-
-            Json.put(message, "destination", destination);
-        }
-
-        TPL.instance.message.sendMessage(message);
+    public static boolean sendBulbBrightness(String ipaddr, int brightness)
+    {
+        return sendBulb(ipaddr, -1,-1, -1, brightness);
     }
 
     public void onMessageReived(JSONObject message)
@@ -139,20 +65,8 @@ public class TPLHandlerSmartBulb extends TPLHandler
 
         JSONObject service = Json.getObject(message, "smartlife.iot.smartbulb.lightingservice");
         JSONObject light_state = Json.getObject(service, "transition_light_state");
-        JSONObject origin = Json.getObject(message, "origin");
-
-        String ipaddr = Json.getString(origin, "ipaddr");
-        int ipport = Json.getInt(origin, "ipport");
-
-        String uuid = TPLHandlerSysInfo.resolveUUID(ipaddr);
-        String wifi = Simple.getConnectedWifiName();
 
         JSONObject status = new JSONObject();
-
-        Json.put(status, "uuid", uuid);
-        Json.put(status, "wifi", wifi);
-        Json.put(status, "ipaddr", ipaddr);
-        Json.put(status, "ipport", ipport);
 
         if (light_state != null)
         {
