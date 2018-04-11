@@ -87,50 +87,6 @@ public class EDX extends OnInterfacesStubs implements
 
     //endregion SubSystemHandler
 
-    //region GetDevicesRequest
-
-    @Override
-    public JSONObject onGetDeviceRequest(String uuid)
-    {
-        Log.d(LOGTAG, "onGetDeviceRequest: STUB!");
-
-        return null;
-    }
-
-    @Override
-    public JSONObject onGetStatusRequest(String uuid)
-    {
-        Log.d(LOGTAG, "onGetStatusRequest: STUB!");
-
-        return null;
-    }
-
-    @Override
-    public JSONObject onGetCredentialRequest(String uuid)
-    {
-        Log.d(LOGTAG, "onGetCredentialRequest: STUB!");
-
-        return null;
-    }
-
-    @Override
-    public JSONObject onGetMetaRequest(String uuid)
-    {
-        Log.d(LOGTAG, "onGetMetaRequest: STUB!");
-
-        return null;
-    }
-
-    @Override
-    public JSONArray onGetDevicesCapabilityRequest(String capability)
-    {
-        Log.d(LOGTAG, "onGetDevicesCapabilityRequest: STUB!");
-
-        return null;
-    }
-
-    //endregion GetDevicesRequest
-
     //region GetSmartPlugHandler
 
     @Override

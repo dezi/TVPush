@@ -5,8 +5,6 @@ import android.graphics.Color;
 
 import org.json.JSONObject;
 
-import de.xavaro.android.tpl.comm.TPLDiscover;
-import de.xavaro.android.tpl.handler.TPLHandlerSysInfo;
 import pub.android.interfaces.ext.GetSmartBulbHandler;
 import pub.android.interfaces.ext.GetSmartPlugHandler;
 import pub.android.interfaces.ext.OnDeviceHandler;
@@ -17,11 +15,12 @@ import pub.android.interfaces.pub.PUBSmartBulb;
 import pub.android.interfaces.pub.PUBSmartPlug;
 import pub.android.stubs.OnInterfacesStubs;
 
-import de.xavaro.android.tpl.handler.TPLHandlerSmartBulb;
-import de.xavaro.android.tpl.handler.TPLHandlerSmartPlug;
 import de.xavaro.android.tpl.publics.SmartBulbHandler;
 import de.xavaro.android.tpl.publics.SmartPlugHandler;
-
+import de.xavaro.android.tpl.handler.TPLHandlerSysInfo;
+import de.xavaro.android.tpl.handler.TPLHandlerSmartBulb;
+import de.xavaro.android.tpl.handler.TPLHandlerSmartPlug;
+import de.xavaro.android.tpl.comm.TPLDiscover;
 import de.xavaro.android.tpl.simple.Simple;
 import de.xavaro.android.tpl.simple.Json;
 import de.xavaro.android.tpl.R;
@@ -34,8 +33,6 @@ public class TPL extends OnInterfacesStubs implements
         GetSmartBulbHandler,
         DoSomethingHandler
 {
-    private static final String LOGTAG = TPL.class.getSimpleName();
-
     public static TPL instance;
 
     public TPLDiscover discover;
@@ -44,6 +41,8 @@ public class TPL extends OnInterfacesStubs implements
     {
         Simple.initialize(application);
     }
+
+    //region SubSystemHandler
 
     @Override
     public void setInstance()
@@ -76,7 +75,7 @@ public class TPL extends OnInterfacesStubs implements
     {
         TPLDiscover.startService();
 
-        onSubsystemStarted("tpl", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
+        onSubsystemStarted(subsystem, SubSystemHandler.SUBSYSTEM_RUN_STARTED);
     }
 
     @Override
@@ -84,8 +83,12 @@ public class TPL extends OnInterfacesStubs implements
     {
         TPLDiscover.stopService();
 
-        onSubsystemStopped("tpl", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
+        onSubsystemStopped(subsystem, SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
     }
+
+    //endregion SubSystemHandler
+
+    //region GetSmartPlugHandler
 
     @Override
     public PUBSmartPlug getSmartPlugHandler(JSONObject device, JSONObject status, JSONObject credentials)
@@ -96,6 +99,10 @@ public class TPL extends OnInterfacesStubs implements
         return ((uuid != null) && (ipaddr != null)) ? new SmartPlugHandler(uuid, ipaddr) : null;
     }
 
+    //endregion GetSmartPlugHandler
+
+    //region GetSmartBulbHandler
+
     @Override
     public PUBSmartBulb getSmartBulbHandler(JSONObject device, JSONObject status, JSONObject credentials)
     {
@@ -104,6 +111,45 @@ public class TPL extends OnInterfacesStubs implements
 
         return (ipaddr != null) ? new SmartBulbHandler(uuid, ipaddr) : null;
     }
+
+    //endregion GetSmartBulbHandler
+
+    //region GetDeviceStatusRequest
+
+    @Override
+    public boolean getDeviceStatusRequest(JSONObject device, JSONObject status, JSONObject credential)
+    {
+        final String ipaddr = Json.getString(status, "ipaddr");
+        final int ipport = Json.getInt(status, "ipport");
+
+        if ((ipaddr != null) && (ipport != 0))
+        {
+            Runnable runnable = new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    String result = TPLHandlerSysInfo.sendSysInfo(ipaddr);
+                    JSONObject message = Json.fromStringObject(result);
+
+                    if (message != null)
+                    {
+                        TPLHandlerSysInfo.buildDeviceDescription(ipaddr, ipport, message, true);
+                    }
+                }
+            };
+
+            Simple.runBackground(runnable);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    //endregion GetDeviceStatusRequest
+
+    //region DoSomethingHandler
 
     @Override
     public boolean doSomething(JSONObject action, JSONObject device, JSONObject status, JSONObject credentials)
@@ -230,38 +276,5 @@ public class TPL extends OnInterfacesStubs implements
         return false;
     }
 
-    //region GetDeviceStatusRequest
-
-    @Override
-    public boolean getDeviceStatusRequest(JSONObject device, JSONObject status, JSONObject credential)
-    {
-        final String ipaddr = Json.getString(status, "ipaddr");
-        final int ipport = Json.getInt(status, "ipport");
-
-        if ((ipaddr != null) && (ipport != 0))
-        {
-            Runnable runnable = new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    String result = TPLHandlerSysInfo.sendSysInfo(ipaddr);
-                    JSONObject message = Json.fromStringObject(result);
-
-                    if (message != null)
-                    {
-                        TPLHandlerSysInfo.buildDeviceDescription(ipaddr, ipport, message, true);
-                    }
-                }
-            };
-
-            Simple.runBackground(runnable);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    //endregion GetDeviceStatusRequest
+    //endregion DoSomethingHandler
 }
