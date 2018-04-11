@@ -84,10 +84,13 @@ public class IOTAlive
                 String uuid = Json.getString(list, index++);
                 if (uuid == null) continue;
 
+                IOTDevice device = IOTDevice.list.getEntry(uuid);
+                if (device == null) continue;
+
                 IOTStatus status = IOTStatus.list.getEntry(uuid);
                 if (status == null) continue;
 
-                if (status.ipaddr != null) performPing(uuid, status.ipaddr);
+                if (status.ipaddr != null) performPing(uuid, status.ipaddr, device.name);
 
                 performStatus(uuid);
             }
@@ -96,7 +99,7 @@ public class IOTAlive
         }
     };
 
-    private void performPing(String uuid, String ipaddr)
+    private void performPing(String uuid, String ipaddr, String name)
     {
         Long lastNetwork = getAliveNetwork(uuid);
         Long lastRequest = getRequested(ipaddr);
@@ -115,7 +118,17 @@ public class IOTAlive
         try
         {
             Process ping = Runtime.getRuntime().exec("ping -c 1 -W 2 " + ipaddr);
-            if ((ping.waitFor() == 0)) setAliveNetwork(uuid);
+
+            if ((ping.waitFor() == 0))
+            {
+                Log.d(LOGTAG, "performPing: ipaddr=" + ipaddr + " alive " + name);
+
+                setAliveNetwork(uuid);
+            }
+            else
+            {
+                Log.d(LOGTAG, "performPing: ipaddr=" + ipaddr + " dead " + name);
+            }
         }
         catch (Exception ignore)
         {

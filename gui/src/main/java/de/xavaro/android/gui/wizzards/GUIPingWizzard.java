@@ -5,6 +5,7 @@ import android.content.Context;
 import org.json.JSONArray;
 
 import de.xavaro.android.gui.plugin.GUIPluginTitleListIOT;
+import de.xavaro.android.gui.simple.Log;
 import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.views.GUIListView;
 import de.xavaro.android.gui.simple.Json;
@@ -30,6 +31,8 @@ public class GUIPingWizzard extends GUIPluginTitleListIOT
     @Override
     public void onCollectEntries(GUIListView listView, boolean todo)
     {
+        Log.d(LOGTAG, "onCollectEntries: todo=" + todo);
+
         collectEntries(listView, todo);
     }
 

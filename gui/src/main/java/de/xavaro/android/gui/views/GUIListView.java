@@ -143,7 +143,9 @@ public class GUIListView extends  GUILinearLayout
 
                 if ((entry.uuid != null) && entry.uuid.equals(uuid))
                 {
+                    entry.updateContent();
                     entry.isinuse = true;
+
                     return entry;
                 }
             }
