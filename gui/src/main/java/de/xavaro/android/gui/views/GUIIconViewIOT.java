@@ -7,6 +7,7 @@ import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.base.IOTAlive;
 
 import de.xavaro.android.iot.things.IOTDevice;
+import de.xavaro.android.iot.things.IOTDomain;
 import de.xavaro.android.iot.things.IOTThing;
 
 import de.xavaro.android.iot.status.IOTStatus;
@@ -131,7 +132,12 @@ public class GUIIconViewIOT extends GUIIconView
             }
 
             setImageResource(residplain);
+
+            return;
         }
+
+        int residplain = GUIIcons.getImageResid(iotThing, false);
+        setImageResource(residplain);
     }
 
     private final Runnable onBeaconBlink = new Runnable()

@@ -26,9 +26,9 @@ import de.xavaro.android.iot.simple.Simple;
 import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.base.IOT;
 
-public class IOTPosition implements LocationListener
+public class IOTGeopos implements LocationListener
 {
-    private static final String LOGTAG = IOTPosition.class.getSimpleName();
+    private static final String LOGTAG = IOTGeopos.class.getSimpleName();
 
     private boolean gpsIsEnabled;
     private boolean networkIsEnabled;
@@ -39,7 +39,7 @@ public class IOTPosition implements LocationListener
     {
         if ((IOT.instance != null) && (IOT.instance.proximLocationListener == null))
         {
-            IOT.instance.proximLocationListener = new IOTPosition();
+            IOT.instance.proximLocationListener = new IOTGeopos();
             IOT.instance.proximLocationListener.start(appcontext);
         }
     }
@@ -147,28 +147,6 @@ public class IOTPosition implements LocationListener
 
         if (IOT.device != null)
         {
-            if (IOT.device.hasCapability("fixed"))
-            {
-                IOTDevice device = new IOTDevice(IOT.device.uuid);
-                device.fixedLatCoarse = location.getLatitude();
-                device.fixedLonCoarse = location.getLongitude();
-                device.fixedAltCoarse = location.getAltitude();
-
-                IOTDevice.list.addEntry(device, false, true);
-            }
-
-            IOTStatus status = new IOTStatus(IOT.device.uuid);
-            status.positionLatCoarse = location.getLatitude();
-            status.positionLonCoarse = location.getLongitude();
-            status.positionAltCoarse = location.getAltitude();
-
-            IOTStatus.list.addEntry(status, false, true);
-
-            if (IOT.instance.proximServer != null)
-            {
-                IOT.instance.proximServer.advertiseGPSCoarse();
-            }
-
             JSONObject locmeasurement = new JSONObject();
             Json.put(locmeasurement, "akey", IOT.device.uuid);
             Json.put(locmeasurement, "prov", location.getProvider());
@@ -192,6 +170,34 @@ public class IOTPosition implements LocationListener
                 + " acc=" + location.getAccuracy()
                 + " pro=" + location.getProvider()
         );
+    }
+
+    private void updateLocalDeviceCoarsePosition(Double lat, Double lon, Double alt)
+    {
+        if (IOT.device != null)
+        {
+            if (IOT.device.hasCapability("fixed"))
+            {
+                IOTDevice device = new IOTDevice(IOT.device.uuid);
+                device.fixedLatCoarse = lat;
+                device.fixedLonCoarse = lon;
+                device.fixedAltCoarse = alt;
+
+                IOTDevice.list.addEntry(device, false, true);
+            }
+
+            IOTStatus status = new IOTStatus(IOT.device.uuid);
+            status.positionLatCoarse = lat;
+            status.positionLonCoarse = lon;
+            status.positionAltCoarse = alt;
+
+            IOTStatus.list.addEntry(status, false, true);
+
+            if (IOT.instance.proximServer != null)
+            {
+                IOT.instance.proximServer.advertiseGPSCoarse();
+            }
+        }
     }
 
     @Override
@@ -284,6 +290,11 @@ public class IOTPosition implements LocationListener
         {
             measurement = Json.getObject(measurement, "LOCMeasurement");
         }
+
+        updateLocalDeviceCoarsePosition(
+                Json.getDouble(measurement, "lat"),
+                Json.getDouble(measurement, "lon"),
+                Json.getDouble(measurement, "alt"));
 
         String akey = Json.getString(measurement, "akey");
         String pkey = Json.getString(measurement, "prov");

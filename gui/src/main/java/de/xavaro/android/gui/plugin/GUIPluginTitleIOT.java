@@ -3,6 +3,7 @@ package de.xavaro.android.gui.plugin;
 import android.content.Context;
 import android.view.View;
 
+import de.xavaro.android.gui.simple.Log;
 import de.xavaro.android.gui.views.GUIEditText;
 
 import de.xavaro.android.gui.base.GUIDefs;
@@ -91,13 +92,22 @@ public class GUIPluginTitleIOT extends GUIPluginTitle
         return saved;
     }
 
-    private int saveNick(String newNick)
+    private void saveNick(String newNick)
     {
-        IOTDevice saveme = new IOTDevice(uuid);
+        IOTThing iotThing = IOTThing.getEntry(uuid);
+        IOTThing saveme = null;
 
-        saveme.nick = newNick;
+        if (iotThing instanceof IOTHuman) saveme = new IOTHuman(iotThing.uuid);
+        if (iotThing instanceof IOTDevice) saveme = new IOTDevice(iotThing.uuid);
+        if (iotThing instanceof IOTDomain) saveme = new IOTDomain(iotThing.uuid);
+        if (iotThing instanceof IOTLocation) saveme = new IOTLocation(iotThing.uuid);
 
-        return saveIOTObject(saveme);
+        if (saveme != null)
+        {
+            saveme.nick = newNick;
+
+            saveIOTObject(saveme);
+        }
     }
 
     @Override

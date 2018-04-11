@@ -6,7 +6,7 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import de.xavaro.android.iot.proxim.IOTPosition;
+import de.xavaro.android.iot.proxim.IOTGeopos;
 import de.xavaro.android.iot.comm.IOTMessageHandler;
 import de.xavaro.android.iot.proxim.IOTAdvertiser;
 import de.xavaro.android.iot.status.IOTCredential;
@@ -48,7 +48,7 @@ public class IOT implements
     public IOTRegister register;
 
     public IOTAdvertiser proximServer;
-    public IOTPosition proximLocationListener;
+    public IOTGeopos proximLocationListener;
 
     private Application appcontext;
 
@@ -131,7 +131,7 @@ public class IOT implements
 
                 IOTAdvertiser.startService();
 
-                IOTPosition.startService(appcontext);
+                IOTGeopos.startService(appcontext);
 
                 IOTHandleHelo.sendHELO();
 
@@ -169,7 +169,7 @@ public class IOT implements
         {
             if (getSubsystemState("iot") == SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED)
             {
-                IOTPosition.stopService();
+                IOTGeopos.stopService();
 
                 IOTAdvertiser.stopService();
 

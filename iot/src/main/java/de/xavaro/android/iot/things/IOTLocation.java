@@ -15,7 +15,7 @@ public class IOTLocation extends IOTThing
 
     public Double fixedLatFine;
     public Double fixedLonFine;
-    public Float fixedAltFine;
+    public Double fixedAltFine;
 
     public IOTLocation()
     {

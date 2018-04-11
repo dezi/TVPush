@@ -11,6 +11,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Base64;
+import android.view.KeyEvent;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.content.Context;
 import android.view.ViewGroup;
@@ -19,6 +21,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import de.xavaro.android.gui.skills.GUICanDip;
+import de.xavaro.android.gui.skills.GUICanFocus;
+import de.xavaro.android.gui.skills.GUICanFocusDelegate;
 import de.xavaro.android.gui.skills.GUICanRestoreBackground;
 import de.xavaro.android.gui.skills.GUICanRestoreBackgroundDelegate;
 import de.xavaro.android.gui.skills.GUICanRoundedCorners;
@@ -28,6 +32,7 @@ import de.xavaro.android.gui.simple.Simple;
 
 public class GUIImageView extends AppCompatImageView implements
         GUICanDip,
+        GUICanFocus,
         GUICanRoundedCorners,
         GUICanRestoreBackground
 {
@@ -38,6 +43,8 @@ public class GUIImageView extends AppCompatImageView implements
         super(context);
 
         initSkills();
+
+        setFocusable(false);
     }
 
     //region Dip implementation.
@@ -227,6 +234,85 @@ public class GUIImageView extends AppCompatImageView implements
     }
 
     //endregion Skills implementation.
+
+    //region CanFocus implementation.
+
+    private boolean focus;
+    private boolean focusable;
+    private boolean highlight;
+    private boolean highlightable;
+
+    @Override
+    public void setFocusable(boolean focusable)
+    {
+        this.focusable = focusable;
+
+        super.setFocusable(focusable);
+
+        GUICanFocusDelegate.setupOnFocusChangeListener(this, focusable);
+    }
+
+    @Override
+    public boolean getIsFocusable()
+    {
+        return focusable;
+    }
+
+    @Override
+    public void setHighlight(boolean highlight)
+    {
+        this.highlight = highlight;
+
+        GUICanFocusDelegate.adjustHighlightState(this);
+    }
+
+    @Override
+    public boolean getHighlight()
+    {
+        return this.highlight;
+    }
+
+    @Override
+    public void setHighlightable(boolean highlightable)
+    {
+        this.highlightable = highlightable;
+    }
+
+    @Override
+    public boolean getHighlightable()
+    {
+        return this.highlightable;
+    }
+
+    @Override
+    public void setHasFocus(boolean hasfocus)
+    {
+        this.focus = hasfocus;
+    }
+
+    @Override
+    public boolean getHasFocus()
+    {
+        return this.focus;
+    }
+
+    @Override
+    public void setOnClickListener(View.OnClickListener onClickListener)
+    {
+        super.setOnClickListener(onClickListener);
+    }
+
+    public void onHighlightChanged(View view, boolean highlight)
+    {
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        return GUICanFocusDelegate.onKeyDown(this, keyCode, event) || super.onKeyDown(keyCode, event);
+    }
+
+    //endregion CanFocus implementation.
 
     @Override
     public void setImageResource(int resid)

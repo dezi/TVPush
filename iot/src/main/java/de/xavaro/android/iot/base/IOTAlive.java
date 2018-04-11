@@ -1,15 +1,12 @@
 package de.xavaro.android.iot.base;
 
-import android.support.annotation.Nullable;
-
-import android.util.Log;
-
 import org.json.JSONArray;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import de.xavaro.android.iot.simple.Log;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.simple.Simple;

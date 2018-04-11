@@ -27,6 +27,8 @@ import de.xavaro.android.gui.views.GUIImageView;
 import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.base.IOTDefs;
 import de.xavaro.android.iot.things.IOTDevice;
+import de.xavaro.android.iot.things.IOTDomain;
+import de.xavaro.android.iot.things.IOTLocation;
 import de.xavaro.android.iot.things.IOTThing;
 
 public class GUIGeomapWizzard extends GUIPluginTitleIOT
@@ -62,6 +64,8 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
             @Override
             public void onHighlightChanged(View view, boolean highlight)
             {
+                if (map == null) return;
+
                 if (highlight)
                 {
                     clickFrame.setVisibility(GONE);
@@ -285,36 +289,51 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
                     return;
                 }
             }
+        }
 
-            //
-            // Fallback to running device.
-            //
+        if (iotThing instanceof IOTDomain)
+        {
+            IOTDomain domain = (IOTDomain) iotThing;
 
-            if ((IOT.device != null) && IOT.device.hasCapability("fixed"))
+            if ((domain.fixedLatFine != null)
+                    && (domain.fixedLonFine != null)
+                    && (domain.fixedAltFine != null))
             {
-                if ((IOT.device.fixedLatFine != null)
-                        && (IOT.device.fixedLonFine != null)
-                        && (IOT.device.fixedAltFine != null))
-                {
-                    setCoordinates(
-                            IOT.device.fixedLatFine,
-                            IOT.device.fixedLonFine,
-                            IOT.device.fixedAltFine);
+                setCoordinates(
+                        domain.fixedLatFine,
+                        domain.fixedLonFine,
+                        domain.fixedAltFine);
 
-                    return;
-                }
+                return;
+            }
+        }
 
-                if ((IOT.device.fixedLatCoarse != null)
-                        && (IOT.device.fixedLonCoarse != null)
-                        && (IOT.device.fixedAltCoarse != null))
-                {
-                    setCoordinates(
-                            IOT.device.fixedLatCoarse,
-                            IOT.device.fixedLonCoarse,
-                            IOT.device.fixedAltCoarse);
+        //
+        // Fallback to running device.
+        //
 
-                    return;
-                }
+        if ((IOT.device != null) && IOT.device.hasCapability("fixed"))
+        {
+            if ((IOT.device.fixedLatFine != null)
+                    && (IOT.device.fixedLonFine != null)
+                    && (IOT.device.fixedAltFine != null))
+            {
+                setCoordinates(
+                        IOT.device.fixedLatFine,
+                        IOT.device.fixedLonFine,
+                        IOT.device.fixedAltFine);
+
+                return;
+            }
+
+            if ((IOT.device.fixedLatCoarse != null)
+                    && (IOT.device.fixedLonCoarse != null)
+                    && (IOT.device.fixedAltCoarse != null))
+            {
+                setCoordinates(
+                        IOT.device.fixedLatCoarse,
+                        IOT.device.fixedLonCoarse,
+                        IOT.device.fixedAltCoarse);
             }
         }
     }
@@ -328,6 +347,28 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
             if (iotThing instanceof IOTDevice)
             {
                 IOTDevice saveme = new IOTDevice(iotThing.uuid);
+
+                saveme.fixedLatFine = coordinates.latitude;
+                saveme.fixedLonFine = coordinates.longitude;
+                saveme.fixedAltFine = altitude;
+
+                return saveIOTObject(saveme);
+            }
+
+            if (iotThing instanceof IOTDomain)
+            {
+                IOTDomain saveme = new IOTDomain(iotThing.uuid);
+
+                saveme.fixedLatFine = coordinates.latitude;
+                saveme.fixedLonFine = coordinates.longitude;
+                saveme.fixedAltFine = altitude;
+
+                return saveIOTObject(saveme);
+            }
+
+            if (iotThing instanceof IOTLocation)
+            {
+                IOTLocation saveme = new IOTLocation(iotThing.uuid);
 
                 saveme.fixedLatFine = coordinates.latitude;
                 saveme.fixedLonFine = coordinates.longitude;

@@ -16,8 +16,6 @@ import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTThing;
 
-import de.xavaro.android.iot.base.IOTAlive;
-
 import pub.android.interfaces.pub.PUBCamera;
 import pub.android.interfaces.pub.PUBSmartBulb;
 import pub.android.interfaces.pub.PUBSmartPlug;
@@ -66,7 +64,7 @@ public class GUIListEntryIOT extends GUIListEntry
     {
         super.onAttachedToWindow();
 
-        IOTDevice.list.subscribe(uuid, onDeviceUpdated);
+        IOTThing.subscribeThing(uuid, onThingUpdated);
         IOTStatus.list.subscribe(uuid, onStatusUpdated);
     }
 
@@ -75,7 +73,7 @@ public class GUIListEntryIOT extends GUIListEntry
     {
         super.onDetachedFromWindow();
 
-        IOTDevice.list.unsubscribe(uuid, onDeviceUpdated);
+        IOTThing.unsubscribeThing(uuid, onThingUpdated);
         IOTStatus.list.unsubscribe(uuid, onStatusUpdated);
     }
 
@@ -119,14 +117,17 @@ public class GUIListEntryIOT extends GUIListEntry
 
         if (iotThing != null)
         {
-            headerViev.setText(iotThing.name);
+            headerViev.setText((iotThing.nick != null) ? iotThing.nick : iotThing.name);
 
-            Long lastAlive = (IOT.instance.alive != null) ? IOT.instance.alive.getAlive(uuid) : null;
-
-            if ((lastAlive != null) && (lastAlive > 0))
+            if (iotThing instanceof IOTDevice)
             {
-                boolean pingt = (System.currentTimeMillis() - lastAlive) < (60 * 1000);
-                setStatusColor(pingt ? GUIDefs.STATUS_COLOR_GREEN : GUIDefs.STATUS_COLOR_RED);
+                Long lastAlive = (IOT.instance.alive != null) ? IOT.instance.alive.getAlive(uuid) : null;
+
+                if ((lastAlive != null) && (lastAlive > 0))
+                {
+                    boolean pingt = (System.currentTimeMillis() - lastAlive) < (60 * 1000);
+                    setStatusColor(pingt ? GUIDefs.STATUS_COLOR_GREEN : GUIDefs.STATUS_COLOR_RED);
+                }
             }
 
             if (onLongClickListener == null)
@@ -141,7 +142,7 @@ public class GUIListEntryIOT extends GUIListEntry
         }
     }
 
-    private final Runnable onDeviceUpdated = new Runnable()
+    private final Runnable onThingUpdated = new Runnable()
     {
         @Override
         public void run()

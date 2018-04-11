@@ -10,11 +10,13 @@ import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.plugin.GUIPluginTitleListIOT;
 import de.xavaro.android.gui.simple.Json;
+import de.xavaro.android.gui.simple.Log;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.views.GUIListView;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDomain;
+import de.xavaro.android.iot.things.IOTThing;
 
 public class GUIDomainsWizzard extends GUIPluginTitleListIOT
 {
@@ -28,6 +30,23 @@ public class GUIDomainsWizzard extends GUIPluginTitleListIOT
 
         setTitleIcon(R.drawable.domain_250);
         setTitleText("Domänen");
+
+        setAddIconVisible(true);
+    }
+
+    @Override
+    public void onAddIconClicked()
+    {
+        Log.d(LOGTAG, "onAddIconClicked:");
+
+        IOTDomain domain = new IOTDomain();
+
+        domain.fixedwifi = Simple.getConnectedWifiName();
+        domain.name = domain.fixedwifi;
+
+        IOTDomain.list.addEntry(domain, true, true);
+
+        updateContent();
     }
 
     @Override
@@ -70,22 +89,22 @@ public class GUIDomainsWizzard extends GUIPluginTitleListIOT
 
             boolean isnice = false;
 
-            IOTDevice device = IOTDevice.list.getEntry(entry.uuid);
+            IOTDomain domain = IOTDomain.list.getEntry(entry.uuid);
 
-            if (device != null)
+            if (domain != null)
             {
-                isnice = (device.fixedLatFine != null)
-                        && (device.fixedLonFine != null)
-                        && (device.fixedAltFine != null);
+                isnice = (domain.fixedLatFine != null)
+                        && (domain.fixedLonFine != null)
+                        && (domain.fixedAltFine != null);
 
                 if (isnice)
                 {
                     info = ""
-                            + Simple.getRounded3(device.fixedLatFine)
+                            + Simple.getRounded3(domain.fixedLatFine)
                             + " "
-                            + Simple.getRounded3(device.fixedLonFine)
+                            + Simple.getRounded3(domain.fixedLonFine)
                             + " "
-                            + Simple.getRounded3(device.fixedAltFine)
+                            + Simple.getRounded3(domain.fixedAltFine)
                             + " m";
                 }
             }

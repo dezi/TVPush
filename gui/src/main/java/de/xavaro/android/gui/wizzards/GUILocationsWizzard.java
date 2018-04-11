@@ -15,7 +15,11 @@ import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.simple.Json;
 
+import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTDevice;
+import de.xavaro.android.iot.things.IOTDomain;
+import de.xavaro.android.iot.things.IOTLocation;
+import de.xavaro.android.iot.things.IOTThing;
 
 public class GUILocationsWizzard extends GUIPluginTitleListIOT
 {
@@ -73,24 +77,50 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
 
             boolean isnice = false;
 
-            IOTDevice device = IOTDevice.list.getEntry(entry.uuid);
+            Double lat = null;
+            Double lon = null;
+            Double alt = null;
 
-            if (device != null)
+            IOTThing iotThing = IOTThing.getEntry(entry.uuid);
+
+            if (iotThing instanceof IOTDevice)
             {
-                isnice = (device.fixedLatFine != null)
-                        && (device.fixedLonFine != null)
-                        && (device.fixedAltFine != null);
+                IOTDevice device = (IOTDevice) iotThing;
 
-                if (isnice)
-                {
-                    info = ""
-                            + Simple.getRounded3(device.fixedLatFine)
-                            + " "
-                            + Simple.getRounded3(device.fixedLonFine)
-                            + " "
-                            + Simple.getRounded3(device.fixedAltFine)
-                            + " m";
-                }
+                lat = device.fixedLatFine;
+                lon = device.fixedLonFine;
+                alt = device.fixedAltFine;
+           }
+
+            if (iotThing instanceof IOTDomain)
+            {
+                IOTDomain domain = (IOTDomain) iotThing;
+
+                lat = domain.fixedLatFine;
+                lon = domain.fixedLonFine;
+                alt = domain.fixedAltFine;
+            }
+
+            if (iotThing instanceof IOTLocation)
+            {
+                IOTLocation location = (IOTLocation) iotThing;
+
+                lat = location.fixedLatFine;
+                lon = location.fixedLonFine;
+                alt = location.fixedAltFine;
+            }
+
+            isnice = (lat != null) && (lon != null) && (alt != null);
+
+            if (isnice)
+            {
+                info = ""
+                        + Simple.getRounded3(lat)
+                        + " "
+                        + Simple.getRounded3(lon)
+                        + " "
+                        + Simple.getRounded3(alt)
+                        + " m";
             }
 
             entry.infoView.setText(info);

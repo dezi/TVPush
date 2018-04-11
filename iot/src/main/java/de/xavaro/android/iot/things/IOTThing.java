@@ -54,4 +54,24 @@ public abstract class IOTThing extends IOTObject
         IOTMetadata.list.removeEntry(uuid);
         IOTCredential.list.removeEntry(uuid);
     }
+
+    public static void subscribeThing(String uuid, Runnable runnable)
+    {
+        IOTThing thing = getEntry(uuid);
+
+        if (thing instanceof IOTHuman) IOTHuman.list.subscribe(uuid, runnable);
+        if (thing instanceof IOTDevice) IOTDevice.list.subscribe(uuid, runnable);
+        if (thing instanceof IOTDomain) IOTDomain.list.subscribe(uuid, runnable);
+        if (thing instanceof IOTLocation) IOTLocation.list.subscribe(uuid, runnable);
+    }
+
+    public static void unsubscribeThing(String uuid, Runnable runnable)
+    {
+        IOTThing thing = getEntry(uuid);
+
+        if (thing instanceof IOTHuman) IOTHuman.list.unsubscribe(uuid, runnable);
+        if (thing instanceof IOTDevice) IOTDevice.list.unsubscribe(uuid, runnable);
+        if (thing instanceof IOTDomain) IOTDomain.list.unsubscribe(uuid, runnable);
+        if (thing instanceof IOTLocation) IOTLocation.list.unsubscribe(uuid, runnable);
+    }
 }

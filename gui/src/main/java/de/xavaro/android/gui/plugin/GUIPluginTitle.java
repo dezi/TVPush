@@ -6,10 +6,13 @@ import android.view.Gravity;
 import android.view.View;
 import android.util.Log;
 
+import de.xavaro.android.gui.R;
+import de.xavaro.android.gui.views.GUIIconView;
 import de.xavaro.android.gui.views.GUIIconViewIOT;
 import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUIFrameLayout;
 import de.xavaro.android.gui.views.GUIEditText;
+import de.xavaro.android.gui.views.GUIRelativeLayout;
 import de.xavaro.android.gui.views.GUITextView;
 
 import de.xavaro.android.gui.base.GUIDefs;
@@ -24,6 +27,7 @@ public class GUIPluginTitle extends GUIPlugin
     public GUITextView titleText;
     public GUIEditText titleEdit;
     public GUITextView titleInfo;
+    public GUIIconView addIcon;
 
     public String objectTag;
 
@@ -52,7 +56,7 @@ public class GUIPluginTitle extends GUIPlugin
         GUILinearLayout titleCenter = new GUILinearLayout(context);
         titleCenter.setOrientation(LinearLayout.HORIZONTAL);
         titleCenter.setGravity(Gravity.START + Gravity.CENTER_VERTICAL);
-        titleCenter.setSizeDip(Simple.MP, Simple.MP);
+        titleCenter.setSizeDip(Simple.WC, Simple.MP, 1.0f);
 
         titleFrame.addView(titleCenter);
 
@@ -88,6 +92,27 @@ public class GUIPluginTitle extends GUIPlugin
         titleInfo.setVisibility(GONE);
 
         titleCenter.addView(titleInfo);
+
+        GUIRelativeLayout addIconPad = new GUIRelativeLayout(context);
+        addIconPad.setPaddingDip(GUIDefs.PADDING_SMALL);
+
+        titleFrame.addView(addIconPad);
+
+        addIcon = new GUIIconView(context);
+        addIcon.setImageResource(R.drawable.add_540);
+        addIcon.setSizeDip(GUIDefs.ICON_SIZE - GUIDefs.PADDING_SMALL, GUIDefs.ICON_SIZE - GUIDefs.PADDING_SMALL);
+        addIcon.setVisibility(GONE);
+
+        addIcon.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                onAddIconClicked();
+            }
+        });
+
+        addIconPad.addView(addIcon);
 
         contentFrame = new GUIFrameLayout(context);
         contentFrame.setSizeDip(Simple.MP, Simple.MP);
@@ -156,8 +181,19 @@ public class GUIPluginTitle extends GUIPlugin
         titleInfo.setVisibility(GONE);
     }
 
+    public void setAddIconVisible(boolean visible)
+    {
+        addIcon.setVisibility(visible? VISIBLE : GONE);
+        addIcon.setFocusable(visible);
+    }
+
     public void onTitleEditFinished(View view)
     {
         Log.d(LOGTAG, "onTitleEditFinished: STUB!");
+    }
+
+    public void onAddIconClicked()
+    {
+        Log.d(LOGTAG, "onAddClicked: STUB!");
     }
 }

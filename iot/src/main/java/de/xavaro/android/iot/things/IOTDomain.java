@@ -14,7 +14,7 @@ public class IOTDomain extends IOTThing
 
     public Double fixedLatFine;
     public Double fixedLonFine;
-    public Float fixedAltFine;
+    public Double fixedAltFine;
 
     public IOTDomain()
     {
@@ -48,10 +48,6 @@ public class IOTDomain extends IOTThing
         changedSys = changed;
 
         // @formatter:on
-
-        //
-        // None.
-        //
 
         if (external)
         {
