@@ -1,18 +1,19 @@
 package de.xavaro.android.bcn.beacon;
 
+import android.support.annotation.RequiresApi;
+
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Build;
-import android.os.ParcelUuid;
-import android.support.annotation.RequiresApi;
 import android.util.SparseArray;
+import android.os.ParcelUuid;
+import android.os.Build;
 
 import org.json.JSONObject;
 
