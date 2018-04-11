@@ -333,6 +333,11 @@ public class GUIImageView extends AppCompatImageView implements
 
     public void setImageResource(int resid, int color)
     {
+        //
+        // Fuck dat "+" + resid makes it read from
+        // R.drawable. Otherwise nagging shit.
+        //
+
         InputStream is = getResources().openRawResource(+resid);
 
         setImageResource(is, color);
@@ -343,9 +348,6 @@ public class GUIImageView extends AppCompatImageView implements
         //
         // Fuck dat. Fucking ImageView takes some
         // wrong resolution. Looks like shit.
-        //
-        // Fuck dat "+" + resid makes it read from
-        // R.drawable. Otherwise nagging shit.
         //
 
         Bitmap bitmap = BitmapFactory.decodeStream(rawstream);
@@ -386,7 +388,6 @@ public class GUIImageView extends AppCompatImageView implements
                 }
 
                 bitmap.recycle();
-
 
                 setImageBitmap(geil);
 

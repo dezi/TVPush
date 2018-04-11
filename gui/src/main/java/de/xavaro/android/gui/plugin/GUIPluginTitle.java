@@ -99,8 +99,8 @@ public class GUIPluginTitle extends GUIPlugin
         titleFrame.addView(addIconPad);
 
         addIcon = new GUIIconView(context);
-        addIcon.setImageResource(R.drawable.add_540);
         addIcon.setSizeDip(GUIDefs.ICON_SIZE - GUIDefs.PADDING_SMALL, GUIDefs.ICON_SIZE - GUIDefs.PADDING_SMALL);
+        addIcon.setImageResource(R.drawable.add_540);
         addIcon.setVisibility(GONE);
 
         addIcon.setOnClickListener(new OnClickListener()
