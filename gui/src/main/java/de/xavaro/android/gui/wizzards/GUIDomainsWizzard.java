@@ -123,7 +123,8 @@ public class GUIDomainsWizzard extends GUIPluginTitleListIOT
         public void onClick(View view)
         {
             String uuid = ((GUIListEntryIOT) view).uuid;
-            GUI.instance.desktopActivity.displayWizzard(GUIGeomapWizzard.class.getSimpleName(), uuid);
+            //GUI.instance.desktopActivity.displayWizzard(GUIGeomapWizzard.class.getSimpleName(), uuid);
+            GUI.instance.desktopActivity.displayWizzard(GUILocationsWizzard.class.getSimpleName(), uuid);
         }
     };
 }

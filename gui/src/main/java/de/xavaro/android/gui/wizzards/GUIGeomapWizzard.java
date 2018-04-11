@@ -308,6 +308,23 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
             }
         }
 
+        if (iotThing instanceof IOTLocation)
+        {
+            IOTLocation location = (IOTLocation) iotThing;
+
+            if ((location.fixedLatFine != null)
+                    && (location.fixedLonFine != null)
+                    && (location.fixedAltFine != null))
+            {
+                setCoordinates(
+                        location.fixedLatFine,
+                        location.fixedLonFine,
+                        location.fixedAltFine);
+
+                return;
+            }
+        }
+
         //
         // Fallback to running device.
         //

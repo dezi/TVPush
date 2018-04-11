@@ -35,8 +35,6 @@ public class GUIPluginTitleIOT extends GUIPluginTitle
 
         titleIcon.setIOTThing(uuid);
 
-        IOTThing iotThing = IOTThing.getEntry(uuid);
-
         String hint = "Bitte Nicknamen hier eintragen";
 
         String toast = ""
@@ -45,8 +43,13 @@ public class GUIPluginTitleIOT extends GUIPluginTitle
                 + GUIDefs.UTF_OK
                 + " zum Bearbeiten";
 
-        setTitleText(iotThing.name);
-        setTitleEdit(iotThing.nick, hint, toast);
+        IOTThing iotThing = IOTThing.getEntry(uuid);
+
+        if (iotThing != null)
+        {
+            setTitleText(iotThing.name);
+            setTitleEdit(iotThing.nick, hint, toast);
+        }
     }
 
     public int saveIOTObject(IOTObject iotObjectChanged)

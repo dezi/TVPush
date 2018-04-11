@@ -93,13 +93,16 @@ public class GUIPluginTitle extends GUIPlugin
 
         titleCenter.addView(titleInfo);
 
+        int addiconpadd = GUIDefs.PADDING_SMALL;
+        int addiconsize = GUIDefs.ICON_SIZE - (addiconpadd * 2);
+
         GUIRelativeLayout addIconPad = new GUIRelativeLayout(context);
-        addIconPad.setPaddingDip(GUIDefs.PADDING_SMALL);
+        addIconPad.setPaddingDip(addiconpadd);
 
         titleFrame.addView(addIconPad);
 
         addIcon = new GUIIconView(context);
-        addIcon.setSizeDip(GUIDefs.ICON_SIZE - GUIDefs.PADDING_SMALL, GUIDefs.ICON_SIZE - GUIDefs.PADDING_SMALL);
+        addIcon.setSizeDip(addiconsize, addiconsize);
         addIcon.setImageResource(R.drawable.add_540);
         addIcon.setVisibility(GONE);
 

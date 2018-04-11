@@ -65,20 +65,28 @@ public class IOTList<T>
     @Nullable
     public T getEntry(String uuid)
     {
-        synchronized (list)
+        if (uuid != null)
         {
-            return list.get(uuid);
+            synchronized (list)
+            {
+                return list.get(uuid);
+            }
         }
+
+        return null;
     }
 
     @Nullable
     public JSONObject getEntryJson(String uuid)
     {
-        T entry;
+        T entry = null;
 
-        synchronized (list)
+        if (uuid != null)
         {
-            entry = list.get(uuid);
+            synchronized (list)
+            {
+                entry = list.get(uuid);
+            }
         }
 
         return ((entry != null) && (entry instanceof IOTObject)) ? ((IOTObject) entry).toJson() : null;

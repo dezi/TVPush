@@ -16,6 +16,7 @@ import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.views.GUIListView;
 import de.xavaro.android.iot.things.IOTLocation;
+import de.xavaro.android.iot.things.IOTThing;
 
 public class GUILocationsWizzard extends GUIPluginTitleListIOT
 {
@@ -28,7 +29,7 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
         setIsWizzard(true, true, 1, Gravity.CENTER);
 
         setTitleIcon(R.drawable.location_240);
-        setTitleText("Locations");
+        setTitleText("Örtlichkeiten");
 
         setAddIconVisible(true);
     }
@@ -41,7 +42,19 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
         IOTLocation location = new IOTLocation();
 
         location.fixedwifi = Simple.getConnectedWifiName();
-        location.name = location.fixedwifi;
+        location.name = "Neuer Ort";
+
+        /*
+        if (uuid != null)
+        {
+            IOTThing iotThing = IOTThing.getEntry(uuid);
+
+            if (iotThing != null)
+            {
+                location.name += " in " + ((iotThing.nick != null) ? iotThing.nick : iotThing.name);
+            }
+        }
+        */
 
         IOTLocation.list.addEntry(location, true, true);
 
@@ -122,6 +135,7 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
         public void onClick(View view)
         {
             String uuid = ((GUIListEntryIOT) view).uuid;
+
             GUI.instance.desktopActivity.displayWizzard(GUIGeomapWizzard.class.getSimpleName(), uuid);
         }
     };
