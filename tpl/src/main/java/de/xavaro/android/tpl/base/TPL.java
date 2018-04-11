@@ -117,6 +117,12 @@ public class TPL extends OnInterfacesStubs implements
     //region GetDeviceStatusRequest
 
     @Override
+    public void discoverDevicesRequest()
+    {
+        TPLDiscover.startService();
+    }
+
+    @Override
     public boolean getDeviceStatusRequest(JSONObject device, JSONObject status, JSONObject credential)
     {
         final String ipaddr = Json.getString(status, "ipaddr");

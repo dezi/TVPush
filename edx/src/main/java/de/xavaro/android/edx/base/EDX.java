@@ -111,6 +111,12 @@ public class EDX extends OnInterfacesStubs implements
     //region GetDeviceStatusRequest
 
     @Override
+    public void discoverDevicesRequest()
+    {
+        EDXDiscover.startService();
+    }
+
+    @Override
     public boolean getDeviceStatusRequest(JSONObject device, final JSONObject status, JSONObject credential)
     {
         JSONObject credentials = Json.getObject(credential, "credentials");
