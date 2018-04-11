@@ -1,19 +1,17 @@
-package de.xavaro.android.iot.proxim;
-
-import android.support.annotation.RequiresApi;
+package de.xavaro.android.bcn.beacon;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
-
 import android.content.BroadcastReceiver;
-import android.content.IntentFilter;
 import android.content.Context;
 import android.content.Intent;
-import android.os.ParcelUuid;
+import android.content.IntentFilter;
 import android.os.Build;
+import android.os.ParcelUuid;
+import android.support.annotation.RequiresApi;
 import android.util.SparseArray;
 
 import org.json.JSONObject;
@@ -24,18 +22,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import de.xavaro.android.iot.base.IOT;
-import de.xavaro.android.iot.base.IOTSimple;
-import de.xavaro.android.iot.simple.Json;
-import de.xavaro.android.iot.simple.Log;
-import de.xavaro.android.iot.simple.Simple;
-import de.xavaro.android.iot.status.IOTStatus;
-import de.xavaro.android.iot.things.IOTDevice;
+import de.xavaro.android.bcn.base.BCN;
+
+import de.xavaro.android.bcn.simple.Simple;
+import de.xavaro.android.bcn.simple.Json;
+import de.xavaro.android.bcn.simple.Log;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
-public class IOTProximScanner
+public class BCNScanner
 {
-    private static final String LOGTAG = IOTProximScanner.class.getSimpleName();
+    private static final String LOGTAG = BCNScanner.class.getSimpleName();
 
     //
     // adb shell setprop log.tag.TextView WARN
@@ -47,12 +43,13 @@ public class IOTProximScanner
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
-            if ((IOT.instance != null) && (IOT.instance.proximScanner == null))
+            if ((BCN.instance != null) && (BCN.instance.scanner == null))
             {
-                IOT.instance.proximScanner = new IOTProximScanner(appcontext);
+                BCN.instance.scanner = new BCNScanner(appcontext);
 
-                IOT.instance.proximScanner.startLEScanner();
+                BCN.instance.scanner.startLEScanner();
 
+                /*
                 if (Simple.isSony())
                 {
                     //
@@ -61,23 +58,24 @@ public class IOTProximScanner
                     // legacy scan is also requested.
                     //
 
-                    //IOT.instance.proximScanner.startReceiver();
-                    //IOT.instance.proximScanner.startDiscovery();
+                    IOT.instance.proximScanner.startReceiver();
+                    IOT.instance.proximScanner.startDiscovery();
                 }
+                */
             }
         }
     }
 
     public static void stopService()
     {
-        if ((IOT.instance != null) && (IOT.instance.proximScanner != null))
+        if ((BCN.instance != null) && (BCN.instance.scanner != null))
         {
-            IOT.instance.proximScanner.stopLEScanner();
+            BCN.instance.scanner.stopLEScanner();
 
-            IOT.instance.proximScanner.stopDiscovery();
-            IOT.instance.proximScanner.stopReceiver();
+            BCN.instance.scanner.stopDiscovery();
+            BCN.instance.scanner.stopReceiver();
 
-            IOT.instance.proximScanner = null;
+            BCN.instance.scanner = null;
         }
     }
 
@@ -88,7 +86,7 @@ public class IOTProximScanner
 
     private final Map<String, Long> lastUpdates = new HashMap<>();
 
-    public IOTProximScanner(Context context)
+    public BCNScanner(Context context)
     {
         this.context = context;
         this.adapter = Simple.getBTAdapter();
@@ -216,7 +214,7 @@ public class IOTProximScanner
             if (buildEddyDev(result, eddystone)) return;
         }
 
-        byte[] bytes = result.getScanRecord().getManufacturerSpecificData(IOTProxim.MANUFACTURER_IOT);
+        byte[] bytes = result.getScanRecord().getManufacturerSpecificData(BCNDefs.MANUFACTURER_IOT);
 
         if (bytes != null)
         {
@@ -241,12 +239,12 @@ public class IOTProximScanner
 
                 byte[] manData = manufacturerData.get(vendor);
 
-                if (vendor == IOTProxim.MANUFACTURER_APPLE)
+                if (vendor == BCNDefs.MANUFACTURER_APPLE)
                 {
                     if (buildApplDev(result, vendor, manData)) return;
                 }
 
-                if ((vendor == IOTProxim.MANUFACTURER_SAMSUNG)
+                if ((vendor == BCNDefs.MANUFACTURER_SAMSUNG)
                         && (result.getDevice() != null)
                         && (result.getDevice().getName() != null)
                         && (result.getDevice().getName().startsWith("[TV]")))
@@ -254,12 +252,12 @@ public class IOTProximScanner
                     if (buildBeacDev(result, vendor, manData)) return;
                 }
 
-                if (vendor == IOTProxim.MANUFACTURER_GOOGLE)
+                if (vendor == BCNDefs.MANUFACTURER_GOOGLE)
                 {
                     if (buildGoogDev(result, vendor, manData)) return;
                 }
 
-                if (vendor == IOTProxim.MANUFACTURER_SONY)
+                if (vendor == BCNDefs.MANUFACTURER_SONY)
                 {
                     if (buildBeacDev(result, vendor, manData)) return;
                 }
@@ -310,6 +308,7 @@ public class IOTProximScanner
         );
     }
 
+    @SuppressWarnings("SameReturnValue")
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private boolean evalIOTAdver(ScanResult result, byte[] bytes)
     {
@@ -322,21 +321,17 @@ public class IOTProximScanner
         int txpo = bb.get();
 
         String display = null;
-        String uuid = null;
-        Double lat = null;
-        Double lon = null;
-        Double alt = null;
 
-        if ((type == IOTProxim.ADVERTISE_GPS_FINE)
-                || (type == IOTProxim.ADVERTISE_GPS_COARSE))
+        if ((type == BCNDefs.ADVERTISE_GPS_FINE)
+                || (type == BCNDefs.ADVERTISE_GPS_COARSE))
         {
-            lat = bb.getDouble();
-            lon = bb.getDouble();
-            alt = (double) bb.getFloat();
+            Double lat = bb.getDouble();
+            Double lon = bb.getDouble();
+            Double alt = (double) bb.getFloat();
 
             display = lat + " - " + lon + " - " + alt;
 
-            String mode = (type == IOTProxim.ADVERTISE_GPS_FINE) ? "fine" : "coarse";
+            String mode = (type == BCNDefs.ADVERTISE_GPS_FINE) ? "fine" : "coarse";
 
             JSONObject locmeasurement = new JSONObject();
             Json.put(locmeasurement, "akey", macAddr);
@@ -352,23 +347,24 @@ public class IOTProximScanner
             JSONObject measurement = new JSONObject();
             Json.put(measurement, "LOCMeasurement", locmeasurement);
 
-            IOT.instance.proximLocationListener.addLocationMeasurement(measurement);
+            BCN.instance.onLocationMeasurement(measurement);
         }
 
-        if ((type == IOTProxim.ADVERTISE_IOT_HUMAN)
-                || (type == IOTProxim.ADVERTISE_IOT_DOMAIN)
-                || (type == IOTProxim.ADVERTISE_IOT_DEVICE)
-                || (type == IOTProxim.ADVERTISE_IOT_LOCATION))
+        if ((type == BCNDefs.ADVERTISE_IOT_HUMAN)
+                || (type == BCNDefs.ADVERTISE_IOT_DOMAIN)
+                || (type == BCNDefs.ADVERTISE_IOT_DEVICE)
+                || (type == BCNDefs.ADVERTISE_IOT_LOCATION))
         {
             long msb = bb.getLong();
             long lsb = bb.getLong();
 
-            uuid = (new UUID(msb, lsb)).toString();
+            @SuppressWarnings("UnnecessaryLocalVariable")
+            String uuid = (new UUID(msb, lsb)).toString();
 
             display = uuid;
         }
 
-        if (type == IOTProxim.ADVERTISE_IOT_DEVNAME)
+        if (type == BCNDefs.ADVERTISE_IOT_DEVNAME)
         {
             int devsize = bytes.length - 2;
             byte[] devbytes = new byte[devsize];
@@ -382,14 +378,14 @@ public class IOTProximScanner
                 + " rssi=" + rssi
                 + " txpo=" + txpo
                 + " addr=" + result.getDevice().getAddress()
-                + " vend=" + Simple.padZero(IOTProxim.MANUFACTURER_IOT, 4)
-                + " type=" + IOTProxim.getAdvertiseType(type)
+                + " vend=" + Simple.padZero(BCNDefs.MANUFACTURER_IOT, 4)
+                + " type=" + BCNDefs.getAdvertiseType(type)
                 + " disp=" + display
-                + " self=" + IOT.device.uuid
         );
 
-        if ((type == IOTProxim.ADVERTISE_GPS_FINE)
-                || (type == IOTProxim.ADVERTISE_GPS_COARSE))
+        /*
+        if ((type == BCNDefs.ADVERTISE_GPS_FINE)
+                || (type == BCNDefs.ADVERTISE_GPS_COARSE))
         {
             //
             // Bootstrap location if not yet set.
@@ -422,6 +418,7 @@ public class IOTProximScanner
                 IOTDevice.list.addEntry(newDevice, false, true);
             }
         }
+        */
 
         return true;
     }
@@ -470,7 +467,7 @@ public class IOTProximScanner
 
         String name = result.getDevice().getName();
         String macAddr = result.getDevice().getAddress();
-        String uuid = IOTSimple.hmacSha1UUID(url, macAddr);
+        String uuid = Simple.hmacSha1UUID(url, macAddr);
 
         int rssi = result.getRssi();
 
@@ -499,7 +496,7 @@ public class IOTProximScanner
                     + " txpo=" + txpo
                     + " addr=" + macAddr
                     + " vend=" + "0000"
-                    + " type=" + IOTDevice.TYPE_BEACON
+                    + " type=" + "beacon"
                     + " uuid=" + uuid
                     + " name=" + name
                     + " url=" + url
@@ -508,7 +505,7 @@ public class IOTProximScanner
             JSONObject beacondev = new JSONObject();
 
             Json.put(beacondev, "uuid", uuid);
-            Json.put(beacondev, "type", IOTDevice.TYPE_BEACON);
+            Json.put(beacondev, "type", "beacon");
             Json.put(beacondev, "did", url);
             Json.put(beacondev, "name", url);
             Json.put(beacondev, "nick", url);
@@ -519,7 +516,7 @@ public class IOTProximScanner
 
             Json.put(beacondev, "capabilities", Json.jsonArrayFromSeparatedString(caps, "\\|"));
 
-            IOTDevice.list.addEntry(new IOTDevice(beacondev), false, true);
+            BCN.instance.onDeviceFound(beacondev);
 
             JSONObject status = new JSONObject();
 
@@ -527,43 +524,40 @@ public class IOTProximScanner
             Json.put(status, "txpower", txpo);
             Json.put(status, "macaddr", macAddr);
 
-            IOTStatus.list.addEntry(new IOTStatus(status), false, true);
+            BCN.instance.onDeviceStatus(status);
         }
 
         addLocationMeasurement(uuid, rssi, txpo, macAddr);
 
-        if (IOT.instance.alive != null)
-        {
-            IOT.instance.alive.setAliveNetwork(uuid);
-        }
+        BCN.instance.onThingAlive(uuid);
 
         return true;
     }
 
     private void addLocationMeasurement(String uuid, int rssi, int txpo, String macAddr)
     {
-        IOTDevice device = IOTDevice.list.getEntry(uuid);
+        JSONObject device = BCN.instance.onGetDeviceRequest(uuid);
 
         if ((device != null)
-                && (device.fixedLatFine != null)
-                && (device.fixedLonFine != null)
-                && (device.fixedAltFine != null))
+                && Json.has(device, "fixedLatFine")
+                && Json.has(device, "fixedLonFine")
+                && Json.has(device, "fixedAltFine"))
         {
             JSONObject locmeasurement = new JSONObject();
             Json.put(locmeasurement, "akey", macAddr);
-            Json.put(locmeasurement, "prov", device.type);
+            Json.put(locmeasurement, "prov", Json.getString(device, "type"));
             Json.put(locmeasurement, "time", System.currentTimeMillis());
             Json.put(locmeasurement, "mode", "fine");
             Json.put(locmeasurement, "txpo", txpo);
             Json.put(locmeasurement, "rssi", rssi);
-            Json.put(locmeasurement, "lat", device.fixedLatFine);
-            Json.put(locmeasurement, "lon", device.fixedLonFine);
-            Json.put(locmeasurement, "alt", device.fixedAltFine);
+            Json.put(locmeasurement, "lat", Json.getDouble(device, "fixedLatFine"));
+            Json.put(locmeasurement, "lon", Json.getDouble(device, "fixedLonFine"));
+            Json.put(locmeasurement, "alt", Json.getDouble(device, "fixedAltFine"));
 
             JSONObject measurement = new JSONObject();
             Json.put(measurement, "LOCMeasurement", locmeasurement);
 
-            IOT.instance.proximLocationListener.addLocationMeasurement(measurement);
+            BCN.instance.onLocationMeasurement(measurement);
         }
     }
 
@@ -581,7 +575,7 @@ public class IOTProximScanner
         }
 
         String macAddr = result.getDevice().getAddress();
-        String uuid = IOTSimple.hmacSha1UUID(name, macAddr);
+        String uuid = Simple.hmacSha1UUID(name, macAddr);
 
         int rssi = result.getRssi();
         int txpo = -20;
@@ -600,7 +594,7 @@ public class IOTProximScanner
                     + " txpo=" + txpo
                     + " addr=" + macAddr
                     + " vend=" + Simple.padZero(vendor, 4)
-                    + " type=" + IOTDevice.TYPE_BEACON
+                    + " type=" + "beacon"
                     + " uuid=" + uuid
                     + " name=" + name
             );
@@ -610,17 +604,17 @@ public class IOTProximScanner
             JSONObject beacondev = new JSONObject();
 
             Json.put(beacondev, "uuid", uuid);
-            Json.put(beacondev, "type", IOTDevice.TYPE_BEACON);
+            Json.put(beacondev, "type", "beacon");
             Json.put(beacondev, "name", name);
             Json.put(beacondev, "nick", name);
-            Json.put(beacondev, "vendor", IOTProxim.getAdvertiseVendor(vendor));
+            Json.put(beacondev, "vendor", BCNDefs.getAdvertiseVendor(vendor));
             Json.put(beacondev, "macaddr", macAddr);
             Json.put(beacondev, "driver", "iot");
             Json.put(beacondev, "location", Simple.getConnectedWifiName());
 
             Json.put(beacondev, "capabilities", Json.jsonArrayFromSeparatedString(caps, "\\|"));
 
-            IOTDevice.list.addEntry(new IOTDevice(beacondev), false, true);
+            BCN.instance.onDeviceFound(beacondev);
 
             JSONObject status = new JSONObject();
 
@@ -628,15 +622,12 @@ public class IOTProximScanner
             Json.put(status, "txpower", txpo);
             Json.put(status, "macaddr", macAddr);
 
-            IOTStatus.list.addEntry(new IOTStatus(status), false, true);
+            BCN.instance.onDeviceStatus(status);
         }
 
         addLocationMeasurement(uuid, rssi, txpo, macAddr);
 
-        if (IOT.instance.alive != null)
-        {
-            IOT.instance.alive.setAliveNetwork(uuid);
-        }
+        BCN.instance.onThingAlive(uuid);
 
         return true;
     }
@@ -667,8 +658,6 @@ public class IOTProximScanner
 
         int rssi = result.getRssi();
         int txpo = -1;
-        int major = -1;
-        int minor = -1;
 
         if (bytes.length == 23)
         {
@@ -678,8 +667,8 @@ public class IOTProximScanner
 
             if ((bytes[ 0 ] == 0x02) && (bytes[ 1 ] == 0x15))
             {
-                major = bytes[18] & 0xff;
-                minor = bytes[19] & 0xff;
+                int major = bytes[18] & 0xff;
+                int minor = bytes[19] & 0xff;
                 txpo = bytes[22];
 
                 ByteBuffer bb = ByteBuffer.wrap(bytes, 2, 16);
@@ -692,7 +681,7 @@ public class IOTProximScanner
                     uuid = (new UUID(msb, lsb)).toString();
                     name = uuid + " (" + major + "/" + minor + ")";
                     caps = "beacon|ibeacon|fixed|stupid|gpsfine";
-                    type = IOTDevice.TYPE_BEACON;
+                    type = "beacon";
                     model = "iBeacon";
                 }
             }
@@ -711,16 +700,16 @@ public class IOTProximScanner
 
                     if (name != null)
                     {
-                        uuid = IOTSimple.hmacSha1UUID(macAddr, name);
+                        uuid = Simple.hmacSha1UUID(macAddr, name);
                         caps = "beacon|macbeacon|fixed|stupid|gpsfine";
-                        type = IOTDevice.TYPE_BEACON;
+                        type = "beacon";
                         model = "iMac";
                     }
                 }
             }
         }
 
-        if ((uuid == null) || (name == null)) return false;
+        if (uuid == null) return false;
 
         if (shouldUpdate(uuid))
         {
@@ -737,18 +726,18 @@ public class IOTProximScanner
             JSONObject beacondev = new JSONObject();
 
             Json.put(beacondev, "uuid", uuid);
-            Json.put(beacondev, "type", IOTDevice.TYPE_BEACON);
+            Json.put(beacondev, "type", "beacon");
             Json.put(beacondev, "name", name);
             Json.put(beacondev, "nick", name);
             Json.put(beacondev, "model", model);
-            Json.put(beacondev, "vendor", IOTProxim.getAdvertiseVendor(vendor));
+            Json.put(beacondev, "vendor", BCNDefs.getAdvertiseVendor(vendor));
             Json.put(beacondev, "macaddr", macAddr);
             Json.put(beacondev, "driver", "iot");
             Json.put(beacondev, "location", Simple.getConnectedWifiName());
 
             Json.put(beacondev, "capabilities", Json.jsonArrayFromSeparatedString(caps, "\\|"));
 
-            IOTDevice.list.addEntry(new IOTDevice(beacondev), false, true);
+            BCN.instance.onDeviceFound(beacondev);
 
             JSONObject status = new JSONObject();
 
@@ -756,19 +745,17 @@ public class IOTProximScanner
             Json.put(status, "txpower", txpo);
             Json.put(status, "macaddr", macAddr);
 
-            IOTStatus.list.addEntry(new IOTStatus(status), false, true);
+            BCN.instance.onDeviceStatus(status);
         }
 
         addLocationMeasurement(uuid, rssi, txpo, macAddr);
 
-        if (IOT.instance.alive != null)
-        {
-            IOT.instance.alive.setAliveNetwork(uuid);
-        }
+        BCN.instance.onThingAlive(uuid);
 
         return true;
     }
 
+    @SuppressWarnings("SameReturnValue")
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private boolean buildGoogDev(ScanResult result, int vendor, byte[] bytes)
     {

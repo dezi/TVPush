@@ -100,7 +100,9 @@ public class IOTAlive
     {
         Long lastRequest = getRequested(ipaddr);
 
-        if ((lastRequest != null) && ((System.currentTimeMillis() - lastRequest) < (10 * 1000)))
+        int secs = new Random().nextInt(6) + 6;
+
+        if ((lastRequest != null) && ((System.currentTimeMillis() - lastRequest) < (secs * 1000)))
         {
             return;
         }

@@ -598,4 +598,18 @@ public class Json
             put(obj, key, String.valueOf(val));
         }
     }
+
+    public static JSONArray jsonArrayFromSeparatedString(String str, String regex)
+    {
+        JSONArray array = new JSONArray();
+
+        if (str != null)
+        {
+            String[] parts = str.split(regex);
+
+            for (String part : parts) put(array, part);
+        }
+
+        return array;
+    }
 }

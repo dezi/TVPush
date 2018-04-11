@@ -52,7 +52,7 @@ public class OnInterfacesStubs
         Log.d(LOGTAG(), Log.getStackTraceString(new Exception()));
     }
 
-    public void onDeviceStatus(JSONObject device)
+    public void onDeviceStatus(JSONObject status)
     {
         Log.d(LOGTAG(), "onDeviceStatus: STUB!");
         Log.d(LOGTAG(), Log.getStackTraceString(new Exception()));

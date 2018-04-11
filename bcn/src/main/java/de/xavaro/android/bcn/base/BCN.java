@@ -2,29 +2,41 @@ package de.xavaro.android.bcn.base;
 
 import android.app.Application;
 import android.os.Build;
+import android.util.Log;
 
 import org.json.JSONObject;
 
+import pub.android.interfaces.all.SubSystemHandler;
+import pub.android.interfaces.ext.GetDevicesRequest;
+import pub.android.interfaces.ext.OnAliveHandler;
+import pub.android.interfaces.ext.OnDeviceHandler;
+import pub.android.interfaces.ext.OnLocationHandler;
+import pub.android.stubs.OnInterfacesStubs;
+
+import de.xavaro.android.bcn.beacon.BCNScanner;
 import de.xavaro.android.bcn.simple.Simple;
 import de.xavaro.android.bcn.simple.Json;
 import de.xavaro.android.bcn.R;
 
-import pub.android.interfaces.all.SubSystemHandler;
-import pub.android.interfaces.ext.OnDeviceHandler;
-import pub.android.stubs.OnInterfacesStubs;
-
 public class BCN extends OnInterfacesStubs implements
         SubSystemHandler,
-        OnDeviceHandler
+        OnDeviceHandler,
+        GetDevicesRequest,
+        OnLocationHandler,
+        OnAliveHandler
 {
     private static final String LOGTAG = BCN.class.getSimpleName();
 
     public static BCN instance;
 
+    public BCNScanner scanner;
+
     public BCN(Application application)
     {
         Simple.initialize(application);
     }
+
+    //region SubSystemHandler
 
     @Override
     public void setInstance()
@@ -68,4 +80,26 @@ public class BCN extends OnInterfacesStubs implements
     {
         onSubsystemStopped("bcn", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
     }
+
+    //endregion SubSystemHandler
+
+    //region OnLocationHandler
+
+    @Override
+    public void onLocationMeasurement(JSONObject measurement)
+    {
+        Log.d(LOGTAG, "onLocationMeasurement: STUB!");
+    }
+
+    //endregion OnLocationHandler
+
+    //region OnAliveHandler
+
+    @Override
+    public void onThingAlive(String uuid)
+    {
+        Log.d(LOGTAG, "onThingAlive: STUB!");
+    }
+
+    //endregion OnAliveHandler
 }
