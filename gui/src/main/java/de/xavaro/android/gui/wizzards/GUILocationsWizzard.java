@@ -15,7 +15,7 @@ import de.xavaro.android.gui.simple.Log;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.views.GUIListView;
-import de.xavaro.android.iot.things.IOTDomain;
+import de.xavaro.android.iot.things.IOTLocation;
 
 public class GUILocationsWizzard extends GUIPluginTitleListIOT
 {
@@ -38,12 +38,12 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
     {
         Log.d(LOGTAG, "onAddIconClicked:");
 
-        IOTDomain domain = new IOTDomain();
+        IOTLocation location = new IOTLocation();
 
-        domain.fixedwifi = Simple.getConnectedWifiName();
-        domain.name = domain.fixedwifi;
+        location.fixedwifi = Simple.getConnectedWifiName();
+        location.name = location.fixedwifi;
 
-        IOTDomain.list.addEntry(domain, true, true);
+        IOTLocation.list.addEntry(location, true, true);
 
         updateContent();
     }
@@ -56,18 +56,18 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
 
     public void collectEntries(GUIListView listView, boolean todo)
     {
-        JSONArray list = IOTDomain.list.getUUIDList();
+        JSONArray list = IOTLocation.list.getUUIDList();
 
         for (int inx = 0; inx < list.length(); inx++)
         {
             String uuid = Json.getString(list, inx);
-            IOTDomain domain = IOTDomain.list.getEntry(uuid);
+            IOTLocation location = IOTLocation.list.getEntry(uuid);
 
-            if (domain == null) continue;
+            if (location == null) continue;
 
-            boolean isnice = (domain.fixedLatFine != null)
-                    && (domain.fixedLonFine != null)
-                    && (domain.fixedAltFine != null);
+            boolean isnice = (location.fixedLatFine != null)
+                    && (location.fixedLonFine != null)
+                    && (location.fixedAltFine != null);
 
             if (todo && isnice) continue;
 
@@ -88,22 +88,22 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
 
             boolean isnice = false;
 
-            IOTDomain domain = IOTDomain.list.getEntry(entry.uuid);
+            IOTLocation location = IOTLocation.list.getEntry(entry.uuid);
 
-            if (domain != null)
+            if (location != null)
             {
-                isnice = (domain.fixedLatFine != null)
-                        && (domain.fixedLonFine != null)
-                        && (domain.fixedAltFine != null);
+                isnice = (location.fixedLatFine != null)
+                        && (location.fixedLonFine != null)
+                        && (location.fixedAltFine != null);
 
                 if (isnice)
                 {
                     info = ""
-                            + Simple.getRounded3(domain.fixedLatFine)
+                            + Simple.getRounded3(location.fixedLatFine)
                             + " "
-                            + Simple.getRounded3(domain.fixedLonFine)
+                            + Simple.getRounded3(location.fixedLonFine)
                             + " "
-                            + Simple.getRounded3(domain.fixedAltFine)
+                            + Simple.getRounded3(location.fixedAltFine)
                             + " m";
                 }
             }

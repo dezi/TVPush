@@ -10,8 +10,7 @@ public class IOTLocation extends IOTThing
 {
     public static IOTList<IOTLocation> list;
 
-    public String nick;
-    public String name;
+    public String fixedwifi;
 
     public Double fixedLatFine;
     public Double fixedLonFine;
@@ -37,8 +36,18 @@ public class IOTLocation extends IOTThing
     {
         IOTLocation check = (IOTLocation) iotObject;
 
+        // @formatter:off
+
         changedSys = false;
         changedUsr = false;
+
+        changed = false;
+
+        if (nequals(fixedwifi, check.fixedwifi)) fixedwifi = check.fixedwifi;
+
+        changedSys = changed;
+
+        // @formatter:on
 
         if (external)
         {
