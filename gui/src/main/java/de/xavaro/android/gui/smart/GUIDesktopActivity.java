@@ -17,6 +17,7 @@ import java.util.Map;
 import de.xavaro.android.gui.plugin.GUIPluginTitle;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUIDialogViewPincode;
+import de.xavaro.android.gui.wizzards.GUIDomainsWizzard;
 import de.xavaro.android.gui.wizzards.GUILocationsWizzard;
 import de.xavaro.android.gui.wizzards.GUICamerasWizzard;
 import de.xavaro.android.gui.wizzards.GUIChannelWizzard;
@@ -66,6 +67,7 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
         wizzards.put(GUIPingWizzard.      class.getSimpleName(), new GUIPingWizzard      (this));
         wizzards.put(GUITodoWizzard.      class.getSimpleName(), new GUITodoWizzard      (this));
         wizzards.put(GUISetupWizzard.     class.getSimpleName(), new GUISetupWizzard     (this));
+        wizzards.put(GUIDomainsWizzard.   class.getSimpleName(), new GUIDomainsWizzard   (this));
         wizzards.put(GUISettingsWizzard.  class.getSimpleName(), new GUISettingsWizzard  (this));
         wizzards.put(GUICameraWizzard.    class.getSimpleName(), new GUICameraWizzard    (this));
         wizzards.put(GUICamerasWizzard.   class.getSimpleName(), new GUICamerasWizzard   (this));
@@ -79,7 +81,8 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
         if (!Simple.isPhone())
         {
             //displayWizzard(GUISetupWizzard.class.getSimpleName());
-            displayWizzard(GUIPingWizzard.class.getSimpleName());
+            //displayWizzard(GUIPingWizzard.class.getSimpleName());
+            displayWizzard(GUIDomainsWizzard.class.getSimpleName());
         }
 
         //GUIDialogViewPincode pincode = new GUIDialogViewPincode(this);
