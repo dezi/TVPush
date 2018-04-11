@@ -6,6 +6,7 @@ import android.graphics.Color;
 import org.json.JSONObject;
 
 import de.xavaro.android.tpl.comm.TPLDiscover;
+import de.xavaro.android.tpl.handler.TPLHandlerSysInfo;
 import pub.android.interfaces.ext.GetSmartBulbHandler;
 import pub.android.interfaces.ext.GetSmartPlugHandler;
 import pub.android.interfaces.ext.OnDeviceHandler;
@@ -18,12 +19,8 @@ import pub.android.stubs.OnInterfacesStubs;
 
 import de.xavaro.android.tpl.handler.TPLHandlerSmartBulb;
 import de.xavaro.android.tpl.handler.TPLHandlerSmartPlug;
-import de.xavaro.android.tpl.handler.TPLHandlerSysInfo;
 import de.xavaro.android.tpl.publics.SmartBulbHandler;
 import de.xavaro.android.tpl.publics.SmartPlugHandler;
-import de.xavaro.android.tpl.comm.TPLMessageHandler;
-import de.xavaro.android.tpl.comm.TPLMessageService;
-import de.xavaro.android.tpl.comm.TPLDatagrammService;
 
 import de.xavaro.android.tpl.simple.Simple;
 import de.xavaro.android.tpl.simple.Json;
@@ -33,17 +30,15 @@ public class TPL extends OnInterfacesStubs implements
         SubSystemHandler,
         OnDeviceHandler,
         GetDeviceStatusRequest,
-        DoSomethingHandler,
         GetSmartPlugHandler,
-        GetSmartBulbHandler
+        GetSmartBulbHandler,
+        DoSomethingHandler
 {
     private static final String LOGTAG = TPL.class.getSimpleName();
 
     public static TPL instance;
 
     public TPLDiscover discover;
-    public TPLMessageHandler message;
-    public TPLMessageService receiver;
 
     public TPL(Application application)
     {
@@ -81,10 +76,6 @@ public class TPL extends OnInterfacesStubs implements
     {
         TPLDiscover.startService();
 
-        TPLMessageHandler.startService();
-        TPLMessageService.startService();
-        TPLDatagrammService.startService();
-
         onSubsystemStarted("tpl", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
     }
 
@@ -92,10 +83,6 @@ public class TPL extends OnInterfacesStubs implements
     public void stopSubsystem(String subsystem)
     {
         TPLDiscover.stopService();
-
-        TPLDatagrammService.stopService();
-        TPLMessageService.stopService();
-        TPLMessageHandler.stopService();
 
         onSubsystemStopped("tpl", SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
     }
@@ -243,10 +230,38 @@ public class TPL extends OnInterfacesStubs implements
         return false;
     }
 
+    //region GetDeviceStatusRequest
+
     @Override
     public boolean getDeviceStatusRequest(JSONObject device, JSONObject status, JSONObject credential)
     {
+        final String ipaddr = Json.getString(status, "ipaddr");
+        final int ipport = Json.getInt(status, "ipport");
 
-        return true;
+        if ((ipaddr != null) && (ipport != 0))
+        {
+            Runnable runnable = new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    String result = TPLHandlerSysInfo.sendSysInfo(ipaddr);
+                    JSONObject message = Json.fromStringObject(result);
+
+                    if (message != null)
+                    {
+                        TPLHandlerSysInfo.buildDeviceDescription(ipaddr, ipport, message, true);
+                    }
+                }
+            };
+
+            Simple.runBackground(runnable);
+
+            return true;
+        }
+
+        return false;
     }
+
+    //endregion GetDeviceStatusRequest
 }

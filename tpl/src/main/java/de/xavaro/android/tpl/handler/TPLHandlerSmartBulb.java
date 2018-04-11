@@ -8,7 +8,7 @@ import de.xavaro.android.tpl.simple.Simple;
 import de.xavaro.android.tpl.simple.Json;
 import de.xavaro.android.tpl.simple.Log;
 
-public class TPLHandlerSmartBulb extends TPLHandler
+public class TPLHandlerSmartBulb
 {
     private static final String LOGTAG = TPLHandlerSmartBulb.class.getSimpleName();
 
@@ -34,7 +34,7 @@ public class TPLHandlerSmartBulb extends TPLHandler
         if (saturation >= 0) Json.put(transition, "saturation", saturation);
         if (brightness >= 0) Json.put(transition, "brightness", brightness);
 
-        String result = sendToSocket(ipaddr, message);
+        String result = TPLHandler.sendToSocket(ipaddr, message);
 
         return ((result != null) && result.contains("\"err_code\":0"));
     }

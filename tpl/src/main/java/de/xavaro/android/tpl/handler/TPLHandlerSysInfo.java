@@ -1,63 +1,26 @@
 package de.xavaro.android.tpl.handler;
 
-import android.support.annotation.Nullable;
-
 import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import de.xavaro.android.tpl.base.TPL;
 
-import de.xavaro.android.tpl.comm.TPLDiscover;
 import de.xavaro.android.tpl.simple.Simple;
 import de.xavaro.android.tpl.simple.Json;
 import de.xavaro.android.tpl.simple.Log;
 
-public class TPLHandlerSysInfo extends TPLHandler
+public class TPLHandlerSysInfo
 {
     private static final String LOGTAG = TPLHandlerSysInfo.class.getSimpleName();
 
-    private static final Map<String, String> ip2uuid = new HashMap<>();
-
-    @Nullable
-    public static String resolveUUID(String ipaddr)
-    {
-        return Simple.getMapString(ip2uuid, ipaddr);
-    }
-
-    public static void sendAllGetSysinfo()
-    {
-        sendGetSysinfo(null);
-    }
-
-    public static void sendGetSysinfo(String ipaddr)
+    public static String sendSysInfo(String ipaddr)
     {
         String mess = "{\"system\":{\"get_sysinfo\":{}}}";
-
-        JSONObject message = Json.fromStringObject(mess);
-
-        if ((ipaddr != null) && ! ipaddr.isEmpty())
-        {
-            JSONObject destination = new JSONObject();
-            Json.put(destination, "ipaddr", ipaddr);
-
-            Json.put(message, "destination", destination);
-        }
-
-        TPL.instance.message.sendMessage(message);
+        return TPLHandler.sendToSocket(ipaddr, mess);
     }
 
-    @Override
-    public void onMessageReived(JSONObject message)
+    public static void  buildDeviceDescription(String ipaddr, int ipport, JSONObject message, boolean onlystatus)
     {
-        //Log.d(LOGTAG, Json.toPretty(message));
-
-    }
-
-    public static void  buildDeviceDescription(String ipaddr, int ipport, JSONObject message)
-    {
-        Log.d(LOGTAG, "buildDeviceDescription: message=" + Json.toPretty(message));
+        //Log.d(LOGTAG, "buildDeviceDescription: message=" + Json.toPretty(message));
 
         JSONObject system = Json.getObject(message, "system");
         JSONObject sysinfo = Json.getObject(system, "get_sysinfo");
@@ -71,16 +34,7 @@ public class TPLHandlerSysInfo extends TPLHandler
             return;
         }
 
-        String brand = "TP-LINK";
-
         String id = Json.getString(sysinfo, "deviceId");
-        String name = Json.getString(sysinfo, "alias");
-        String nick = Json.getString(sysinfo, "alias");
-        String model = Json.getString(sysinfo, "model");
-
-        String version = Json.getString(sysinfo, "hw_ver")
-                + " - " + Json.getString(sysinfo, "sw_ver");
-
         String mac = Json.getString(sysinfo, "mac");
 
         if (mac == null)
@@ -95,60 +49,65 @@ public class TPLHandlerSysInfo extends TPLHandler
                         + ":" + micmac.substring(6, 8)
                         + ":" + micmac.substring(8, 10)
                         + ":" + micmac.substring(10, 12)
-                        ;
+                ;
             }
         }
 
-        String tpltype = Json.getString(sysinfo, "type");
-        if (tpltype == null) tpltype = Json.getString(sysinfo, "mic_type");
-
+        String uuid = Simple.hmacSha1UUID(id, mac);
         String ssid = Simple.getConnectedWifiName();
 
-        String driver = "tpl";
+        if (! onlystatus)
+        {
+            String brand = "TP-LINK";
 
-        String type = getDeviceType(tpltype);
-        String capabilities = getCapabilities(tpltype, model);
+            String name = Json.getString(sysinfo, "alias");
+            String nick = Json.getString(sysinfo, "alias");
+            String model = Json.getString(sysinfo, "model");
 
-        String uuid = Simple.hmacSha1UUID(id, mac);
+            String version = Json.getString(sysinfo, "hw_ver")
+                    + " - " + Json.getString(sysinfo, "sw_ver");
 
-        Log.d(LOGTAG, "buildDeviceDescription:"
-                + " uuid=" + uuid
-                + " model=" + model
-                + " name=" + name);
+            String tpltype = Json.getString(sysinfo, "type");
+            if (tpltype == null) tpltype = Json.getString(sysinfo, "mic_type");
 
-        ip2uuid.put(ipaddr, uuid);
+            String driver = "tpl";
 
-        JSONObject tplinkdev = new JSONObject();
+            String type = getDeviceType(tpltype);
+            String capabilities = getCapabilities(tpltype, model);
 
-        JSONObject device = new JSONObject();
-        Json.put(tplinkdev, "device", device);
+            Log.d(LOGTAG, "buildDeviceDescription:"
+                    + " uuid=" + uuid
+                    + " model=" + model
+                    + " name=" + name);
 
-        JSONObject credentials = new JSONObject();
-        Json.put(tplinkdev, "credentials", credentials);
+            JSONObject tplinkdev = new JSONObject();
 
-        JSONObject network = new JSONObject();
-        Json.put(tplinkdev, "network", network);
+            JSONObject device = new JSONObject();
+            Json.put(tplinkdev, "device", device);
 
-        Json.put(device, "uuid", uuid);
+            Json.put(device, "uuid", uuid);
+            Json.put(device, "did", id);
+            Json.put(device, "type", type);
+            Json.put(device, "name", name);
+            Json.put(device, "nick", nick);
+            Json.put(device, "model", model);
+            Json.put(device, "brand", brand);
+            Json.put(device, "version", version);
+            Json.put(device, "capabilities", capabilities);
+            Json.put(device, "driver", driver);
+            Json.put(device, "location", ssid);
+            Json.put(device, "fixedwifi", ssid);
 
-        Json.put(device, "did", id);
-        Json.put(device, "type", type);
-        Json.put(device, "name", name);
-        Json.put(device, "nick", nick);
-        Json.put(device, "model", model);
-        Json.put(device, "brand", brand);
-        Json.put(device, "version", version);
-        Json.put(device, "capabilities", capabilities);
-        Json.put(device, "driver", driver);
-        Json.put(device, "location", ssid);
-        Json.put(device, "fixedwifi", ssid);
+            JSONObject network = new JSONObject();
+            Json.put(tplinkdev, "network", network);
 
-        Json.put(network, "ipaddr", ipaddr);
-        Json.put(network, "ipport", ipport);
-        Json.put(network, "ssid", ssid);
-        Json.put(network, "mac", mac);
+            Json.put(network, "ipaddr", ipaddr);
+            Json.put(network, "ipport", ipport);
+            Json.put(network, "ssid", ssid);
+            Json.put(network, "mac", mac);
 
-        TPL.instance.onDeviceFound(tplinkdev);
+            TPL.instance.onDeviceFound(tplinkdev);
+        }
 
         JSONObject status = new JSONObject();
 
@@ -171,30 +130,11 @@ public class TPLHandlerSysInfo extends TPLHandler
 
         if (light_state != null)
         {
-            if (Json.has(light_state, "on_off"))
-            {
-                Json.put(status, "bulbstate", Json.getInt(light_state, "on_off"));
-            }
-
-            if (Json.has(light_state, "hue"))
-            {
-                Json.put(status, "hue", Json.getInt(light_state, "hue"));
-            }
-
-            if (Json.has(light_state, "saturation"))
-            {
-                Json.put(status, "saturation", Json.getInt(light_state, "saturation"));
-            }
-
-            if (Json.has(light_state, "brightness"))
-            {
-                Json.put(status, "brightness", Json.getInt(light_state, "brightness"));
-            }
-
-            if (Json.has(light_state, "color_temp"))
-            {
-                Json.put(status, "color_temp", Json.getInt(light_state, "color_temp"));
-            }
+            Json.put(status, "bulbstate", Json.getInt(light_state, "on_off"));
+            Json.put(status, "hue", Json.getInt(light_state, "hue"));
+            Json.put(status, "saturation", Json.getInt(light_state, "saturation"));
+            Json.put(status, "brightness", Json.getInt(light_state, "brightness"));
+            Json.put(status, "color_temp", Json.getInt(light_state, "color_temp"));
         }
 
         TPL.instance.onDeviceStatus(status);

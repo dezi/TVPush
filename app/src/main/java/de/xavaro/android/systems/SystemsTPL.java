@@ -46,8 +46,6 @@ public class SystemsTPL extends TPL
     @Override
     public void onDeviceStatus(JSONObject status)
     {
-        Log.d(LOGTAG, "onDeviceStatus:");
-
         IOT.instance.register.registerDeviceStatus(status);
     }
 

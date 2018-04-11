@@ -87,7 +87,7 @@ public class TPLDiscover
 
                 String mess = "{\"system\":{\"get_sysinfo\":{}}}";
 
-                byte[] helloPacket = TPLDatagrammService.encryptMessage(mess);
+                byte[] helloPacket = encryptMessage(mess);
                 DatagramPacket hello = new DatagramPacket(helloPacket, helloPacket.length);
 
                 hello.setAddress(InetAddress.getByName("255.255.255.255"));
@@ -120,7 +120,7 @@ public class TPLDiscover
                         if (dupstuff.contains(dupkey)) continue;
                         dupstuff.add(dupkey);
 
-                        String messstr = TPLDatagrammService.decryptMessage(packet.getData(), 0, packet.getLength());
+                        String messstr = decryptMessage(packet.getData(), 0, packet.getLength());
 
                         JSONObject message = Json.fromStringObject(messstr);
                         if (message == null) continue;
@@ -128,7 +128,7 @@ public class TPLDiscover
                         String ipaddr = packet.getAddress().toString().substring(1);
                         int ipport = packet.getPort();
 
-                        TPLHandlerSysInfo.buildDeviceDescription(ipaddr, ipport, message);
+                        TPLHandlerSysInfo.buildDeviceDescription(ipaddr, ipport, message, false);
                     }
                     catch (Exception ignore)
                     {
@@ -147,4 +147,39 @@ public class TPLDiscover
             Log.d(LOGTAG, "discoverRunnable: done.");
         }
     };
+
+    private static final byte TPLKEY = (byte) 0xAB;
+
+    public static byte[] encryptMessage(String message)
+    {
+        byte[] data = message.getBytes();
+
+        byte key = TPLKEY;
+
+        for (int inx = 0; inx < data.length; inx ++)
+        {
+            data[inx] = (byte) (data[inx] ^ key);
+            key = data[inx];
+        }
+
+        return data;
+    }
+
+    public static String decryptMessage(byte[] data, int offset, int len)
+    {
+        if (data == null) return null;
+
+        byte key = TPLKEY;
+
+        byte nextKey;
+
+        for (int inx = 0; inx < len; inx++)
+        {
+            nextKey = data[inx + offset];
+            data[inx + offset] = (byte) (data[inx + offset] ^ key);
+            key = nextKey;
+        }
+
+        return new String(data, offset, len);
+    }
 }
