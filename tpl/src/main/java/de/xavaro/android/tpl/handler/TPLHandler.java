@@ -10,13 +10,12 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 import de.xavaro.android.tpl.comm.TPLDatagrammService;
+import de.xavaro.android.tpl.comm.TPLDiscover;
 import de.xavaro.android.tpl.simple.Log;
 
 public class TPLHandler
 {
     private static final String LOGTAG = TPLHandler.class.getSimpleName();
-
-    private static final int TPLINK_PORT = 9999;
 
     public void onMessageReived(JSONObject message)
     {
@@ -43,7 +42,7 @@ public class TPLHandler
             DatagramPacket txpack = new DatagramPacket(txbuff, txbuff.length);
 
             txpack.setAddress(InetAddress.getByName(ipaddr));
-            txpack.setPort(TPLINK_PORT);
+            txpack.setPort(TPLDiscover.TPLINK_PORT);
 
             socket.send(txpack);
 

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import de.xavaro.android.tpl.base.TPL;
 
+import de.xavaro.android.tpl.comm.TPLDiscover;
 import de.xavaro.android.tpl.simple.Simple;
 import de.xavaro.android.tpl.simple.Json;
 import de.xavaro.android.tpl.simple.Log;
@@ -52,11 +53,12 @@ public class TPLHandlerSysInfo extends TPLHandler
     {
         //Log.d(LOGTAG, Json.toPretty(message));
 
-        buildDeviceDescription(message);
     }
 
-    private void buildDeviceDescription(JSONObject message)
+    public static void  buildDeviceDescription(String ipaddr, int ipport, JSONObject message)
     {
+        Log.d(LOGTAG, "buildDeviceDescription: message=" + Json.toPretty(message));
+
         JSONObject system = Json.getObject(message, "system");
         JSONObject sysinfo = Json.getObject(system, "get_sysinfo");
 
@@ -68,8 +70,6 @@ public class TPLHandlerSysInfo extends TPLHandler
 
             return;
         }
-
-        JSONObject origin = Json.getObject(message, "origin");
 
         String brand = "TP-LINK";
 
@@ -103,8 +103,6 @@ public class TPLHandlerSysInfo extends TPLHandler
         if (tpltype == null) tpltype = Json.getString(sysinfo, "mic_type");
 
         String ssid = Simple.getConnectedWifiName();
-        String ipaddr = Json.getString(origin, "ipaddr");
-        int ipport = Json.getInt(origin, "ipport");
 
         String driver = "tpl";
 

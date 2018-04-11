@@ -5,6 +5,7 @@ import android.graphics.Color;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.tpl.comm.TPLDiscover;
 import pub.android.interfaces.ext.GetSmartBulbHandler;
 import pub.android.interfaces.ext.GetSmartPlugHandler;
 import pub.android.interfaces.ext.OnDeviceHandler;
@@ -40,6 +41,7 @@ public class TPL extends OnInterfacesStubs implements
 
     public static TPL instance;
 
+    public TPLDiscover discover;
     public TPLMessageHandler message;
     public TPLMessageService receiver;
 
@@ -77,11 +79,11 @@ public class TPL extends OnInterfacesStubs implements
     @Override
     public void startSubsystem(String subsystem)
     {
+        TPLDiscover.startService();
+
         TPLMessageHandler.startService();
         TPLMessageService.startService();
         TPLDatagrammService.startService();
-
-        TPLHandlerSysInfo.sendAllGetSysinfo();
 
         onSubsystemStarted("tpl", SubSystemHandler.SUBSYSTEM_RUN_STARTED);
     }
@@ -89,6 +91,8 @@ public class TPL extends OnInterfacesStubs implements
     @Override
     public void stopSubsystem(String subsystem)
     {
+        TPLDiscover.stopService();
+
         TPLDatagrammService.stopService();
         TPLMessageService.stopService();
         TPLMessageHandler.stopService();
