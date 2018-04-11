@@ -52,7 +52,7 @@ public class ADB implements
 
         Json.put(info, "name", Simple.getTrans(R.string.subsystem_adb_name));
         Json.put(info, "type", SubSystemHandler.SUBSYSTEM_TYPE_FEATURE);
-        Json.put(info, "mode", SubSystemHandler.SUBSYSTEM_MODE_MANDATORY);
+        Json.put(info, "mode", SubSystemHandler.SUBSYSTEM_MODE_VOLUNTARY);
         Json.put(info, "info", Simple.getTrans(R.string.subsystem_adb_info));
         Json.put(info, "icon", Simple.getImageResourceBase64(R.drawable.subsystem_adb_280));
 
@@ -177,7 +177,7 @@ public class ADB implements
         {
             //
             // Check for subservices. Means target devices.
-            // Stopping simply set state to deactivated.
+            // Stopping simply sets state to deactivated.
             //
 
             setSubsystemState(subsystem, SubSystemHandler.SUBSYSTEM_STATE_DEACTIVATED);

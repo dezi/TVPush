@@ -8,7 +8,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import de.xavaro.android.iot.proxim.IOTProximLocation;
-import de.xavaro.android.iot.proxim.IOTProximScanner;
 import de.xavaro.android.iot.comm.IOTMessageHandler;
 import de.xavaro.android.iot.proxim.IOTProximServer;
 import de.xavaro.android.iot.status.IOTCredential;
@@ -50,7 +49,6 @@ public class IOT implements
     public IOTRegister register;
 
     public IOTProximServer proximServer;
-    public IOTProximScanner proximScanner;
     public IOTProximLocation proximLocationListener;
 
     private Application appcontext;

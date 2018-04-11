@@ -9,16 +9,15 @@ import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
 
-import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
-import de.xavaro.android.iot.base.IOT;
-import de.xavaro.android.iot.simple.Simple;
 import de.xavaro.android.iot.status.IOTStatus;
+import de.xavaro.android.iot.simple.Simple;
+import de.xavaro.android.iot.base.IOT;
 
 public class IOTProximServer
 {
