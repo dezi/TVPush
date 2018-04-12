@@ -1,11 +1,13 @@
 package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 
 import org.json.JSONArray;
 
+import de.xavaro.android.gui.base.GUIShort;
 import de.xavaro.android.iot.things.IOTLocation;
 
 import de.xavaro.android.gui.plugin.GUIPluginTitleListIOT;
@@ -13,7 +15,6 @@ import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.views.GUIListView;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.simple.Json;
-import de.xavaro.android.gui.simple.Log;
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.R;
@@ -29,7 +30,7 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
         setIsWizzard(true, true, 1, Gravity.CENTER);
 
         setTitleIcon(R.drawable.location_240);
-        setTitleText("Örtlichkeiten");
+        setNameText("Örtlichkeiten");
 
         setActionIconVisible(R.drawable.add_540, true);
     }
@@ -67,6 +68,20 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
         IOTLocation.list.addEntry(location, true, true);
 
         updateContent();
+    }
+
+    @Override
+    public void onSelectionChanged(GUIListEntryIOT entry, boolean selected)
+    {
+        android.util.Log.d(LOGTAG, "onSelectionChanged: entry=" + entry.uuid  + " selected=" + selected);
+        if (selected)
+        {
+            if (GUIShort.isWizzardPresent(GUIGeomapWizzard.class))
+            {
+                GUIGeomapWizzard geomap = (GUIGeomapWizzard) GUIShort.getWizzard(GUIGeomapWizzard.class);
+                if (geomap != null) geomap.setIOTObject(entry.uuid);
+            }
+        }
     }
 
     @Override

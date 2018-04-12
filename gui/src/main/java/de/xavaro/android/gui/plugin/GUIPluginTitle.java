@@ -6,7 +6,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.util.Log;
 
-import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.views.GUIIconView;
 import de.xavaro.android.gui.views.GUIIconViewIOT;
 import de.xavaro.android.gui.views.GUILinearLayout;
@@ -24,9 +23,10 @@ public class GUIPluginTitle extends GUIPlugin
     private final static String LOGTAG = GUIPluginTitle.class.getSimpleName();
 
     public GUIIconViewIOT titleIcon;
-    public GUITextView titleText;
-    public GUIEditText titleEdit;
-    public GUITextView titleInfo;
+    public GUITextView nameText;
+    public GUIEditText nameEdit;
+    public GUITextView nickInfo;
+    public GUIEditText nickEdit;
     public GUIIconView actionIcon;
 
     public String objectTag;
@@ -60,38 +60,56 @@ public class GUIPluginTitle extends GUIPlugin
 
         titleFrame.addView(titleCenter);
 
-        titleText = new GUITextView(context);
-        titleText.setPaddingDip(GUIDefs.PADDING_SMALL);
-        titleText.setTextSizeDip(GUIDefs.FONTSIZE_HEADERS);
+        nameText = new GUITextView(context);
+        nameText.setPaddingDip(GUIDefs.PADDING_SMALL);
+        nameText.setTextSizeDip(GUIDefs.FONTSIZE_HEADERS);
 
-        titleCenter.addView(titleText);
+        titleCenter.addView(nameText);
 
-        titleEdit = new GUIEditText(context)
+        nameEdit = new GUIEditText(context)
         {
             @Override
             public void onHighlightChanged(View view, boolean highlight)
             {
-                if (! highlight) onTitleEditFinished(view);
+                if (! highlight) onNameEditFinished(view);
             }
         };
 
-        titleEdit.setSizeDip(Simple.MP, Simple.WC);
-        titleEdit.setPaddingDip(GUIDefs.PADDING_SMALL);
-        titleEdit.setTextSizeDip(GUIDefs.FONTSIZE_HEADERS);
-        titleEdit.setHighlightable(false);
-        titleEdit.setFocusable(false);
-        titleEdit.setVisibility(GONE);
+        nameEdit.setSizeDip(Simple.MP, Simple.WC, 0.5f);
+        nameEdit.setTextSizeDip(GUIDefs.FONTSIZE_HEADERS);
+        nameEdit.setPaddingDip(GUIDefs.PADDING_SMALL);
+        nameEdit.setHighlightable(false);
+        nameEdit.setFocusable(false);
+        nameEdit.setVisibility(GONE);
 
-        titleCenter.addView(titleEdit);
+        titleCenter.addView(nameEdit);
 
-        titleInfo = new GUITextView(context);
-        titleInfo.setSizeDip(Simple.MP, Simple.WC, 1.0f);
-        titleInfo.setPaddingDip(GUIDefs.PADDING_SMALL);
-        titleInfo.setTextSizeDip(GUIDefs.FONTSIZE_HEADERS);
-        titleInfo.setGravity(Gravity.END);
-        titleInfo.setVisibility(GONE);
+        nickInfo = new GUITextView(context);
+        nickInfo.setSizeDip(Simple.MP, Simple.WC);
+        nickInfo.setPaddingDip(GUIDefs.PADDING_SMALL);
+        nickInfo.setTextSizeDip(GUIDefs.FONTSIZE_HEADERS);
+        nickInfo.setGravity(Gravity.END);
+        nickInfo.setVisibility(GONE);
 
-        titleCenter.addView(titleInfo);
+        titleCenter.addView(nickInfo);
+
+        nickEdit = new GUIEditText(context)
+        {
+            @Override
+            public void onHighlightChanged(View view, boolean highlight)
+            {
+                if (! highlight) onNickEditFinished(view);
+            }
+        };
+
+        nickEdit.setSizeDip(Simple.MP, Simple.WC, 0.5f);
+        nickEdit.setTextSizeDip(GUIDefs.FONTSIZE_HEADERS);
+        nickEdit.setPaddingDip(GUIDefs.PADDING_SMALL);
+        nickEdit.setHighlightable(false);
+        nickEdit.setFocusable(false);
+        nickEdit.setVisibility(GONE);
+
+        titleCenter.addView(nickEdit);
 
         int addiconpadd = GUIDefs.PADDING_SMALL;
         int addiconsize = GUIDefs.ICON_SIZE - (addiconpadd * 2);
@@ -144,27 +162,39 @@ public class GUIPluginTitle extends GUIPlugin
         return titleIconResid;
     }
 
-    public void setTitleText(String text)
+    public void setNameText(String text)
     {
-        titleText.setText(text);
+        nameText.setText(text);
     }
 
-    public String getTitleText()
+    public String getNameText()
     {
-        return titleText.getText().toString();
+        return nameText.getText().toString();
     }
 
-    public void setTitleInfo(String text)
+    public void setNickInfo(String text)
     {
-        titleInfo.setText(text);
-        titleInfo.setVisibility(VISIBLE);
+        nickInfo.setText(text);
+        nickInfo.setVisibility(VISIBLE);
 
-        titleEdit.setVisibility(GONE);
+        nickEdit.setVisibility(GONE);
     }
 
-    public void setTitleEdit(String text, String hint, String toast)
+    public void setNameEdit(String text, String hint, String toast)
     {
-        if ((text != null) && text.equals(titleText.getText().toString()))
+        nameEdit.setText(text);
+        nameEdit.setHint(hint);
+        nameEdit.setFocusable(true);
+        nameEdit.setToastFocus(toast);
+        nameEdit.setHighlightable(true);
+        nameEdit.setVisibility(VISIBLE);
+
+        nameText.setVisibility(GONE);
+    }
+
+    public void setNickEdit(String text, String hint, String toast)
+    {
+        if ((text != null) && text.equals(nameText.getText().toString()))
         {
             //
             // Unset bogus self repeating stuff.
@@ -173,14 +203,14 @@ public class GUIPluginTitle extends GUIPlugin
             text = "";
         }
 
-        titleEdit.setText(text);
-        titleEdit.setHint(hint);
-        titleEdit.setFocusable(true);
-        titleEdit.setToastFocus(toast);
-        titleEdit.setHighlightable(true);
-        titleEdit.setVisibility(VISIBLE);
+        nickEdit.setText(text);
+        nickEdit.setHint(hint);
+        nickEdit.setFocusable(true);
+        nickEdit.setToastFocus(toast);
+        nickEdit.setHighlightable(true);
+        nickEdit.setVisibility(VISIBLE);
 
-        titleInfo.setVisibility(GONE);
+        nickInfo.setVisibility(GONE);
     }
 
     public void setActionIconVisible(int resid, boolean visible)
@@ -190,9 +220,14 @@ public class GUIPluginTitle extends GUIPlugin
         actionIcon.setFocusable(visible);
     }
 
-    public void onTitleEditFinished(View view)
+    public void onNameEditFinished(View view)
     {
-        Log.d(LOGTAG, "onTitleEditFinished: STUB!");
+        Log.d(LOGTAG, "onNameEditFinished: STUB!");
+    }
+
+    public void onNickEditFinished(View view)
+    {
+        Log.d(LOGTAG, "onNickEditFinished: STUB!");
     }
 
     public void onActionIconClicked()

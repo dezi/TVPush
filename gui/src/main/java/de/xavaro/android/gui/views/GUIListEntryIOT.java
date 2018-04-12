@@ -117,7 +117,8 @@ public class GUIListEntryIOT extends GUIListEntry
 
         if (iotThing != null)
         {
-            headerViev.setText((iotThing.nick != null) ? iotThing.nick : iotThing.name);
+            headerViev.setText(iotThing.name);
+            infoView.setText(iotThing.nick);
 
             if (iotThing instanceof IOTDevice)
             {

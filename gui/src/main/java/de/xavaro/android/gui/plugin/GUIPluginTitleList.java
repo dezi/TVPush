@@ -7,6 +7,8 @@ import android.view.View;
 
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.simple.Simple;
+import de.xavaro.android.gui.views.GUIListEntry;
+import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.views.GUIListView;
 import de.xavaro.android.gui.views.GUIScrollView;
 
@@ -27,7 +29,20 @@ public class GUIPluginTitleList extends GUIPluginTitle
 
         contentFrame.addView(scrollView);
 
-        listView = new GUIListView(context);
+        listView = new GUIListView(context)
+        {
+            @Override
+            public void onSelectionChanged(GUIListEntry entry, boolean selected)
+            {
+                GUIPluginTitleList.this.onSelectionChanged(entry, selected);
+            }
+
+            @Override
+            public void onSelectionChanged(GUIListEntryIOT entry, boolean selected)
+            {
+                GUIPluginTitleList.this.onSelectionChanged(entry, selected);
+            }
+        };
 
         scrollView.addView(listView);
     }
@@ -60,6 +75,16 @@ public class GUIPluginTitleList extends GUIPluginTitle
         Simple.getHandler().removeCallbacks(makeEntryList);
 
         listView.removeAllViews();
+    }
+
+    public void onSelectionChanged(GUIListEntry entry, boolean selected)
+    {
+        Log.d(LOGTAG, "onSelectionChanged: entry=" + entry.idtag + " selected=" + selected);
+    }
+
+    public void onSelectionChanged(GUIListEntryIOT entry, boolean selected)
+    {
+        Log.d(LOGTAG, "onSelectionChanged: entry=" + entry.uuid  + " selected=" + selected);
     }
 
     public void onCollectEntries(GUIListView listView, boolean todo)

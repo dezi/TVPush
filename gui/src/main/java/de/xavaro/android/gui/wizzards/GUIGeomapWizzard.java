@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.Marker;
 
 import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.base.GUI;
+import de.xavaro.android.gui.base.GUIShort;
 import de.xavaro.android.gui.views.GUIFrameLayout;
 import de.xavaro.android.gui.plugin.GUIPluginTitleIOT;
 import de.xavaro.android.gui.base.GUIDefs;
@@ -383,7 +384,7 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
                 saveme.fixedLonFine = coordinates.longitude;
                 saveme.fixedAltFine = altitude;
 
-                return saveIOTObject(saveme);
+                return GUIShort.saveIOTObject(saveme);
             }
 
             if (iotThing instanceof IOTDomain)
@@ -394,7 +395,7 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
                 saveme.fixedLonFine = coordinates.longitude;
                 saveme.fixedAltFine = altitude;
 
-                return saveIOTObject(saveme);
+                return GUIShort.saveIOTObject(saveme);
             }
 
             if (iotThing instanceof IOTLocation)
@@ -405,7 +406,7 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
                 saveme.fixedLonFine = coordinates.longitude;
                 saveme.fixedAltFine = altitude;
 
-                return saveIOTObject(saveme);
+                return GUIShort.saveIOTObject(saveme);
             }
         }
 

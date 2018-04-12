@@ -63,7 +63,7 @@ public class GUIStreetviewWizzard extends GUIPluginTitle implements
         setIsWizzard(true, false, Simple.isTV() ? 3 : 2, Gravity.START);
 
         setTitleIcon(R.drawable.wizzard_streetview_550);
-        setTitleText("Streetview Wizzard");
+        setNameText("Streetview Wizzard");
 
         mapFrame = new GUIFrameLayout(context)
         {
@@ -517,7 +517,7 @@ public class GUIStreetviewWizzard extends GUIPluginTitle implements
         JSONObject locationJson = Json.getObject(data, "location");
         String description = Json.getString(locationJson, "description");
 
-        setTitleInfo(description);
+        setNickInfo(description);
 
         JSONObject follows = Json.getObject(data, "f");
 

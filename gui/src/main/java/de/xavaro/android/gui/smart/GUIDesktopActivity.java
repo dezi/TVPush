@@ -98,7 +98,7 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
    }
 
    @Nullable
-   private GUIPlugin getWizzard(String wizzard)
+   public GUIPlugin getWizzard(String wizzard)
    {
        if (wizzard == null) return null;
 

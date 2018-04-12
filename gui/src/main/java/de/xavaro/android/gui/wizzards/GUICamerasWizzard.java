@@ -25,7 +25,7 @@ public class GUICamerasWizzard extends GUIPluginTitleListIOT
         setIsWizzard(true, false);
 
         setTitleIcon(R.drawable.camera_shutter_820);
-        setTitleText("Cameras");
+        setNameText("Cameras");
     }
 
     @Override

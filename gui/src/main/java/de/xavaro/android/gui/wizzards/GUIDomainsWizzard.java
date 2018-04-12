@@ -14,9 +14,7 @@ import de.xavaro.android.gui.simple.Log;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.views.GUIListView;
-import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDomain;
-import de.xavaro.android.iot.things.IOTThing;
 
 public class GUIDomainsWizzard extends GUIPluginTitleListIOT
 {
@@ -31,7 +29,7 @@ public class GUIDomainsWizzard extends GUIPluginTitleListIOT
         setIsWizzard(true, false);
 
         setTitleIcon(R.drawable.domains_540);
-        setTitleText("Domänen");
+        setNameText("Domänen");
 
         setActionIconVisible(R.drawable.add_540, true);
     }
@@ -99,35 +97,21 @@ public class GUIDomainsWizzard extends GUIPluginTitleListIOT
         @Override
         public void onUpdateContent(GUIListEntryIOT entry)
         {
-            String info = "Keine Geo-Position";
-
-            boolean isnice = false;
-
             IOTDomain domain = IOTDomain.list.getEntry(entry.uuid);
+            if (domain == null) return;
 
-            if (domain != null)
+            if ((domain.fixedLatFine == null)
+                    || (domain.fixedLonFine == null)
+                    || (domain.fixedAltFine == null))
             {
-                isnice = (domain.fixedLatFine != null)
-                        && (domain.fixedLonFine != null)
-                        && (domain.fixedAltFine != null);
-
-                if (isnice)
-                {
-                    info = ""
-                            + Simple.getRounded3(domain.fixedLatFine)
-                            + " "
-                            + Simple.getRounded3(domain.fixedLonFine)
-                            + " "
-                            + Simple.getRounded3(domain.fixedAltFine)
-                            + " m";
-                }
+                entry.infoView.setText("Keine Geo-Position");
+                entry.infoView.setTextColor(GUIDefs.TEXT_COLOR_ALERTS);
             }
+            else
+            {
+                entry.infoView.setTextColor(GUIDefs.TEXT_COLOR_INFOS);
 
-            entry.infoView.setText(info);
-
-            entry.infoView.setTextColor(isnice
-                    ? GUIDefs.TEXT_COLOR_INFOS
-                    : GUIDefs.TEXT_COLOR_ALERTS);
+            }
         }
     };
 

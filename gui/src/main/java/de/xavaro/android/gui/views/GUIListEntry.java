@@ -3,9 +3,12 @@ package de.xavaro.android.gui.views;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.View;
 
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.simple.Simple;
+import de.xavaro.android.gui.skills.GUICanFocus;
+import de.xavaro.android.gui.skills.GUICanFocusDelegate;
 
 public class GUIListEntry extends GUILinearLayout
 {
@@ -73,6 +76,30 @@ public class GUIListEntry extends GUILinearLayout
             levelView.setVisibility(VISIBLE);
             levelView.setSizeDip(GUIDefs.PADDING_XLARGE, Simple.MP);
         }
+    }
+
+    private OnFocusChangeListener onFocusChangeListenerSaved;
+    private OnFocusChangeListener onFocusChangeListenerCustom;
+
+    private final OnFocusChangeListener onFocusChangeListenerBoth = new OnFocusChangeListener()
+    {
+        @Override
+        public void onFocusChange(View view, boolean hasFocus)
+        {
+            if (onFocusChangeListenerSaved != null) onFocusChangeListenerSaved.onFocusChange(view, hasFocus);
+            if (onFocusChangeListenerCustom != null) onFocusChangeListenerCustom.onFocusChange(view, hasFocus);
+        }
+    };
+
+    public void setOnFocusChangeListenerCustom(OnFocusChangeListener onFocusChangeListener)
+    {
+        if (onFocusChangeListenerSaved == null)
+        {
+            onFocusChangeListenerSaved = getOnFocusChangeListener();
+        }
+
+        onFocusChangeListenerCustom = onFocusChangeListener;
+        setOnFocusChangeListener(onFocusChangeListenerBoth);
     }
 }
 

@@ -55,7 +55,7 @@ public class GUIChannelWizzard extends GUIPluginTitle
         setIsWizzard(true, false, 3, Gravity.LEFT);
 
         setTitleIcon(R.drawable.magic_hand_440);
-        setTitleText("Channel Wizzard");
+        setNameText("Channel Wizzard");
 
 //        contentFrame.setBackgroundColor(Color.BLUE);
         contentFrame.setBackgroundColor(Color.WHITE);

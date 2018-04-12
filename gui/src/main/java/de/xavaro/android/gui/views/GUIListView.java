@@ -3,9 +3,12 @@ package de.xavaro.android.gui.views;
 import android.widget.LinearLayout;
 import android.content.Context;
 import android.view.View;
+import android.util.Log;
 
 public class GUIListView extends  GUILinearLayout
 {
+    private final static String LOGTAG = GUIListView.class.getSimpleName();
+
     public GUIListView(Context context)
     {
         super(context);
@@ -116,7 +119,6 @@ public class GUIListView extends  GUILinearLayout
         }
 
         GUIListEntry entry = new GUIListEntry(getContext());
-        entry.setFocusable(true);
         entry.isinuse = true;
         entry.idtag = idtag;
 
@@ -127,7 +129,7 @@ public class GUIListView extends  GUILinearLayout
 
     public GUIListEntryIOT findGUIListEntryIOTOrCreate(String uuid)
     {
-        GUIListEntryIOT entry = null;
+        GUIListEntryIOT entry;
 
         for (int inx = 0; inx < getChildCount(); inx++)
         {
@@ -148,11 +150,40 @@ public class GUIListView extends  GUILinearLayout
         }
 
         entry = new GUIListEntryIOT(getContext(), uuid);
-        entry.setFocusable(true);
+        entry.setOnFocusChangeListenerCustom(onFocusChangeListener);
         entry.updateContent();
 
         addView(entry);
 
         return entry;
+    }
+
+    private final OnFocusChangeListener onFocusChangeListener = new OnFocusChangeListener()
+    {
+        @Override
+        public void onFocusChange(View view, boolean hasFocus)
+        {
+            if (view instanceof GUIListEntryIOT)
+            {
+                onSelectionChanged((GUIListEntryIOT) view, hasFocus);
+            }
+            else
+            {
+                if (view instanceof GUIListEntry)
+                {
+                    onSelectionChanged((GUIListEntry) view, hasFocus);
+                }
+            }
+        }
+    };
+
+    public void onSelectionChanged(GUIListEntry entry, boolean selected)
+    {
+        Log.d(LOGTAG, "onSelectionChanged: entry=" + entry.idtag + " selected=" + selected);
+    }
+
+    public void onSelectionChanged(GUIListEntryIOT entry, boolean selected)
+    {
+        Log.d(LOGTAG, "onSelectionChanged: entry=" + entry.uuid + " selected=" + selected);
     }
 }
