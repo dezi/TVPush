@@ -81,21 +81,52 @@ public class GUIPlugin extends GUIFrameLayout
         isWizzard = wizzard;
         isHelper = helper;
 
+        setSize(numcols, gravity);
+    }
+
+    public void setSize(int numcols, int gravity)
+    {
         int newwidth = (numcols * width) + (numcols - 1) * DEFAULT_HORZ_MARGIN;
 
-        this.setPluginSizeDip(newwidth, height);
+        setPluginSizeDip(newwidth, height);
 
         if (gravity == Gravity.CENTER)
         {
             int left = DEFAULT_HORZ_MARGIN + newwidth + DEFAULT_HORZ_MARGIN;
-            this.setPluginPositionDip(left, DEFAULT_TOP_MARGIN);
+            setPluginPositionDip(left, DEFAULT_TOP_MARGIN);
         }
 
         if (gravity == Gravity.END)
         {
             int left = Simple.getDeviceWidthDip() - newwidth - DEFAULT_HORZ_MARGIN;
-            this.setPluginPositionDip(left, DEFAULT_TOP_MARGIN);
+            setPluginPositionDip(left, DEFAULT_TOP_MARGIN);
         }
+    }
+
+    public void stackLeft(final Runnable onDone)
+    {
+        Simple.getHandler().post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                int left = getPluginLeftDip();
+
+                if (left > DEFAULT_HORZ_MARGIN)
+                {
+                    left -= 20;
+                    if (left < DEFAULT_HORZ_MARGIN) left = DEFAULT_HORZ_MARGIN;
+
+                    setPluginPositionDip(left, DEFAULT_TOP_MARGIN);
+
+                    Simple.getHandler().postDelayed(this, 33);
+                }
+                else
+                {
+                    if (onDone != null) onDone.run();
+                }
+            }
+        });
     }
 
     public boolean isWizzard()
@@ -161,6 +192,26 @@ public class GUIPlugin extends GUIFrameLayout
         params.topMargin = Simple.dipToPx(top);
 
         setLayoutParams(params);
+    }
+
+    public int getPluginLeft()
+    {
+        return params.leftMargin;
+    }
+
+    public int getPluginTop()
+    {
+        return params.topMargin;
+    }
+
+    public int getPluginLeftDip()
+    {
+        return Simple.pxToDip(params.leftMargin);
+    }
+
+    public int getPluginTopDip()
+    {
+        return Simple.pxToDip(params.topMargin);
     }
 
     public int getPluginWidth()

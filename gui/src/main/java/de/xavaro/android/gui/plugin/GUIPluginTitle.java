@@ -27,7 +27,7 @@ public class GUIPluginTitle extends GUIPlugin
     public GUITextView titleText;
     public GUIEditText titleEdit;
     public GUITextView titleInfo;
-    public GUIIconView addIcon;
+    public GUIIconView actionIcon;
 
     public String objectTag;
 
@@ -96,26 +96,25 @@ public class GUIPluginTitle extends GUIPlugin
         int addiconpadd = GUIDefs.PADDING_SMALL;
         int addiconsize = GUIDefs.ICON_SIZE - (addiconpadd * 2);
 
-        GUIRelativeLayout addIconPad = new GUIRelativeLayout(context);
-        addIconPad.setPaddingDip(addiconpadd);
+        GUIRelativeLayout actionIconPad = new GUIRelativeLayout(context);
+        actionIconPad.setPaddingDip(addiconpadd);
 
-        titleFrame.addView(addIconPad);
+        titleFrame.addView(actionIconPad);
 
-        addIcon = new GUIIconView(context);
-        addIcon.setSizeDip(addiconsize, addiconsize);
-        addIcon.setImageResource(R.drawable.add_540);
-        addIcon.setVisibility(GONE);
+        actionIcon = new GUIIconView(context);
+        actionIcon.setSizeDip(addiconsize, addiconsize);
+        actionIcon.setVisibility(GONE);
 
-        addIcon.setOnClickListener(new OnClickListener()
+        actionIcon.setOnClickListener(new OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                onAddIconClicked();
+                onActionIconClicked();
             }
         });
 
-        addIconPad.addView(addIcon);
+        actionIconPad.addView(actionIcon);
 
         contentFrame = new GUIFrameLayout(context);
         contentFrame.setSizeDip(Simple.MP, Simple.MP);
@@ -184,10 +183,11 @@ public class GUIPluginTitle extends GUIPlugin
         titleInfo.setVisibility(GONE);
     }
 
-    public void setAddIconVisible(boolean visible)
+    public void setActionIconVisible(int resid, boolean visible)
     {
-        addIcon.setVisibility(visible? VISIBLE : GONE);
-        addIcon.setFocusable(visible);
+        actionIcon.setImageResource(resid);
+        actionIcon.setVisibility(visible? VISIBLE : GONE);
+        actionIcon.setFocusable(visible);
     }
 
     public void onTitleEditFinished(View view)
@@ -195,7 +195,7 @@ public class GUIPluginTitle extends GUIPlugin
         Log.d(LOGTAG, "onTitleEditFinished: STUB!");
     }
 
-    public void onAddIconClicked()
+    public void onActionIconClicked()
     {
         Log.d(LOGTAG, "onAddClicked: STUB!");
     }

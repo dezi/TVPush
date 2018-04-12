@@ -22,22 +22,36 @@ public class GUIDomainsWizzard extends GUIPluginTitleListIOT
 {
     private final static String LOGTAG = GUIDomainsWizzard.class.getSimpleName();
 
+    private String lastHelper;
+
     public GUIDomainsWizzard(Context context)
     {
         super(context);
 
         setIsWizzard(true, false);
 
-        setTitleIcon(R.drawable.domain_250);
+        setTitleIcon(R.drawable.domains_540);
         setTitleText("Domänen");
 
-        setAddIconVisible(true);
+        setActionIconVisible(R.drawable.add_540, true);
     }
 
     @Override
-    public void onAddIconClicked()
+    public void onAttachedToWindow()
     {
-        Log.d(LOGTAG, "onAddIconClicked:");
+        super.onAttachedToWindow();
+
+        if (lastHelper != null)
+        {
+            GUI.instance.desktopActivity.displayWizzard(false, lastHelper);
+            lastHelper = null;
+        }
+    }
+
+    @Override
+    public void onActionIconClicked()
+    {
+        Log.d(LOGTAG, "onActionIconClicked:");
 
         IOTDomain domain = new IOTDomain();
 
@@ -123,8 +137,26 @@ public class GUIDomainsWizzard extends GUIPluginTitleListIOT
         public void onClick(View view)
         {
             String uuid = ((GUIListEntryIOT) view).uuid;
-            //GUI.instance.desktopActivity.displayWizzard(GUIGeomapWizzard.class.getSimpleName(), uuid);
-            GUI.instance.desktopActivity.displayWizzard(GUILocationsWizzard.class.getSimpleName(), uuid);
+
+            if (lastHelper == null)
+            {
+                lastHelper = GUIGeomapWizzard.class.getSimpleName();
+                GUI.instance.desktopActivity.displayWizzard(lastHelper, uuid);
+
+                return;
+            }
+
+            if (lastHelper.equals(GUIGeomapWizzard.class.getSimpleName()))
+            {
+                GUI.instance.desktopActivity.displayWizzard(false, lastHelper);
+                lastHelper = GUILocationsWizzard.class.getSimpleName();
+                GUI.instance.desktopActivity.displayWizzard(lastHelper, uuid);
+
+                return;
+            }
+
+            GUI.instance.desktopActivity.displayWizzard(false, lastHelper);
+            lastHelper = null;
         }
     };
 }

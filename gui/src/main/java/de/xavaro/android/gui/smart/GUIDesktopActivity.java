@@ -157,7 +157,9 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
         // Check for dialogs first.
         //
 
-        for (int inx = 0; inx < topframe.getChildCount(); inx++)
+        int max = topframe.getChildCount() - 1;
+
+        for (int inx = max; inx >= 0; inx--)
         {
             View plugin = topframe.getChildAt(inx);
             if (plugin == toastBar) continue;
@@ -176,7 +178,7 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
         // Check for plugins which might handle it.
         //
 
-        for (int inx = 0; inx < topframe.getChildCount(); inx++)
+        for (int inx = max; inx >= 0; inx--)
         {
             View plugin = topframe.getChildAt(inx);
             if (plugin == toastBar) continue;
@@ -194,7 +196,7 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
         // Check for wizzard helpers.
         //
 
-        for (int inx = 0; inx < topframe.getChildCount(); inx++)
+        for (int inx = max; inx >= 0; inx--)
         {
             View plugin = topframe.getChildAt(inx);
             if (plugin == toastBar) continue;
@@ -213,7 +215,7 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
         // Check for wizzards.
         //
 
-        for (int inx = 0; inx < topframe.getChildCount(); inx++)
+        for (int inx = max; inx >= 0; inx--)
         {
             View plugin = topframe.getChildAt(inx);
             if (plugin == toastBar) continue;
@@ -259,8 +261,16 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
 
     public void displayWizzard(boolean show, String name)
     {
+        GUIPlugin wizzard = getWizzard(name);
+        if (wizzard == null) return;
+
         if (show)
         {
+            showPlugin(wizzard);
+        }
+        else
+        {
+            hidePlugin(wizzard);
         }
     }
 

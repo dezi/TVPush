@@ -6,17 +6,17 @@ import android.view.View;
 
 import org.json.JSONArray;
 
-import de.xavaro.android.gui.R;
-import de.xavaro.android.gui.base.GUI;
-import de.xavaro.android.gui.base.GUIDefs;
+import de.xavaro.android.iot.things.IOTLocation;
+
 import de.xavaro.android.gui.plugin.GUIPluginTitleListIOT;
-import de.xavaro.android.gui.simple.Json;
-import de.xavaro.android.gui.simple.Log;
-import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.views.GUIListView;
-import de.xavaro.android.iot.things.IOTLocation;
-import de.xavaro.android.iot.things.IOTThing;
+import de.xavaro.android.gui.simple.Simple;
+import de.xavaro.android.gui.simple.Json;
+import de.xavaro.android.gui.simple.Log;
+import de.xavaro.android.gui.base.GUIDefs;
+import de.xavaro.android.gui.base.GUI;
+import de.xavaro.android.gui.R;
 
 public class GUILocationsWizzard extends GUIPluginTitleListIOT
 {
@@ -31,13 +31,21 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
         setTitleIcon(R.drawable.location_240);
         setTitleText("Örtlichkeiten");
 
-        setAddIconVisible(true);
+        setActionIconVisible(R.drawable.add_540, true);
     }
 
     @Override
-    public void onAddIconClicked()
+    public void onDetachedFromWindow()
     {
-        Log.d(LOGTAG, "onAddIconClicked:");
+        super.onDetachedFromWindow();
+
+        setSize(1, Gravity.CENTER);
+    }
+
+    @Override
+    public void onActionIconClicked()
+    {
+        Log.d(LOGTAG, "onActionIconClicked:");
 
         IOTLocation location = new IOTLocation();
 
@@ -132,11 +140,19 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
     private final OnClickListener onClickListener = new OnClickListener()
     {
         @Override
-        public void onClick(View view)
+        public void onClick(final View view)
         {
-            String uuid = ((GUIListEntryIOT) view).uuid;
+            stackLeft(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    GUI.instance.desktopActivity.displayWizzard(false, GUIDomainsWizzard.class.getSimpleName());
 
-            GUI.instance.desktopActivity.displayWizzard(GUIGeomapWizzard.class.getSimpleName(), uuid);
+                    String uuid = ((GUIListEntryIOT) view).uuid;
+                    GUI.instance.desktopActivity.displayWizzard(GUIGeomapWizzard.class.getSimpleName(), uuid);
+                }
+            });
         }
     };
 }

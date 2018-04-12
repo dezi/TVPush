@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 import de.xavaro.android.gui.R;
+import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.views.GUIFrameLayout;
 import de.xavaro.android.gui.plugin.GUIPluginTitleIOT;
 import de.xavaro.android.gui.base.GUIDefs;
@@ -180,7 +181,20 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
                 }
             }
         });
+
+        setActionIconVisible(R.drawable.trash_450, true);
     }
+
+    @Override
+    public void onActionIconClicked()
+    {
+        Log.d(LOGTAG, "onActionIconClicked:");
+
+        IOTThing.deleteThing(uuid);
+
+        GUI.instance.desktopActivity.displayWizzard(false, this.getClass().getSimpleName());
+    }
+
     @Override
     public void onAttachedToWindow()
     {
