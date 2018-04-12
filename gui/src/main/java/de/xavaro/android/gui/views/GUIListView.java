@@ -1,12 +1,8 @@
 package de.xavaro.android.gui.views;
 
-import android.content.Context;
-import android.support.annotation.Nullable;
-import android.view.View;
 import android.widget.LinearLayout;
-
-import de.xavaro.android.iot.status.IOTStatus;
-import de.xavaro.android.iot.things.IOTDevice;
+import android.content.Context;
+import android.view.View;
 
 public class GUIListView extends  GUILinearLayout
 {
