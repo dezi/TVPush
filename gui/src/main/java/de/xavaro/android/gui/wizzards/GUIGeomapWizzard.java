@@ -413,6 +413,13 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
         return IOTDefs.IOT_SAVE_FAILED;
     }
 
+    private double getMoveStep()
+    {
+        int dist = ((GUIDefs.MAP_INITIAL_ZOOM - zoom) + 1);
+
+        return GUIDefs.MAP_MOVE_STEP * dist * dist * dist;
+    }
+
     private boolean moveMap(int keyCode)
     {
         if (map == null) return false;
@@ -424,31 +431,31 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT)
         {
-            lon -= GUIDefs.MAP_MOVE_STEP;
+            lon -= getMoveStep();
             usedkey = true;
         }
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_UP)
         {
-            lat += GUIDefs.MAP_MOVE_STEP;
+            lat += getMoveStep();
             usedkey = true;
         }
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)
         {
-            lon += GUIDefs.MAP_MOVE_STEP;
+            lon += getMoveStep();
             usedkey = true;
         }
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN)
         {
-            lat -= GUIDefs.MAP_MOVE_STEP;
+            lat -= getMoveStep();
             usedkey = true;
         }
 
         if (keyCode == KeyEvent.KEYCODE_MEDIA_REWIND)
         {
-            if (zoom > 15) zoom -= 1;
+            if (zoom > 12) zoom -= 1;
             usedkey = true;
         }
 

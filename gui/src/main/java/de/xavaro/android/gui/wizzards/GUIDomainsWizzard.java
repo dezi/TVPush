@@ -110,7 +110,6 @@ public class GUIDomainsWizzard extends GUIPluginTitleListIOT
             else
             {
                 entry.infoView.setTextColor(GUIDefs.TEXT_COLOR_INFOS);
-
             }
         }
     };

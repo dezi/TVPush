@@ -8,6 +8,7 @@ import android.view.View;
 import org.json.JSONArray;
 
 import de.xavaro.android.gui.base.GUIShort;
+import de.xavaro.android.iot.things.IOTDomain;
 import de.xavaro.android.iot.things.IOTLocation;
 
 import de.xavaro.android.gui.plugin.GUIPluginTitleListIOT;
@@ -120,35 +121,20 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
         @Override
         public void onUpdateContent(GUIListEntryIOT entry)
         {
-            String info = "Keine Geo-Position";
-
-            boolean isnice = false;
-
             IOTLocation location = IOTLocation.list.getEntry(entry.uuid);
+            if (location == null) return;
 
-            if (location != null)
+            if ((location.fixedLatFine == null)
+                    || (location.fixedLonFine == null)
+                    || (location.fixedAltFine == null))
             {
-                isnice = (location.fixedLatFine != null)
-                        && (location.fixedLonFine != null)
-                        && (location.fixedAltFine != null);
-
-                if (isnice)
-                {
-                    info = ""
-                            + Simple.getRounded3(location.fixedLatFine)
-                            + " "
-                            + Simple.getRounded3(location.fixedLonFine)
-                            + " "
-                            + Simple.getRounded3(location.fixedAltFine)
-                            + " m";
-                }
+                entry.infoView.setText("Keine Geo-Position");
+                entry.infoView.setTextColor(GUIDefs.TEXT_COLOR_ALERTS);
             }
-
-            entry.infoView.setText(info);
-
-            entry.infoView.setTextColor(isnice
-                    ? GUIDefs.TEXT_COLOR_INFOS
-                    : GUIDefs.TEXT_COLOR_ALERTS);
+            else
+            {
+                entry.infoView.setTextColor(GUIDefs.TEXT_COLOR_INFOS);
+            }
         }
     };
 
