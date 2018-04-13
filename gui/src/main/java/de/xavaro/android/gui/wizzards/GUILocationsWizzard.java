@@ -8,6 +8,7 @@ import android.view.View;
 import org.json.JSONArray;
 
 import de.xavaro.android.gui.base.GUIShort;
+import de.xavaro.android.gui.base.GUIUtil;
 import de.xavaro.android.iot.things.IOTLocation;
 
 import de.xavaro.android.gui.plugin.GUIPluginTitleListIOT;
@@ -25,6 +26,8 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
 
     private String lastHelper;
 
+    public String domuuid;
+
     public GUILocationsWizzard(Context context)
     {
         super(context);
@@ -35,6 +38,15 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
         setNameText("Örtlichkeiten");
 
         setActionIconVisible(R.drawable.add_540, true);
+    }
+
+    public void setDomain(String domuuid)
+    {
+        this.domuuid = domuuid;
+
+        listView.removeAllViews();
+
+        onCollectEntries(listView, false);
     }
 
     @Override
@@ -89,7 +101,7 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
     @Override
     public void onCollectEntries(GUIListView listView, boolean todo)
     {
-        collectEntries(listView, todo);
+        if (domuuid != null) collectEntries(listView, todo);
     }
 
     public void collectEntries(GUIListView listView, boolean todo)
@@ -98,8 +110,8 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
 
         for (int inx = 0; inx < list.length(); inx++)
         {
-            String uuid = Json.getString(list, inx);
-            IOTLocation location = IOTLocation.list.getEntry(uuid);
+            String locuuid = Json.getString(list, inx);
+            IOTLocation location = IOTLocation.list.getEntry(locuuid);
 
             if (location == null) continue;
 
@@ -108,8 +120,16 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
                     && (location.fixedAltFine != null);
 
             if (todo && isnice) continue;
+            if (! isnice) continue;
 
-            GUIListEntryIOT entry = listView.findGUIListEntryIOTOrCreate(uuid);
+            String domuuid = GUIUtil.getClosestDomainForLocation(
+                    location.fixedLatFine,
+                    location.fixedLonFine,
+                    location.fixedAltFine);
+
+            if ((domuuid == null) || ! domuuid.equals(this.domuuid)) continue;
+
+            GUIListEntryIOT entry = listView.findGUIListEntryIOTOrCreate(locuuid);
 
             entry.setOnUpdateContentListener(onUpdateContentListener);
             entry.setOnClickListener(onClickListener);

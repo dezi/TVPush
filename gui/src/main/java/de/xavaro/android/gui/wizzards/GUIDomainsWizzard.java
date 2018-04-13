@@ -50,7 +50,8 @@ public class GUIDomainsWizzard extends GUIPluginTitleListIOT
 
             if (GUIShort.isWizzardPresent(GUILocationsWizzard.class))
             {
-                GUILocationsWizzard locwiz = (GUILocationsWizzard) GUIShort.getWizzard(GUILocationsWizzard.class);
+                GUILocationsWizzard location = (GUILocationsWizzard) GUIShort.getWizzard(GUILocationsWizzard.class);
+                if (location != null) location.setDomain(entry.uuid);
             }
         }
     }

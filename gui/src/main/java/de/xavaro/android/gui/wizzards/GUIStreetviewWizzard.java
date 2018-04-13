@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import de.xavaro.android.gui.base.GUIUtil;
 import de.xavaro.android.gui.plugin.GUIPluginTitle;
 import de.xavaro.android.gui.smart.GUIStreetViewService;
 import de.xavaro.android.gui.views.GUIFrameLayout;
@@ -264,7 +265,7 @@ public class GUIStreetviewWizzard extends GUIPluginTitle implements
             public void onStreetViewPanoramaClick(StreetViewPanoramaOrientation streetViewPanoramaOrientation)
             {
                 camera = panorama.getPanoramaCamera();
-                coordinates = computeOffset(location.position, 20, streetViewPanoramaOrientation.bearing);
+                coordinates = GUIUtil.computeOffset(location.position, 20, streetViewPanoramaOrientation.bearing);
                 panorama.setPosition(coordinates,  StreetViewSource.DEFAULT);
             }
         });
@@ -448,7 +449,7 @@ public class GUIStreetviewWizzard extends GUIPluginTitle implements
             else
             {
                 camera = panorama.getPanoramaCamera();
-                coordinates = computeOffset(location.position, 20, camera.bearing);
+                coordinates = GUIUtil.computeOffset(location.position, 20, camera.bearing);
                 panorama.setPosition(coordinates,  StreetViewSource.DEFAULT);
             }
 
@@ -537,7 +538,7 @@ public class GUIStreetviewWizzard extends GUIPluginTitle implements
                 Double lon = Json.getDouble(latlon, "lng");
                 LatLng panopos = new LatLng(lat, lon);
 
-                Double bearing = computeHeading(location.position, panopos) + 180;
+                Double bearing = GUIUtil.computeHeading(location.position, panopos) + 180;
 
                 Json.put(latlon, "panoid", panoid);
                 Json.put(latlon, "bearing", bearing);
@@ -550,59 +551,4 @@ public class GUIStreetviewWizzard extends GUIPluginTitle implements
 
         showNextPanoramas();
     }
-
-    //region Coordinates math helper.
-
-    private final static double EARTH_RADIUS = 6371009;
-
-    @SuppressWarnings("SameParameterValue")
-    private static LatLng computeOffset(LatLng from, double distance, double heading)
-    {
-        distance /= EARTH_RADIUS;
-        heading = Math.toRadians(heading);
-
-        double fromLat = Math.toRadians(from.latitude);
-        double fromLng = Math.toRadians(from.longitude);
-        double cosDistance = Math.cos(distance);
-        double sinDistance = Math.sin(distance);
-        double sinFromLat = Math.sin(fromLat);
-        double cosFromLat = Math.cos(fromLat);
-        double sinLat = cosDistance * sinFromLat + sinDistance * cosFromLat * Math.cos(heading);
-
-        double dLng = Math.atan2(
-                sinDistance * cosFromLat * Math.sin(heading),
-                cosDistance - sinFromLat * sinLat);
-
-        return new LatLng(Math.toDegrees(Math.asin(sinLat)), Math.toDegrees(fromLng + dLng));
-    }
-
-    private static double computeHeading(LatLng from, LatLng to)
-    {
-        double fromLat = Math.toRadians(from.latitude);
-        double fromLng = Math.toRadians(from.longitude);
-
-        double toLat = Math.toRadians(to.latitude);
-        double toLng = Math.toRadians(to.longitude);
-
-        double dLng = toLng - fromLng;
-
-        double heading = Math.atan2(
-                Math.sin(dLng) * Math.cos(toLat),
-                Math.cos(fromLat) * Math.sin(toLat) - Math.sin(fromLat) * Math.cos(toLat) * Math.cos(dLng));
-
-        return wrap(Math.toDegrees(heading), -180, 180);
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private static double wrap(double n, double min, double max)
-    {
-        return (n >= min && n < max) ? n : (mod(n - min, max - min) + min);
-    }
-
-    private static double mod(double x, double m)
-    {
-        return ((x % m) + m) % m;
-    }
-
-    //endregion Coordinates math helper.
 }
