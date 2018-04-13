@@ -1,74 +1,40 @@
-package de.xavaro.android.edx.comm;
-
-import android.annotation.SuppressLint;
+package de.xavaro.android.brl.comm;
 
 import android.util.Log;
-
-import org.json.JSONObject;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.TimeZone;
 
-import de.xavaro.android.edx.base.EDX;
-import de.xavaro.android.edx.simple.Json;
-import de.xavaro.android.edx.simple.Simple;
+import de.xavaro.android.brl.base.BRL;
+import de.xavaro.android.brl.simple.Simple;
 
-@SuppressWarnings({"FieldCanBeLocal", "unused"})
-public class EDXDiscover
+public class BRLDiscover
 {
-    private static final String LOGTAG = EDXDiscover.class.getSimpleName();
+    private static final String LOGTAG = BRLDiscover.class.getSimpleName();
 
-    private static final int DISCOVERY_AGENT_PORT = 20560;
+    private static final int DISCOVERY_AGENT_PORT = 80;
 
-    private static final int DISCOVERY_PACKET_LENGTH = 22;
-
-    private static final int PACKET_STATUS_REQUEST = 0;
-    private static final int PACKET_STATUS_RESPONSE = 1;
-    private static final int PACKET_STATUS_FAULT = 2;
-
-    private static final int RECEIVER_SIZE = 186;
-
-    private static final int PACKET_OFFSET_MAC_ADDR = 0;
-
-    private static final int PACKET_OFFSET_STATUS = 18;
-
-    private static final int PACKET_OFFSET_UNKNOWN_STATUS = 19;
-
-    private static final int PACKET_OFFSET_MODEL_NAME = 22;
-    private static final int PACKET_LENGTH_MODEL_NAME = 14;
-
-    private static final int PACKET_OFFSET_FIRMWARE_VERSION = 36;
-    private static final int PACKET_LENGTH_FIRMWARE_VERSION = 8;
-
-    private static final int PACKET_OFFSET_NAME = 44;
-    private static final int PACKET_LENGTH_NAME = 128;
-
-    private static final int PACKET_OFFSET_WEB_PORT = 172;
-
-    private static final int PACKET_OFFSET_IP_ADDR = 174;
-    private static final int PACKET_OFFSET_SUBNET = 178;
-    private static final int PACKET_OFFSET_GATEWAY = 182;
-
-    private static final String IPV4_ADDR_FORMAT_STR = "%d.%d.%d.%d";
-    private static final String MAC_ADDR_FORMAT_STR = "%02x:%02x:%02x:%02x:%02x:%02x";
+    private static final int DISCOVERY_PACKET_LENGTH = 48;
 
     public static void startService()
     {
-        if ((EDX.instance != null) && (EDX.instance.discover == null))
+        if ((BRL.instance != null) && (BRL.instance.discover == null))
         {
-            EDX.instance.discover = new EDXDiscover();
-            EDX.instance.discover.startThread();
+            BRL.instance.discover = new BRLDiscover();
+            BRL.instance.discover.startThread();
         }
     }
 
     public static void stopService()
     {
-        if ((EDX.instance != null) && (EDX.instance.discover != null))
+        if ((BRL.instance != null) && (BRL.instance.discover != null))
         {
-            EDX.instance.discover.stopThread();
-            EDX.instance.discover = null;
+            BRL.instance.discover.stopThread();
+            BRL.instance.discover = null;
         }
     }
 
@@ -107,11 +73,8 @@ public class EDXDiscover
         {
             Log.d(LOGTAG, "discoverRunnable: start.");
 
-            //
-            // Discover devices and credentials from Edimax cloud.
-            //
-
-            EDXCloud.discoverDevices();
+            String ipaddr = Simple.getConnectedWifiIPAddress();
+            if (ipaddr == null) return;
 
             //
             // Discover local LAN devices.
@@ -119,11 +82,12 @@ public class EDXDiscover
 
             try
             {
+
                 socket = new DatagramSocket();
                 socket.setSoTimeout(2000);
                 socket.setBroadcast(true);
 
-                byte[] helloPacket = getDiscoveryPacket();
+                byte[] helloPacket = getDiscoveryPacket(ipaddr, 0);
                 DatagramPacket hello = new DatagramPacket(helloPacket, helloPacket.length);
 
                 hello.setAddress(InetAddress.getByName("255.255.255.255"));
@@ -176,46 +140,124 @@ public class EDXDiscover
         }
     };
 
-    private byte[] getDiscoveryPacket()
+    private byte[] getDiscoveryPacket(String ipaddr, int ipport)
     {
         byte[] data = new byte[DISCOVERY_PACKET_LENGTH];
 
-        data[0] = (byte) 0xff;
-        data[1] = (byte) 0xff;
-        data[2] = (byte) 0xff;
-        data[3] = (byte) 0xff;
-        data[4] = (byte) 0xff;
-        data[5] = (byte) 0xff;
+        Calendar cal = Calendar.getInstance();
+        TimeZone tz = TimeZone.getDefault();
 
-        data[6] = (byte) 'E';
-        data[7] = (byte) 'D';
-        data[8] = (byte) 'I';
-        data[9] = (byte) 'M';
-        data[10] = (byte) 'A';
-        data[11] = (byte) 'X';
+        int rawOffset = tz.getRawOffset();
+        int tzOffset = rawOffset / 3600;
 
-        data[12] = 0;
-        data[13] = 0;
-        data[14] = 0;
-        data[15] = 0;
-        data[16] = 0;
-        data[17] = 0;
+        Log.d(LOGTAG, "getDiscoveryPacket: Raw offset=" + rawOffset);
+        Log.d(LOGTAG, "getDiscoveryPacket: Calculated offset getRawOffset/1000/-3600=" + tzOffset);
 
-        data[18] = (byte) 0;
-        data[19] = (byte) -95;
-        data[20] = (byte) -1;
-        data[21] = (byte) 94;
+        int min = cal.get(Calendar.MINUTE);
+        int hr = cal.get(Calendar.HOUR);
+
+        int year = cal.get(Calendar.YEAR);
+        int dayOfWk = dayOfWeekConv(cal.get(Calendar.DAY_OF_WEEK));
+        int dayOfMn = cal.get(Calendar.DAY_OF_MONTH);
+        int month = cal.get(Calendar.MONTH) + 1;
+
+        Log.d(LOGTAG, "getDiscoveryPacket: min=" + min + " hr=" + hr);
+        Log.d(LOGTAG, "getDiscoveryPacket: year=" + year + " dayOfWk=" + dayOfWk);
+        Log.d(LOGTAG, "getDiscoveryPacket: dayOfMn=" + dayOfMn + " month=" + month);
+
+        if (tzOffset < 0)
+        {
+            data[0x08] = (byte) (0xff + tzOffset - 1);
+            data[0x09] = (byte) 0xff;
+            data[0x0a] = (byte) 0xff;
+            data[0x0b] = (byte) 0xff;
+
+            Log.d(LOGTAG, "getDiscoveryPacket: tzOffset<0: 0x08=" + Integer.toHexString(0xff + tzOffset - 1) + " 0x09-0x0b=0xff");
+        }
+        else
+        {
+            data[0x08] = (byte) tzOffset;
+            data[0x09] = (byte) 0x00;
+            data[0x0a] = (byte) 0x00;
+            data[0x0b] = (byte) 0x00;
+
+            Log.d(LOGTAG, "getDiscoveryPacket: tzOffset>0: 0x08=" + Integer.toHexString(tzOffset) + " 0x09-0x0b=0x00");
+        }
+
+        data[0x0c] = (byte) (year & 0xff);
+        data[0x0d] = (byte) (year >> 8);
+
+        data[0x0e] = (byte) min;
+        data[0x0f] = (byte) hr;
+
+        data[0x10] = (byte) (year % 100);
+
+        data[0x11] = (byte) dayOfWk;
+        data[0x12] = (byte) dayOfMn;
+        data[0x13] = (byte) month;
+
+        Log.d(LOGTAG, "getDiscoveryPacket: hier 1.");
+
+        String[] ipparts = ipaddr.split("\\.");
+
+        if (ipparts.length == 4)
+        {
+            data[0x18] = (byte) (Integer.parseInt(ipparts[0]) & 0xff);
+            data[0x19] = (byte) (Integer.parseInt(ipparts[1]) & 0xff);
+            data[0x1a] = (byte) (Integer.parseInt(ipparts[2]) & 0xff);
+            data[0x1b] = (byte) (Integer.parseInt(ipparts[3]) & 0xff);
+        }
+
+        Log.d(LOGTAG, "getDiscoveryPacket: hier 2.");
+
+        data[0x1c] = (byte) (ipport & 0xff);
+        data[0x1d] = (byte) (ipport >> 8);
+
+        data[0x26] = 6;
+
+        short checksum = (short) 0xbeaf;
+
+        for (byte bite : data)
+        {
+            checksum += bite & 0xff;
+        }
+
+        data[0x20] = (byte) (checksum & 0xff);
+        data[0x21] = (byte) (checksum >> 8);
+
+        Log.d(LOGTAG, "getDiscoveryPacket: checksum=" + Integer.toHexString(checksum));
 
         return data;
     }
 
-    @SuppressLint("DefaultLocale")
-    @SuppressWarnings("PointlessArithmeticExpression")
+    private static int dayOfWeekConv(int fieldVal)
+    {
+        // @formatter:off
+
+        switch (fieldVal)
+        {
+            case Calendar.SUNDAY:    return 6;
+            case Calendar.MONDAY:    return 0;
+            case Calendar.TUESDAY:   return 1;
+            case Calendar.WEDNESDAY: return 2;
+            case Calendar.THURSDAY:  return 3;
+            case Calendar.FRIDAY:    return 4;
+            case Calendar.SATURDAY:  return 5;
+        }
+
+        // @formatter:on
+
+        return -1;
+    }
+
     private void buildDeviceDescription(DatagramPacket packet)
     {
         byte[] data = packet.getData();
         int dlen = packet.getLength();
 
+        Log.d(LOGTAG, "buildDeviceDescription: dlen=" + dlen + " address=" + packet.getAddress() + " port=" + packet.getPort());
+
+        /*
         if ((RECEIVER_SIZE > dlen)
             || (data[PACKET_OFFSET_STATUS] == PACKET_STATUS_FAULT)
             || (data[PACKET_OFFSET_STATUS] != PACKET_STATUS_RESPONSE)
@@ -248,23 +290,23 @@ public class EDXDiscover
 
         String uuid = Simple.hmacSha1UUID(model, macaddr);
         String ssid = Simple.getConnectedWifiName();
-        String caps = EDXUtil.getCapabilities(model);
+        String caps = BRLUtil.getCapabilities(model);
 
-        JSONObject edimax = new JSONObject();
+        JSONObject broadlink = new JSONObject();
 
         JSONObject device = new JSONObject();
-        Json.put(edimax, "device", device);
+        Json.put(broadlink, "device", device);
 
         JSONObject network = new JSONObject();
-        Json.put(edimax, "network", network);
+        Json.put(broadlink, "network", network);
 
         Json.put(device, "uuid", uuid);
         Json.put(device, "name", name);
         Json.put(device, "nick", name);
         Json.put(device, "model", model);
         Json.put(device, "type", "smartplug");
-        Json.put(device, "driver", "edx");
-        Json.put(device, "brand", "edimax");
+        Json.put(device, "driver", "brl");
+        Json.put(device, "brand", "Broadlink");
         Json.put(device, "macaddr", macaddr);
         Json.put(device, "version", version);
 
@@ -275,7 +317,7 @@ public class EDXDiscover
         Json.put(network, "ipaddr", ipaddr);
         Json.put(network, "ssid", ssid);
 
-        EDX.instance.onDeviceFound(edimax);
+        BRL.instance.onDeviceFound(broadlink);
 
         //
         // Device status.
@@ -288,25 +330,20 @@ public class EDXDiscover
         Json.put(status, "ipaddr", ipaddr);
         Json.put(status, "ipport", ipport);
 
-        Log.d(LOGTAG, "buildDeviceDescription: device=" + Json.toPretty(edimax));
+        Log.d(LOGTAG, "buildDeviceDescription: device=" + Json.toPretty(broadlink));
+        */
 
         //
-        // Check for credentials and aquire status if all set.
+        // Aquire status if all set.
         //
 
-        JSONObject credential = EDX.instance.onGetCredentialRequest(uuid);
-        JSONObject credentials = Json.getObject(credential, "credentials");
-        String user = Json.getString(credentials, "localUser");
-        String pass = Json.getString(credentials, "localPass");
+        /*
+        int res = BRLCommand.getPowerStatus(ipaddr, ipport);
+        if (res >= 0) Json.put(status, "plugstate", res);
 
-        if ((user != null) && (pass != null))
-        {
-            int res = EDXCommand.getPowerStatus(ipaddr, ipport, user, pass);
-            if (res >= 0) Json.put(status, "plugstate", res);
-        }
-
-        EDX.instance.onDeviceStatus(status);
+        BRL.instance.onDeviceStatus(status);
 
         Log.d(LOGTAG, "buildDeviceDescription: status=" + Json.toPretty(status));
+        */
     }
 }

@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.text.format.Formatter;
 import android.util.Base64;
 
 import java.io.InputStream;
@@ -62,6 +63,16 @@ public class Simple
 
         String wifi = wifiManager.getConnectionInfo().getSSID();
         return wifi.replace("\"", "");
+    }
+
+    @Nullable
+    @SuppressWarnings("deprecation")
+    public static String getConnectedWifiIPAddress()
+    {
+        if (wifiManager == null) return null;
+
+        int ipint = wifiManager.getConnectionInfo().getIpAddress();
+        return Formatter.formatIpAddress(ipint);
     }
 
     public static String getMapString(Map<String, String> map, String key)

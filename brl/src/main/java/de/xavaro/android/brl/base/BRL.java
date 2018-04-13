@@ -4,6 +4,7 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.brl.comm.BRLDiscover;
 import pub.android.interfaces.ext.OnDeviceHandler;
 import pub.android.interfaces.all.SubSystemHandler;
 import pub.android.stubs.OnInterfacesStubs;
@@ -19,6 +20,8 @@ public class BRL extends OnInterfacesStubs implements
     private static final String LOGTAG = BRL.class.getSimpleName();
 
     public static BRL instance;
+
+    public BRLDiscover discover;
 
     public BRL(Application application)
     {
@@ -54,12 +57,16 @@ public class BRL extends OnInterfacesStubs implements
     @Override
     public void startSubsystem(String subsystem)
     {
+        BRLDiscover.startService();
+
         onSubsystemStarted(subsystem, SubSystemHandler.SUBSYSTEM_RUN_STARTED);
     }
 
     @Override
     public void stopSubsystem(String subsystem)
     {
+        BRLDiscover.stopService();
+
         onSubsystemStopped(subsystem, SubSystemHandler.SUBSYSTEM_RUN_STOPPED);
     }
 }

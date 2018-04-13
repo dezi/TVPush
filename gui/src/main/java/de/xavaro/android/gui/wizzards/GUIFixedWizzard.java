@@ -6,19 +6,18 @@ import android.view.View;
 
 import org.json.JSONArray;
 
-import de.xavaro.android.gui.R;
+import de.xavaro.android.iot.things.IOTDevice;
+import de.xavaro.android.iot.things.IOTLocation;
+
+import de.xavaro.android.gui.plugin.GUIPluginTitleListIOT;
+import de.xavaro.android.gui.views.GUIListEntryIOT;
+import de.xavaro.android.gui.views.GUIListView;
 import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.base.GUIShort;
 import de.xavaro.android.gui.base.GUIUtil;
-import de.xavaro.android.gui.plugin.GUIPluginTitleListIOT;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Log;
-import de.xavaro.android.gui.views.GUIListEntryIOT;
-import de.xavaro.android.gui.views.GUIListView;
-import de.xavaro.android.iot.status.IOTStatus;
-import de.xavaro.android.iot.things.IOTDevice;
-import de.xavaro.android.iot.things.IOTDomain;
-import de.xavaro.android.iot.things.IOTLocation;
+import de.xavaro.android.gui.R;
 
 public class GUIFixedWizzard extends GUIPluginTitleListIOT
 {
@@ -56,6 +55,21 @@ public class GUIFixedWizzard extends GUIPluginTitleListIOT
         listView.removeAllViews();
 
         onCollectEntries(listView, false);
+    }
+
+    @Override
+    public void onSelectionChanged(GUIListEntryIOT entry, boolean selected)
+    {
+        android.util.Log.d(LOGTAG, "onSelectionChanged: entry=" + entry.uuid  + " selected=" + selected);
+
+        if (selected)
+        {
+            if (GUIShort.isWizzardPresent(GUIGeomapWizzard.class))
+            {
+                GUIGeomapWizzard geomap = (GUIGeomapWizzard) GUIShort.getWizzard(GUIGeomapWizzard.class);
+                if (geomap != null) geomap.setIOTObject(entry.uuid);
+            }
+        }
     }
 
     @Override
