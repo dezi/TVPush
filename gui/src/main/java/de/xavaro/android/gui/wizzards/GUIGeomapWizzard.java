@@ -214,17 +214,46 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
         if (GUIShort.isWizzardPresent(GUILocationsWizzard.class))
         {
             GUILocationsWizzard locations = (GUILocationsWizzard) GUIShort.getWizzard(GUILocationsWizzard.class);
-            if (locations != null) locations.stackCenter(new Runnable()
+
+            if (locations != null)
             {
-                @Override
-                public void run()
+                locations.stackCenter(new Runnable()
                 {
-                    if (! GUIShort.isWizzardPresent(GUIDomainsWizzard.class))
+                    @Override
+                    public void run()
                     {
-                        GUIShort.showWizzard(GUIDomainsWizzard.class);
+                        if (!GUIShort.isWizzardPresent(GUIDomainsWizzard.class))
+                        {
+                            GUIShort.showWizzard(GUIDomainsWizzard.class);
+                        }
                     }
-                }
-            });
+                });
+            }
+        }
+
+        if (GUIShort.isWizzardPresent(GUIFixedWizzard.class))
+        {
+            GUIFixedWizzard fixed = (GUIFixedWizzard) GUIShort.getWizzard(GUIFixedWizzard.class);
+
+            if (fixed != null)
+            {
+                fixed.stackEnd(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        if (!GUIShort.isWizzardPresent(GUILocationsWizzard.class))
+                        {
+                            GUIShort.showWizzard(GUILocationsWizzard.class);
+                        }
+
+                        if (!GUIShort.isWizzardPresent(GUIDomainsWizzard.class))
+                        {
+                            GUIShort.showWizzard(GUIDomainsWizzard.class);
+                        }
+                    }
+                });
+            }
         }
     }
 

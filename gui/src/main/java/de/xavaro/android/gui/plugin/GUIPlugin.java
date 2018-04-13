@@ -165,6 +165,38 @@ public class GUIPlugin extends GUIFrameLayout
         });
     }
 
+    public void stackEnd()
+    {
+        stackEnd(null);
+    }
+
+    public void stackEnd(final Runnable onDone)
+    {
+        Simple.getHandler().post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                int finalpos = Simple.getDeviceWidthDip() - width - DEFAULT_HORZ_MARGIN;
+
+                int left = getPluginLeftDip();
+
+                if (left > finalpos)
+                {
+                    left = ((left + 20) <= finalpos) ? left + 20 : finalpos;
+
+                    setPluginPositionDip(left, DEFAULT_TOP_MARGIN);
+
+                    Simple.getHandler().postDelayed(this, 15);
+                }
+                else
+                {
+                    if (onDone != null) onDone.run();
+                }
+            }
+        });
+    }
+
     public boolean isWizzard()
     {
         return isWizzard;

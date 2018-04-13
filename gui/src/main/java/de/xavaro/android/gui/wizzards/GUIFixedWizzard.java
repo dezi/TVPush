@@ -58,6 +58,13 @@ public class GUIFixedWizzard extends GUIPluginTitleListIOT
         onCollectEntries(listView, false);
     }
 
+    @Override
+    public void onDetachedFromWindow()
+    {
+        super.onDetachedFromWindow();
+
+        setSize(1, Gravity.END);
+    }
 
     @Override
     public void onCollectEntries(GUIListView listView, boolean todo)
@@ -131,12 +138,12 @@ public class GUIFixedWizzard extends GUIPluginTitleListIOT
                 @Override
                 public void onUpdateContent(GUIListEntryIOT entry)
                 {
-                    IOTLocation location = IOTLocation.list.getEntry(entry.uuid);
-                    if (location == null) return;
+                    IOTDevice fixed = IOTDevice.list.getEntry(entry.uuid);
+                    if (fixed == null) return;
 
-                    if ((location.fixedLatFine == null)
-                            || (location.fixedLonFine == null)
-                            || (location.fixedAltFine == null))
+                    if ((fixed.fixedLatFine == null)
+                            || (fixed.fixedLonFine == null)
+                            || (fixed.fixedAltFine == null))
                     {
                         entry.infoView.setText("Keine Geo-Position");
                         entry.infoView.setTextColor(GUIDefs.TEXT_COLOR_ALERTS);
@@ -155,12 +162,12 @@ public class GUIFixedWizzard extends GUIPluginTitleListIOT
         {
             String uuid = ((GUIListEntryIOT) view).uuid;
 
-            IOTLocation location = IOTLocation.list.getEntry(uuid);
-            if (location == null) return;
+            IOTDevice fixed = IOTDevice.list.getEntry(uuid);
+            if (fixed == null) return;
 
-            boolean isnice = (location.fixedLatFine != null)
-                    && (location.fixedLonFine != null)
-                    && (location.fixedAltFine != null);
+            boolean isnice = (fixed.fixedLatFine != null)
+                    && (fixed.fixedLonFine != null)
+                    && (fixed.fixedAltFine != null);
 
             if (! isnice)
             {
