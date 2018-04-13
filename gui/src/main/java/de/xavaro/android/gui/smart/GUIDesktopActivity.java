@@ -17,6 +17,7 @@ import java.util.Map;
 import de.xavaro.android.gui.plugin.GUIPluginTitle;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.wizzards.GUIDomainsWizzard;
+import de.xavaro.android.gui.wizzards.GUIFixedWizzard;
 import de.xavaro.android.gui.wizzards.GUIGeoposWizzard;
 import de.xavaro.android.gui.wizzards.GUICamerasWizzard;
 import de.xavaro.android.gui.wizzards.GUIChannelWizzard;
@@ -66,6 +67,7 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
         wizzards.put(GUIMenuWizzard.      class.getSimpleName(), new GUIMenuWizzard      (this));
         wizzards.put(GUIPingWizzard.      class.getSimpleName(), new GUIPingWizzard      (this));
         wizzards.put(GUITodoWizzard.      class.getSimpleName(), new GUITodoWizzard      (this));
+        wizzards.put(GUIFixedWizzard.     class.getSimpleName(), new GUIFixedWizzard     (this));
         wizzards.put(GUISetupWizzard.     class.getSimpleName(), new GUISetupWizzard     (this));
         wizzards.put(GUIDomainsWizzard.   class.getSimpleName(), new GUIDomainsWizzard   (this));
         wizzards.put(GUILocationsWizzard. class.getSimpleName(), new GUILocationsWizzard (this));
@@ -261,16 +263,19 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
 
     public void displayWizzard(boolean show, String name)
     {
-        GUIPlugin wizzard = getWizzard(name);
-        if (wizzard == null) return;
+        if (name != null)
+        {
+            GUIPlugin wizzard = getWizzard(name);
+            if (wizzard == null) return;
 
-        if (show)
-        {
-            showPlugin(wizzard);
-        }
-        else
-        {
-            hidePlugin(wizzard);
+            if (show)
+            {
+                showPlugin(wizzard);
+            }
+            else
+            {
+                hidePlugin(wizzard);
+            }
         }
     }
 

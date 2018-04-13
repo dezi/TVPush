@@ -73,8 +73,6 @@ public class GUIPluginTitleList extends GUIPluginTitle
         super.onDetachedFromWindow();
 
         Simple.getHandler().removeCallbacks(makeEntryList);
-
-        listView.removeAllViews();
     }
 
     public void onSelectionChanged(GUIListEntry entry, boolean selected)

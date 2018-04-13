@@ -8,7 +8,6 @@ import android.view.View;
 import org.json.JSONArray;
 
 import de.xavaro.android.gui.base.GUIShort;
-import de.xavaro.android.iot.things.IOTDomain;
 import de.xavaro.android.iot.things.IOTLocation;
 
 import de.xavaro.android.gui.plugin.GUIPluginTitleListIOT;
@@ -24,6 +23,8 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
 {
     private final static String LOGTAG = GUILocationsWizzard.class.getSimpleName();
 
+    private String lastHelper;
+
     public GUILocationsWizzard(Context context)
     {
         super(context);
@@ -34,8 +35,6 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
         setNameText("Örtlichkeiten");
 
         setActionIconVisible(R.drawable.add_540, true);
-
-        listView.setNoFocusRequest(true);
     }
 
     @Override
@@ -143,19 +142,40 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
     private final OnClickListener onClickListener = new OnClickListener()
     {
         @Override
-        public void onClick(final View view)
+        public void onClick(View view)
         {
-            stackLeft(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    GUI.instance.desktopActivity.displayWizzard(false, GUIDomainsWizzard.class.getSimpleName());
+            final String uuid = ((GUIListEntryIOT) view).uuid;
 
-                    String uuid = ((GUIListEntryIOT) view).uuid;
-                    GUI.instance.desktopActivity.displayWizzard(GUIGeomapWizzard.class.getSimpleName(), uuid);
-                }
-            });
+            if ((lastHelper == null) || lastHelper.equals(GUIGeomapWizzard.class.getSimpleName()))
+            {
+                GUI.instance.desktopActivity.displayWizzard(false, lastHelper);
+                lastHelper = GUIFixedWizzard.class.getSimpleName();
+
+                stackCenter(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        GUI.instance.desktopActivity.displayWizzard(true, GUIDomainsWizzard.class.getSimpleName());
+                        GUI.instance.desktopActivity.displayWizzard(lastHelper, uuid);
+                    }
+                });
+            }
+            else
+            {
+                GUI.instance.desktopActivity.displayWizzard(false, lastHelper);
+                lastHelper = GUIGeomapWizzard.class.getSimpleName();
+
+                stackEnd(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        GUI.instance.desktopActivity.displayWizzard(false, GUIDomainsWizzard.class.getSimpleName());
+                        GUI.instance.desktopActivity.displayWizzard(lastHelper, uuid);
+                    }
+                });
+            }
         }
     };
 }

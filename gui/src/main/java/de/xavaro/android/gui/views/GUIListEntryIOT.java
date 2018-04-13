@@ -4,8 +4,11 @@ import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
 
+import org.json.JSONObject;
+
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIDefs;
+import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Log;
 import de.xavaro.android.gui.simple.Simple;
 
@@ -166,18 +169,14 @@ public class GUIListEntryIOT extends GUIListEntry
         @Override
         public void onClick(View view)
         {
-            IOTDevice device = IOTDevice.list.getEntry(uuid);
-            IOTStatus status = IOTStatus.list.getEntry(uuid);
-            IOTCredential credential = IOTCredential.list.getEntry(uuid);
+            JSONObject device = IOTDevice.list.getEntryJson(uuid);
+            JSONObject status = IOTStatus.list.getEntryJson(uuid);
+            JSONObject credential = IOTCredential.list.getEntryJson(uuid);
 
-            PUBSmartPlug handler = GUI.instance.onSmartPlugHandlerRequest(
-                    device.toJson(),
-                    status.toJson(),
-                    credential.toJson());
-
+            PUBSmartPlug handler = GUI.instance.onSmartPlugHandlerRequest(device, status, credential);
             if (handler == null) return;
 
-            boolean off = (status.plugstate == null) || (status.plugstate == 0);
+            boolean off = Json.getInt(status, "plugstate") == 0;
             handler.setPlugState(off ? 1 : 0);
         }
     };
@@ -187,18 +186,14 @@ public class GUIListEntryIOT extends GUIListEntry
         @Override
         public void onClick(View view)
         {
-            IOTDevice device = IOTDevice.list.getEntry(uuid);
-            IOTStatus status = IOTStatus.list.getEntry(uuid);
-            IOTCredential credential = IOTCredential.list.getEntry(uuid);
+            JSONObject device = IOTDevice.list.getEntryJson(uuid);
+            JSONObject status = IOTStatus.list.getEntryJson(uuid);
+            JSONObject credential = IOTCredential.list.getEntryJson(uuid);
 
-            PUBSmartBulb handler = GUI.instance.onSmartBulbHandlerRequest(
-                    device.toJson(),
-                    status.toJson(),
-                    credential.toJson());
-
+            PUBSmartBulb handler = GUI.instance.onSmartBulbHandlerRequest(device, status, credential);
             if (handler == null) return;
 
-            boolean off = (status.bulbstate == null) || (status.bulbstate == 0);
+            boolean off = Json.getInt(status, "bulbstate") == 0;
             handler.setBulbState(off ? 1 : 0);
         }
     };
@@ -208,18 +203,15 @@ public class GUIListEntryIOT extends GUIListEntry
         @Override
         public void onClick(View view)
         {
-            IOTDevice device = IOTDevice.list.getEntry(uuid);
-            IOTStatus status = IOTStatus.list.getEntry(uuid);
-            IOTCredential credential = IOTCredential.list.getEntry(uuid);
+            JSONObject device = IOTDevice.list.getEntryJson(uuid);
+            JSONObject status = IOTStatus.list.getEntryJson(uuid);
+            JSONObject credential = IOTCredential.list.getEntryJson(uuid);
 
-            PUBCamera handler = GUI.instance.onCameraHandlerRequest(
-                    device.toJson(),
-                    status.toJson(),
-                    credential.toJson());
+            PUBCamera handler = GUI.instance.onCameraHandlerRequest(device, status, credential);
 
             if (handler == null) return;
 
-            boolean off = (status.ledstate == null) || (status.ledstate == 0);
+            boolean off = Json.getInt(status, "ledstate") == 0;
 
             handler.connectCamera();
             handler.setLEDOnOff(off);

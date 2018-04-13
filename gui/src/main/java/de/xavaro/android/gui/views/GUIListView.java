@@ -9,10 +9,6 @@ public class GUIListView extends  GUILinearLayout
 {
     private final static String LOGTAG = GUIListView.class.getSimpleName();
 
-    private int focusedIndex = -1;
-    private boolean notfirst;
-    private boolean nofocus;
-
     public GUIListView(Context context)
     {
         super(context);
@@ -20,52 +16,10 @@ public class GUIListView extends  GUILinearLayout
         setOrientation(LinearLayout.VERTICAL);
     }
 
-    public void setNoFocusRequest(boolean norequest)
-    {
-        nofocus = norequest;
-        notfirst = norequest;
-    }
-
     @Override
     public void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-
-        notfirst = false;
-    }
-
-    @Override
-    public void removeAllViews()
-    {
-        //
-        // Inspect childs and search for focused.
-        //
-
-        if (notfirst || nofocus)
-        {
-            focusedIndex = -1;
-        }
-        else
-        {
-            focusedIndex = 0;
-            notfirst = true;
-        }
-
-        for (int inx = 0; inx < getChildCount(); inx++)
-        {
-            if (getChildAt(inx).hasFocus())
-            {
-                focusedIndex = inx;
-                break;
-            }
-        }
-
-        Log.d(LOGTAG, "removeAllViews:"
-                + " notfirst=" + notfirst
-                + " nofocus=" + nofocus
-                +" focusedIndex=" + focusedIndex);
-
-        super.removeAllViews();
     }
 
     public void markAllViewsUnused()
@@ -107,11 +61,6 @@ public class GUIListView extends  GUILinearLayout
         }
 
         super.addView(view);
-
-        if (focusedIndex == (getChildCount() - 1))
-        {
-            view.requestFocus();
-        }
     }
 
     public GUIListEntry findGUIListEntryOrCreate(String idtag)
