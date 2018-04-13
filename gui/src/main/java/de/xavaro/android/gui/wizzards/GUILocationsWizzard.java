@@ -34,6 +34,8 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
         setNameText("Örtlichkeiten");
 
         setActionIconVisible(R.drawable.add_540, true);
+
+        listView.setNoFocusRequest(true);
     }
 
     @Override

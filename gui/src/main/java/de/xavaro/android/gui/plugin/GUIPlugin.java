@@ -103,6 +103,11 @@ public class GUIPlugin extends GUIFrameLayout
         }
     }
 
+    public void stackLeft()
+    {
+        stackLeft(null);
+    }
+
     public void stackLeft(final Runnable onDone)
     {
         Simple.getHandler().post(new Runnable()
@@ -110,16 +115,47 @@ public class GUIPlugin extends GUIFrameLayout
             @Override
             public void run()
             {
+                int finalpos = DEFAULT_HORZ_MARGIN;
                 int left = getPluginLeftDip();
 
-                if (left > DEFAULT_HORZ_MARGIN)
+                if (left > finalpos)
                 {
-                    left -= 20;
-                    if (left < DEFAULT_HORZ_MARGIN) left = DEFAULT_HORZ_MARGIN;
+                    left = ((left - 20) >= finalpos) ? left - 20 : finalpos;
 
                     setPluginPositionDip(left, DEFAULT_TOP_MARGIN);
 
-                    Simple.getHandler().postDelayed(this, 33);
+                    Simple.getHandler().postDelayed(this, 15);
+                }
+                else
+                {
+                    if (onDone != null) onDone.run();
+                }
+            }
+        });
+    }
+
+    public void stackCenter()
+    {
+        stackCenter(null);
+    }
+
+    public void stackCenter(final Runnable onDone)
+    {
+        Simple.getHandler().post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                int finalpos = DEFAULT_HORZ_MARGIN + width + DEFAULT_HORZ_MARGIN;
+                int left = getPluginLeftDip();
+
+                if (left < finalpos)
+                {
+                    left = ((left + 20) <= finalpos) ? left + 20 : finalpos;
+
+                    setPluginPositionDip(left, DEFAULT_TOP_MARGIN);
+
+                    Simple.getHandler().postDelayed(this, 15);
                 }
                 else
                 {

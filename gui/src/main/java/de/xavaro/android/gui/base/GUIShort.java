@@ -19,6 +19,18 @@ public class GUIShort
         return GUI.instance.desktopActivity.getWizzard(wclass.getSimpleName());
     }
 
+    @Nullable
+    public static void showWizzard(Class wclass)
+    {
+        GUI.instance.desktopActivity.displayWizzard(true, wclass.getSimpleName());
+    }
+
+    @Nullable
+    public static void hideWizzard(Class wclass)
+    {
+        GUI.instance.desktopActivity.displayWizzard(false, wclass.getSimpleName());
+    }
+
     public static boolean isWizzardPresent(Class wclass)
     {
         GUIPlugin wizzard = getWizzard(wclass);

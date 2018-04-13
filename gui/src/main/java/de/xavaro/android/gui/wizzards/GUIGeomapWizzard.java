@@ -210,6 +210,22 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
         super.onDetachedFromWindow();
 
         IOTDevice.list.unsubscribe(uuid, onDeviceUpdated);
+
+        if (GUIShort.isWizzardPresent(GUILocationsWizzard.class))
+        {
+            GUILocationsWizzard locations = (GUILocationsWizzard) GUIShort.getWizzard(GUILocationsWizzard.class);
+            if (locations != null) locations.stackCenter(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    if (! GUIShort.isWizzardPresent(GUIDomainsWizzard.class))
+                    {
+                        GUIShort.showWizzard(GUIDomainsWizzard.class);
+                    }
+                }
+            });
+        }
     }
 
     private final Runnable onDeviceUpdated = new Runnable()

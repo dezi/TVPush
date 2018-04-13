@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import de.xavaro.android.gui.R;
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIDefs;
+import de.xavaro.android.gui.base.GUIShort;
 import de.xavaro.android.gui.plugin.GUIPluginTitleListIOT;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Log;
@@ -39,10 +40,25 @@ public class GUIDomainsWizzard extends GUIPluginTitleListIOT
     {
         super.onAttachedToWindow();
 
-        if (lastHelper != null)
+        listView.setNoFocusRequest(GUIShort.isWizzardPresent(GUIGeomapWizzard.class));
+    }
+
+    @Override
+    public void onSelectionChanged(GUIListEntryIOT entry, boolean selected)
+    {
+        android.util.Log.d(LOGTAG, "onSelectionChanged: entry=" + entry.uuid + " selected=" + selected);
+        if (selected)
         {
-            GUI.instance.desktopActivity.displayWizzard(false, lastHelper);
-            lastHelper = null;
+            if (GUIShort.isWizzardPresent(GUIGeomapWizzard.class))
+            {
+                GUIGeomapWizzard geomap = (GUIGeomapWizzard) GUIShort.getWizzard(GUIGeomapWizzard.class);
+                if (geomap != null) geomap.setIOTObject(entry.uuid);
+            }
+
+            if (GUIShort.isWizzardPresent(GUILocationsWizzard.class))
+            {
+                GUILocationsWizzard locwiz = (GUILocationsWizzard) GUIShort.getWizzard(GUILocationsWizzard.class);
+            }
         }
     }
 
@@ -123,23 +139,24 @@ public class GUIDomainsWizzard extends GUIPluginTitleListIOT
 
             if (lastHelper == null)
             {
-                lastHelper = GUIGeomapWizzard.class.getSimpleName();
-                GUI.instance.desktopActivity.displayWizzard(lastHelper, uuid);
-
-                return;
-            }
-
-            if (lastHelper.equals(GUIGeomapWizzard.class.getSimpleName()))
-            {
-                GUI.instance.desktopActivity.displayWizzard(false, lastHelper);
                 lastHelper = GUILocationsWizzard.class.getSimpleName();
                 GUI.instance.desktopActivity.displayWizzard(lastHelper, uuid);
-
-                return;
             }
-
-            GUI.instance.desktopActivity.displayWizzard(false, lastHelper);
-            lastHelper = null;
+            else
+            {
+                if (lastHelper.equals(GUILocationsWizzard.class.getSimpleName()))
+                {
+                    GUI.instance.desktopActivity.displayWizzard(false, lastHelper);
+                    lastHelper = GUIGeomapWizzard.class.getSimpleName();
+                    GUI.instance.desktopActivity.displayWizzard(lastHelper, uuid);
+                }
+                else
+                {
+                    GUI.instance.desktopActivity.displayWizzard(false, lastHelper);
+                    lastHelper = GUILocationsWizzard.class.getSimpleName();
+                    GUI.instance.desktopActivity.displayWizzard(lastHelper, uuid);
+                }
+            }
         }
     };
 }
