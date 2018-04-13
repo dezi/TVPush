@@ -103,12 +103,12 @@ public class GUIPlugin extends GUIFrameLayout
         }
     }
 
-    public void stackEnd()
+    public void stackStart()
     {
-        stackEnd(null);
+        stackStart(null);
     }
 
-    public void stackEnd(final Runnable onDone)
+    public void stackStart(final Runnable onDone)
     {
         Simple.getHandler().post(new Runnable()
         {

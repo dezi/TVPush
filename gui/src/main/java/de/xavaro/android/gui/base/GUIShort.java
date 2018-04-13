@@ -22,13 +22,28 @@ public class GUIShort
     @Nullable
     public static void showWizzard(Class wclass)
     {
-        GUI.instance.desktopActivity.displayWizzard(true, wclass.getSimpleName());
+        if (wclass != null)
+        {
+            GUI.instance.desktopActivity.displayWizzard(true, wclass.getSimpleName());
+        }
+    }
+
+    @Nullable
+    public static void showWizzard(Class wclass, String uuid)
+    {
+        if (wclass != null)
+        {
+            GUI.instance.desktopActivity.displayWizzard(wclass.getSimpleName(), uuid);
+        }
     }
 
     @Nullable
     public static void hideWizzard(Class wclass)
     {
-        GUI.instance.desktopActivity.displayWizzard(false, wclass.getSimpleName());
+        if (wclass != null)
+        {
+            GUI.instance.desktopActivity.displayWizzard(false, wclass.getSimpleName());
+        }
     }
 
     public static boolean isWizzardPresent(Class wclass)

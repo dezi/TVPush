@@ -5,23 +5,22 @@ import android.view.View;
 
 import org.json.JSONArray;
 
-import de.xavaro.android.gui.R;
-import de.xavaro.android.gui.base.GUI;
-import de.xavaro.android.gui.base.GUIDefs;
-import de.xavaro.android.gui.base.GUIShort;
 import de.xavaro.android.gui.plugin.GUIPluginTitleListIOT;
-import de.xavaro.android.gui.simple.Json;
-import de.xavaro.android.gui.simple.Log;
-import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.views.GUIListView;
 import de.xavaro.android.iot.things.IOTDomain;
+import de.xavaro.android.gui.base.GUIShort;
+import de.xavaro.android.gui.base.GUIDefs;
+import de.xavaro.android.gui.simple.Simple;
+import de.xavaro.android.gui.simple.Json;
+import de.xavaro.android.gui.simple.Log;
+import de.xavaro.android.gui.R;
 
 public class GUIDomainsWizzard extends GUIPluginTitleListIOT
 {
     private final static String LOGTAG = GUIDomainsWizzard.class.getSimpleName();
 
-    private String lastHelper;
+    private Class lastHelper;
 
     public GUIDomainsWizzard(Context context)
     {
@@ -131,23 +130,51 @@ public class GUIDomainsWizzard extends GUIPluginTitleListIOT
         {
             String uuid = ((GUIListEntryIOT) view).uuid;
 
-            if ((lastHelper == null) || lastHelper.equals(GUILocationsWizzard.class.getSimpleName()))
-            {
-                if (GUIShort.isWizzardPresent(GUIFixedWizzard.class))
-                {
-                    GUIShort.hideWizzard(GUIFixedWizzard.class);
-                }
+            IOTDomain domain = IOTDomain.list.getEntry(uuid);
+            if (domain == null) return;
 
-                GUI.instance.desktopActivity.displayWizzard(false, lastHelper);
-                lastHelper = GUIGeomapWizzard.class.getSimpleName();
-                GUI.instance.desktopActivity.displayWizzard(lastHelper, uuid);
+            boolean isnice = (domain.fixedLatFine != null)
+                    && (domain.fixedLonFine != null)
+                    && (domain.fixedAltFine != null);
+
+            if (!isnice)
+            {
+                showGeomapWizzard(uuid);
             }
             else
             {
-                GUI.instance.desktopActivity.displayWizzard(false, lastHelper);
-                lastHelper = GUILocationsWizzard.class.getSimpleName();
-                GUI.instance.desktopActivity.displayWizzard(lastHelper, uuid);
+                if ((lastHelper == null) || (lastHelper == GUIGeomapWizzard.class))
+                {
+                    showLocationWizzard(uuid);
+                }
+                else
+                {
+                    if (lastHelper == GUILocationsWizzard.class)
+                    {
+                        showGeomapWizzard(uuid);
+                    }
+                }
             }
         }
     };
+
+    private void showLocationWizzard(String uuid)
+    {
+        GUIShort.hideWizzard(GUIGeomapWizzard.class);
+
+        lastHelper = GUILocationsWizzard.class;
+        GUIShort.showWizzard(lastHelper, uuid);
+    }
+
+    private void showGeomapWizzard(String uuid)
+    {
+        if (!GUIShort.isWizzardPresent(GUIGeomapWizzard.class))
+        {
+            GUIShort.hideWizzard(GUIFixedWizzard.class);
+            GUIShort.hideWizzard(GUIGeomapWizzard.class);
+
+            lastHelper = GUIGeomapWizzard.class;
+            GUIShort.showWizzard(lastHelper, uuid);
+        }
+    }
 }

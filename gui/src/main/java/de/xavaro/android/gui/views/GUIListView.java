@@ -5,6 +5,9 @@ import android.content.Context;
 import android.view.View;
 import android.util.Log;
 
+import de.xavaro.android.gui.simple.Simple;
+import de.xavaro.android.gui.skills.GUICanFocusDelegate;
+
 public class GUIListView extends  GUILinearLayout
 {
     private final static String LOGTAG = GUIListView.class.getSimpleName();
@@ -20,6 +23,18 @@ public class GUIListView extends  GUILinearLayout
     public void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+
+        Simple.getHandler().post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if ((GUICanFocusDelegate.getFocusedView() == null) && (getChildCount() > 0))
+                {
+                    getChildAt(0).requestFocus();
+                }
+            }
+        });
     }
 
     public void markAllViewsUnused()

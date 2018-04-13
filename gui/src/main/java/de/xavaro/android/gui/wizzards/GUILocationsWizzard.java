@@ -1,30 +1,30 @@
 package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.util.Log;
 
 import org.json.JSONArray;
 
-import de.xavaro.android.gui.base.GUIShort;
-import de.xavaro.android.gui.base.GUIUtil;
 import de.xavaro.android.iot.things.IOTLocation;
+import de.xavaro.android.iot.things.IOTDomain;
 
 import de.xavaro.android.gui.plugin.GUIPluginTitleListIOT;
 import de.xavaro.android.gui.views.GUIListEntryIOT;
 import de.xavaro.android.gui.views.GUIListView;
+import de.xavaro.android.gui.base.GUIShort;
+import de.xavaro.android.gui.base.GUIUtil;
+import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.simple.Json;
-import de.xavaro.android.gui.base.GUIDefs;
-import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.R;
 
 public class GUILocationsWizzard extends GUIPluginTitleListIOT
 {
     private final static String LOGTAG = GUILocationsWizzard.class.getSimpleName();
 
-    private String lastHelper;
+    private Class lastHelper;
 
     public String domuuid;
 
@@ -35,7 +35,7 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
         setIsWizzard(true, true, 1, Gravity.CENTER);
 
         setTitleIcon(R.drawable.location_240);
-        setNameText("Örtlichkeiten");
+        setNameText("Orte");
 
         setActionIconVisible(R.drawable.add_540, true);
     }
@@ -43,6 +43,17 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
     public void setDomain(String domuuid)
     {
         this.domuuid = domuuid;
+
+        IOTDomain domain = IOTDomain.list.getEntry(domuuid);
+
+        if (domain == null)
+        {
+            setNameText("Orte");
+        }
+        else
+        {
+            setNameText("Orte in " + ((domain.nick != null) ? domain.nick : domain.name));
+        }
 
         listView.removeAllViews();
 
@@ -67,17 +78,12 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
         location.fixedwifi = Simple.getConnectedWifiName();
         location.name = "Neuer Ort";
 
-        /*
-        if (uuid != null)
-        {
-            IOTThing iotThing = IOTThing.getEntry(uuid);
+        IOTDomain domain = IOTDomain.list.getEntry(domuuid);
 
-            if (iotThing != null)
-            {
-                location.name += " in " + ((iotThing.nick != null) ? iotThing.nick : iotThing.name);
-            }
+        if (domain != null)
+        {
+            location.name += " in " + ((domain.nick != null) ? domain.nick : domain.name);
         }
-        */
 
         IOTLocation.list.addEntry(location, true, true);
 
@@ -107,6 +113,33 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
     public void collectEntries(GUIListView listView, boolean todo)
     {
         JSONArray list = IOTLocation.list.getUUIDList();
+
+        //
+        // Attach locations w/o positions first.
+        //
+
+        for (int inx = 0; inx < list.length(); inx++)
+        {
+            String locuuid = Json.getString(list, inx);
+            IOTLocation location = IOTLocation.list.getEntry(locuuid);
+
+            if (location == null) continue;
+
+            boolean isnice = (location.fixedLatFine != null)
+                    && (location.fixedLonFine != null)
+                    && (location.fixedAltFine != null);
+
+            if (todo || isnice) continue;
+
+            GUIListEntryIOT entry = listView.findGUIListEntryIOTOrCreate(locuuid);
+
+            entry.setOnUpdateContentListener(onUpdateContentListener);
+            entry.setOnClickListener(onClickListener);
+        }
+
+        //
+        // Attach locations nearest to this domain.
+        //
 
         for (int inx = 0; inx < list.length(); inx++)
         {
@@ -164,38 +197,105 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
         @Override
         public void onClick(View view)
         {
-            final String uuid = ((GUIListEntryIOT) view).uuid;
+            String uuid = ((GUIListEntryIOT) view).uuid;
 
-            if ((lastHelper == null) || lastHelper.equals(GUIGeomapWizzard.class.getSimpleName()))
+            IOTLocation location = IOTLocation.list.getEntry(uuid);
+            if (location == null) return;
+
+            boolean isnice = (location.fixedLatFine != null)
+                    && (location.fixedLonFine != null)
+                    && (location.fixedAltFine != null);
+
+            if (! isnice)
             {
-                GUI.instance.desktopActivity.displayWizzard(false, lastHelper);
-                lastHelper = GUIFixedWizzard.class.getSimpleName();
-
-                stackCenter(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        GUI.instance.desktopActivity.displayWizzard(true, GUIDomainsWizzard.class.getSimpleName());
-                        GUI.instance.desktopActivity.displayWizzard(lastHelper, uuid);
-                    }
-                });
+                showGeomapWizzard(uuid);
             }
             else
             {
-                GUI.instance.desktopActivity.displayWizzard(false, lastHelper);
-                lastHelper = GUIGeomapWizzard.class.getSimpleName();
-
-                stackEnd(new Runnable()
+                if ((lastHelper == null) || (lastHelper == GUIGeomapWizzard.class))
                 {
-                    @Override
-                    public void run()
+                    showFixedWizzard(uuid);
+                }
+                else
+                {
+                    if (lastHelper == GUIFixedWizzard.class)
                     {
-                        GUI.instance.desktopActivity.displayWizzard(false, GUIDomainsWizzard.class.getSimpleName());
-                        GUI.instance.desktopActivity.displayWizzard(lastHelper, uuid);
+                        showGeomapWizzard(uuid);
                     }
-                });
+                }
             }
         }
     };
+
+    private void showFixedWizzard(String uuid)
+    {
+        GUIShort.hideWizzard(GUIGeomapWizzard.class);
+
+        lastHelper = GUIFixedWizzard.class;
+        GUIShort.showWizzard(lastHelper, uuid);
+
+        stackCenter(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                GUIShort.showWizzard(GUIDomainsWizzard.class);
+            }
+        });
+    }
+
+    private void showGeomapWizzard(final String uuid)
+    {
+        if (! GUIShort.isWizzardPresent(GUIGeomapWizzard.class))
+        {
+            stackStart(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    lastHelper = GUIGeomapWizzard.class;
+                    GUIShort.showWizzard(lastHelper, uuid);
+
+                    IOTLocation location = IOTLocation.list.getEntry(uuid);
+                    if (location == null) return;
+
+                    if ((location.fixedLatFine != null)
+                            && (location.fixedLonFine != null)
+                            && (location.fixedAltFine != null))
+                    {
+                        //
+                        // All set, nothing to do.
+                        //
+
+                        return;
+                    }
+
+                    IOTDomain domain = IOTDomain.list.getEntry(domuuid);
+                    if (domain == null) return;
+
+                    if ((domain.fixedLatFine == null)
+                            || (domain.fixedLonFine == null)
+                            || (domain.fixedAltFine == null))
+                    {
+                        //
+                        // Nothing can be done.
+                        //
+
+                        return;
+                    }
+
+                    //
+                    // Preset geomap wizzard with domain location.
+                    //
+
+                    GUIGeomapWizzard geomap = (GUIGeomapWizzard) GUIShort.getWizzard(GUIGeomapWizzard.class);
+
+                    if (geomap != null)
+                    {
+                        geomap.setCoordinates(domain.fixedLatFine, domain.fixedLonFine, domain.fixedAltFine);
+                    }
+                }
+            });
+        }
+    }
 }
