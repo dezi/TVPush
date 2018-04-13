@@ -164,6 +164,9 @@ public class GUIDomainsWizzard extends GUIPluginTitleListIOT
 
         lastHelper = GUILocationsWizzard.class;
         GUIShort.showWizzard(lastHelper, uuid);
+
+        GUILocationsWizzard location = (GUILocationsWizzard) GUIShort.getWizzard(GUILocationsWizzard.class);
+        if (location != null) location.setDomain(uuid);
     }
 
     private void showGeomapWizzard(String uuid)
@@ -171,10 +174,13 @@ public class GUIDomainsWizzard extends GUIPluginTitleListIOT
         if (!GUIShort.isWizzardPresent(GUIGeomapWizzard.class))
         {
             GUIShort.hideWizzard(GUIFixedWizzard.class);
-            GUIShort.hideWizzard(GUIGeomapWizzard.class);
+            GUIShort.hideWizzard(GUILocationsWizzard.class);
 
             lastHelper = GUIGeomapWizzard.class;
             GUIShort.showWizzard(lastHelper, uuid);
+
+            GUIGeomapWizzard geomap = (GUIGeomapWizzard) GUIShort.getWizzard(GUIGeomapWizzard.class);
+            if (geomap != null) geomap.setIOTObject(uuid);
         }
     }
 }

@@ -94,12 +94,19 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
     public void onSelectionChanged(GUIListEntryIOT entry, boolean selected)
     {
         android.util.Log.d(LOGTAG, "onSelectionChanged: entry=" + entry.uuid  + " selected=" + selected);
+
         if (selected)
         {
             if (GUIShort.isWizzardPresent(GUIGeomapWizzard.class))
             {
                 GUIGeomapWizzard geomap = (GUIGeomapWizzard) GUIShort.getWizzard(GUIGeomapWizzard.class);
                 if (geomap != null) geomap.setIOTObject(entry.uuid);
+            }
+
+            if (GUIShort.isWizzardPresent(GUIFixedWizzard.class))
+            {
+                GUIFixedWizzard fixed = (GUIFixedWizzard) GUIShort.getWizzard(GUIFixedWizzard.class);
+                if (fixed != null) fixed.setLocation(entry.uuid);
             }
         }
     }
@@ -227,12 +234,9 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
         }
     };
 
-    private void showFixedWizzard(String uuid)
+    private void showFixedWizzard(final String uuid)
     {
         GUIShort.hideWizzard(GUIGeomapWizzard.class);
-
-        lastHelper = GUIFixedWizzard.class;
-        GUIShort.showWizzard(lastHelper, uuid);
 
         stackCenter(new Runnable()
         {
@@ -240,6 +244,12 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
             public void run()
             {
                 GUIShort.showWizzard(GUIDomainsWizzard.class);
+
+                lastHelper = GUIFixedWizzard.class;
+                GUIShort.showWizzard(lastHelper, uuid);
+
+                GUIFixedWizzard fixed = (GUIFixedWizzard) GUIShort.getWizzard(GUIFixedWizzard.class);
+                if (fixed != null) fixed.setLocation(uuid);
             }
         });
     }
@@ -253,6 +263,9 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
                 @Override
                 public void run()
                 {
+                    GUIShort.hideWizzard(GUIFixedWizzard.class);
+                    GUIShort.hideWizzard(GUIDomainsWizzard.class);
+
                     lastHelper = GUIGeomapWizzard.class;
                     GUIShort.showWizzard(lastHelper, uuid);
 

@@ -9,6 +9,7 @@ import org.json.JSONArray;
 
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.iot.things.IOTDomain;
+import de.xavaro.android.iot.things.IOTLocation;
 
 public class GUIUtil
 {
@@ -48,6 +49,44 @@ public class GUIUtil
         }
 
         return domuuid;
+    }
+
+    @Nullable
+    public static String getClosestLocationForDevice(double lat, double lon, double alt)
+    {
+        LatLng devpos = new LatLng(lat, lon);
+
+        JSONArray list = IOTLocation.list.getUUIDList();
+
+        String locuuid = null;
+        Double locbest = null;
+
+        for (int inx = 0; inx < list.length(); inx++)
+        {
+            String uuid = Json.getString(list, inx);
+            IOTLocation location = IOTLocation.list.getEntry(uuid);
+
+            if (location == null) continue;
+
+            if ((location.fixedLatFine == null)
+                    || (location.fixedLonFine == null)
+                    || (location.fixedAltFine == null))
+            {
+                continue;
+            }
+
+            LatLng locpos = new LatLng(location.fixedLatFine, location.fixedLonFine);
+
+            double dist = computeDistanceBetween(devpos, locpos);
+
+            if ((locbest == null) || (locbest > dist))
+            {
+                locuuid = uuid;
+                locbest = dist;
+            }
+        }
+
+        return locuuid;
     }
 
     //region Coordinates math helper.
