@@ -7,15 +7,10 @@ import de.xavaro.android.gui.base.GUIShort;
 import de.xavaro.android.gui.views.GUIEditText;
 
 import de.xavaro.android.gui.base.GUIDefs;
-import de.xavaro.android.gui.base.GUI;
 
-import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTDomain;
-import de.xavaro.android.iot.things.IOTHuman;
 import de.xavaro.android.iot.things.IOTLocation;
 
-import de.xavaro.android.iot.base.IOTDefs;
-import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.iot.things.IOTThing;
 
 public class GUIPluginTitleIOT extends GUIPluginTitle
@@ -33,7 +28,7 @@ public class GUIPluginTitleIOT extends GUIPluginTitle
     {
         this.uuid = uuid;
 
-        titleIcon.setIOTThing(uuid);
+        setTitleIconIOTThing(uuid);
 
         IOTThing iotThing = IOTThing.getEntry(uuid);
 
@@ -63,7 +58,7 @@ public class GUIPluginTitleIOT extends GUIPluginTitle
             }
             else
             {
-                setNameText(iotThing.name);
+                setNameInfo(iotThing.name);
             }
         }
     }

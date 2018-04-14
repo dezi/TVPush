@@ -33,7 +33,7 @@ public class GUISettingsWizzard extends GUIPluginTitleList
         setWizzard(true, true, 1, Gravity.END);
 
         setTitleIcon(R.drawable.wizzard_settings_200);
-        setNameText("Subsystem Settings");
+        setNameInfo("Subsystem Settings");
     }
 
     @Override

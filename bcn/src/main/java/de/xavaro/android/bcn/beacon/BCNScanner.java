@@ -511,13 +511,11 @@ public class BCNScanner
             Json.put(beacondev, "type", "beacon");
             Json.put(beacondev, "did", url);
             Json.put(beacondev, "name", url);
-            Json.put(beacondev, "nick", url);
             Json.put(beacondev, "model", name);
             Json.put(beacondev, "macaddr", macAddr);
             Json.put(beacondev, "driver", "bcn");
             Json.put(beacondev, "location", Simple.getConnectedWifiName());
-
-            Json.put(beacondev, "capabilities", Json.jsonArrayFromSeparatedString(caps, "\\|"));
+            Json.put(beacondev, "capabilities", caps);
 
             BCN.instance.onDeviceFound(beacondev);
 
@@ -609,13 +607,11 @@ public class BCNScanner
             Json.put(beacondev, "uuid", uuid);
             Json.put(beacondev, "type", "beacon");
             Json.put(beacondev, "name", name);
-            Json.put(beacondev, "nick", name);
             Json.put(beacondev, "vendor", BCNDefs.getAdvertiseVendor(vendor));
             Json.put(beacondev, "macaddr", macAddr);
             Json.put(beacondev, "driver", "bcn");
             Json.put(beacondev, "location", Simple.getConnectedWifiName());
-
-            Json.put(beacondev, "capabilities", Json.jsonArrayFromSeparatedString(caps, "\\|"));
+            Json.put(beacondev, "capabilities", caps);
 
             BCN.instance.onDeviceFound(beacondev);
 
@@ -731,14 +727,12 @@ public class BCNScanner
             Json.put(beacondev, "uuid", uuid);
             Json.put(beacondev, "type", "beacon");
             Json.put(beacondev, "name", name);
-            Json.put(beacondev, "nick", name);
             Json.put(beacondev, "model", model);
             Json.put(beacondev, "vendor", BCNDefs.getAdvertiseVendor(vendor));
             Json.put(beacondev, "macaddr", macAddr);
             Json.put(beacondev, "driver", "bcn");
             Json.put(beacondev, "location", Simple.getConnectedWifiName());
-
-            Json.put(beacondev, "capabilities", Json.jsonArrayFromSeparatedString(caps, "\\|"));
+            Json.put(beacondev, "capabilities", caps);
 
             BCN.instance.onDeviceFound(beacondev);
 

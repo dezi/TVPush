@@ -36,7 +36,7 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
         setSize(1, Gravity.CENTER);
 
         setTitleIcon(R.drawable.location_240);
-        setNameText("Orte");
+        setNameInfo("Orte");
 
         setActionIconVisible(R.drawable.add_540, true);
     }
@@ -49,11 +49,11 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
 
         if (domain == null)
         {
-            setNameText("Orte");
+            setNameInfo("Orte");
         }
         else
         {
-            setNameText("Orte in " + ((domain.nick != null) ? domain.nick : domain.name));
+            setNameInfo("Orte in " + ((domain.nick != null) ? domain.nick : domain.name));
         }
 
         listView.removeAllViews();

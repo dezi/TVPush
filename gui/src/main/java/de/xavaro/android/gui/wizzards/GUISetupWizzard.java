@@ -30,7 +30,7 @@ public class GUISetupWizzard extends GUIPluginTitleList
         setWizzard(true, false, 1);
 
         setTitleIcon(R.drawable.permissions_240);
-        setNameText("System Setup");
+        setNameInfo("System Setup");
     }
 
     @Override

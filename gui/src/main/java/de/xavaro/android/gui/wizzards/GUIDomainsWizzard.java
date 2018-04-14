@@ -31,7 +31,7 @@ public class GUIDomainsWizzard extends GUIPluginTitleListIOT
         setSize(1, Gravity.START);
 
         setTitleIcon(R.drawable.domains_540);
-        setNameText("Domänen");
+        setNameInfo("Domänen");
 
         setActionIconVisible(R.drawable.add_540, true);
     }

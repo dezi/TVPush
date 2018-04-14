@@ -35,7 +35,7 @@ public class GUIFixedWizzard extends GUIPluginTitleListIOT
         setSize(1, Gravity.END);
 
         setTitleIcon(R.drawable.things_600);
-        setNameText("Geräte");
+        setNameInfo("Geräte");
     }
 
     public void setLocation(String locuuid)
@@ -46,11 +46,11 @@ public class GUIFixedWizzard extends GUIPluginTitleListIOT
 
         if (location == null)
         {
-            setNameText("Geräte");
+            setNameInfo("Geräte");
         }
         else
         {
-            setNameText("Geräte in " + ((location.nick != null) ? location.nick : location.name));
+            setNameInfo("Geräte in " + ((location.nick != null) ? location.nick : location.name));
         }
 
         listView.removeAllViews();

@@ -25,7 +25,7 @@ public class GUIPingWizzard extends GUIPluginTitleListIOT
         setWizzard(true, false);
 
         setTitleIcon(R.drawable.ping_440);
-        setNameText("Ping Wizzard");
+        setNameInfo("Ping Wizzard");
     }
 
     @Override

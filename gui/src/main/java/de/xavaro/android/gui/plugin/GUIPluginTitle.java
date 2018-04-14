@@ -6,13 +6,13 @@ import android.view.Gravity;
 import android.view.View;
 import android.util.Log;
 
-import de.xavaro.android.gui.views.GUIIconView;
-import de.xavaro.android.gui.views.GUIIconViewIOT;
+import de.xavaro.android.gui.views.GUIRelativeLayout;
 import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUIFrameLayout;
-import de.xavaro.android.gui.views.GUIEditText;
-import de.xavaro.android.gui.views.GUIRelativeLayout;
+import de.xavaro.android.gui.views.GUIIconViewIOT;
+import de.xavaro.android.gui.views.GUIIconView;
 import de.xavaro.android.gui.views.GUITextView;
+import de.xavaro.android.gui.views.GUIEditText;
 
 import de.xavaro.android.gui.base.GUIDefs;
 
@@ -22,12 +22,12 @@ public class GUIPluginTitle extends GUIPlugin
 {
     private final static String LOGTAG = GUIPluginTitle.class.getSimpleName();
 
-    public GUIIconViewIOT titleIcon;
-    public GUITextView nameText;
-    public GUIEditText nameEdit;
-    public GUITextView nickInfo;
-    public GUIEditText nickEdit;
-    public GUIIconView actionIcon;
+    private GUIIconViewIOT titleIcon;
+    private GUITextView nameInfo;
+    private GUIEditText nameEdit;
+    private GUITextView nickInfo;
+    private GUIEditText nickEdit;
+    private GUIIconView actionIcon;
 
     public String objectTag;
 
@@ -60,11 +60,12 @@ public class GUIPluginTitle extends GUIPlugin
 
         titleFrame.addView(titleCenter);
 
-        nameText = new GUITextView(context);
-        nameText.setPaddingDip(GUIDefs.PADDING_SMALL);
-        nameText.setTextSizeDip(GUIDefs.FONTSIZE_HEADERS);
+        nameInfo = new GUITextView(context);
+        nameInfo.setPaddingDip(GUIDefs.PADDING_SMALL);
+        nameInfo.setTextSizeDip(GUIDefs.FONTSIZE_HEADERS);
+        nameInfo.setVisibility(GONE);
 
-        titleCenter.addView(nameText);
+        titleCenter.addView(nameInfo);
 
         nameEdit = new GUIEditText(context)
         {
@@ -152,6 +153,11 @@ public class GUIPluginTitle extends GUIPlugin
         titleIcon.setImageResource(resid);
     }
 
+    public void setTitleIconIOTThing(String uuid)
+    {
+        titleIcon.setIOTThing(uuid);
+    }
+
     public void setTitleIcon(String base64)
     {
         titleIcon.setImageResource(base64);
@@ -162,22 +168,17 @@ public class GUIPluginTitle extends GUIPlugin
         return titleIconResid;
     }
 
-    public void setNameText(String text)
+    public String getNameInfo()
     {
-        nameText.setText(text);
+        return nameInfo.getText().toString();
     }
 
-    public String getNameText()
+    public void setNameInfo(String text)
     {
-        return nameText.getText().toString();
-    }
+        nameInfo.setText(text);
+        nameInfo.setVisibility(VISIBLE);
 
-    public void setNickInfo(String text)
-    {
-        nickInfo.setText(text);
-        nickInfo.setVisibility(VISIBLE);
-
-        nickEdit.setVisibility(GONE);
+        nameEdit.setVisibility(GONE);
     }
 
     public void setNameEdit(String text, String hint, String toast)
@@ -189,12 +190,20 @@ public class GUIPluginTitle extends GUIPlugin
         nameEdit.setHighlightable(true);
         nameEdit.setVisibility(VISIBLE);
 
-        nameText.setVisibility(GONE);
+        nameInfo.setVisibility(GONE);
+    }
+
+    public void setNickInfo(String text)
+    {
+        nickInfo.setText(text);
+        nickInfo.setVisibility(VISIBLE);
+
+        nickEdit.setVisibility(GONE);
     }
 
     public void setNickEdit(String text, String hint, String toast)
     {
-        if ((text != null) && text.equals(nameText.getText().toString()))
+        if ((text != null) && text.equals(nameInfo.getText().toString()))
         {
             //
             // Unset bogus self repeating stuff.

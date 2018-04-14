@@ -25,7 +25,7 @@ public class GUIMenuWizzard extends GUIPluginTitleList
         setWizzard(true, false, 1, Gravity.END);
 
         setTitleIcon(R.drawable.menu_400);
-        setNameText("Menu");
+        setNameInfo("Menu");
     }
 
     @Override
@@ -54,7 +54,7 @@ public class GUIMenuWizzard extends GUIPluginTitleList
             entry.setTag(name);
 
             entry.iconView.setImageResource(((GUIPluginTitle) wizzard).getTitleIconResid());
-            entry.headerViev.setText(((GUIPluginTitle) wizzard).getNameText());
+            entry.headerViev.setText(((GUIPluginTitle) wizzard).getNameInfo());
             entry.infoView.setVisibility(GONE);
         }
     }

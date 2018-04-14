@@ -64,7 +64,7 @@ public class GUIStreetviewWizzard extends GUIPluginTitle implements
         setWizzard(true, false, Simple.isTV() ? 3 : 2, Gravity.START);
 
         setTitleIcon(R.drawable.wizzard_streetview_550);
-        setNameText("Streetview Wizzard");
+        setNameInfo("Streetview Wizzard");
 
         mapFrame = new GUIFrameLayout(context)
         {
