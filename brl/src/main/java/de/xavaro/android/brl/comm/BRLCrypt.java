@@ -32,10 +32,25 @@ public class BRLCrypt
 
     private final byte[] iv;
 
+    private final byte[] id;
+
     public BRLCrypt()
     {
-        this.key = INITIAL_KEY;
+        key = INITIAL_KEY;
+        iv = INITIAL_IV;
+        id = new byte[4];
+    }
+
+    public BRLCrypt(byte[] key, byte[] id)
+    {
+        this.key = key;
         this.iv = INITIAL_IV;
+        this.id = id;
+    }
+
+    public byte[] getId()
+    {
+        return id;
     }
 
     @Nullable

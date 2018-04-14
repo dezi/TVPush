@@ -1,5 +1,6 @@
 package de.xavaro.android.brl.comm;
 
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -7,6 +8,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BRLCommand
 {
@@ -17,9 +20,21 @@ public class BRLCommand
     private final static byte authCommand = 0x65;
     private final static byte powerStateCommand = 0x6a;
 
-    public static int getAuth(String ipaddr, int ipport, String macaddr)
+    private final static Map<String, BRLCrypt> deviceCrypt = new HashMap<>();
+
+    @Nullable
+    public static BRLCrypt getAuth(String ipaddr, String macaddr)
     {
-        byte[] message = cmdPacket(macaddr, authCommand, getAuthPayload());
+        BRLCrypt crypt = getMapCrypt(deviceCrypt, macaddr);
+        if (crypt != null) return crypt;
+
+        //
+        // Authorize new crypt.
+        //
+
+        crypt = new BRLCrypt();
+
+        byte[] message = cmdPacket(macaddr, authCommand, getAuthPayload(), crypt);
 
         byte[] response = sendToSocket(ipaddr, message);
 
@@ -27,7 +42,7 @@ public class BRLCommand
         {
             Log.e(LOGTAG, "getAuth: no response!");
 
-            return -1;
+            return null;
         }
 
         int err = (response[0x22] & 0xff) + ((response[0x23] & 0xff) << 8);
@@ -38,21 +53,55 @@ public class BRLCommand
 
             Log.d(LOGTAG, "getAuth: hex=" + BRLUtil.getHexBytesToString(response));
 
-            byte[] result = decryptFromDeviceMessage(response);
+            byte[] result = decryptFromDeviceMessage(response, crypt);
+
+            if (result == null)
+            {
+                Log.e(LOGTAG, "getAuth: decrypt failed!");
+
+                return null;
+            }
 
             Log.d(LOGTAG, "getAuth: dec=" + BRLUtil.getHexBytesToString(result));
+
+            byte[] id = new byte[4];
+            System.arraycopy(result, 0, id, 0, id.length);
+
+            byte[] key = new byte[16];
+            System.arraycopy(result, 4, key, 0, key.length);
+
+            Log.d(LOGTAG, "getAuth:"
+                    + " id=" + BRLUtil.getHexBytesToString(id)
+                    + " key=" + BRLUtil.getHexBytesToString(key));
+
+            crypt = new BRLCrypt(key, id);
+
+            synchronized (deviceCrypt)
+            {
+                deviceCrypt.put(macaddr, crypt);
+            }
+
+            return crypt;
         }
         else
         {
             Log.e(LOGTAG, "getAuth: received error=" + Integer.toHexString(err));
         }
 
-        return -1;
+        return null;
     }
 
-    public static int getPowerStatus(String ipaddr, int ipport, String macaddr)
+    public static int getPowerStatus(String ipaddr, String macaddr)
     {
-        byte[] message = cmdPacket(macaddr, powerStateCommand, getPowerStatusPayload());
+        BRLCrypt crypt = getAuth(ipaddr, macaddr);
+
+        if (crypt == null)
+        {
+            Log.e(LOGTAG, "getPowerStatus: no crypt!");
+            return -1;
+        }
+
+        byte[] message = cmdPacket(macaddr, powerStateCommand, getPowerStatusPayload(), crypt);
 
         byte[] response = sendToSocket(ipaddr, message);
 
@@ -67,11 +116,68 @@ public class BRLCommand
 
         if (err == 0)
         {
-            Log.e(LOGTAG, "getPowerStatus: received ok");
+            Log.d(LOGTAG, "getPowerStatus: received ok");
+
+            byte[] result = decryptFromDeviceMessage(response, crypt);
+
+            if (result == null)
+            {
+                Log.d(LOGTAG, "getPowerStatus: cannot decrypt!");
+
+                return -1;
+            }
+
+            return (result[0x4] == 1) ? 1 : 0;
         }
         else
         {
             Log.e(LOGTAG, "getPowerStatus: received error=" + Integer.toHexString(err));
+        }
+
+        return -1;
+    }
+
+    public static int setPowerStatus(String ipaddr, String macaddr, int onoff)
+    {
+        BRLCrypt crypt = getAuth(ipaddr, macaddr);
+
+        if (crypt == null)
+        {
+            Log.e(LOGTAG, "setPowerStatus: no crypt!");
+            return -1;
+        }
+
+        byte[] message = cmdPacket(macaddr, powerStateCommand, setPowerStatusPayload(onoff), crypt);
+
+        byte[] response = sendToSocket(ipaddr, message);
+
+        if (response == null)
+        {
+            Log.e(LOGTAG, "setPowerStatus: no response!");
+
+            return -1;
+        }
+
+        int err = (response[0x22] & 0xff) + ((response[0x23] & 0xff) << 8);
+
+        if (err == 0)
+        {
+            Log.d(LOGTAG, "setPowerStatus: received ok");
+
+            byte[] result = decryptFromDeviceMessage(response, crypt);
+
+            if (result == null)
+            {
+                Log.d(LOGTAG, "setPowerStatus: cannot decrypt!");
+
+                return -1;
+            }
+
+            return onoff;
+        }
+        else
+        {
+            Log.e(LOGTAG, "setPowerStatus: received error=" + Integer.toHexString(err));
         }
 
         return -1;
@@ -151,18 +257,27 @@ public class BRLCommand
     }
 
     @Nullable
-    protected static byte[] decryptFromDeviceMessage(byte[] encData)
+    protected static byte[] decryptFromDeviceMessage(byte[] encData, BRLCrypt crypt)
     {
         byte[] encPL = getRawPayloadBytesPadded(encData);
 
         Log.d(LOGTAG, "decryptFromDeviceMessage: enc=" + BRLUtil.getHexBytesToString(encPL));
 
-        BRLCrypt crypt = new BRLCrypt();
         byte[] decPL = crypt.decrypt(encPL);
 
         Log.d(LOGTAG, "decryptFromDeviceMessage: dec=" + BRLUtil.getHexBytesToString(decPL));
 
         return decPL;
+    }
+
+    private static byte[] setPowerStatusPayload(int onoff)
+    {
+        byte[] data = new byte[16];
+
+        data[0] = 2;
+        data[4] = (byte) onoff;
+
+        return data;
     }
 
     private static byte[] getPowerStatusPayload()
@@ -230,11 +345,9 @@ public class BRLCommand
     }
 
     @Nullable
-    private static byte[] cmdPacket(String macaddr, byte cmd, byte[] payload)
+    private static byte[] cmdPacket(String macaddr, byte cmd, byte[] payload, BRLCrypt crypt)
     {
         int count = 1;
-
-        byte[] id = new byte[4];
 
         byte[] headerdata = new byte[DEFAULT_BYTES_SIZE];
 
@@ -269,6 +382,8 @@ public class BRLCommand
         headerdata[0x2e] = mac[4];
         headerdata[0x2f] = mac[5];
 
+        byte[] id = crypt.getId();
+
         headerdata[0x30] = id[0];
         headerdata[0x31] = id[1];
         headerdata[0x32] = id[2];
@@ -295,7 +410,6 @@ public class BRLCommand
 
         Log.d(LOGTAG, "cmdPacket: Un-encrypted payload checksum=" + Integer.toHexString(checksumpayload));
 
-        BRLCrypt crypt = new BRLCrypt();
         payload = crypt.encrypt(payloadPad);
 
         if (payload == null)
@@ -324,4 +438,28 @@ public class BRLCommand
 
         return data;
     }
+
+    @Nullable
+    public static BRLCrypt getMapCrypt(Map<String, BRLCrypt> map, String key)
+    {
+        synchronized (deviceCrypt)
+        {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            {
+                return map.getOrDefault(key, null);
+            }
+            else
+            {
+                try
+                {
+                    return map.get(key);
+                }
+                catch (Exception ignore)
+                {
+                    return null;
+                }
+            }
+        }
+    }
+
 }

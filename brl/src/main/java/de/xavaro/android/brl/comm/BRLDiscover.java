@@ -308,7 +308,7 @@ public class BRLDiscover
         Json.put(network, "ipaddr", ipaddr);
         Json.put(network, "ssid", ssid);
 
-        //BRL.instance.onDeviceFound(broadlink);
+        BRL.instance.onDeviceFound(broadlink);
 
         //Log.d(LOGTAG, "buildDeviceDescription: device=" + Json.toPretty(broadlink));
 
@@ -327,10 +327,8 @@ public class BRLDiscover
         // Aquire status if all set.
         //
 
-        int res = BRLCommand.getAuth(ipaddr, ipport, macaddr);
-
-        //int res = BRLCommand.getPowerStatus(ipaddr, ipport, macaddr);
-        //if (res >= 0) Json.put(status, "plugstate", res);
+        int res = BRLCommand.getPowerStatus(ipaddr, macaddr);
+        if (res >= 0) Json.put(status, "plugstate", res);
 
         BRL.instance.onDeviceStatus(status);
 
