@@ -4,6 +4,7 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.brl.base.BRL;
 import de.xavaro.android.edx.base.EDX;
 import pub.android.interfaces.pub.PUBSmartBulb;
 import pub.android.interfaces.pub.PUBSmartPlug;
@@ -110,6 +111,11 @@ public class SystemsGUI extends GUI
         Log.d(LOGTAG, "OnSmartPlugHandlerRequest: uuid=" + uuid + " driver=" + driver);
 
         if ((uuid == null) || (driver == null)) return null;
+
+        if (driver.equals("brl") && (BRL.instance != null))
+        {
+            return BRL.instance.getSmartPlugHandler(device, status, credentials);
+        }
 
         if (driver.equals("tpl") && (TPL.instance != null))
         {

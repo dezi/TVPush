@@ -64,6 +64,11 @@ public class SystemsIOT extends IOT
         JSONObject status = IOTStatus.list.getEntryJson(uuid);
         JSONObject credential = IOTCredential.list.getEntryJson(uuid);
 
+        if (driver.equals("brl") && (SystemsBRL.instance != null))
+        {
+            return SystemsBRL.instance.getDeviceStatusRequest(device, status, credential);
+        }
+
         if (driver.equals("tpl") && (SystemsTPL.instance != null))
         {
             return SystemsTPL.instance.getDeviceStatusRequest(device, status, credential);

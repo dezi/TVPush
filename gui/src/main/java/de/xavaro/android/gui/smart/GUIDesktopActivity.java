@@ -83,8 +83,8 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
 
         if (!Simple.isPhone())
         {
-            displayWizzard(GUISetupWizzard.class.getSimpleName());
-            //displayWizzard(GUIPingWizzard.class.getSimpleName());
+            //displayWizzard(GUISetupWizzard.class.getSimpleName());
+            displayWizzard(GUIPingWizzard.class.getSimpleName());
             //displayWizzard(GUIDomainsWizzard.class.getSimpleName());
         }
 
