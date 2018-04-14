@@ -2,6 +2,8 @@ package de.xavaro.android.brl.comm;
 
 import android.util.Log;
 
+import org.json.JSONObject;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -10,15 +12,19 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import de.xavaro.android.brl.base.BRL;
+import de.xavaro.android.brl.simple.Json;
 import de.xavaro.android.brl.simple.Simple;
 
 public class BRLDiscover
 {
     private static final String LOGTAG = BRLDiscover.class.getSimpleName();
 
-    private static final int DISCOVERY_AGENT_PORT = 80;
+    public static final int BRL_COMM_PORT = 80;
 
     private static final int DISCOVERY_PACKET_LENGTH = 48;
+    private static final int PACKET_OFFSET_MAC_ADDR = 0x3a;
+
+    private static final String MAC_ADDR_FORMAT_STR = "%02x:%02x:%02x:%02x:%02x:%02x";
 
     public static void startService()
     {
@@ -76,24 +82,21 @@ public class BRLDiscover
             String ipaddr = Simple.getConnectedWifiIPAddress();
             if (ipaddr == null) return;
 
+            byte[] helloPacket = getDiscoveryPacket(ipaddr, 0);
+            DatagramPacket hello = new DatagramPacket(helloPacket, helloPacket.length);
+
             //
             // Discover local LAN devices.
             //
 
             try
             {
-
                 socket = new DatagramSocket();
-                socket.setSoTimeout(2000);
+                socket.setSoTimeout(1000);
                 socket.setBroadcast(true);
 
-                byte[] helloPacket = getDiscoveryPacket(ipaddr, 0);
-                DatagramPacket hello = new DatagramPacket(helloPacket, helloPacket.length);
-
                 hello.setAddress(InetAddress.getByName("255.255.255.255"));
-                hello.setPort(DISCOVERY_AGENT_PORT);
-
-                socket.send(hello);
+                hello.setPort(BRL_COMM_PORT);
             }
             catch (Exception ignore)
             {
@@ -112,6 +115,8 @@ public class BRLDiscover
                 {
                     try
                     {
+                        socket.send(hello);
+
                         byte[] rxbuf = new byte[1024];
                         DatagramPacket packet = new DatagramPacket(rxbuf, rxbuf.length);
                         socket.receive(packet);
@@ -196,8 +201,6 @@ public class BRLDiscover
         data[0x12] = (byte) dayOfMn;
         data[0x13] = (byte) month;
 
-        Log.d(LOGTAG, "getDiscoveryPacket: hier 1.");
-
         String[] ipparts = ipaddr.split("\\.");
 
         if (ipparts.length == 4)
@@ -207,8 +210,6 @@ public class BRLDiscover
             data[0x1a] = (byte) (Integer.parseInt(ipparts[2]) & 0xff);
             data[0x1b] = (byte) (Integer.parseInt(ipparts[3]) & 0xff);
         }
-
-        Log.d(LOGTAG, "getDiscoveryPacket: hier 2.");
 
         data[0x1c] = (byte) (ipport & 0xff);
         data[0x1d] = (byte) (ipport >> 8);
@@ -225,7 +226,7 @@ public class BRLDiscover
         data[0x20] = (byte) (checksum & 0xff);
         data[0x21] = (byte) (checksum >> 8);
 
-        Log.d(LOGTAG, "getDiscoveryPacket: checksum=" + Integer.toHexString(checksum));
+        Log.d(LOGTAG, "getDiscoveryPacket: checksum=" + Integer.toHexString(checksum & 0xffff));
 
         return data;
     }
@@ -255,30 +256,7 @@ public class BRLDiscover
         byte[] data = packet.getData();
         int dlen = packet.getLength();
 
-        Log.d(LOGTAG, "buildDeviceDescription: dlen=" + dlen + " address=" + packet.getAddress() + " port=" + packet.getPort());
-
-        /*
-        if ((RECEIVER_SIZE > dlen)
-            || (data[PACKET_OFFSET_STATUS] == PACKET_STATUS_FAULT)
-            || (data[PACKET_OFFSET_STATUS] != PACKET_STATUS_RESPONSE)
-            || (data[PACKET_OFFSET_UNKNOWN_STATUS] != -95))
-        {
-            Log.e(LOGTAG, "buildDeviceDescription: packet invalid!");
-
-            return;
-        }
-
-        String name = new String(data, PACKET_OFFSET_NAME, PACKET_LENGTH_NAME).trim();
-        String model = new String(data, PACKET_OFFSET_MODEL_NAME, PACKET_LENGTH_MODEL_NAME).trim();
-        String version = new String(data, PACKET_OFFSET_FIRMWARE_VERSION, PACKET_LENGTH_FIRMWARE_VERSION).trim();
-
-        int ipport = ((data[PACKET_OFFSET_WEB_PORT + 1] & 0xff) << 8) + (data[PACKET_OFFSET_WEB_PORT] & 0xff);
-
-        String ipaddr = String.format(IPV4_ADDR_FORMAT_STR,
-                data[PACKET_OFFSET_IP_ADDR + 0] & 0xff,
-                data[PACKET_OFFSET_IP_ADDR + 1] & 0xff,
-                data[PACKET_OFFSET_IP_ADDR + 2] & 0xff,
-                data[PACKET_OFFSET_IP_ADDR + 3] & 0xff);
+        String ipaddr = packet.getAddress().getHostAddress();
 
         String macaddr = String.format(MAC_ADDR_FORMAT_STR,
                 data[PACKET_OFFSET_MAC_ADDR + 0],
@@ -288,9 +266,23 @@ public class BRLDiscover
                 data[PACKET_OFFSET_MAC_ADDR + 4],
                 data[PACKET_OFFSET_MAC_ADDR + 5]);
 
-        String uuid = Simple.hmacSha1UUID(model, macaddr);
+        int deviceType = (data[0x34] & 0xff) + ((data[0x35] & 0xff) << 8);
+        String model = BRLTypes.getFriendlyName(deviceType);
+
+        Log.d(LOGTAG, "buildDeviceDescription:"
+                + " dlen=" + dlen
+                + " ipaddr=" + ipaddr
+                + " ipport=" + packet.getPort()
+                + " macaddr=" + macaddr
+                + " deviceType=0x" + Integer.toHexString(deviceType & 0xffff)
+                + " model=" + model
+        );
+
+        String uuid = Simple.hmacSha1UUID(Integer.valueOf(deviceType).toString(), macaddr);
         String ssid = Simple.getConnectedWifiName();
         String caps = BRLUtil.getCapabilities(model);
+
+        int ipport = packet.getPort();
 
         JSONObject broadlink = new JSONObject();
 
@@ -301,14 +293,13 @@ public class BRLDiscover
         Json.put(broadlink, "network", network);
 
         Json.put(device, "uuid", uuid);
-        Json.put(device, "name", name);
-        Json.put(device, "nick", name);
+        Json.put(device, "name", model);
         Json.put(device, "model", model);
         Json.put(device, "type", "smartplug");
         Json.put(device, "driver", "brl");
         Json.put(device, "brand", "Broadlink");
         Json.put(device, "macaddr", macaddr);
-        Json.put(device, "version", version);
+        Json.put(device, "version", "1.0");
 
         Json.put(device, "capabilities", caps);
         Json.put(device, "location", ssid);
@@ -317,7 +308,9 @@ public class BRLDiscover
         Json.put(network, "ipaddr", ipaddr);
         Json.put(network, "ssid", ssid);
 
-        BRL.instance.onDeviceFound(broadlink);
+        //BRL.instance.onDeviceFound(broadlink);
+
+        //Log.d(LOGTAG, "buildDeviceDescription: device=" + Json.toPretty(broadlink));
 
         //
         // Device status.
@@ -330,20 +323,17 @@ public class BRLDiscover
         Json.put(status, "ipaddr", ipaddr);
         Json.put(status, "ipport", ipport);
 
-        Log.d(LOGTAG, "buildDeviceDescription: device=" + Json.toPretty(broadlink));
-        */
-
         //
         // Aquire status if all set.
         //
 
-        /*
-        int res = BRLCommand.getPowerStatus(ipaddr, ipport);
-        if (res >= 0) Json.put(status, "plugstate", res);
+        int res = BRLCommand.getAuth(ipaddr, ipport, macaddr);
+
+        //int res = BRLCommand.getPowerStatus(ipaddr, ipport, macaddr);
+        //if (res >= 0) Json.put(status, "plugstate", res);
 
         BRL.instance.onDeviceStatus(status);
 
         Log.d(LOGTAG, "buildDeviceDescription: status=" + Json.toPretty(status));
-        */
     }
 }

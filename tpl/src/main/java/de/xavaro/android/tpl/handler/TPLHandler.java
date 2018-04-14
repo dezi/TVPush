@@ -80,6 +80,7 @@ public class TPLHandler
         return data;
     }
 
+    @Nullable
     public static String decryptMessage(byte[] data, int offset, int len)
     {
         if (data == null) return null;
