@@ -6,12 +6,12 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
-import pub.android.interfaces.all.SubSystemHandler;
-import pub.android.interfaces.ext.GetDevicesRequest;
-import pub.android.interfaces.ext.OnAliveHandler;
-import pub.android.interfaces.ext.OnDeviceHandler;
-import pub.android.interfaces.ext.OnLocationHandler;
-import pub.android.stubs.OnInterfacesStubs;
+import de.xavaro.android.pub.interfaces.all.SubSystemHandler;
+import de.xavaro.android.pub.interfaces.ext.GetDevicesRequest;
+import de.xavaro.android.pub.interfaces.ext.OnAliveHandler;
+import de.xavaro.android.pub.interfaces.ext.OnDeviceHandler;
+import de.xavaro.android.pub.interfaces.ext.OnLocationHandler;
+import de.xavaro.android.pub.stubs.OnInterfacesStubs;
 
 import de.xavaro.android.bcn.beacon.BCNScanner;
 import de.xavaro.android.bcn.simple.Simple;

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import pub.android.interfaces.pub.PUBSurface;
+import de.xavaro.android.pub.interfaces.pub.PUBSurface;
 import zz.top.dec.VIDDecode;
 import zz.top.utl.Log;
 

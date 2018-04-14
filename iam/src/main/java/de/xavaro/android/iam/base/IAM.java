@@ -6,14 +6,13 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.iam.eval.IAMEval;
 import de.xavaro.android.iam.simple.Simple;
 import de.xavaro.android.iam.simple.Json;
 import de.xavaro.android.iam.R;
 
-import pub.android.interfaces.all.SubSystemHandler;
-import pub.android.interfaces.iam.ArtificialIntelligenceHandler;
+import de.xavaro.android.pub.interfaces.all.SubSystemHandler;
+import de.xavaro.android.pub.interfaces.iam.ArtificialIntelligenceHandler;
 
 public class IAM implements
         SubSystemHandler,

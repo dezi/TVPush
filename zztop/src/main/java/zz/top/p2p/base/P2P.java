@@ -5,11 +5,11 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
-import pub.android.interfaces.all.SubSystemHandler;
-import pub.android.interfaces.pub.PUBCamera;
-import pub.android.interfaces.ext.GetCameraHandler;
-import pub.android.interfaces.ext.OnDeviceHandler;
-import pub.android.interfaces.all.DoSomethingHandler;
+import de.xavaro.android.pub.interfaces.all.SubSystemHandler;
+import de.xavaro.android.pub.interfaces.pub.PUBCamera;
+import de.xavaro.android.pub.interfaces.ext.GetCameraHandler;
+import de.xavaro.android.pub.interfaces.ext.OnDeviceHandler;
+import de.xavaro.android.pub.interfaces.all.DoSomethingHandler;
 
 import zz.top.R;
 import zz.top.p2p.camera.P2PCamera;

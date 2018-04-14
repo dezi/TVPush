@@ -10,16 +10,16 @@ import de.xavaro.android.gui.smart.GUIDesktopActivity;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.R;
 
-import pub.android.interfaces.ext.OnSpeechHandler;
-import pub.android.interfaces.pub.PUBCamera;
-import pub.android.interfaces.pub.PUBSmartBulb;
-import pub.android.interfaces.pub.PUBSmartPlug;
-import pub.android.interfaces.gui.DesktopHandler;
-import pub.android.interfaces.gui.OnSubsystemRequest;
-import pub.android.interfaces.gui.OnCameraHandlerRequest;
-import pub.android.interfaces.gui.OnSmartBulbHandlerRequest;
-import pub.android.interfaces.gui.OnSmartPlugHandlerRequest;
-import pub.android.interfaces.all.SubSystemHandler;
+import de.xavaro.android.pub.interfaces.ext.OnSpeechHandler;
+import de.xavaro.android.pub.interfaces.pub.PUBCamera;
+import de.xavaro.android.pub.interfaces.pub.PUBSmartBulb;
+import de.xavaro.android.pub.interfaces.pub.PUBSmartPlug;
+import de.xavaro.android.pub.interfaces.gui.DesktopHandler;
+import de.xavaro.android.pub.interfaces.gui.OnSubsystemRequest;
+import de.xavaro.android.pub.interfaces.gui.OnCameraHandlerRequest;
+import de.xavaro.android.pub.interfaces.gui.OnSmartBulbHandlerRequest;
+import de.xavaro.android.pub.interfaces.gui.OnSmartPlugHandlerRequest;
+import de.xavaro.android.pub.interfaces.all.SubSystemHandler;
 
 public class GUI implements
         SubSystemHandler,

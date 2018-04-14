@@ -17,8 +17,8 @@ import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.gui.simple.Simple;
 
 import de.xavaro.android.iot.things.IOTThing;
-import pub.android.interfaces.pub.PUBCamera;
-import pub.android.interfaces.pub.PUBSurface;
+import de.xavaro.android.pub.interfaces.pub.PUBCamera;
+import de.xavaro.android.pub.interfaces.pub.PUBSurface;
 
 @SuppressWarnings("CanBeFinal")
 public class GUICameraWizzard extends GUIPluginTitleIOT

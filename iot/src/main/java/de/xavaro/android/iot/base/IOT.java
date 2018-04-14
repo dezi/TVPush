@@ -21,11 +21,11 @@ import de.xavaro.android.iot.simple.Simple;
 import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.R;
 
-import pub.android.interfaces.all.SubSystemHandler;
-import pub.android.interfaces.iot.OnADBToolHandlerRequest;
-import pub.android.interfaces.iot.OnStatusRequest;
-import pub.android.interfaces.iot.GetDevices;
-import pub.android.interfaces.pub.PUBADBTool;
+import de.xavaro.android.pub.interfaces.all.SubSystemHandler;
+import de.xavaro.android.pub.interfaces.iot.OnADBToolHandlerRequest;
+import de.xavaro.android.pub.interfaces.iot.OnStatusRequest;
+import de.xavaro.android.pub.interfaces.iot.GetDevices;
+import de.xavaro.android.pub.interfaces.pub.PUBADBTool;
 
 public class IOT implements
         SubSystemHandler,

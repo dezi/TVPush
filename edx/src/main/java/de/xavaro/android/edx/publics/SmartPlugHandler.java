@@ -3,7 +3,7 @@ package de.xavaro.android.edx.publics;
 import org.json.JSONObject;
 
 import de.xavaro.android.edx.simple.Simple;
-import pub.android.interfaces.pub.PUBSmartPlug;
+import de.xavaro.android.pub.interfaces.pub.PUBSmartPlug;
 
 import de.xavaro.android.edx.comm.EDXCommand;
 import de.xavaro.android.edx.base.EDX;

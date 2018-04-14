@@ -6,19 +6,14 @@ import org.json.JSONObject;
 
 import de.xavaro.android.brl.base.BRL;
 import de.xavaro.android.edx.base.EDX;
-import pub.android.interfaces.pub.PUBSmartBulb;
-import pub.android.interfaces.pub.PUBSmartPlug;
-import pub.android.interfaces.pub.PUBCamera;
+import de.xavaro.android.pub.interfaces.pub.PUBSmartBulb;
+import de.xavaro.android.pub.interfaces.pub.PUBSmartPlug;
+import de.xavaro.android.pub.interfaces.pub.PUBCamera;
 
 import de.xavaro.android.gui.simple.Json;
 
-import de.xavaro.android.adb.base.ADB;
-import de.xavaro.android.bcn.base.BCN;
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.iam.base.IAM;
-import de.xavaro.android.iot.base.IOT;
-import de.xavaro.android.spr.base.SPR;
-import de.xavaro.android.sny.base.SNY;
 import de.xavaro.android.tpl.base.TPL;
 import zz.top.p2p.base.P2P;
 

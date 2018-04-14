@@ -2,7 +2,7 @@ package de.xavaro.android.tpl.publics;
 
 import org.json.JSONObject;
 
-import pub.android.interfaces.pub.PUBSmartBulb;
+import de.xavaro.android.pub.interfaces.pub.PUBSmartBulb;
 
 import de.xavaro.android.tpl.handler.TPLHandler;
 import de.xavaro.android.tpl.base.TPL;

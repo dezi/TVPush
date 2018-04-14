@@ -13,7 +13,7 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import pub.android.interfaces.ext.OnSpeechHandler;
+import de.xavaro.android.pub.interfaces.ext.OnSpeechHandler;
 
 import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.views.GUIRainbowLayout;

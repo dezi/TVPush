@@ -43,7 +43,7 @@ import de.xavaro.android.gui.views.GUIDialogView;
 
 import de.xavaro.android.gui.base.GUIActivity;
 import de.xavaro.android.gui.base.GUI;
-import pub.android.interfaces.ext.OnSpeechHandler;
+import de.xavaro.android.pub.interfaces.ext.OnSpeechHandler;
 
 public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
 

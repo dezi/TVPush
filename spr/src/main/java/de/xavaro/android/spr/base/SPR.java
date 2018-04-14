@@ -4,13 +4,13 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
-import pub.android.interfaces.all.SubSystemHandler;
+import de.xavaro.android.pub.interfaces.all.SubSystemHandler;
 
 import de.xavaro.android.spr.simple.Simple;
 import de.xavaro.android.spr.simple.Json;
 import de.xavaro.android.spr.simple.Log;
 import de.xavaro.android.spr.R;
-import pub.android.interfaces.ext.OnSpeechHandler;
+import de.xavaro.android.pub.interfaces.ext.OnSpeechHandler;
 
 public class SPR implements
         SubSystemHandler,

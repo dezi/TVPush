@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 import de.xavaro.android.iot.status.IOTCredential;
 import de.xavaro.android.iot.status.IOTStatus;
-import pub.android.interfaces.pub.PUBADBTool;
+import de.xavaro.android.pub.interfaces.pub.PUBADBTool;
 
 import de.xavaro.android.adb.base.ADB;
 import de.xavaro.android.gui.base.GUI;

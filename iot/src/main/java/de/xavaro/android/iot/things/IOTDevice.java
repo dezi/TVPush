@@ -5,15 +5,11 @@ import android.os.Build;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import de.xavaro.android.iot.base.IOT;
 import de.xavaro.android.iot.base.IOTList;
 import de.xavaro.android.iot.base.IOTObject;
 
 import de.xavaro.android.iot.simple.Simple;
 import de.xavaro.android.iot.simple.Json;
-import de.xavaro.android.iot.simple.Log;
-import de.xavaro.android.iot.status.IOTStatus;
-import pub.android.interfaces.pub.PUBADBTool;
 
 @SuppressWarnings("WeakerAccess")
 public class IOTDevice extends IOTThing

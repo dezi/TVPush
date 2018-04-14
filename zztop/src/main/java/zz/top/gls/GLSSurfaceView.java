@@ -6,7 +6,7 @@ import android.opengl.GLSurfaceView;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import pub.android.interfaces.pub.PUBSurface;
+import de.xavaro.android.pub.interfaces.pub.PUBSurface;
 
 import zz.top.utl.Log;
 

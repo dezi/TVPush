@@ -6,7 +6,7 @@ import android.view.View;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import pub.android.interfaces.all.SubSystemHandler;
+import de.xavaro.android.pub.interfaces.all.SubSystemHandler;
 
 import de.xavaro.android.gui.plugin.GUIPluginTitleList;
 import de.xavaro.android.gui.views.GUIListEntry;

@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import pub.android.interfaces.all.SubSystemHandler;
+import de.xavaro.android.pub.interfaces.all.SubSystemHandler;
 
 import de.xavaro.android.gui.base.GUI;
 

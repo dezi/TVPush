@@ -2,7 +2,7 @@ package de.xavaro.android.adb.publics;
 
 import android.content.Context;
 
-import pub.android.interfaces.pub.PUBADBTool;
+import de.xavaro.android.pub.interfaces.pub.PUBADBTool;
 
 import de.xavaro.android.adb.conn.AdbTest;
 

@@ -10,7 +10,7 @@ import android.os.Handler;
 
 import com.google.android.gms.vision.face.Face;
 
-import pub.android.interfaces.pub.PUBSurface;
+import de.xavaro.android.pub.interfaces.pub.PUBSurface;
 
 public class GLSVideoView extends FrameLayout implements PUBSurface
 {

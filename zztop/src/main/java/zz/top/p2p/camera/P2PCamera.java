@@ -6,7 +6,7 @@ import android.widget.FrameLayout;
 
 import org.json.JSONObject;
 
-import pub.android.interfaces.pub.PUBCamera;
+import de.xavaro.android.pub.interfaces.pub.PUBCamera;
 
 import zz.top.p2p.commands.CloseCameraSend;
 import zz.top.p2p.commands.DayNightSend;

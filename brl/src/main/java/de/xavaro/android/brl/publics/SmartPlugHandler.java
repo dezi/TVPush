@@ -6,7 +6,7 @@ import de.xavaro.android.brl.base.BRL;
 import de.xavaro.android.brl.comm.BRLCommand;
 import de.xavaro.android.brl.simple.Json;
 import de.xavaro.android.brl.simple.Simple;
-import pub.android.interfaces.pub.PUBSmartPlug;
+import de.xavaro.android.pub.interfaces.pub.PUBSmartPlug;
 
 public class SmartPlugHandler implements PUBSmartPlug
 {

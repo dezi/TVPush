@@ -9,7 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import de.xavaro.android.gui.base.GUIIcons;
-import pub.android.interfaces.all.SubSystemHandler;
+import de.xavaro.android.pub.interfaces.all.SubSystemHandler;
 
 import de.xavaro.android.gui.plugin.GUIPluginTitleList;
 import de.xavaro.android.gui.views.GUIDialogView;

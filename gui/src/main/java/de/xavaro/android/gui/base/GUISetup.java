@@ -18,7 +18,7 @@ import org.json.JSONArray;
 
 import java.io.File;
 
-import pub.android.interfaces.all.SubSystemHandler;
+import de.xavaro.android.pub.interfaces.all.SubSystemHandler;
 
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;

@@ -5,21 +5,19 @@ import android.graphics.Color;
 
 import org.json.JSONObject;
 
-import pub.android.interfaces.ext.GetSmartBulbHandler;
-import pub.android.interfaces.ext.GetSmartPlugHandler;
-import pub.android.interfaces.ext.OnDeviceHandler;
-import pub.android.interfaces.ext.GetDeviceStatusRequest;
-import pub.android.interfaces.all.DoSomethingHandler;
-import pub.android.interfaces.all.SubSystemHandler;
-import pub.android.interfaces.pub.PUBSmartBulb;
-import pub.android.interfaces.pub.PUBSmartPlug;
-import pub.android.stubs.OnInterfacesStubs;
+import de.xavaro.android.pub.interfaces.ext.GetSmartBulbHandler;
+import de.xavaro.android.pub.interfaces.ext.GetSmartPlugHandler;
+import de.xavaro.android.pub.interfaces.ext.OnDeviceHandler;
+import de.xavaro.android.pub.interfaces.ext.GetDeviceStatusRequest;
+import de.xavaro.android.pub.interfaces.all.DoSomethingHandler;
+import de.xavaro.android.pub.interfaces.all.SubSystemHandler;
+import de.xavaro.android.pub.interfaces.pub.PUBSmartBulb;
+import de.xavaro.android.pub.interfaces.pub.PUBSmartPlug;
+import de.xavaro.android.pub.stubs.OnInterfacesStubs;
 
 import de.xavaro.android.tpl.publics.SmartBulbHandler;
 import de.xavaro.android.tpl.publics.SmartPlugHandler;
 import de.xavaro.android.tpl.handler.TPLHandlerSysInfo;
-import de.xavaro.android.tpl.handler.TPLHandlerSmartBulb;
-import de.xavaro.android.tpl.handler.TPLHandlerSmartPlug;
 import de.xavaro.android.tpl.comm.TPLDiscover;
 import de.xavaro.android.tpl.simple.Simple;
 import de.xavaro.android.tpl.simple.Json;

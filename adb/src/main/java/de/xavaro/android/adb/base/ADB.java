@@ -5,10 +5,10 @@ import android.app.Application;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import pub.android.interfaces.all.SubSystemHandler;
-import pub.android.interfaces.adb.GetADBToolHandler;
-import pub.android.interfaces.ext.GetDevicesRequest;
-import pub.android.interfaces.pub.PUBADBTool;
+import de.xavaro.android.pub.interfaces.all.SubSystemHandler;
+import de.xavaro.android.pub.interfaces.adb.GetADBToolHandler;
+import de.xavaro.android.pub.interfaces.ext.GetDevicesRequest;
+import de.xavaro.android.pub.interfaces.pub.PUBADBTool;
 
 import de.xavaro.android.adb.publics.ADBToolHandler;
 

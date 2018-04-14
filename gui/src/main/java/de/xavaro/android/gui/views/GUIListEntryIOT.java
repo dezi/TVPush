@@ -19,9 +19,9 @@ import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
 import de.xavaro.android.iot.things.IOTThing;
 
-import pub.android.interfaces.pub.PUBCamera;
-import pub.android.interfaces.pub.PUBSmartBulb;
-import pub.android.interfaces.pub.PUBSmartPlug;
+import de.xavaro.android.pub.interfaces.pub.PUBCamera;
+import de.xavaro.android.pub.interfaces.pub.PUBSmartBulb;
+import de.xavaro.android.pub.interfaces.pub.PUBSmartPlug;
 
 public class GUIListEntryIOT extends GUIListEntry
 {
