@@ -1,20 +1,19 @@
 package de.xavaro.android.edx.simple;
 
+import android.support.annotation.Nullable;
+
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.Looper;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 import android.util.Base64;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.security.Key;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.crypto.Mac;

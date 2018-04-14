@@ -1,14 +1,9 @@
 package de.xavaro.android.edx.base;
 
-
 import android.app.Application;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import de.xavaro.android.edx.comm.EDXCommand;
-import de.xavaro.android.edx.publics.SmartPlugHandler;
-import de.xavaro.android.edx.simple.Log;
 import pub.android.interfaces.ext.GetDevicesRequest;
 import pub.android.interfaces.ext.GetSmartPlugHandler;
 import pub.android.interfaces.ext.OnDeviceHandler;
@@ -17,8 +12,9 @@ import pub.android.interfaces.ext.GetDeviceStatusRequest;
 import pub.android.interfaces.pub.PUBSmartPlug;
 import pub.android.stubs.OnInterfacesStubs;
 
+import de.xavaro.android.edx.publics.SmartPlugHandler;
 import de.xavaro.android.edx.comm.EDXDiscover;
-
+import de.xavaro.android.edx.comm.EDXCommand;
 import de.xavaro.android.edx.simple.Simple;
 import de.xavaro.android.edx.simple.Json;
 import de.xavaro.android.edx.R;
@@ -30,8 +26,6 @@ public class EDX extends OnInterfacesStubs implements
         GetSmartPlugHandler,
         GetDeviceStatusRequest
 {
-    private static final String LOGTAG = EDX.class.getSimpleName();
-
     public static EDX instance;
 
     public EDXDiscover discover;
