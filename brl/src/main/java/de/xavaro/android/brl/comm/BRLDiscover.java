@@ -145,6 +145,7 @@ public class BRLDiscover
         }
     };
 
+    @SuppressWarnings("SameParameterValue")
     private byte[] getDiscoveryPacket(String ipaddr, int ipport)
     {
         byte[] data = new byte[DISCOVERY_PACKET_LENGTH];
@@ -251,6 +252,7 @@ public class BRLDiscover
         return -1;
     }
 
+    @SuppressWarnings("PointlessArithmeticExpression")
     private void buildDeviceDescription(DatagramPacket packet)
     {
         byte[] data = packet.getData();

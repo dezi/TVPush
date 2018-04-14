@@ -1,13 +1,13 @@
 package de.xavaro.android.brl.comm;
 
-import android.os.Build;
 import android.support.annotation.Nullable;
+import android.os.Build;
 import android.util.Log;
 
+import java.net.SocketTimeoutException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +15,7 @@ public class BRLCommand
 {
     private static final String LOGTAG = BRLCommand.class.getSimpleName();
 
-    public static final int DEFAULT_BYTES_SIZE = 56;
+    private static final int DEFAULT_BYTES_SIZE = 56;
 
     private final static byte authCommand = 0x65;
     private final static byte powerStateCommand = 0x6a;
@@ -23,7 +23,7 @@ public class BRLCommand
     private final static Map<String, BRLCrypt> deviceCrypt = new HashMap<>();
 
     @Nullable
-    public static BRLCrypt getAuth(String ipaddr, String macaddr)
+    private static BRLCrypt getAuth(String ipaddr, String macaddr)
     {
         BRLCrypt crypt = getMapCrypt(deviceCrypt, macaddr);
         if (crypt != null) return crypt;
@@ -182,7 +182,7 @@ public class BRLCommand
     }
 
     @Nullable
-    public static byte[] sendToSocket(String ipaddr, byte[] message)
+    private static byte[] sendToSocket(String ipaddr, byte[] message)
     {
         DatagramSocket socket = null;
 
@@ -204,7 +204,7 @@ public class BRLCommand
 
             socket.receive(rxpack);
 
-            return decryptMessage(rxpack.getData(), 0, rxpack.getLength());
+            return decryptMessage(rxpack.getData(), rxpack.getLength());
         }
         catch (SocketTimeoutException ignore)
         {
@@ -222,24 +222,24 @@ public class BRLCommand
         return null;
     }
 
-    public static byte[] encryptMessage(byte[] message)
+    private static byte[] encryptMessage(byte[] message)
     {
         return message;
     }
 
     @Nullable
-    public static byte[] decryptMessage(byte[] data, int offset, int len)
+    private static byte[] decryptMessage(byte[] data, int len)
     {
         if (data == null) return null;
 
         byte[] result = new byte[len];
 
-        System.arraycopy(data, offset, result, 0, len);
+        System.arraycopy(data, 0, result, 0, len);
 
         return result;
     }
 
-    public static byte[] getRawPayloadBytesPadded(byte[] data)
+    private static byte[] getRawPayloadBytesPadded(byte[] data)
     {
         byte[] payload = new byte[data.length - DEFAULT_BYTES_SIZE];
         System.arraycopy(data, DEFAULT_BYTES_SIZE, payload, 0, payload.length);
@@ -253,13 +253,11 @@ public class BRLCommand
     }
 
     @Nullable
-    protected static byte[] decryptFromDeviceMessage(byte[] encData, BRLCrypt crypt)
+    private static byte[] decryptFromDeviceMessage(byte[] encData, BRLCrypt crypt)
     {
         byte[] encPL = getRawPayloadBytesPadded(encData);
 
-        byte[] decPL = crypt.decrypt(encPL);
-
-        return decPL;
+        return crypt.decrypt(encPL);
     }
 
     private static byte[] setPowerStatusPayload(int onoff)
@@ -391,9 +389,9 @@ public class BRLCommand
 
         int checksumpayload = 0xbeaf;
 
-        for (int inx = 0; inx < payloadPad.length; inx++)
+        for (byte bite : payloadPad)
         {
-            checksumpayload = checksumpayload + (payloadPad[inx] & 0xff);
+            checksumpayload = checksumpayload + (bite & 0xff);
             checksumpayload = checksumpayload & 0xffff;
         }
 
@@ -415,9 +413,9 @@ public class BRLCommand
 
         int checksumpkt = 0xbeaf;
 
-        for (int inx = 0; inx < data.length; inx++)
+        for (byte bite : data)
         {
-            checksumpkt = checksumpkt + (data[inx] & 0xff);
+            checksumpkt = checksumpkt + (bite & 0xff);
             checksumpkt = checksumpkt & 0xffff;
         }
 
@@ -428,7 +426,7 @@ public class BRLCommand
     }
 
     @Nullable
-    public static BRLCrypt getMapCrypt(Map<String, BRLCrypt> map, String key)
+    private static BRLCrypt getMapCrypt(Map<String, BRLCrypt> map, String key)
     {
         synchronized (deviceCrypt)
         {

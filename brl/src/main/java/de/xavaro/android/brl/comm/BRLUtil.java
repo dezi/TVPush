@@ -1,5 +1,6 @@
 package de.xavaro.android.brl.comm;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class BRLUtil
 {
     public static String getCapabilities(String model)
