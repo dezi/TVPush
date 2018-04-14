@@ -9,13 +9,17 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import de.xavaro.android.gui.plugin.GUIPluginTitle;
+import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
+import de.xavaro.android.gui.skills.GUICanFocusDelegate;
+import de.xavaro.android.gui.views.GUIEditText;
 import de.xavaro.android.gui.wizzards.GUIDomainsWizzard;
 import de.xavaro.android.gui.wizzards.GUIFixedWizzard;
 import de.xavaro.android.gui.wizzards.GUIGeoposWizzard;
@@ -83,9 +87,9 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
 
         if (!Simple.isPhone())
         {
-            displayWizzard(GUISetupWizzard.class.getSimpleName());
+            //displayWizzard(GUISetupWizzard.class.getSimpleName());
             //displayWizzard(GUIPingWizzard.class.getSimpleName());
-            //displayWizzard(GUIDomainsWizzard.class.getSimpleName());
+            displayWizzard(GUIDomainsWizzard.class.getSimpleName());
         }
 
         //GUIDialogViewPincode pincode = new GUIDialogViewPincode(this);
@@ -418,6 +422,28 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
     @Override
     public void onSpeechResults(JSONObject speech)
     {
+        View focused = GUICanFocusDelegate.getFocusedView();
+
+        if ((focused != null) && (focused instanceof GUIEditText))
+        {
+            boolean partial = Json.getBoolean(speech, "partial");
+            JSONArray results = Json.getArray(speech, "results");
+
+            if ((results != null) && (results.length() > 0) && ! partial)
+            {
+                JSONObject result = Json.getObject(results, 0);
+                String text = Json.getString(result, "text");
+
+                if (text != null)
+                {
+                    ((GUIEditText) focused).setText(text);
+                    ((GUIEditText) focused).onHighlightChanged(focused, false);
+
+                    return;
+                }
+            }
+        }
+
         toastBar.onSpeechResults(speech);
     }
 }
