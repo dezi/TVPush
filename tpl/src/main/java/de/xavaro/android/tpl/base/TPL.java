@@ -160,47 +160,45 @@ public class TPL extends OnInterfacesStubs implements
     @Override
     public boolean doSomething(JSONObject action, JSONObject device, JSONObject status, JSONObject credentials)
     {
-        //Log.d(LOGTAG, "doSomething: action=" + Json.toPretty(action));
-        //Log.d(LOGTAG, "doSomething: status=" + Json.toPretty(status));
-
-        String actioncmd = Json.getString(action, "action");
+        String uuid = Json.getString(device, "uuid");
         String ipaddr = Json.getString(status, "ipaddr");
+        String actioncmd = Json.getString(action, "action");
 
         if ((actioncmd != null) && (ipaddr != null))
         {
             if (actioncmd.equals("switchonled"))
             {
-                TPLHandlerSmartPlug.sendLEDOnOff(ipaddr, 1);
+                new SmartPlugHandler(uuid, ipaddr).setLEDState(1);
                 return true;
             }
 
             if (actioncmd.equals("switchoffled"))
             {
-                TPLHandlerSmartPlug.sendLEDOnOff(ipaddr, 0);
+                new SmartPlugHandler(uuid, ipaddr).setLEDState(0);
                 return true;
             }
 
             if (actioncmd.equals("switchonplug"))
             {
-                TPLHandlerSmartPlug.sendPlugOnOff(ipaddr, 1);
+                new SmartPlugHandler(uuid, ipaddr).setPlugState(1);
                 return true;
             }
 
             if (actioncmd.equals("switchoffplug"))
             {
-                TPLHandlerSmartPlug.sendPlugOnOff(ipaddr, 0);
+                new SmartPlugHandler(uuid, ipaddr).setPlugState(0);
                 return true;
             }
 
             if (actioncmd.equals("switchonbulb"))
             {
-                TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, 1);
+                new SmartBulbHandler(uuid, ipaddr).setBulbState(1);
                 return true;
             }
 
             if (actioncmd.equals("switchoffbulb"))
             {
-                TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, 0);
+                new SmartBulbHandler(uuid, ipaddr).setBulbState(0);
                 return true;
             }
 
@@ -209,8 +207,9 @@ public class TPL extends OnInterfacesStubs implements
                 int brightness = Json.getInt(status, "brightness");
                 brightness += 50;
 
-                TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, 1);
-                TPLHandlerSmartBulb.sendBulbBrightness(ipaddr, brightness);
+                new SmartBulbHandler(uuid, ipaddr).setBulbState(1);
+                new SmartBulbHandler(uuid, ipaddr).setBulbBrightness(brightness);
+
                 return true;
             }
 
@@ -219,8 +218,9 @@ public class TPL extends OnInterfacesStubs implements
                 int brightness = Json.getInt(status, "brightness");
                 brightness -= 50;
 
-                TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, 1);
-                TPLHandlerSmartBulb.sendBulbBrightness(ipaddr, brightness);
+                new SmartBulbHandler(uuid, ipaddr).setBulbState(1);
+                new SmartBulbHandler(uuid, ipaddr).setBulbBrightness(brightness);
+
                 return true;
             }
 
@@ -256,17 +256,17 @@ public class TPL extends OnInterfacesStubs implements
                             // Dimm intention.
                             //
 
-                            TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, 1);
-                            TPLHandlerSmartBulb.sendBulbBrightness(ipaddr, brightness);
+                            new SmartBulbHandler(uuid, ipaddr).setBulbState(1);
+                            new SmartBulbHandler(uuid, ipaddr).setBulbBrightness(brightness);
                         }
                         else
                         {
                             //
-                            // Color intention. Leave brightness untouched
+                            // Color intention. Leave brightness untouched.
                             //
 
-                            TPLHandlerSmartBulb.sendBulbOnOff(ipaddr, 1);
-                            TPLHandlerSmartBulb.sendBulbHSOnly(ipaddr, hue, saturation);
+                            new SmartBulbHandler(uuid, ipaddr).setBulbState(1);
+                            new SmartBulbHandler(uuid, ipaddr).setBulbHSOnly(hue, saturation);
                         }
 
                         return true;

@@ -24,6 +24,9 @@ public class IAMEval
     @Nullable
     public static JSONArray evaluateSpeech(JSONObject speech)
     {
+        boolean partial = Json.getBoolean(speech, "partial");
+        if (partial) return null;
+
         IAMEval eval = new IAMEval(speech);
         return eval.evaluateSpeech();
     }

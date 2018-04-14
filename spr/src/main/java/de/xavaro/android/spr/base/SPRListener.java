@@ -69,7 +69,7 @@ public class SPRListener implements RecognitionListener
                 // Intent working but not defined...
                 //
 
-                recognizerIntent.putExtra("android.speech.extra.PREFER_OFFLINE", true);
+                //recognizerIntent.putExtra("android.speech.extra.PREFER_OFFLINE", true);
             }
 
             Log.d(LOGTAG, "startListening: create");

@@ -5,36 +5,26 @@ import java.util.Map;
 
 public class IAMEvalColors
 {
+    private final static String LOGTAG = IAMEvalColors.class.getSimpleName();
+
     private static final Map<String, Integer> colorsLower = new HashMap<>();
 
     public static boolean isColor(String name)
     {
         name = name.replace(" ", "");
 
-        try
-        {
-            colorsLower.get(name.toLowerCase());
+        Integer color = colorsLower.get(name.toLowerCase());
 
-            return true;
-        }
-        catch (Exception ignore)
-        {
-            return false;
-        }
+        return (color != null);
     }
 
     public static int getColor(String name)
     {
         name = name.replace(" ", "");
 
-        try
-        {
-            return colorsLower.get(name.toLowerCase());
-        }
-        catch (Exception ignore)
-        {
-            return 0;
-        }
+        Integer color = colorsLower.get(name.toLowerCase());
+
+        return (color == null) ? 0 : color;
     }
 
     @SuppressWarnings("unused")
