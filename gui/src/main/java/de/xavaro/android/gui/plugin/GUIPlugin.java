@@ -66,17 +66,17 @@ public class GUIPlugin extends GUIFrameLayout
         onHighlightFrame(false);
     }
 
-    public void setIsWizzard(boolean wizzard, boolean helper)
+    public void setWizzard(boolean wizzard, boolean helper)
     {
-        setIsWizzard(wizzard, helper, 1, Gravity.START);
+        setWizzard(wizzard, helper, 1, Gravity.START);
     }
 
-    public void setIsWizzard(boolean wizzard, boolean helper, int numcols)
+    public void setWizzard(boolean wizzard, boolean helper, int numcols)
     {
-        setIsWizzard(wizzard, helper, numcols, Gravity.START);
+        setWizzard(wizzard, helper, numcols, Gravity.START);
     }
 
-    public void setIsWizzard(boolean wizzard, boolean helper, int numcols, int gravity)
+    public void setWizzard(boolean wizzard, boolean helper, int numcols, int gravity)
     {
         isWizzard = wizzard;
         isHelper = helper;
@@ -181,7 +181,7 @@ public class GUIPlugin extends GUIFrameLayout
 
                 int left = getPluginLeftDip();
 
-                if (left > finalpos)
+                if (left < finalpos)
                 {
                     left = ((left + 20) <= finalpos) ? left + 20 : finalpos;
 

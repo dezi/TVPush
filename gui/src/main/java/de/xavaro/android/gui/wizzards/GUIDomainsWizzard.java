@@ -1,6 +1,7 @@
 package de.xavaro.android.gui.wizzards;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.View;
 
 import org.json.JSONArray;
@@ -26,7 +27,8 @@ public class GUIDomainsWizzard extends GUIPluginTitleListIOT
     {
         super(context);
 
-        setIsWizzard(true, false);
+        setWizzard(true, false);
+        setSize(1, Gravity.START);
 
         setTitleIcon(R.drawable.domains_540);
         setNameText("Domänen");
@@ -53,6 +55,16 @@ public class GUIDomainsWizzard extends GUIPluginTitleListIOT
                 if (location != null) location.setDomain(entry.uuid);
             }
         }
+    }
+
+    @Override
+    public void onDetachedFromWindow()
+    {
+        super.onDetachedFromWindow();
+
+        setSize(1, Gravity.START);
+
+        lastHelper = null;
     }
 
     @Override

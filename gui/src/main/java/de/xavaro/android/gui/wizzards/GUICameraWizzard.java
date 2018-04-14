@@ -9,7 +9,6 @@ import android.widget.FrameLayout;
 
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.gui.base.GUIDefs;
-import de.xavaro.android.iot.base.IOTObject;
 import de.xavaro.android.gui.plugin.GUIPluginTitleIOT;
 import de.xavaro.android.gui.views.GUIFrameLayout;
 import de.xavaro.android.iot.status.IOTCredential;
@@ -36,7 +35,7 @@ public class GUICameraWizzard extends GUIPluginTitleIOT
     {
         super(context);
 
-        setIsWizzard(true, true, 2, Gravity.END);
+        setWizzard(true, true, 2, Gravity.END);
 
         GUIFrameLayout padFrame = new GUIFrameLayout(context);
         padFrame.setPaddingDip(GUIDefs.PADDING_SMALL);

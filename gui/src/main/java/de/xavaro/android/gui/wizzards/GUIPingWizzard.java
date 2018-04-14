@@ -4,7 +4,6 @@ import android.content.Context;
 
 import org.json.JSONArray;
 
-import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.plugin.GUIPluginTitleListIOT;
 import de.xavaro.android.gui.simple.Log;
 import de.xavaro.android.gui.views.GUIListEntryIOT;
@@ -14,7 +13,6 @@ import de.xavaro.android.gui.R;
 
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
-import de.xavaro.android.iot.things.IOTLocation;
 
 public class GUIPingWizzard extends GUIPluginTitleListIOT
 {
@@ -24,7 +22,7 @@ public class GUIPingWizzard extends GUIPluginTitleListIOT
     {
         super(context);
 
-        setIsWizzard(true, false);
+        setWizzard(true, false);
 
         setTitleIcon(R.drawable.ping_440);
         setNameText("Ping Wizzard");

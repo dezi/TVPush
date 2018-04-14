@@ -53,7 +53,7 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
     {
         super(context);
 
-        setIsWizzard(true, true, 2, Gravity.END);
+        setWizzard(true, true, 2, Gravity.END);
 
         mapFrame = new GUIFrameLayout(context)
         {
@@ -211,26 +211,6 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
 
         IOTDevice.list.unsubscribe(uuid, onDeviceUpdated);
 
-        if (GUIShort.isWizzardPresent(GUILocationsWizzard.class))
-        {
-            GUILocationsWizzard locations = (GUILocationsWizzard) GUIShort.getWizzard(GUILocationsWizzard.class);
-
-            if (locations != null)
-            {
-                locations.stackCenter(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        if (!GUIShort.isWizzardPresent(GUIDomainsWizzard.class))
-                        {
-                            GUIShort.showWizzard(GUIDomainsWizzard.class);
-                        }
-                    }
-                });
-            }
-        }
-
         if (GUIShort.isWizzardPresent(GUIFixedWizzard.class))
         {
             GUIFixedWizzard fixed = (GUIFixedWizzard) GUIShort.getWizzard(GUIFixedWizzard.class);
@@ -247,6 +227,28 @@ public class GUIGeomapWizzard extends GUIPluginTitleIOT
                             GUIShort.showWizzard(GUILocationsWizzard.class);
                         }
 
+                        if (!GUIShort.isWizzardPresent(GUIDomainsWizzard.class))
+                        {
+                            GUIShort.showWizzard(GUIDomainsWizzard.class);
+                        }
+                    }
+                });
+            }
+
+            return;
+        }
+
+        if (GUIShort.isWizzardPresent(GUILocationsWizzard.class))
+        {
+            GUILocationsWizzard locations = (GUILocationsWizzard) GUIShort.getWizzard(GUILocationsWizzard.class);
+
+            if (locations != null)
+            {
+                locations.stackCenter(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
                         if (!GUIShort.isWizzardPresent(GUIDomainsWizzard.class))
                         {
                             GUIShort.showWizzard(GUIDomainsWizzard.class);

@@ -30,7 +30,7 @@ public class TPLHandler
         try
         {
             socket = new DatagramSocket();
-            socket.setSoTimeout(3000);
+            socket.setSoTimeout(5000);
 
             byte[] txbuff = encryptMessage(message);
             DatagramPacket txpack = new DatagramPacket(txbuff, txbuff.length);

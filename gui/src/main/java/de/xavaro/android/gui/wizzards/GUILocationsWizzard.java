@@ -32,7 +32,8 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
     {
         super(context);
 
-        setIsWizzard(true, true, 1, Gravity.CENTER);
+        setWizzard(true, true);
+        setSize(1, Gravity.CENTER);
 
         setTitleIcon(R.drawable.location_240);
         setNameText("Orte");
@@ -66,6 +67,8 @@ public class GUILocationsWizzard extends GUIPluginTitleListIOT
         super.onDetachedFromWindow();
 
         setSize(1, Gravity.CENTER);
+
+        lastHelper = null;
     }
 
     @Override

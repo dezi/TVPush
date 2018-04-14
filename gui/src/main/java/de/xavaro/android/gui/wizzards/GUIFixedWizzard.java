@@ -31,7 +31,8 @@ public class GUIFixedWizzard extends GUIPluginTitleListIOT
     {
         super(context);
 
-        setIsWizzard(true, true, 1, Gravity.END);
+        setWizzard(true, true);
+        setSize(1, Gravity.END);
 
         setTitleIcon(R.drawable.things_600);
         setNameText("Geräte");
@@ -78,6 +79,8 @@ public class GUIFixedWizzard extends GUIPluginTitleListIOT
         super.onDetachedFromWindow();
 
         setSize(1, Gravity.END);
+
+        lastHelper = null;
     }
 
     @Override
@@ -184,6 +187,10 @@ public class GUIFixedWizzard extends GUIPluginTitleListIOT
                     && (fixed.fixedAltFine != null);
 
             if (! isnice)
+            {
+                showGeomapWizzard(uuid);
+            }
+            else
             {
                 showGeomapWizzard(uuid);
             }

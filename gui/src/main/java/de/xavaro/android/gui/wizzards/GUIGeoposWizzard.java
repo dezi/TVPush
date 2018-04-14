@@ -28,7 +28,7 @@ public class GUIGeoposWizzard extends GUIPluginTitleListIOT
     {
         super(context);
 
-        setIsWizzard(true, false);
+        setWizzard(true, false);
 
         setTitleIcon(R.drawable.position_560);
         setNameText("Geo-Positionen");
