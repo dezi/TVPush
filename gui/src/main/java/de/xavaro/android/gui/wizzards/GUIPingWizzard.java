@@ -4,6 +4,7 @@ import android.content.Context;
 
 import org.json.JSONArray;
 
+import de.xavaro.android.gui.base.GUIDefs;
 import de.xavaro.android.gui.plugin.GUIPluginTitleListIOT;
 import de.xavaro.android.gui.simple.Log;
 import de.xavaro.android.gui.views.GUIListEntryIOT;
@@ -13,6 +14,7 @@ import de.xavaro.android.gui.R;
 
 import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.things.IOTDevice;
+import de.xavaro.android.iot.things.IOTLocation;
 
 public class GUIPingWizzard extends GUIPluginTitleListIOT
 {
@@ -56,7 +58,24 @@ public class GUIPingWizzard extends GUIPluginTitleListIOT
 
             GUIListEntryIOT entry = listView.findGUIListEntryIOTOrCreate(uuid);
 
+            entry.setOnUpdateContentListener(onUpdateContentListener);
             entry.infoView.setText(connect);
         }
     }
+
+    private final GUIListEntryIOT.OnUpdateContentListener onUpdateContentListener =
+            new GUIListEntryIOT.OnUpdateContentListener()
+            {
+                @Override
+                public void onUpdateContent(GUIListEntryIOT entry)
+                {
+                    IOTStatus status = IOTStatus.list.getEntry(entry.uuid);
+                    if (status == null) return;
+
+                    String connect = (status.ipaddr != null) ? status.ipaddr : status.macaddr;
+                    if (connect == null) return;
+
+                    entry.infoView.setText(connect);
+                }
+            };
 }
