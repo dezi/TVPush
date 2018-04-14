@@ -155,8 +155,8 @@ public class BRLDiscover
         int rawOffset = tz.getRawOffset();
         int tzOffset = rawOffset / 3600;
 
-        Log.d(LOGTAG, "getDiscoveryPacket: Raw offset=" + rawOffset);
-        Log.d(LOGTAG, "getDiscoveryPacket: Calculated offset getRawOffset/1000/-3600=" + tzOffset);
+        //Log.d(LOGTAG, "getDiscoveryPacket: Raw offset=" + rawOffset);
+        //Log.d(LOGTAG, "getDiscoveryPacket: Calculated offset getRawOffset/1000/-3600=" + tzOffset);
 
         int min = cal.get(Calendar.MINUTE);
         int hr = cal.get(Calendar.HOUR);
@@ -166,9 +166,9 @@ public class BRLDiscover
         int dayOfMn = cal.get(Calendar.DAY_OF_MONTH);
         int month = cal.get(Calendar.MONTH) + 1;
 
-        Log.d(LOGTAG, "getDiscoveryPacket: min=" + min + " hr=" + hr);
-        Log.d(LOGTAG, "getDiscoveryPacket: year=" + year + " dayOfWk=" + dayOfWk);
-        Log.d(LOGTAG, "getDiscoveryPacket: dayOfMn=" + dayOfMn + " month=" + month);
+        //Log.d(LOGTAG, "getDiscoveryPacket: min=" + min + " hr=" + hr);
+        //Log.d(LOGTAG, "getDiscoveryPacket: year=" + year + " dayOfWk=" + dayOfWk);
+        //Log.d(LOGTAG, "getDiscoveryPacket: dayOfMn=" + dayOfMn + " month=" + month);
 
         if (tzOffset < 0)
         {
@@ -177,7 +177,7 @@ public class BRLDiscover
             data[0x0a] = (byte) 0xff;
             data[0x0b] = (byte) 0xff;
 
-            Log.d(LOGTAG, "getDiscoveryPacket: tzOffset<0: 0x08=" + Integer.toHexString(0xff + tzOffset - 1) + " 0x09-0x0b=0xff");
+            //Log.d(LOGTAG, "getDiscoveryPacket: tzOffset<0: 0x08=" + Integer.toHexString(0xff + tzOffset - 1) + " 0x09-0x0b=0xff");
         }
         else
         {
@@ -186,7 +186,7 @@ public class BRLDiscover
             data[0x0a] = (byte) 0x00;
             data[0x0b] = (byte) 0x00;
 
-            Log.d(LOGTAG, "getDiscoveryPacket: tzOffset>0: 0x08=" + Integer.toHexString(tzOffset) + " 0x09-0x0b=0x00");
+            //Log.d(LOGTAG, "getDiscoveryPacket: tzOffset>0: 0x08=" + Integer.toHexString(tzOffset) + " 0x09-0x0b=0x00");
         }
 
         data[0x0c] = (byte) (year & 0xff);
@@ -332,6 +332,6 @@ public class BRLDiscover
 
         BRL.instance.onDeviceStatus(status);
 
-        Log.d(LOGTAG, "buildDeviceDescription: status=" + Json.toPretty(status));
+        //Log.d(LOGTAG, "buildDeviceDescription: status=" + Json.toPretty(status));
     }
 }

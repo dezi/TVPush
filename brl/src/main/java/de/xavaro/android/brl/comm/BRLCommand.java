@@ -49,9 +49,7 @@ public class BRLCommand
 
         if (err == 0)
         {
-            Log.d(LOGTAG, "getAuth: received ok");
-
-            Log.d(LOGTAG, "getAuth: hex=" + BRLUtil.getHexBytesToString(response));
+            Log.d(LOGTAG, "getAuth: received ok ipaddr=" + ipaddr);
 
             byte[] result = decryptFromDeviceMessage(response, crypt);
 
@@ -61,8 +59,6 @@ public class BRLCommand
 
                 return null;
             }
-
-            Log.d(LOGTAG, "getAuth: dec=" + BRLUtil.getHexBytesToString(result));
 
             byte[] id = new byte[4];
             System.arraycopy(result, 0, id, 0, id.length);
@@ -116,8 +112,6 @@ public class BRLCommand
 
         if (err == 0)
         {
-            Log.d(LOGTAG, "getPowerStatus: received ok");
-
             byte[] result = decryptFromDeviceMessage(response, crypt);
 
             if (result == null)
@@ -127,7 +121,11 @@ public class BRLCommand
                 return -1;
             }
 
-            return (result[0x4] == 1) ? 1 : 0;
+            int onoff = (result[0x4] == 1) ? 1 : 0;
+
+            Log.d(LOGTAG, "getPowerStatus: received ok ipaddr=" + ipaddr + " onoff=" + onoff);
+
+            return onoff;
         }
         else
         {
@@ -162,8 +160,6 @@ public class BRLCommand
 
         if (err == 0)
         {
-            Log.d(LOGTAG, "setPowerStatus: received ok");
-
             byte[] result = decryptFromDeviceMessage(response, crypt);
 
             if (result == null)
@@ -172,6 +168,8 @@ public class BRLCommand
 
                 return -1;
             }
+
+            Log.d(LOGTAG, "setPowerStatus: received ok ipaddr=" + ipaddr + " onoff=" + onoff);
 
             return onoff;
         }
@@ -191,7 +189,7 @@ public class BRLCommand
         try
         {
             socket = new DatagramSocket();
-            socket.setSoTimeout(3000);
+            socket.setSoTimeout(5000);
 
             byte[] txbuff = encryptMessage(message);
             DatagramPacket txpack = new DatagramPacket(txbuff, txbuff.length);
@@ -238,8 +236,6 @@ public class BRLCommand
 
         System.arraycopy(data, offset, result, 0, len);
 
-        Log.d(LOGTAG, "decryptMessage: result.len=" + result.length);
-
         return result;
     }
 
@@ -261,11 +257,7 @@ public class BRLCommand
     {
         byte[] encPL = getRawPayloadBytesPadded(encData);
 
-        Log.d(LOGTAG, "decryptFromDeviceMessage: enc=" + BRLUtil.getHexBytesToString(encPL));
-
         byte[] decPL = crypt.decrypt(encPL);
-
-        Log.d(LOGTAG, "decryptFromDeviceMessage: dec=" + BRLUtil.getHexBytesToString(decPL));
 
         return decPL;
     }
@@ -408,8 +400,6 @@ public class BRLCommand
         headerdata[0x34] = (byte) (checksumpayload & 0xff);
         headerdata[0x35] = (byte) (checksumpayload >> 8);
 
-        Log.d(LOGTAG, "cmdPacket: Un-encrypted payload checksum=" + Integer.toHexString(checksumpayload));
-
         payload = crypt.encrypt(payloadPad);
 
         if (payload == null)
@@ -430,8 +420,6 @@ public class BRLCommand
             checksumpkt = checksumpkt + (data[inx] & 0xff);
             checksumpkt = checksumpkt & 0xffff;
         }
-
-        Log.d(LOGTAG, "cmdPacket: Whole packet checksum=" + Integer.toHexString(checksumpkt));
 
         data[0x20] = (byte) (checksumpkt & 0xff);
         data[0x21] = (byte) (checksumpkt >> 8);
