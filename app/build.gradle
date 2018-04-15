@@ -51,6 +51,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:15.0.0'
 
     implementation project(':adb')
+    implementation project(':cam')
     implementation project(':iam')
     implementation project(':gui')
     implementation project(':iot')

@@ -5,9 +5,12 @@ import android.support.annotation.Nullable;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.SurfaceView;
 import android.view.View;
 import android.util.Log;
+import android.widget.FrameLayout;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,6 +18,7 @@ import org.json.JSONObject;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import de.xavaro.android.cam.util.CAMGetVideoModes;
 import de.xavaro.android.gui.plugin.GUIPluginTitle;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
@@ -46,7 +50,6 @@ import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.pub.interfaces.ext.OnSpeechHandler;
 
 public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
-
 {
     private final static String LOGTAG = GUIDesktopActivity.class.getSimpleName();
 
@@ -94,6 +97,27 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
 
         //GUIDialogViewPincode pincode = new GUIDialogViewPincode(this);
         //topframe.addView(pincode);
+
+        final SurfaceView surfaceView = new SurfaceView(this, null);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                320,
+                240,
+                Gravity.TOP);
+
+        lp.leftMargin = 100;
+        lp.topMargin = 100;
+
+        surfaceView.setLayoutParams(lp);
+        topframe.addView(surfaceView);
+
+        Simple.getHandler().postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                CAMGetVideoModes.getVideoModes(GUIDesktopActivity.this, surfaceView);
+            }
+        }, 1000);
 
         checkWindowSize();
    }

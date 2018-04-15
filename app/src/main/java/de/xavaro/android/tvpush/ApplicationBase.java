@@ -5,6 +5,8 @@ import de.xavaro.android.gui.simple.Simple;
 
 import de.xavaro.android.systems.Systems;
 
+import de.xavaro.android.cam.util.CAMGetVideoModes;
+
 public class ApplicationBase extends GUIApplication
 {
     private static final String LOGTAG = ApplicationBase.class.getSimpleName();
@@ -17,7 +19,6 @@ public class ApplicationBase extends GUIApplication
         // neeeeeeeeiiiiiiiiiinnnnn Simple.removeALLPrefs(this);
 
         Simple.initialize(this);
-
         Systems.initialize(this);
 
         //AdbTest.testShell(this, "192.168.0.11", 5555);
