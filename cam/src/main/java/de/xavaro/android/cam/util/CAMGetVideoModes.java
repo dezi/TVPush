@@ -4,6 +4,7 @@ import android.media.MediaCodec;
 import android.media.MediaFormat;
 import android.hardware.Camera;
 import android.util.Log;
+
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -22,20 +23,8 @@ public class CAMGetVideoModes
             {
                 try
                 {
-                    Log.d(LOGTAG, "getVideoModes: thread run.");
-
-                    Camera camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
-                    Log.d(LOGTAG, "getVideoModes: thread run1.");
-
+                    Camera camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);
                     Camera.Parameters params = camera.getParameters();
-                    Log.d(LOGTAG, "getVideoModes: thread run2.");
-
-                    List<int[]> supportedFpsRanges = params.getSupportedPreviewFpsRange();
-
-                    for (int[] fps : supportedFpsRanges)
-                    {
-                        Log.d(LOGTAG, "Available fps: " + fps[0] + "-" +fps[1]);
-                    }
 
                     List<Camera.Size> sizes = params.getSupportedPreviewSizes();
 

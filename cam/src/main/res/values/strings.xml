@@ -1,3 +1,12 @@
 <resources>
 
+    <string name="subsystem_cam_name">Camera Interface</string>
+
+    <string name="subsystem_cam_info">
+        Dieses System enthält eine Schnittstelle zu der
+        eingebauten Kamera ihres Gerätes.
+        \n\n
+        Wenn dieses System aktiviert ist, können Sie die Kamera teilen.
+    </string>
+
 </resources>
