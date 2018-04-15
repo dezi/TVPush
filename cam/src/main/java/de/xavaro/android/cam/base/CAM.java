@@ -2,16 +2,17 @@ package de.xavaro.android.cam.base;
 
 import android.app.Application;
 import android.os.Build;
-import android.util.Log;
 
 import org.json.JSONObject;
 
-import de.xavaro.android.cam.R;
-import de.xavaro.android.cam.simple.Json;
-import de.xavaro.android.cam.simple.Simple;
+import de.xavaro.android.cam.util.CAMGetVideoModes;
 import de.xavaro.android.pub.interfaces.all.SubSystemHandler;
 import de.xavaro.android.pub.interfaces.ext.OnDeviceHandler;
 import de.xavaro.android.pub.stubs.OnInterfacesStubs;
+
+import de.xavaro.android.cam.simple.Simple;
+import de.xavaro.android.cam.simple.Json;
+import de.xavaro.android.cam.R;
 
 public class CAM extends OnInterfacesStubs implements
         SubSystemHandler,
@@ -41,9 +42,9 @@ public class CAM extends OnInterfacesStubs implements
     @Override
     public JSONObject getSubsystemInfo()
     {
-        int mode = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                ? SubSystemHandler.SUBSYSTEM_MODE_VOLUNTARY
-                : SubSystemHandler.SUBSYSTEM_MODE_IMPOSSIBLE
+        int mode = (Simple.isTV())
+                ? SubSystemHandler.SUBSYSTEM_MODE_IMPOSSIBLE
+                : SubSystemHandler.SUBSYSTEM_MODE_VOLUNTARY
                 ;
 
         JSONObject info = new JSONObject();
@@ -66,6 +67,8 @@ public class CAM extends OnInterfacesStubs implements
     @Override
     public void startSubsystem(String subsystem)
     {
+        CAMGetVideoModes.getVideoModes();
+
         onSubsystemStarted(subsystem, SubSystemHandler.SUBSYSTEM_RUN_STARTED);
     }
 

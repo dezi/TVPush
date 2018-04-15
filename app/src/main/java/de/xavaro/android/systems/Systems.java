@@ -24,6 +24,7 @@ public class Systems
         startSubsystem(application, "gui");
         startSubsystem(application, "iot");
 
+        startSubsystem(application, "cam");
         startSubsystem(application, "spr");
         startSubsystem(application, "iam");
         startSubsystem(application, "bcn");
@@ -44,6 +45,7 @@ public class Systems
             case "gui" : return new SystemsGUI(application);
             case "iot" : return new SystemsIOT(application);
 
+            case "cam" : return new SystemsCAM(application);
             case "spr" : return new SystemsSPR(application);
             case "iam" : return new SystemsIAM(application);
             case "bcn" : return new SystemsBCN(application);

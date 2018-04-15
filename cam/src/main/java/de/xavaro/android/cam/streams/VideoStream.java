@@ -413,7 +413,7 @@ public abstract class VideoStream extends MediaStream
             }
         }
 
-        final NV21Converter convertor = new NV21Converter(mQuality.resX, mQuality.resY);
+        final NV21Converter convertor = new NV21Converter(mQuality.resX, mQuality.resY, MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar);
 
         mMediaCodec = MediaCodec.createEncoderByType("video/avc");
         MediaFormat mediaFormat = MediaFormat.createVideoFormat("video/avc", mQuality.resX, mQuality.resY);

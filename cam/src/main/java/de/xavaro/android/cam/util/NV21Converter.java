@@ -6,19 +6,14 @@ import java.nio.ByteBuffer;
 
 public class NV21Converter
 {
-    public final static int[] colorWeLike = new int[]
+    public final static int[] formatsWeLike = new int[]
             {
-                    MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar,
-                    MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420PackedSemiPlanar,
-                    MediaCodecInfo.CodecCapabilities.COLOR_TI_FormatYUV420PackedSemiPlanar,
                     MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Planar,
-                    MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420PackedPlanar
+                    MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar,
+                    MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420PackedPlanar,
+                    MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420PackedSemiPlanar,
+                    MediaCodecInfo.CodecCapabilities.COLOR_TI_FormatYUV420PackedSemiPlanar
             };
-
-    public NV21Converter(int width, int height)
-    {
-        setSize(width, height);
-    }
 
     private int mSliceHeight, mHeight;
     private int mStride, mWidth;
@@ -26,7 +21,12 @@ public class NV21Converter
     private boolean mPlanar, mPanesReversed = false;
     private int mYPadding;
     private byte[] mBuffer;
-    ByteBuffer mCopy;
+
+    public NV21Converter(int width, int height, int colorFormat)
+    {
+        setSize(width, height);
+        setEncoderColorFormat(colorFormat);
+    }
 
     public void setSize(int width, int height)
     {
@@ -37,21 +37,20 @@ public class NV21Converter
         mSize = mWidth * mHeight;
     }
 
-    public byte[] createTestImage()
+    public void setEncoderColorFormat(int colorFormat)
     {
-        byte[] mInitialImage = new byte[3 * mSize / 2];
-
-        for (int i = 0; i < mSize; i++)
+        switch (colorFormat)
         {
-            mInitialImage[i] = (byte) (40 + i % 199);
+            case MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar:
+            case MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420PackedSemiPlanar:
+            case MediaCodecInfo.CodecCapabilities.COLOR_TI_FormatYUV420PackedSemiPlanar:
+                setPlanar(false);
+                break;
+            case MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Planar:
+            case MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420PackedPlanar:
+                setPlanar(true);
+                break;
         }
-        for (int i = mSize; i < 3 * mSize / 2; i += 2)
-        {
-            mInitialImage[i] = (byte) (40 + i % 200);
-            mInitialImage[i + 1] = (byte) (40 + (i + 99) % 200);
-        }
-
-        return mInitialImage;
     }
 
     public void setStride(int width)
@@ -77,22 +76,6 @@ public class NV21Converter
     public int getBufferSize()
     {
         return 3 * mSize / 2;
-    }
-
-    public void setEncoderColorFormat(int colorFormat)
-    {
-        switch (colorFormat)
-        {
-            case MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar:
-            case MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420PackedSemiPlanar:
-            case MediaCodecInfo.CodecCapabilities.COLOR_TI_FormatYUV420PackedSemiPlanar:
-                setPlanar(false);
-                break;
-            case MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Planar:
-            case MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420PackedPlanar:
-                setPlanar(true);
-                break;
-        }
     }
 
     public void setColorPanesReversed(boolean b)
@@ -134,7 +117,6 @@ public class NV21Converter
 
     public byte[] convert(byte[] data)
     {
-
         // A buffer large enough for every case
         if (mBuffer == null || mBuffer.length != 3 * mSliceHeight * mStride / 2 + mYPadding)
         {
@@ -202,4 +184,20 @@ public class NV21Converter
         return data;
     }
 
+    public byte[] createTestImage()
+    {
+        byte[] mInitialImage = new byte[3 * mSize / 2];
+
+        for (int i = 0; i < mSize; i++)
+        {
+            mInitialImage[i] = (byte) (40 + i % 199);
+        }
+        for (int i = mSize; i < 3 * mSize / 2; i += 2)
+        {
+            mInitialImage[i] = (byte) (40 + i % 200);
+            mInitialImage[i + 1] = (byte) (40 + (i + 99) % 200);
+        }
+
+        return mInitialImage;
+    }
 }
