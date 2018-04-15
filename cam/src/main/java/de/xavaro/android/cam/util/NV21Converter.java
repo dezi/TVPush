@@ -15,6 +15,11 @@ public class NV21Converter
                     MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420PackedPlanar
             };
 
+    public NV21Converter(int width, int height)
+    {
+        setSize(width, height);
+    }
+
     private int mSliceHeight, mHeight;
     private int mStride, mWidth;
     private int mSize;

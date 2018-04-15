@@ -102,18 +102,18 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
 
         surfaceView = new SurfaceView(this, null);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
-                480,
-                320,
+                160,
+                240,
                 Gravity.TOP);
 
         lp.leftMargin = 100;
-        lp.topMargin = 100;
+        lp.topMargin = 200;
 
         surfaceView.setLayoutParams(lp);
 
         topframe.addView(surfaceView);
 
-        CAMGetVideoModes.getVideoModes();
+        //CAMGetVideoModes.getVideoModes();
 
         Simple.getHandler().postDelayed(new Runnable()
         {
@@ -124,9 +124,12 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
 
                 try
                 {
-                    Camera camera = Camera.open();
+                    Camera camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);
                     camera.setPreviewTexture(surfaceView.getSurfaceTexture());
+                    camera.setDisplayOrientation(90);
                     camera.startPreview();
+
+                    Log.d(LOGTAG, "################# camera open...");
                 }
                 catch(Exception ex)
                 {

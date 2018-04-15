@@ -2,12 +2,8 @@ package de.xavaro.android.cam.util;
 
 import android.media.MediaCodec;
 import android.media.MediaFormat;
-import android.media.MediaRecorder;
-import android.view.SurfaceView;
-import android.content.Context;
 import android.hardware.Camera;
 import android.util.Log;
-import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -87,11 +83,7 @@ public class CAMGetVideoModes
             mEncoder.configure(mediaFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
             mEncoder.start();
 
-            NV21Converter nv21 = new NV21Converter();
-
-            nv21.setSize(width, height);
-            nv21.setSliceHeigth(height);
-            nv21.setStride(width);
+            NV21Converter nv21 = new NV21Converter(width, height);
             nv21.setYPadding(0);
             nv21.setEncoderColorFormat(cformat);
 
@@ -107,7 +99,6 @@ public class CAMGetVideoModes
                     + " pps=" + PPS
                     + " sps=" + SPS
             );
-
         }
         catch (Exception ex)
         {
@@ -190,8 +181,8 @@ public class CAMGetVideoModes
                 ppsb.position(4);
                 ppsb.get(mPPS, 0, mPPS.length);
 
-                SPS = CAMMP4Parser.toHexString(mSPS, 0, mSPS.length);
-                PPS = CAMMP4Parser.toHexString(mPPS, 0, mPPS.length);
+                SPS = toHexString(mSPS, 0, mSPS.length);
+                PPS = toHexString(mPPS, 0, mPPS.length);
                 break;
             }
             else
@@ -221,14 +212,14 @@ public class CAMGetVideoModes
                                         mSPS = new byte[p - q];
                                         System.arraycopy(csd, q, mSPS, 0, p - q);
 
-                                        SPS = CAMMP4Parser.toHexString(mSPS, 0, mSPS.length);
+                                        SPS = toHexString(mSPS, 0, mSPS.length);
                                     }
                                     else
                                     {
                                         mPPS = new byte[p - q];
                                         System.arraycopy(csd, q, mPPS, 0, p - q);
 
-                                        PPS = CAMMP4Parser.toHexString(mPPS, 0, mPPS.length);
+                                        PPS = toHexString(mPPS, 0, mPPS.length);
                                     }
                                     p += 4;
                                     q = p;
@@ -242,6 +233,18 @@ public class CAMGetVideoModes
         }
 
         return elapsed;
+    }
+
+    static String toHexString(byte[] buffer, int start, int len)
+    {
+        String c;
+        StringBuilder s = new StringBuilder();
+        for (int i = start; i < start + len; i++)
+        {
+            c = Integer.toHexString(buffer[i] & 0xFF);
+            s.append(c.length() < 2 ? "0" + c : c);
+        }
+        return s.toString();
     }
 
 }
