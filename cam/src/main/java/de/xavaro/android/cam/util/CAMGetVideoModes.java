@@ -1,140 +1,247 @@
 package de.xavaro.android.cam.util;
 
+import android.media.MediaCodec;
+import android.media.MediaFormat;
+import android.media.MediaRecorder;
+import android.view.SurfaceView;
 import android.content.Context;
 import android.hardware.Camera;
-import android.icu.text.RelativeDateTimeFormatter;
-import android.media.CamcorderProfile;
-import android.media.MediaRecorder;
-import android.os.Environment;
 import android.util.Log;
-import android.view.SurfaceView;
-
 import java.io.File;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
+import java.nio.ByteBuffer;
+import java.util.List;
 
 public class CAMGetVideoModes
 {
     private static final String LOGTAG = CAMGetVideoModes.class.getSimpleName();
 
-    private static Semaphore mLock = new Semaphore(0);
-
-    public static void getVideoModes(final Context context, final SurfaceView surfaceView)
+    public static void getVideoModes()
     {
+        Log.d(LOGTAG, "getVideoModes: start.");
+
         Thread thread = new Thread(new Runnable()
         {
             @Override
             public void run()
             {
-                checkMedia(context, surfaceView);
+                try
+                {
+                    Log.d(LOGTAG, "getVideoModes: thread run.");
+
+                    Camera camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
+                    Log.d(LOGTAG, "getVideoModes: thread run1.");
+
+                    Camera.Parameters params = camera.getParameters();
+                    Log.d(LOGTAG, "getVideoModes: thread run2.");
+
+                    List<int[]> supportedFpsRanges = params.getSupportedPreviewFpsRange();
+
+                    for (int[] fps : supportedFpsRanges)
+                    {
+                        Log.d(LOGTAG, "Available fps: " + fps[0] + "-" +fps[1]);
+                    }
+
+                    List<Camera.Size> sizes = params.getSupportedPreviewSizes();
+
+                    for (Camera.Size size : sizes)
+                    {
+                        for (int inx = 0; inx < NV21Converter.colorWeLike.length; inx++)
+                        {
+                            checkMedia(size.width, size.height, 10, NV21Converter.colorWeLike[ inx ]);
+                            checkMedia(size.width, size.height, 20, NV21Converter.colorWeLike[ inx ]);
+                            checkMedia(size.width, size.height, 24, NV21Converter.colorWeLike[ inx ]);
+                            checkMedia(size.width, size.height, 25, NV21Converter.colorWeLike[ inx ]);
+                            checkMedia(size.width, size.height, 30, NV21Converter.colorWeLike[ inx ]);
+                        }
+                    }
+                }
+                catch (Exception ignore)
+                {
+                    Log.d(LOGTAG, "getVideoModes: thread knall.");
+
+                    ignore.printStackTrace();
+                }
             }
         });
 
         thread.start();
     }
 
-    private static void checkMedia(Context context, SurfaceView surfaceView)
+    private static MediaCodec mEncoder;
+    private static byte[] data;
+
+    private static void checkMedia(int width, int height, int fps, int cformat)
     {
-        File testFile = new File(context.getCacheDir(), "CAMGetVideoModes.mp4");
-        MediaRecorder mMediaRecorder = new MediaRecorder();
-        ;
+        SPS = null;
+        PPS = null;
 
         try
         {
-            Camera camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);
-            camera.setPreviewDisplay(surfaceView.getHolder());
-            camera.startPreview();
-            camera.unlock();
+            MediaFormat mediaFormat = MediaFormat.createVideoFormat("video/avc", width, height);
+            mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, 500 * 1000);
+            mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, fps);
+            mediaFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT, cformat);
+            mediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1);
 
-            mMediaRecorder.setCamera(camera);
-            mMediaRecorder.setPreviewDisplay(surfaceView.getHolder().getSurface());
-            mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-            mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-            mMediaRecorder.setVideoSize(640, 480);
-            mMediaRecorder.setVideoFrameRate(24);
-            mMediaRecorder.setVideoEncodingBitRate(50 * 1000);
-            mMediaRecorder.setOutputFile(testFile.toString());
-            mMediaRecorder.setMaxDuration(3000);
+            mEncoder = MediaCodec.createEncoderByType("video/avc");
+            mEncoder.configure(mediaFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
+            mEncoder.start();
 
-            mMediaRecorder.setOnInfoListener(new MediaRecorder.OnInfoListener()
-            {
-                public void onInfo(MediaRecorder mr, int what, int extra)
-                {
-                    Log.d(LOGTAG, "MediaRecorder callback called !");
+            NV21Converter nv21 = new NV21Converter();
 
-                    if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED)
-                    {
-                        Log.d(LOGTAG, "MediaRecorder: MAX_DURATION_REACHED");
-                    }
-                    else
-                        if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED)
-                        {
-                            Log.d(LOGTAG, "MediaRecorder: MAX_FILESIZE_REACHED");
-                        }
-                        else
-                            if (what == MediaRecorder.MEDIA_RECORDER_INFO_UNKNOWN)
-                            {
-                                Log.d(LOGTAG, "MediaRecorder: INFO_UNKNOWN");
-                            }
-                            else
-                            {
-                                Log.d(LOGTAG, "WTF ?");
-                            }
-                    mLock.release();
-                }
-            });
+            nv21.setSize(width, height);
+            nv21.setSliceHeigth(height);
+            nv21.setStride(width);
+            nv21.setYPadding(0);
+            nv21.setEncoderColorFormat(cformat);
 
-            Log.d(LOGTAG, "MediaRecorder prepare");
+            data = nv21.convert(nv21.createTestImage());
 
-            mMediaRecorder.prepare();
-            Log.d(LOGTAG, "MediaRecorder start");
-            mMediaRecorder.start();
-            Log.d(LOGTAG, "MediaRecorder started.");
+            searchSPSandPPS(fps);
 
-            if (mLock.tryAcquire(12, TimeUnit.SECONDS))
-            {
-                Log.d(LOGTAG, "MediaRecorder callback was called :)");
-                Thread.sleep(400);
-            }
-            else
-            {
-                Log.d(LOGTAG, "MediaRecorder callback was not called after 6 seconds... :(");
-            }
+            Log.d(LOGTAG, "checkMedia:"
+                    + " width=" + width
+                    + " height=" + height
+                    + " fps=" + fps
+                    + " cformat=" + cformat
+                    + " pps=" + PPS
+                    + " sps=" + SPS
+            );
+
         }
         catch (Exception ex)
         {
-            ex.printStackTrace();
+            //Log.d(LOGTAG, "checkMedia: encoder knallt.");
         }
         finally
         {
-            try
+            if (mEncoder != null)
             {
-                mMediaRecorder.stop();
+                try
+                {
+                    mEncoder.stop();
+                }
+                catch (Exception ignore)
+                {
+                }
+                try
+                {
+                    mEncoder.release();
+                }
+                catch (Exception ignore)
+                {
+                }
             }
-            catch (Exception ignore)
-            {
-            }
-
-            mMediaRecorder.release();
         }
-
-        try
-        {
-            CAMMP4Config config = new CAMMP4Config(testFile.toString());
-
-            config.getHEXPPS();
-            config.getHEXSPS();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-
-        // Delete dummy video
-        if (!testFile.delete()) Log.e(LOGTAG, "Temp file could not be erased");
-
-        Log.i(LOGTAG, "H264 Test succeded...");
-
     }
+
+    private static long timestamp()
+    {
+        return System.nanoTime() / 1000;
+    }
+
+    private static byte[] mSPS;
+    private static byte[] mPPS;
+
+    private static String SPS;
+    private static String PPS;
+
+    private static long searchSPSandPPS(int fps)
+    {
+        ByteBuffer[] inputBuffers = mEncoder.getInputBuffers();
+        ByteBuffer[] outputBuffers = mEncoder.getOutputBuffers();
+        MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
+        byte[] csd = new byte[128];
+        int len = 0, p = 4, q = 4;
+        long elapsed = 0, now = timestamp();
+
+        while (elapsed < 3000000 && (SPS == null || PPS == null))
+        {
+            int bufferIndex = mEncoder.dequeueInputBuffer(1000000 / fps);
+
+            if (bufferIndex >= 0)
+            {
+                inputBuffers[bufferIndex].clear();
+                inputBuffers[bufferIndex].put(data, 0, data.length);
+                mEncoder.queueInputBuffer(bufferIndex, 0, data.length, timestamp(), 0);
+            }
+            else
+            {
+                Log.e(LOGTAG, "No buffer available !");
+            }
+
+            // We are looking for the SPS and the PPS here. As always, Android is very inconsistent, I have observed that some
+            // encoders will give those parameters through the MediaFormat object (that is the normal behaviour).
+            // But some other will not, in that case we try to find a NAL unit of type 7 or 8 in the byte stream outputed by the encoder...
+
+            int index = mEncoder.dequeueOutputBuffer(info, 1000000 / fps);
+
+            if (index == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED)
+            {
+
+                // The PPS and PPS shoud be there
+                MediaFormat format = mEncoder.getOutputFormat();
+                ByteBuffer spsb = format.getByteBuffer("csd-0");
+                ByteBuffer ppsb = format.getByteBuffer("csd-1");
+                mSPS = new byte[spsb.capacity() - 4];
+                spsb.position(4);
+                spsb.get(mSPS, 0, mSPS.length);
+                mPPS = new byte[ppsb.capacity() - 4];
+                ppsb.position(4);
+                ppsb.get(mPPS, 0, mPPS.length);
+
+                SPS = CAMMP4Parser.toHexString(mSPS, 0, mSPS.length);
+                PPS = CAMMP4Parser.toHexString(mPPS, 0, mPPS.length);
+                break;
+            }
+            else
+                if (index == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED)
+                {
+                    outputBuffers = mEncoder.getOutputBuffers();
+                }
+                else
+                    if (index >= 0)
+                    {
+
+                        len = info.size;
+                        if (len < 128)
+                        {
+                            outputBuffers[index].get(csd, 0, len);
+                            if (len > 0 && csd[0] == 0 && csd[1] == 0 && csd[2] == 0 && csd[3] == 1)
+                            {
+                                // Parses the SPS and PPS, they could be in two different packets and in a different order
+                                //depending on the phone so we don't make any assumption about that
+                                while (p < len)
+                                {
+                                    while (!(csd[p + 0] == 0 && csd[p + 1] == 0 && csd[p + 2] == 0 && csd[p + 3] == 1) && p + 3 < len)
+                                        p++;
+                                    if (p + 3 >= len) p = len;
+                                    if ((csd[q] & 0x1F) == 7)
+                                    {
+                                        mSPS = new byte[p - q];
+                                        System.arraycopy(csd, q, mSPS, 0, p - q);
+
+                                        SPS = CAMMP4Parser.toHexString(mSPS, 0, mSPS.length);
+                                    }
+                                    else
+                                    {
+                                        mPPS = new byte[p - q];
+                                        System.arraycopy(csd, q, mPPS, 0, p - q);
+
+                                        PPS = CAMMP4Parser.toHexString(mPPS, 0, mPPS.length);
+                                    }
+                                    p += 4;
+                                    q = p;
+                                }
+                            }
+                        }
+                        mEncoder.releaseOutputBuffer(index, false);
+                    }
+
+            elapsed = timestamp() - now;
+        }
+
+        return elapsed;
+    }
+
 }

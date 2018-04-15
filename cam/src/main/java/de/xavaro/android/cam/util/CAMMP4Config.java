@@ -58,9 +58,12 @@ public class CAMMP4Config
 
         // We find the stsdBox
         stsdBox = mp4Parser.getStsdBox();
-        mPPS = stsdBox.getHEXPPS();
-        mSPS = stsdBox.getHEXSPS();
-        mProfilLevel = stsdBox.getProfileLevel();
+        if (stsdBox != null)
+        {
+            mPPS = stsdBox.getHEXPPS();
+            mSPS = stsdBox.getHEXSPS();
+            mProfilLevel = stsdBox.getProfileLevel();
+        }
 
         mp4Parser.close();
 
@@ -73,13 +76,11 @@ public class CAMMP4Config
 
     public String getHEXPPS()
     {
-        Log.d(LOGTAG, "PPS: " + mPPS);
         return mPPS;
     }
 
     public String getHEXSPS()
     {
-        Log.d(LOGTAG, "SPS: " + mSPS);
         return mSPS;
     }
 

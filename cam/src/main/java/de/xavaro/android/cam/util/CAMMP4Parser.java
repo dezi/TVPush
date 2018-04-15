@@ -1,5 +1,6 @@
 package de.xavaro.android.cam.util;
 
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.File;
@@ -56,16 +57,18 @@ public class CAMMP4Parser
         return mBoxes.get(box);
     }
 
+    @Nullable
     public CAMStsdBox getStsdBox() throws IOException
     {
         try
         {
             return new CAMStsdBox(mFile, getBoxPos("/moov/trak/mdia/minf/stbl/stsd"));
         }
-        catch (IOException e)
+        catch (IOException ignore)
         {
-            throw new IOException("stsd box could not be found");
         }
+
+        return null;
     }
 
     private void parse(String path, long len) throws IOException

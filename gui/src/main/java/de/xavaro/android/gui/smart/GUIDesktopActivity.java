@@ -1,5 +1,6 @@
 package de.xavaro.android.gui.smart;
 
+import android.hardware.Camera;
 import android.support.annotation.Nullable;
 
 import android.content.Intent;
@@ -7,7 +8,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.SurfaceView;
 import android.view.View;
 import android.util.Log;
 import android.widget.FrameLayout;
@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import de.xavaro.android.cam.gls.SurfaceView;
 import de.xavaro.android.cam.util.CAMGetVideoModes;
 import de.xavaro.android.gui.plugin.GUIPluginTitle;
 import de.xavaro.android.gui.simple.Json;
@@ -54,6 +55,7 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
     private final static String LOGTAG = GUIDesktopActivity.class.getSimpleName();
 
     private GUIToastBar toastBar;
+    private SurfaceView surfaceView;
 
     private Map<String,GUIPlugin> wizzards;
 
@@ -90,32 +92,49 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
 
         if (!Simple.isPhone())
         {
-            //displayWizzard(GUISetupWizzard.class.getSimpleName());
+            displayWizzard(GUISetupWizzard.class.getSimpleName());
             //displayWizzard(GUIPingWizzard.class.getSimpleName());
-            displayWizzard(GUIDomainsWizzard.class.getSimpleName());
+            //displayWizzard(GUIDomainsWizzard.class.getSimpleName());
         }
 
         //GUIDialogViewPincode pincode = new GUIDialogViewPincode(this);
         //topframe.addView(pincode);
 
-        final SurfaceView surfaceView = new SurfaceView(this, null);
+        surfaceView = new SurfaceView(this, null);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                480,
                 320,
-                240,
                 Gravity.TOP);
 
         lp.leftMargin = 100;
         lp.topMargin = 100;
 
         surfaceView.setLayoutParams(lp);
+
         topframe.addView(surfaceView);
+
+        CAMGetVideoModes.getVideoModes();
 
         Simple.getHandler().postDelayed(new Runnable()
         {
             @Override
             public void run()
             {
-                CAMGetVideoModes.getVideoModes(GUIDesktopActivity.this, surfaceView);
+                surfaceView.startGLThread();
+
+                try
+                {
+                    Camera camera = Camera.open();
+                    camera.setPreviewTexture(surfaceView.getSurfaceTexture());
+                    camera.startPreview();
+                }
+                catch(Exception ex)
+                {
+                    Log.d(LOGTAG, "############# knallt");
+
+                    ex.printStackTrace();
+                }
+
             }
         }, 1000);
 
