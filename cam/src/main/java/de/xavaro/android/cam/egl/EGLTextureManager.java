@@ -265,16 +265,17 @@ public class EGLTextureManager
             GLES20.glDeleteProgram(program);
             program = 0;
         }
+
         return program;
     }
 
-    public void checkGlError(String op)
+    private void checkGlError(String op)
     {
         int error;
+
         while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR)
         {
-            Log.e(LOGTAG, op + ": glError " + error);
-            throw new RuntimeException(op + ": glError " + error);
+            Log.e(LOGTAG, "checkGlError: op=" + op + " error=" + error);
         }
     }
 }
