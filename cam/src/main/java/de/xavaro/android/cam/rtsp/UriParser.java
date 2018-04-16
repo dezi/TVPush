@@ -51,6 +51,7 @@ public class UriParser
         String query = URI.create(uri).getQuery();
         String[] queryParams = query == null ? new String[0] : query.split("&");
         ContentValues params = new ContentValues();
+
         for (String param : queryParams)
         {
             String[] keyValue = param.split("=");
