@@ -1,5 +1,6 @@
 package de.xavaro.android.gui.smart;
 
+import android.graphics.Color;
 import android.hardware.Camera;
 import android.support.annotation.Nullable;
 
@@ -28,6 +29,7 @@ import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.skills.GUICanFocusDelegate;
 import de.xavaro.android.gui.views.GUIEditText;
+import de.xavaro.android.gui.views.GUILinearLayout;
 import de.xavaro.android.gui.wizzards.GUIDomainsWizzard;
 import de.xavaro.android.gui.wizzards.GUIFixedWizzard;
 import de.xavaro.android.gui.wizzards.GUIGeoposWizzard;
@@ -100,64 +102,47 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
             //displayWizzard(GUIDomainsWizzard.class.getSimpleName());
         }
 
-        //GUIDialogViewPincode pincode = new GUIDialogViewPincode(this);
-        //topframe.addView(pincode);
-
-        surfaceView = new SurfaceView(this, null);
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
-                160,
-                240,
-                Gravity.TOP);
-
-        lp.leftMargin = 100;
-        lp.topMargin = 200;
-
-        surfaceView.setLayoutParams(lp);
-
-        topframe.addView(surfaceView);
-
-        //CAMGetVideoModes.getVideoModes();
-
-        Simple.getHandler().postDelayed(new Runnable()
+        if (! Simple.isTV())
         {
-            @Override
-            public void run()
+            GUILinearLayout surfaceFrame = new GUILinearLayout(this);
+            surfaceFrame.setBackgroundColor(Color.YELLOW);
+
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                    160,
+                    240,
+                    Gravity.TOP + Gravity.CENTER_HORIZONTAL);
+
+            lp.topMargin = 250;
+
+            surfaceFrame.setLayoutParams(lp);
+
+            topframe.addView(surfaceFrame);
+
+            surfaceView = new SurfaceView(this, null);
+            //surfaceView.setVisibility(View.GONE);
+            surfaceFrame.addView(surfaceView);
+
+            Simple.getHandler().postDelayed(new Runnable()
             {
-                /*
-                surfaceView.startGLThread();
-
-                try
+                @Override
+                public void run()
                 {
-                    Camera camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);
-                    camera.setPreviewTexture(surfaceView.getSurfaceTexture());
-                    camera.setDisplayOrientation(90);
-                    camera.startPreview();
+                    SessionBuilder.getInstance()
+                            .setSurfaceView(surfaceView)
+                            .setPreviewOrientation(90)
+                            .setContext(getApplicationContext())
+                            .setAudioEncoder(SessionBuilder.AUDIO_AAC)
+                            .setVideoEncoder(SessionBuilder.VIDEO_H264)
+                            .setCamera(Camera.CameraInfo.CAMERA_FACING_FRONT)
+                            .setVideoQuality(new VideoQuality(640, 480, 20, 500000));
 
-                    Log.d(LOGTAG, "################# camera open...");
+                    Log.d(LOGTAG, "onCreate: start RTSP.");
+
+                    GUIDesktopActivity.this.startService(new Intent(GUIDesktopActivity.this, RtspServer.class));
+
                 }
-                catch(Exception ex)
-                {
-                    Log.d(LOGTAG, "############# knallt");
-
-                    ex.printStackTrace();
-                }
-                */
-
-                SessionBuilder.getInstance()
-                        .setSurfaceView(surfaceView)
-                        .setPreviewOrientation(90)
-                        .setContext(getApplicationContext())
-                        .setAudioEncoder(SessionBuilder.AUDIO_AAC)
-                        .setVideoEncoder(SessionBuilder.VIDEO_H264)
-                        .setCamera(Camera.CameraInfo.CAMERA_FACING_FRONT)
-                        .setVideoQuality(new VideoQuality(320, 240, 20, 500000));
-
-                Log.d(LOGTAG, "onCreate: start RTSP.");
-
-                GUIDesktopActivity.this.startService(new Intent(GUIDesktopActivity.this, RtspServer.class));
-
-            }
-        }, 1000);
+            }, 1000);
+        }
 
         checkWindowSize();
    }

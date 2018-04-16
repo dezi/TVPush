@@ -75,7 +75,7 @@ public class UriParser
 
             builder.setAudioEncoder(AUDIO_NONE).setVideoEncoder(VIDEO_NONE);
             Set<String> paramKeys = params.keySet();
-            // Those parameters must be parsed first or else they won't necessarily be taken into account
+
             for (String paramName : paramKeys)
             {
                 String paramValue = params.getAsString(paramName);
