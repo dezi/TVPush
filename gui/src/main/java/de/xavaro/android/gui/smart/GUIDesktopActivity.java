@@ -19,6 +19,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import de.xavaro.android.cam.gls.SurfaceView;
+import de.xavaro.android.cam.rtsp.RtspServer;
+import de.xavaro.android.cam.session.SessionBuilder;
+import de.xavaro.android.cam.streams.VideoQuality;
 import de.xavaro.android.cam.util.CAMGetVideoModes;
 import de.xavaro.android.gui.plugin.GUIPluginTitle;
 import de.xavaro.android.gui.simple.Json;
@@ -120,6 +123,7 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
             @Override
             public void run()
             {
+                /*
                 surfaceView.startGLThread();
 
                 try
@@ -137,6 +141,20 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
 
                     ex.printStackTrace();
                 }
+                */
+
+                SessionBuilder.getInstance()
+                        .setSurfaceView(surfaceView)
+                        .setPreviewOrientation(90)
+                        .setContext(getApplicationContext())
+                        .setAudioEncoder(SessionBuilder.AUDIO_AAC)
+                        .setVideoEncoder(SessionBuilder.VIDEO_H264)
+                        .setCamera(Camera.CameraInfo.CAMERA_FACING_FRONT)
+                        .setVideoQuality(new VideoQuality(320, 240, 20, 500000));
+
+                Log.d(LOGTAG, "onCreate: start RTSP.");
+
+                GUIDesktopActivity.this.startService(new Intent(GUIDesktopActivity.this, RtspServer.class));
 
             }
         }, 1000);

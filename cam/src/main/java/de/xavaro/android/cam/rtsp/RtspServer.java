@@ -1,6 +1,5 @@
 package de.xavaro.android.cam.rtsp;
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -38,10 +37,10 @@ import de.xavaro.android.cam.session.SessionBuilder;
  * For each connected client, a Session is instantiated.
  * The Session will start or stop streams according to what the client wants.
  */
+
 public class RtspServer extends Service
 {
-
-    public final static String TAG = "RtspServer";
+    private final static String LOGTAG = RtspServer.class.getSimpleName();
 
     /**
      * The server name that will appear in responses.
@@ -99,7 +98,6 @@ public class RtspServer extends Service
      */
     private String mUsername;
     private String mPassword;
-
 
     public RtspServer()
     {
@@ -194,6 +192,8 @@ public class RtspServer extends Service
      */
     public void start()
     {
+        Log.d(LOGTAG, "start: listener.");
+
         if (!mEnabled || mRestart) stop();
         if (mEnabled && mListenerThread == null)
         {
@@ -215,6 +215,8 @@ public class RtspServer extends Service
      */
     public void stop()
     {
+        Log.d(LOGTAG, "stop: listener.");
+
         if (mListenerThread != null)
         {
             try
@@ -277,19 +279,20 @@ public class RtspServer extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
+        Log.d(LOGTAG, "onStartCommand:");
+
         return START_STICKY;
     }
 
     @Override
     public void onCreate()
     {
+        Log.d(LOGTAG, "onCreate:");
 
-        // Let's restore the state of the service
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mPort = Integer.parseInt(mSharedPreferences.getString(KEY_PORT, String.valueOf(mPort)));
         mEnabled = mSharedPreferences.getBoolean(KEY_ENABLED, mEnabled);
 
-        // If the configuration is modified, the server will adjust
         mSharedPreferences.registerOnSharedPreferenceChangeListener(mOnSharedPreferenceChangeListener);
 
         start();
@@ -382,6 +385,8 @@ public class RtspServer extends Service
      */
     protected Session handleRequest(String uri, Socket client) throws IllegalStateException, IOException
     {
+        Log.d(LOGTAG, "handleRequest: uri=" + uri);
+
         Session session = UriParser.parse(uri);
         session.setOrigin(client.getLocalAddress().getHostAddress());
         if (session.getDestination() == null)
@@ -393,19 +398,20 @@ public class RtspServer extends Service
 
     class RequestListener extends Thread implements Runnable
     {
-
         private final ServerSocket mServer;
 
         public RequestListener() throws IOException
         {
             try
             {
+                Log.d(LOGTAG, "RequestListener: start.");
+
                 mServer = new ServerSocket(mPort);
                 start();
             }
             catch (BindException e)
             {
-                Log.e(TAG, "Port already in use !");
+                Log.e(LOGTAG, "Port already in use !");
                 postError(e, ERROR_BIND_FAILED);
                 throw e;
             }
@@ -413,7 +419,8 @@ public class RtspServer extends Service
 
         public void run()
         {
-            Log.i(TAG, "RTSP server listening on port " + mServer.getLocalPort());
+            Log.d(LOGTAG, "RTSP server listening on port " + mServer.getLocalPort());
+            
             while (!Thread.interrupted())
             {
                 try
@@ -426,11 +433,11 @@ public class RtspServer extends Service
                 }
                 catch (IOException e)
                 {
-                    Log.e(TAG, e.getMessage());
+                    Log.e(LOGTAG, e.getMessage());
                     continue;
                 }
             }
-            Log.i(TAG, "RTSP server stopped !");
+            Log.d(LOGTAG, "RTSP server stopped !");
         }
 
         public void kill()
@@ -477,7 +484,7 @@ public class RtspServer extends Service
             Request request;
             Response response;
 
-            Log.i(TAG, "Connection from " + mClient.getInetAddress().getHostAddress());
+            Log.d(LOGTAG, "Connection from " + mClient.getInetAddress().getHostAddress());
 
             while (!Thread.interrupted())
             {
@@ -513,7 +520,7 @@ public class RtspServer extends Service
                     {
                         // This alerts the main thread that something has gone wrong in this thread
                         postError(e, ERROR_START_FAILED);
-                        Log.e(TAG, e.getMessage() != null ? e.getMessage() : "An error occurred");
+                        Log.e(LOGTAG, e.getMessage() != null ? e.getMessage() : "An error occurred");
                         e.printStackTrace();
                         response = new Response(request);
                     }
@@ -527,7 +534,7 @@ public class RtspServer extends Service
                 }
                 catch (IOException e)
                 {
-                    Log.e(TAG, "Response was not sent properly");
+                    Log.e(LOGTAG, "Response was not sent properly");
                     break;
                 }
 
@@ -550,7 +557,7 @@ public class RtspServer extends Service
             {
             }
 
-            Log.i(TAG, "Client disconnected");
+            Log.d(LOGTAG, "Client disconnected");
 
         }
 
@@ -715,7 +722,7 @@ public class RtspServer extends Service
                                     /* ********************************************************************************** */
                                     else
                                     {
-                                        Log.e(TAG, "Command unknown: " + request);
+                                        Log.e(LOGTAG, "Command unknown: " + request);
                                         response.status = Response.STATUS_BAD_REQUEST;
                                     }
             }
@@ -786,7 +793,7 @@ public class RtspServer extends Service
             if (line == null) throw new SocketException("Client disconnected");
 
             // It's not an error, it's just easier to follow what's happening in logcat with the request in red
-            Log.e(TAG, request.method + " " + request.uri);
+            Log.e(LOGTAG, request.method + " " + request.uri);
 
             return request;
         }
@@ -829,7 +836,7 @@ public class RtspServer extends Service
             }
             catch (Exception e)
             {
-                Log.e(TAG, "Error parsing CSeq: " + (e.getMessage() != null ? e.getMessage() : ""));
+                Log.e(LOGTAG, "Error parsing CSeq: " + (e.getMessage() != null ? e.getMessage() : ""));
             }
 
             String response = "RTSP/1.0 " + status + "\r\n" +
@@ -840,7 +847,7 @@ public class RtspServer extends Service
                     "\r\n" +
                     content;
 
-            Log.d(TAG, response.replace("\r", ""));
+            Log.d(LOGTAG, response.replace("\r", ""));
 
             output.write(response.getBytes());
         }

@@ -86,6 +86,12 @@
             android:exported="false">
         </service>
 
+        <service
+            android:name="de.xavaro.android.cam.rtsp.RtspServer"
+            android:enabled="true"
+            android:exported="false">
+        </service>
+
         <receiver
             android:name=".EventsReceiver"
             android:enabled="true"
