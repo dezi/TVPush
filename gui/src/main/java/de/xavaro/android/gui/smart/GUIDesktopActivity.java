@@ -19,11 +19,10 @@ import org.json.JSONObject;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import de.xavaro.android.cam.gls.SurfaceView;
+import de.xavaro.android.cam.egl.EGLSurfaceView;
 import de.xavaro.android.cam.rtsp.RtspServer;
 import de.xavaro.android.cam.session.SessionBuilder;
 import de.xavaro.android.cam.streams.VideoQuality;
-import de.xavaro.android.cam.util.CAMGetVideoModes;
 import de.xavaro.android.gui.plugin.GUIPluginTitle;
 import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.simple.Simple;
@@ -60,7 +59,7 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
     private final static String LOGTAG = GUIDesktopActivity.class.getSimpleName();
 
     private GUIToastBar toastBar;
-    private SurfaceView surfaceView;
+    private EGLSurfaceView surfaceView;
 
     private Map<String,GUIPlugin> wizzards;
 
@@ -118,7 +117,7 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
 
             topframe.addView(surfaceFrame);
 
-            surfaceView = new SurfaceView(this, null);
+            surfaceView = new EGLSurfaceView(this, null);
             //surfaceView.setVisibility(View.GONE);
             surfaceFrame.addView(surfaceView);
 

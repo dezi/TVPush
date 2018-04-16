@@ -13,9 +13,9 @@ import java.util.List;
 
 import de.xavaro.android.cam.simple.Json;
 
-public class CAMGetVideoModes
+public class GetVideoModes
 {
-    private static final String LOGTAG = CAMGetVideoModes.class.getSimpleName();
+    private static final String LOGTAG = GetVideoModes.class.getSimpleName();
 
     private static MediaCodec mEncoder;
     private static JSONArray configs;

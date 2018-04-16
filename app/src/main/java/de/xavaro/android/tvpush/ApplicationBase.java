@@ -5,8 +5,6 @@ import de.xavaro.android.gui.simple.Simple;
 
 import de.xavaro.android.systems.Systems;
 
-import de.xavaro.android.cam.util.CAMGetVideoModes;
-
 public class ApplicationBase extends GUIApplication
 {
     private static final String LOGTAG = ApplicationBase.class.getSimpleName();

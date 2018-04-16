@@ -144,7 +144,7 @@ abstract public class AbstractPacketizer
                 // Prevents drifting issues by comparing the real duration of the
                 // stream with the sum of all temporal lengths of RTP packets.
                 value += (now - start) - duration;
-                //Log.d(TAG, "sum1: "+duration/1000000+" sum2: "+(now-start)/1000000+" drift: "+((now-start)-duration)/1000000+" v: "+value/1000000);
+                //Log.d(LOGTAG, "sum1: "+duration/1000000+" sum2: "+(now-start)/1000000+" drift: "+((now-start)-duration)/1000000+" v: "+value/1000000);
             }
             if (c < 5)
             {

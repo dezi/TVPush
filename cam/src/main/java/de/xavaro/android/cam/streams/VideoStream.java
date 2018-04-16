@@ -1,8 +1,6 @@
 package de.xavaro.android.cam.streams;
 
-import java.io.FileDescriptor;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
@@ -17,15 +15,13 @@ import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.os.Looper;
-import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 
-import de.xavaro.android.cam.gls.SurfaceView;
+import de.xavaro.android.cam.egl.EGLSurfaceView;
 import de.xavaro.android.cam.packets.MediaCodecInputStream;
-import de.xavaro.android.cam.util.CAMGetVideoModes;
 import de.xavaro.android.cam.util.NV21Converter;
 
 /**
@@ -40,7 +36,7 @@ public abstract class VideoStream extends MediaStream
     protected VideoQuality mRequestedQuality = VideoQuality.DEFAULT_VIDEO_QUALITY.clone();
     protected VideoQuality mQuality = mRequestedQuality.clone();
     protected SurfaceHolder.Callback mSurfaceHolderCallback = null;
-    protected SurfaceView mSurfaceView = null;
+    protected EGLSurfaceView mEGLSurfaceView = null;
     protected SharedPreferences mSettings = null;
     protected int mVideoEncoder, mCameraId = 0;
     protected int mRequestedOrientation = 0, mOrientation = 0;
@@ -140,14 +136,14 @@ public abstract class VideoStream extends MediaStream
      * Sets a Surface to show a preview of recorded media (video).
      * You can call this method at any time and changes will take effect next time you call {@link #start()}.
      */
-    public synchronized void setSurfaceView(SurfaceView view)
+    public synchronized void setSurfaceView(EGLSurfaceView view)
     {
-        mSurfaceView = view;
-        if (mSurfaceHolderCallback != null && mSurfaceView != null && mSurfaceView.getHolder() != null)
+        mEGLSurfaceView = view;
+        if (mSurfaceHolderCallback != null && mEGLSurfaceView != null && mEGLSurfaceView.getHolder() != null)
         {
-            mSurfaceView.getHolder().removeCallback(mSurfaceHolderCallback);
+            mEGLSurfaceView.getHolder().removeCallback(mSurfaceHolderCallback);
         }
-        if (mSurfaceView != null && mSurfaceView.getHolder() != null)
+        if (mEGLSurfaceView != null && mEGLSurfaceView.getHolder() != null)
         {
             mSurfaceHolderCallback = new Callback()
             {
@@ -171,7 +167,7 @@ public abstract class VideoStream extends MediaStream
                     Log.d(TAG, "Surface Changed !");
                 }
             };
-            mSurfaceView.getHolder().addCallback(mSurfaceHolderCallback);
+            mEGLSurfaceView.getHolder().addCallback(mSurfaceHolderCallback);
             mSurfaceReady = true;
         }
     }
@@ -322,7 +318,7 @@ public abstract class VideoStream extends MediaStream
             }
             if (mMode == MODE_MEDIACODEC_API_2)
             {
-                ((SurfaceView) mSurfaceView).removeMediaCodecSurface();
+                ((EGLSurfaceView) mEGLSurfaceView).removeMediaCodecSurface();
             }
             super.stop();
             // We need to restart the preview
@@ -437,7 +433,7 @@ public abstract class VideoStream extends MediaStream
                 if (i++ > 3)
                 {
                     i = 0;
-                    //Log.d(TAG,"Measured: "+1000000L/(now-oldnow)+" fps.");
+                    //Log.d(LOGTAG,"Measured: "+1000000L/(now-oldnow)+" fps.");
                 }
                 try
                 {
@@ -498,7 +494,7 @@ public abstract class VideoStream extends MediaStream
         mediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1);
         mMediaCodec.configure(mediaFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
         Surface surface = mMediaCodec.createInputSurface();
-        ((SurfaceView) mSurfaceView).addMediaCodecSurface(surface);
+        ((EGLSurfaceView) mEGLSurfaceView).addMediaCodecSurface(surface);
         mMediaCodec.start();
 
         // The packetizer encapsulates the bit stream in an RTP stream and send it over the network
@@ -560,13 +556,13 @@ public abstract class VideoStream extends MediaStream
 
     protected synchronized void createCamera() throws RuntimeException
     {
-        if (mSurfaceView == null)
+        if (mEGLSurfaceView == null)
         {
             Log.e(LOGTAG, "Invalid surface !");
             return;
         }
 
-        if (mSurfaceView.getHolder() == null || !mSurfaceReady)
+        if (mEGLSurfaceView.getHolder() == null || !mSurfaceReady)
         {
             Log.e(LOGTAG, "Invalid surface !");
             return;
@@ -617,12 +613,12 @@ public abstract class VideoStream extends MediaStream
                 {
                     if (mMode == MODE_MEDIACODEC_API_2)
                     {
-                        mSurfaceView.startGLThread();
-                        mCamera.setPreviewTexture(mSurfaceView.getSurfaceTexture());
+                        mEGLSurfaceView.startGLThread();
+                        mCamera.setPreviewTexture(mEGLSurfaceView.getSurfaceTexture());
                     }
                     else
                     {
-                        mCamera.setPreviewDisplay(mSurfaceView.getHolder());
+                        mCamera.setPreviewDisplay(mEGLSurfaceView.getHolder());
                     }
                 }
                 catch (IOException ex)
@@ -680,7 +676,7 @@ public abstract class VideoStream extends MediaStream
         int[] max = VideoQuality.determineMaximumSupportedFramerate(parameters);
 
         double ratio = (double) mQuality.resX / (double) mQuality.resY;
-        mSurfaceView.requestAspectRatio(ratio);
+        mEGLSurfaceView.requestAspectRatio(ratio);
 
         parameters.setPreviewFormat(mCameraImageFormat);
         parameters.setPreviewSize(mQuality.resX, mQuality.resY);

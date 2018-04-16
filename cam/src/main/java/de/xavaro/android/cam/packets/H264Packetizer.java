@@ -127,7 +127,7 @@ public class H264Packetizer extends AbstractPacketizer implements Runnable
                 stats.push(duration);
                 // Computes the average duration of a NAL unit
                 delay = stats.average();
-                //Log.d(TAG,"duration: "+duration/1000000+" delay: "+delay/1000000);
+                //Log.d(LOGTAG,"duration: "+duration/1000000+" delay: "+delay/1000000);
 
             }
         }
@@ -213,7 +213,7 @@ public class H264Packetizer extends AbstractPacketizer implements Runnable
             super.send(rtphl + stapa.length);
         }
 
-        //Log.d(TAG,"- Nal unit length: " + naluLength + " delay: "+delay/1000000+" type: "+type);
+        //Log.d(LOGTAG,"- Nal unit length: " + naluLength + " delay: "+delay/1000000+" type: "+type);
 
         // Small NAL unit => Single NAL unit
         if (naluLength <= MAXPACKETSIZE - rtphl - 2)
@@ -224,7 +224,7 @@ public class H264Packetizer extends AbstractPacketizer implements Runnable
             socket.updateTimestamp(ts);
             socket.markNextPacket();
             super.send(naluLength + rtphl);
-            //Log.d(TAG,"----- Single NAL unit - len:"+len+" delay: "+delay);
+            //Log.d(LOGTAG,"----- Single NAL unit - len:"+len+" delay: "+delay);
         }
         // Large NAL unit => Split nal unit
         else
@@ -256,7 +256,7 @@ public class H264Packetizer extends AbstractPacketizer implements Runnable
                 super.send(len + rtphl + 2);
                 // Switch start bit
                 header[1] = (byte) (header[1] & 0x7F);
-                //Log.d(TAG,"----- FU-A unit, sum:"+sum);
+                //Log.d(LOGTAG,"----- FU-A unit, sum:"+sum);
             }
         }
     }

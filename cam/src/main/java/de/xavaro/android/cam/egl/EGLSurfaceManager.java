@@ -1,4 +1,4 @@
-package de.xavaro.android.cam.gls;
+package de.xavaro.android.cam.egl;
 
 import android.annotation.SuppressLint;
 import android.opengl.EGL14;
@@ -11,7 +11,7 @@ import android.opengl.GLES20;
 import android.view.Surface;
 
 @SuppressLint("NewApi")
-public class SurfaceManager
+public class EGLSurfaceManager
 {
 
     public final static String TAG = "TextureManager";
@@ -28,7 +28,7 @@ public class SurfaceManager
     /**
      * Creates an EGL context and an EGL surface.
      */
-    public SurfaceManager(Surface surface, SurfaceManager manager)
+    public EGLSurfaceManager(Surface surface, EGLSurfaceManager manager)
     {
         mSurface = surface;
         mEGLSharedContext = manager.mEGLContext;
@@ -38,7 +38,7 @@ public class SurfaceManager
     /**
      * Creates an EGL context and an EGL surface.
      */
-    public SurfaceManager(Surface surface)
+    public EGLSurfaceManager(Surface surface)
     {
         mSurface = surface;
         eglSetup();

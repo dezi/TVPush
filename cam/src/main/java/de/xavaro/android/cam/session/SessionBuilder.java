@@ -7,7 +7,7 @@ import android.content.Context;
 import android.hardware.Camera.CameraInfo;
 import android.preference.PreferenceManager;
 
-import de.xavaro.android.cam.gls.SurfaceView;
+import de.xavaro.android.cam.egl.EGLSurfaceView;
 import de.xavaro.android.cam.streams.AudioQuality;
 import de.xavaro.android.cam.streams.AudioStream;
 import de.xavaro.android.cam.streams.VideoH264Stream;
@@ -62,7 +62,7 @@ public class SessionBuilder
     private int mTimeToLive = 64;
     private int mOrientation = 0;
     private boolean mFlash = false;
-    private SurfaceView mSurfaceView = null;
+    private EGLSurfaceView mEGLSurfaceView = null;
     private String mOrigin = null;
     private String mDestination = null;
     private Session.Callback mCallback = null;
@@ -143,7 +143,7 @@ public class SessionBuilder
             VideoStream video = session.getVideoTrack();
             video.setFlashState(mFlash);
             video.setVideoQuality(mVideoQuality);
-            video.setSurfaceView(mSurfaceView);
+            video.setSurfaceView(mEGLSurfaceView);
             video.setPreviewOrientation(mOrientation);
             video.setDestinationPorts(5006);
         }
@@ -244,9 +244,9 @@ public class SessionBuilder
     /**
      * Sets the SurfaceView required to preview the video stream.
      **/
-    public SessionBuilder setSurfaceView(SurfaceView surfaceView)
+    public SessionBuilder setSurfaceView(EGLSurfaceView surfaceView)
     {
-        mSurfaceView = surfaceView;
+        mEGLSurfaceView = surfaceView;
         return this;
     }
 
@@ -340,11 +340,11 @@ public class SessionBuilder
     }
 
     /**
-     * Returns the SurfaceView set with {@link #setSurfaceView(SurfaceView)}.
+     * Returns the SurfaceView set with {@link #setSurfaceView(EGLSurfaceView)}.
      */
-    public SurfaceView getSurfaceView()
+    public EGLSurfaceView getSurfaceView()
     {
-        return mSurfaceView;
+        return mEGLSurfaceView;
     }
 
 
@@ -364,7 +364,7 @@ public class SessionBuilder
         return new SessionBuilder()
                 .setDestination(mDestination)
                 .setOrigin(mOrigin)
-                .setSurfaceView(mSurfaceView)
+                .setSurfaceView(mEGLSurfaceView)
                 .setPreviewOrientation(mOrientation)
                 .setVideoQuality(mVideoQuality)
                 .setVideoEncoder(mVideoEncoder)

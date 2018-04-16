@@ -1,11 +1,10 @@
 package de.xavaro.android.cam.base;
 
 import android.app.Application;
-import android.os.Build;
 
 import org.json.JSONObject;
 
-import de.xavaro.android.cam.util.CAMGetVideoModes;
+import de.xavaro.android.cam.util.GetVideoModes;
 import de.xavaro.android.pub.interfaces.all.SubSystemHandler;
 import de.xavaro.android.pub.interfaces.ext.OnDeviceHandler;
 import de.xavaro.android.pub.stubs.OnInterfacesStubs;
@@ -67,7 +66,7 @@ public class CAM extends OnInterfacesStubs implements
     @Override
     public void startSubsystem(String subsystem)
     {
-        CAMGetVideoModes.getVideoModes();
+        GetVideoModes.getVideoModes();
 
         onSubsystemStarted(subsystem, SubSystemHandler.SUBSYSTEM_RUN_STARTED);
     }

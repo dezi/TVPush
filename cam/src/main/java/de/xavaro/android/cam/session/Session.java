@@ -9,7 +9,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 
-import de.xavaro.android.cam.gls.SurfaceView;
+import de.xavaro.android.cam.egl.EGLSurfaceView;
 import de.xavaro.android.cam.streams.AudioQuality;
 import de.xavaro.android.cam.streams.AudioStream;
 import de.xavaro.android.cam.streams.Stream;
@@ -285,7 +285,7 @@ public class Session
      * You can call this method at any time and changes will take
      * effect next time you call {@link #start()} or {@link #startPreview()}.
      */
-    public void setSurfaceView(final SurfaceView view)
+    public void setSurfaceView(final EGLSurfaceView view)
     {
         mHandler.post(new Runnable()
         {
@@ -588,7 +588,7 @@ public class Session
 
     /**
      * Asynchronously starts the camera preview. <br />
-     * You should of course pass a {@link SurfaceView} to {@link #setSurfaceView(SurfaceView)}
+     * You should of course pass a {@link EGLSurfaceView} to {@link #setSurfaceView(EGLSurfaceView)}
      * before calling this method. Otherwise, the {@link Callback#onSessionError(int, int, Exception)}
      * callback will be called with {@link #ERROR_INVALID_SURFACE}.
      */
