@@ -31,8 +31,6 @@ public abstract class VideoStream extends MediaStream
 {
     private static final String LOGTAG = VideoStream.class.getSimpleName();
 
-    protected final static String TAG = "VideoStream";
-
     protected VideoQuality mRequestedQuality = VideoQuality.DEFAULT_VIDEO_QUALITY.clone();
     protected VideoQuality mQuality = mRequestedQuality.clone();
     protected SurfaceHolder.Callback mSurfaceHolderCallback = null;
@@ -87,13 +85,16 @@ public abstract class VideoStream extends MediaStream
     public void setCamera(int camera)
     {
         CameraInfo cameraInfo = new CameraInfo();
+
         int numberOfCameras = Camera.getNumberOfCameras();
-        for (int i = 0; i < numberOfCameras; i++)
+
+        for (int inx = 0; inx < numberOfCameras; inx++)
         {
-            Camera.getCameraInfo(i, cameraInfo);
+            Camera.getCameraInfo(inx, cameraInfo);
+
             if (cameraInfo.facing == camera)
             {
-                mCameraId = i;
+                mCameraId = inx;
                 break;
             }
         }
@@ -139,10 +140,12 @@ public abstract class VideoStream extends MediaStream
     public synchronized void setSurfaceView(EGLSurfaceView view)
     {
         mEGLSurfaceView = view;
+
         if (mSurfaceHolderCallback != null && mEGLSurfaceView != null && mEGLSurfaceView.getHolder() != null)
         {
             mEGLSurfaceView.getHolder().removeCallback(mSurfaceHolderCallback);
         }
+
         if (mEGLSurfaceView != null && mEGLSurfaceView.getHolder() != null)
         {
             mSurfaceHolderCallback = new Callback()
@@ -152,7 +155,7 @@ public abstract class VideoStream extends MediaStream
                 {
                     mSurfaceReady = false;
                     stopPreview();
-                    Log.d(TAG, "Surface destroyed !");
+                    Log.d(LOGTAG, "Surface destroyed !");
                 }
 
                 @Override
@@ -164,7 +167,7 @@ public abstract class VideoStream extends MediaStream
                 @Override
                 public void surfaceChanged(SurfaceHolder holder, int format, int width, int height)
                 {
-                    Log.d(TAG, "Surface Changed !");
+                    Log.d(LOGTAG, "Surface Changed !");
                 }
             };
             mEGLSurfaceView.getHolder().addCallback(mSurfaceHolderCallback);
@@ -302,7 +305,7 @@ public abstract class VideoStream extends MediaStream
     {
         if (!mPreviewStarted) mCameraOpenedManually = false;
         super.start();
-        Log.d(TAG, "Stream configuration: FPS: " + mQuality.framerate + " Width: " + mQuality.resX + " Height: " + mQuality.resY);
+        Log.d(LOGTAG, "Stream configuration: FPS: " + mQuality.framerate + " Width: " + mQuality.resX + " Height: " + mQuality.resY);
     }
 
     /**
@@ -385,7 +388,7 @@ public abstract class VideoStream extends MediaStream
     protected void encodeWithMediaCodecMethod1() throws RuntimeException, IOException
     {
 
-        Log.d(TAG, "Video encoded using the MediaCodec API with a buffer");
+        Log.d(LOGTAG, "Video encoded using the MediaCodec API with a buffer");
 
         // Updates the parameters of the camera if needed
         createCamera();
@@ -411,12 +414,13 @@ public abstract class VideoStream extends MediaStream
 
         final NV21Converter convertor = new NV21Converter(mQuality.resX, mQuality.resY, MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar);
 
-        mMediaCodec = MediaCodec.createEncoderByType("video/avc");
         MediaFormat mediaFormat = MediaFormat.createVideoFormat("video/avc", mQuality.resX, mQuality.resY);
         mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, mQuality.bitrate);
         mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, mQuality.framerate);
         mediaFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar);
         mediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1);
+
+        mMediaCodec = MediaCodec.createEncoderByType("video/avc");
         mMediaCodec.configure(mediaFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
         mMediaCodec.start();
 
@@ -430,25 +434,29 @@ public abstract class VideoStream extends MediaStream
             {
                 oldnow = now;
                 now = System.nanoTime() / 1000;
+               
                 if (i++ > 3)
                 {
                     i = 0;
                     //Log.d(LOGTAG,"Measured: "+1000000L/(now-oldnow)+" fps.");
                 }
+                
                 try
                 {
                     int bufferIndex = mMediaCodec.dequeueInputBuffer(500000);
+
                     if (bufferIndex >= 0)
                     {
                         inputBuffers[bufferIndex].clear();
                         if (data == null)
-                            Log.e(TAG, "Symptom of the \"Callback buffer was to small\" problem...");
+                            Log.e(LOGTAG, "Symptom of the \"Callback buffer was to small\" problem...");
                         else convertor.convert(data, inputBuffers[bufferIndex]);
+                        
                         mMediaCodec.queueInputBuffer(bufferIndex, 0, inputBuffers[bufferIndex].position(), now, 0);
                     }
                     else
                     {
-                        Log.e(TAG, "No buffer available !");
+                        Log.e(LOGTAG, "No buffer available !");
                     }
                 }
                 finally
@@ -458,15 +466,14 @@ public abstract class VideoStream extends MediaStream
             }
         };
 
-        for (int i = 0; i < 10; i++) mCamera.addCallbackBuffer(new byte[convertor.getBufferSize()]);
+        for (int inx = 0; inx < 10; inx++) mCamera.addCallbackBuffer(new byte[convertor.getBufferSize()]);
+
         mCamera.setPreviewCallbackWithBuffer(callback);
 
-        // The packetizer encapsulates the bit stream in an RTP stream and send it over the network
         mPacketizer.setInputStream(new MediaCodecInputStream(mMediaCodec));
         mPacketizer.start();
 
         mStreaming = true;
-
     }
 
     /**
@@ -477,7 +484,7 @@ public abstract class VideoStream extends MediaStream
     protected void encodeWithMediaCodecMethod2() throws RuntimeException, IOException
     {
 
-        Log.d(TAG, "Video encoded using the MediaCodec API with a surface");
+        Log.d(LOGTAG, "Video encoded using the MediaCodec API with a surface");
 
         // Updates the parameters of the camera if needed
         createCamera();
@@ -583,14 +590,14 @@ public abstract class VideoStream extends MediaStream
                     if (error == Camera.CAMERA_ERROR_SERVER_DIED)
                     {
                         // In this case the application must release the camera and instantiate a new one
-                        Log.e(TAG, "Media server died !");
+                        Log.e(LOGTAG, "Media server died !");
                         // We don't know in what thread we are so stop needs to be synchronized
                         mCameraOpenedManually = false;
                         stop();
                     }
                     else
                     {
-                        Log.e(TAG, "Error unknown with the camera: " + error);
+                        Log.e(LOGTAG, "Error unknown with the camera: " + error);
                     }
                 }
             });
@@ -650,7 +657,7 @@ public abstract class VideoStream extends MediaStream
             }
             catch (Exception e)
             {
-                Log.e(TAG, e.getMessage() != null ? e.getMessage() : "unknown error");
+                Log.e(LOGTAG, e.getMessage() != null ? e.getMessage() : "unknown error");
             }
             mCamera = null;
             mCameraLooper.quit();
@@ -701,14 +708,14 @@ public abstract class VideoStream extends MediaStream
     {
         if (mUnlocked)
         {
-            Log.d(TAG, "Locking camera");
+            Log.d(LOGTAG, "Locking camera");
             try
             {
                 mCamera.reconnect();
             }
             catch (Exception e)
             {
-                Log.e(TAG, e.getMessage());
+                Log.e(LOGTAG, e.getMessage());
             }
             mUnlocked = false;
         }
@@ -718,14 +725,14 @@ public abstract class VideoStream extends MediaStream
     {
         if (!mUnlocked)
         {
-            Log.d(TAG, "Unlocking camera");
+            Log.d(LOGTAG, "Unlocking camera");
             try
             {
                 mCamera.unlock();
             }
             catch (Exception e)
             {
-                Log.e(TAG, e.getMessage());
+                Log.e(LOGTAG, e.getMessage());
             }
             mUnlocked = true;
         }
@@ -770,7 +777,7 @@ public abstract class VideoStream extends MediaStream
         try
         {
             lock.tryAcquire(2, TimeUnit.SECONDS);
-            Log.d(TAG, "Actual framerate: " + mQuality.framerate);
+            Log.d(LOGTAG, "Actual framerate: " + mQuality.framerate);
             if (mSettings != null)
             {
                 Editor editor = mSettings.edit();
