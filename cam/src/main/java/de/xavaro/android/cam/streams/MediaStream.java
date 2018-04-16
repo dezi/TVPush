@@ -306,10 +306,6 @@ public abstract class MediaStream implements Stream
         encodeWithMediaCodec();
     }
 
-    /**
-     * Stops the stream.
-     */
-    @SuppressLint("NewApi")
     public synchronized void stop()
     {
         if (mStreaming)
@@ -332,10 +328,11 @@ public abstract class MediaStream implements Stream
                     mMediaCodec = null;
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                e.printStackTrace();
+                ex.printStackTrace();
             }
+
             mStreaming = false;
         }
     }

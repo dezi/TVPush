@@ -80,7 +80,6 @@ public interface Stream
      **/
     public int[] getDestinationPorts();
 
-
     /**
      * Returns the SSRC of the underlying RtpSocket.
      *
@@ -89,7 +88,7 @@ public interface Stream
     public int getSSRC();
 
     /**
-     * Returns an approximation of the bit rate consumed by the stream in bit per seconde.
+     * Returns an approximation of the bit rate consumed by the stream in bits per second.
      */
     public long getBitrate();
 
