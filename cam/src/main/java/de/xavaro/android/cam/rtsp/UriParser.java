@@ -175,8 +175,7 @@ public class UriParser
             }
         }
 
-        if ((builder.getVideoEncoder() == VIDEO_NONE)
-                && (builder.getAudioEncoder() == AUDIO_NONE))
+        if ((builder.getVideoEncoder() == VIDEO_NONE) && (builder.getAudioEncoder() == AUDIO_NONE))
         {
             SessionBuilder old = SessionBuilder.getInstance();
             builder.setVideoEncoder(old.getVideoEncoder());

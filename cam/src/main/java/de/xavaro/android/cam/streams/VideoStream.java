@@ -432,15 +432,6 @@ public abstract class VideoStream extends MediaStream
             @Override
             public void onPreviewFrame(byte[] data, Camera camera)
             {
-                oldnow = now;
-                now = System.nanoTime() / 1000;
-               
-                if (i++ > 3)
-                {
-                    i = 0;
-                    //Log.d(LOGTAG,"Measured: "+1000000L/(now-oldnow)+" fps.");
-                }
-                
                 try
                 {
                     int bufferIndex = mMediaCodec.dequeueInputBuffer(500000);
@@ -448,11 +439,20 @@ public abstract class VideoStream extends MediaStream
                     if (bufferIndex >= 0)
                     {
                         inputBuffers[bufferIndex].clear();
+
                         if (data == null)
+                        {
                             Log.e(LOGTAG, "Symptom of the \"Callback buffer was to small\" problem...");
-                        else convertor.convert(data, inputBuffers[bufferIndex]);
+                        }
+                        else
+                        {
+                            convertor.convert(data, inputBuffers[bufferIndex]);
+                        }
                         
-                        mMediaCodec.queueInputBuffer(bufferIndex, 0, inputBuffers[bufferIndex].position(), now, 0);
+                        mMediaCodec.queueInputBuffer(bufferIndex,
+                                0, inputBuffers[bufferIndex].position(),
+                                System.nanoTime() / 1000,
+                                0);
                     }
                     else
                     {
@@ -493,12 +493,13 @@ public abstract class VideoStream extends MediaStream
         // Estimates the frame rate of the camera
         measureFramerate();
 
-        mMediaCodec = MediaCodec.createEncoderByType("video/avc");
         MediaFormat mediaFormat = MediaFormat.createVideoFormat("video/avc", mQuality.resX, mQuality.resY);
         mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, mQuality.bitrate);
         mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, mQuality.framerate);
         mediaFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
         mediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1);
+
+        mMediaCodec = MediaCodec.createEncoderByType("video/avc");
         mMediaCodec.configure(mediaFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
         Surface surface = mMediaCodec.createInputSurface();
         ((EGLSurfaceView) mEGLSurfaceView).addMediaCodecSurface(surface);

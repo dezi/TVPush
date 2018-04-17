@@ -4,8 +4,12 @@ import android.media.MediaCodecInfo;
 
 import java.nio.ByteBuffer;
 
+import de.xavaro.android.cam.simple.Log;
+
 public class NV21Converter
 {
+    private static final String LOGTAG = NV21Converter.class.getSimpleName();
+
     public final static int[] formatsWeLike = new int[]
             {
                     MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Planar,
@@ -26,6 +30,7 @@ public class NV21Converter
     {
         setSize(width, height);
         setEncoderColorFormat(colorFormat);
+        setColorPanesReversed(false);
     }
 
     public void setSize(int width, int height)
@@ -117,7 +122,11 @@ public class NV21Converter
 
     public byte[] convert(byte[] data)
     {
-        // A buffer large enough for every case
+        if ((mSliceHeight == mHeight) || (mStride != mWidth))
+        {
+            return data;
+        }
+
         if (mBuffer == null || mBuffer.length != 3 * mSliceHeight * mStride / 2 + mYPadding)
         {
             mBuffer = new byte[3 * mSliceHeight * mStride / 2 + mYPadding];
@@ -125,63 +134,59 @@ public class NV21Converter
 
         if (!mPlanar)
         {
-            if (mSliceHeight == mHeight && mStride == mWidth)
+            if (!mPanesReversed)
             {
-                // Swaps U and V
-                if (!mPanesReversed)
+                int end = mSize + mSize / 2;
+                byte tmp;
+
+                for (int inx = mSize; inx < end; inx += 2)
                 {
-                    for (int i = mSize; i < mSize + mSize / 2; i += 2)
-                    {
-                        mBuffer[0] = data[i + 1];
-                        data[i + 1] = data[i];
-                        data[i] = mBuffer[0];
-                    }
+                    tmp = data[inx + 1];
+                    data[inx + 1] = data[inx];
+                    data[inx] = tmp;
                 }
-                if (mYPadding > 0)
-                {
-                    System.arraycopy(data, 0, mBuffer, 0, mSize);
-                    System.arraycopy(data, mSize, mBuffer, mSize + mYPadding, mSize / 2);
-                    return mBuffer;
-                }
-                return data;
             }
+
+            if (mYPadding == 0) return data;
+
+            System.arraycopy(data, 0, mBuffer, 0, mSize);
+            System.arraycopy(data, mSize, mBuffer, mSize + mYPadding, mSize / 2);
+
+            return mBuffer;
         }
         else
         {
-            if (mSliceHeight == mHeight && mStride == mWidth)
+            if (!mPanesReversed)
             {
-                // De-interleave U and V
-                if (!mPanesReversed)
+                for (int i = 0; i < mSize / 4; i += 1)
                 {
-                    for (int i = 0; i < mSize / 4; i += 1)
-                    {
-                        mBuffer[i] = data[mSize + 2 * i + 1];
-                        mBuffer[mSize / 4 + i] = data[mSize + 2 * i];
-                    }
+                    mBuffer[i] = data[mSize + 2 * i + 1];
+                    mBuffer[mSize / 4 + i] = data[mSize + 2 * i];
                 }
-                else
+            }
+            else
+            {
+                for (int i = 0; i < mSize / 4; i += 1)
                 {
-                    for (int i = 0; i < mSize / 4; i += 1)
-                    {
-                        mBuffer[i] = data[mSize + 2 * i];
-                        mBuffer[mSize / 4 + i] = data[mSize + 2 * i + 1];
-                    }
+                    mBuffer[i] = data[mSize + 2 * i];
+                    mBuffer[mSize / 4 + i] = data[mSize + 2 * i + 1];
                 }
-                if (mYPadding == 0)
-                {
-                    System.arraycopy(mBuffer, 0, data, mSize, mSize / 2);
-                }
-                else
-                {
-                    System.arraycopy(data, 0, mBuffer, 0, mSize);
-                    System.arraycopy(mBuffer, 0, mBuffer, mSize + mYPadding, mSize / 2);
-                    return mBuffer;
-                }
+            }
+
+            if (mYPadding == 0)
+            {
+                System.arraycopy(mBuffer, 0, data, mSize, mSize / 2);
+
                 return data;
             }
-        }
+            else
+            {
+                System.arraycopy(data, 0, mBuffer, 0, mSize);
+                System.arraycopy(mBuffer, 0, mBuffer, mSize + mYPadding, mSize / 2);
 
-        return data;
+                return mBuffer;
+            }
+        }
     }
 
     public byte[] createTestImage()
