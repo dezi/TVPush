@@ -27,6 +27,57 @@ public class BRLCommand
     private final static Map<String, BRLCrypt> deviceCrypt = new HashMap<>();
 
     @Nullable
+    private static byte[] sendCommand(String ipaddr, String macaddr, byte command, byte[] payload)
+    {
+        BRLCrypt crypt = getAuth(ipaddr, macaddr);
+
+        if (crypt == null)
+        {
+            if (command == authCommand)
+            {
+                crypt = new BRLCrypt();
+            }
+            else
+            {
+                Log.e(LOGTAG, "sendCommand: no crypt!");
+
+                return null;
+            }
+        }
+
+        byte[] message = cmdPacket(macaddr, command, payload, crypt);
+
+        byte[] response = sendToSocket(ipaddr, message);
+
+        if (response == null)
+        {
+            Log.e(LOGTAG, "sendCommand: no response!");
+
+            return null;
+        }
+
+        int err = (response[0x22] & 0xff) + ((response[0x23] & 0xff) << 8);
+
+        if (err != 0)
+        {
+            Log.e(LOGTAG, "sendCommand: received error=" + Integer.toHexString(err));
+
+            return null;
+        }
+
+        Log.d(LOGTAG, "sendCommand: received ok ipaddr=" + ipaddr);
+
+        byte[] result = decryptFromDeviceMessage(response, crypt);
+
+        if (result == null)
+        {
+            Log.e(LOGTAG, "sendCommand: decrypt failed!");
+        }
+
+        return result;
+    }
+
+    @Nullable
     private static BRLCrypt getAuth(String ipaddr, String macaddr)
     {
         BRLCrypt crypt = getMapCrypt(deviceCrypt, macaddr);
@@ -94,68 +145,32 @@ public class BRLCommand
     @Nullable
     public static JSONObject getSensorData(String ipaddr, String macaddr)
     {
-        BRLCrypt crypt = getAuth(ipaddr, macaddr);
+        byte[] result = sendCommand(ipaddr, macaddr, doitCommand, getTempStatusPayload());
+        if (result == null) return null;
 
-        if (crypt == null)
-        {
-            Log.e(LOGTAG, "getSensorData: no crypt!");
-            return null;
-        }
+        double temp = (float) (((result[0x4] & 0xff) * 10 + (result[0x5] & 0xff)) / 10.0);
+        double humi = (float) (((result[0x6] & 0xff) * 10 + (result[0x7] & 0xff)) / 10.0);
+        int light = result[0x8] & 0xff;
+        int airquality = result[0x0a] & 0xff;
+        int noise = result[0xc] & 0xff;
 
-        byte[] message = cmdPacket(macaddr, doitCommand, getTempStatusPayload(), crypt);
+        Log.d(LOGTAG, "getSensorData: received ok ipaddr=" + ipaddr
+                + " temp=" + temp
+                + " humi=" + humi
+                + " light=" + light
+                + " airquality=" + airquality
+                + " noise=" + noise
+        );
 
-        byte[] response = sendToSocket(ipaddr, message);
+        JSONObject res = new JSONObject();
 
-        if (response == null)
-        {
-            Log.e(LOGTAG, "getSensorData: no response!");
+        Json.put(res, "temperature", temp);
+        Json.put(res, "humidity", humi);
+        Json.put(res, "lightlevel", light);
+        Json.put(res, "noiselevel", noise);
+        Json.put(res, "airquality", airquality);
 
-            return null;
-        }
-
-        int err = (response[0x22] & 0xff) + ((response[0x23] & 0xff) << 8);
-
-        if (err == 0)
-        {
-            byte[] result = decryptFromDeviceMessage(response, crypt);
-
-            if (result == null)
-            {
-                Log.d(LOGTAG, "getSensorData: cannot decrypt!");
-
-                return null;
-            }
-
-            double temp = (float) (((result[0x4] & 0xff) * 10 + (result[0x5] & 0xff)) / 10.0);
-            double humi = (float) (((result[0x6] & 0xff) * 10 + (result[0x7] & 0xff)) / 10.0);
-            int light = result[0x8] & 0xff;
-            int airquality = result[0x0a] & 0xff;
-            int noise = result[0xc] & 0xff;
-
-            Log.d(LOGTAG, "getSensorData: received ok ipaddr=" + ipaddr
-                    + " temp=" + temp
-                    + " humi=" + humi
-                    + " light=" + light
-                    + " airquality=" + airquality
-                    + " noise=" + noise
-            );
-
-            JSONObject res = new JSONObject();
-
-            Json.put(res, "temperature", temp);
-            Json.put(res, "humidity", humi);
-            Json.put(res, "lightlevel", light);
-            Json.put(res, "noiselevel", noise);
-            Json.put(res, "airquality", airquality);
-
-            return res;
-        }
-        else
-        {
-            Log.e(LOGTAG, "getSensorData: received error=" + Integer.toHexString(err));
-        }
-
-        return null;
+        return res;
     }
 
     @Nullable
