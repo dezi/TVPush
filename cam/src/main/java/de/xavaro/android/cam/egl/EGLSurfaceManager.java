@@ -1,29 +1,29 @@
 package de.xavaro.android.cam.egl;
 
-import android.annotation.SuppressLint;
-import android.opengl.EGL14;
-import android.opengl.EGLConfig;
+import android.opengl.EGLSurface;
 import android.opengl.EGLContext;
 import android.opengl.EGLDisplay;
+import android.opengl.EGLConfig;
 import android.opengl.EGLExt;
-import android.opengl.EGLSurface;
+import android.opengl.EGL14;
 import android.opengl.GLES20;
-import android.view.Surface;
 
-@SuppressLint("NewApi")
+import android.view.Surface;
+import android.os.Build;
+
 public class EGLSurfaceManager
 {
-
-    public final static String TAG = "TextureManager";
+    public final static String LOGTAG = EGLSurfaceManager.class.getSimpleName();
 
     private static final int EGL_RECORDABLE_ANDROID = 0x3142;
 
-    private EGLContext mEGLContext = null;
     private EGLContext mEGLSharedContext = null;
+    private EGLContext mEGLContext = null;
+
     private EGLSurface mEGLSurface = null;
     private EGLDisplay mEGLDisplay = null;
 
-    private Surface mSurface;
+    private final Surface mSurface;
 
     /**
      * Creates an EGL context and an EGL surface.
@@ -55,13 +55,13 @@ public class EGLSurfaceManager
         EGL14.eglSwapBuffers(mEGLDisplay, mEGLSurface);
     }
 
-    /**
-     * Sends the presentation time stamp to EGL.  Time is expressed in nanoseconds.
-     */
-    public void setPresentationTime(long nsecs)
+    public void setPresentationTime(long nanosecs)
     {
-        EGLExt.eglPresentationTimeANDROID(mEGLDisplay, mEGLSurface, nsecs);
-        checkEglError("eglPresentationTimeANDROID");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+        {
+            EGLExt.eglPresentationTimeANDROID(mEGLDisplay, mEGLSurface, nanosecs);
+            checkEglError("eglPresentationTimeANDROID");
+        }
     }
 
     /**
@@ -70,72 +70,82 @@ public class EGLSurfaceManager
     private void eglSetup()
     {
         mEGLDisplay = EGL14.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY);
+
         if (mEGLDisplay == EGL14.EGL_NO_DISPLAY)
         {
             throw new RuntimeException("unable to get EGL14 display");
         }
+
         int[] version = new int[2];
+
         if (!EGL14.eglInitialize(mEGLDisplay, version, 0, version, 1))
         {
             throw new RuntimeException("unable to initialize EGL14");
         }
 
-        // Configure EGL for recording and OpenGL ES 2.0.
         int[] attribList;
+
         if (mEGLSharedContext == null)
         {
-            attribList = new int[]{
-                    EGL14.EGL_RED_SIZE, 8,
-                    EGL14.EGL_GREEN_SIZE, 8,
-                    EGL14.EGL_BLUE_SIZE, 8,
-                    EGL14.EGL_RENDERABLE_TYPE, EGL14.EGL_OPENGL_ES2_BIT,
-                    EGL14.EGL_NONE
-            };
+            attribList = new int[]
+                    {
+                            EGL14.EGL_RED_SIZE, 8,
+                            EGL14.EGL_GREEN_SIZE, 8,
+                            EGL14.EGL_BLUE_SIZE, 8,
+                            EGL14.EGL_RENDERABLE_TYPE, EGL14.EGL_OPENGL_ES2_BIT,
+                            EGL14.EGL_NONE
+                    };
         }
         else
         {
-            attribList = new int[]{
-                    EGL14.EGL_RED_SIZE, 8,
-                    EGL14.EGL_GREEN_SIZE, 8,
-                    EGL14.EGL_BLUE_SIZE, 8,
-                    EGL14.EGL_RENDERABLE_TYPE, EGL14.EGL_OPENGL_ES2_BIT,
-                    EGL_RECORDABLE_ANDROID, 1,
-                    EGL14.EGL_NONE
-            };
+            attribList = new int[]
+                    {
+                            EGL14.EGL_RED_SIZE, 8,
+                            EGL14.EGL_GREEN_SIZE, 8,
+                            EGL14.EGL_BLUE_SIZE, 8,
+                            EGL14.EGL_RENDERABLE_TYPE, EGL14.EGL_OPENGL_ES2_BIT,
+                            EGL_RECORDABLE_ANDROID, 1,
+                            EGL14.EGL_NONE
+                    };
         }
+
         EGLConfig[] configs = new EGLConfig[1];
         int[] numConfigs = new int[1];
-        EGL14.eglChooseConfig(mEGLDisplay, attribList, 0, configs, 0, configs.length,
+
+        EGL14.eglChooseConfig(mEGLDisplay,
+                attribList, 0,
+                configs, 0, configs.length,
                 numConfigs, 0);
+
         checkEglError("eglCreateContext RGB888+recordable ES2");
 
-        // Configure context for OpenGL ES 2.0.
-        int[] attrib_list = {
-                EGL14.EGL_CONTEXT_CLIENT_VERSION, 2,
-                EGL14.EGL_NONE
-        };
+        int[] attrib_list =
+                {
+                        EGL14.EGL_CONTEXT_CLIENT_VERSION, 2,
+                        EGL14.EGL_NONE
+                };
 
         if (mEGLSharedContext == null)
         {
             mEGLContext = EGL14.eglCreateContext(mEGLDisplay, configs[0], EGL14.EGL_NO_CONTEXT, attrib_list, 0);
+            checkEglError("eglCreateContext");
         }
         else
         {
             mEGLContext = EGL14.eglCreateContext(mEGLDisplay, configs[0], mEGLSharedContext, attrib_list, 0);
+            checkEglError("eglCreateContext");
         }
-        checkEglError("eglCreateContext");
 
-        // Create a window surface, and attach it to the Surface we received.
-        int[] surfaceAttribs = {
-                EGL14.EGL_NONE
-        };
-        mEGLSurface = EGL14.eglCreateWindowSurface(mEGLDisplay, configs[0], mSurface,
-                surfaceAttribs, 0);
+        int[] surfaceAttribs =
+                {
+                        EGL14.EGL_NONE
+                };
+
+        mEGLSurface = EGL14.eglCreateWindowSurface(mEGLDisplay, configs[0], mSurface, surfaceAttribs, 0);
         checkEglError("eglCreateWindowSurface");
 
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);
         GLES20.glDisable(GLES20.GL_CULL_FACE);
-
     }
 
     /**
@@ -165,11 +175,10 @@ public class EGLSurfaceManager
     private void checkEglError(String msg)
     {
         int error;
+
         if ((error = EGL14.eglGetError()) != EGL14.EGL_SUCCESS)
         {
             throw new RuntimeException(msg + ": EGL error: 0x" + Integer.toHexString(error));
         }
     }
-
-
 }

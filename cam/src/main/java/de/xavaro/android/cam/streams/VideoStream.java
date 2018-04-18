@@ -483,14 +483,11 @@ public abstract class VideoStream extends MediaStream
     @SuppressLint({"InlinedApi", "NewApi"})
     protected void encodeWithMediaCodecMethod2() throws RuntimeException, IOException
     {
-
         Log.d(LOGTAG, "Video encoded using the MediaCodec API with a surface");
 
-        // Updates the parameters of the camera if needed
         createCamera();
         updateCamera();
 
-        // Estimates the frame rate of the camera
         measureFramerate();
 
         MediaFormat mediaFormat = MediaFormat.createVideoFormat("video/avc", mQuality.resX, mQuality.resY);
@@ -502,15 +499,13 @@ public abstract class VideoStream extends MediaStream
         mMediaCodec = MediaCodec.createEncoderByType("video/avc");
         mMediaCodec.configure(mediaFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
         Surface surface = mMediaCodec.createInputSurface();
-        ((EGLSurfaceView) mEGLSurfaceView).addMediaCodecSurface(surface);
+        mEGLSurfaceView.addMediaCodecSurface(surface);
         mMediaCodec.start();
 
-        // The packetizer encapsulates the bit stream in an RTP stream and send it over the network
         mPacketizer.setInputStream(new MediaCodecInputStream(mMediaCodec));
         mPacketizer.start();
 
         mStreaming = true;
-
     }
 
     /**
