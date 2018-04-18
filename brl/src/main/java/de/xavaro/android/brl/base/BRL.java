@@ -120,9 +120,9 @@ public class BRL extends OnInterfacesStubs implements
                 @Override
                 public void run()
                 {
-                    int res = BRLCommand.getPowerStatus(ipaddr, macaddr);
+                    Integer res = BRLCommand.getPowerStatus(ipaddr, macaddr);
 
-                    if (res >= 0)
+                    if (res != null)
                     {
                         Json.put(status, "plugstate", res);
 

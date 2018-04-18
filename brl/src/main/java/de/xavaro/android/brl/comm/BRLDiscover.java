@@ -329,8 +329,27 @@ public class BRLDiscover
         // Aquire status if all set.
         //
 
-        int res = BRLCommand.getPowerStatus(ipaddr, macaddr);
-        if (res >= 0) Json.put(status, "plugstate", res);
+        if (BRLUtil.containsCap("smartplug", caps))
+        {
+            Integer res = BRLCommand.getPowerStatus(ipaddr, macaddr);
+            if (res != null) Json.put(status, "plugstate", res);
+        }
+
+        if (BRLUtil.containsCap("temperature", caps))
+        {
+            Double temp = BRLCommand.getTemperature(ipaddr, macaddr);
+            if (temp != null) Json.put(status, "temperature", temp);
+        }
+
+        if (BRLUtil.containsCap("sensor", caps))
+        {
+            JSONObject sensor = BRLCommand.getSensorData(ipaddr, macaddr);
+
+            if (sensor != null)
+            {
+
+            }
+        }
 
         BRL.instance.onDeviceStatus(status);
 

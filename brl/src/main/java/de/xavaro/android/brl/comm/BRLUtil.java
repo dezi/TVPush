@@ -7,7 +7,7 @@ public class BRLUtil
     {
         if (model.startsWith("A1"))
         {
-            return "airquality|fixed|tcp|wifi|stupid";
+            return "sensor|airquality|temperature|humidity|noiselevel|lightlevel|fixed|tcp|wifi|stupid";
         }
 
         if (model.startsWith("MP1"))
@@ -17,15 +17,24 @@ public class BRLUtil
 
         if (model.startsWith("RM"))
         {
-            return "irremote|fixed|tcp|wifi|stupid";
+            return "irremote|rfremote|fixed|tcp|wifi|stupid|temperature";
         }
 
-        if (model.startsWith("Smart Plug"))
+        if (model.startsWith("SP"))
         {
             return "smartplug|fixed|tcp|wifi|stupid|plugonoff";
         }
 
         return "unknown|fixed|tcp|wifi|stupid";
+    }
+
+    public static boolean containsCap(String cap, String caps)
+    {
+        String cmpcap = "|" + cap + "|";
+        String cmpcaps = "|" + caps + "|";
+
+        return cmpcaps.contains(cmpcap);
+
     }
 
     public static String getHexBytesToString(byte[] bytes)

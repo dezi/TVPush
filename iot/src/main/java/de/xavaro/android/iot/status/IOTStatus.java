@@ -33,6 +33,13 @@ public class IOTStatus extends IOTObject
     public Integer plugstate;
     public Integer bulbstate;
 
+    public Double temperature;
+    public Double humidity;
+
+    public Integer airquality;
+    public Integer lightlevel;
+    public Integer noiselevel;
+
     public Integer hue;
     public Integer saturation;
     public Integer brightness;
@@ -73,23 +80,30 @@ public class IOTStatus extends IOTObject
 
         changed = false;
 
-        if (nequals(wifi,       check.wifi      )) wifi       = check.wifi;
-        if (nequals(ipaddr,     check.ipaddr    )) ipaddr     = check.ipaddr;
-        if (nequals(ipport,     check.ipport    )) ipport     = check.ipport;
+        if (nequals(wifi,        check.wifi       )) wifi        = check.wifi;
+        if (nequals(ipaddr,      check.ipaddr     )) ipaddr      = check.ipaddr;
+        if (nequals(ipport,      check.ipport     )) ipport      = check.ipport;
 
-        if (nequals(txpower,    check.txpower   )) txpower    = check.txpower;
-        if (nequals(macaddr,    check.macaddr   )) macaddr    = check.macaddr;
+        if (nequals(txpower,     check.txpower    )) txpower     = check.txpower;
+        if (nequals(macaddr,     check.macaddr    )) macaddr     = check.macaddr;
 
-        if (nequals(camblind,   check.camblind  )) camblind   = check.camblind;
+        if (nequals(camblind,    check.camblind   )) camblind    = check.camblind;
 
-        if (nequals(ledstate,   check.ledstate  )) ledstate   = check.ledstate;
-        if (nequals(plugstate,  check.plugstate )) plugstate  = check.plugstate;
-        if (nequals(bulbstate,  check.bulbstate )) bulbstate  = check.bulbstate;
+        if (nequals(ledstate,    check.ledstate   )) ledstate    = check.ledstate;
+        if (nequals(plugstate,   check.plugstate  )) plugstate   = check.plugstate;
+        if (nequals(bulbstate,   check.bulbstate  )) bulbstate   = check.bulbstate;
 
-        if (nequals(hue,        check.hue       )) hue        = check.hue;
-        if (nequals(saturation, check.saturation)) saturation = check.saturation;
-        if (nequals(brightness, check.brightness)) brightness = check.brightness;
-        if (nequals(color_temp, check.color_temp)) color_temp = check.color_temp;
+        if (nequals(temperature, check.temperature)) temperature = check.temperature;
+        if (nequals(humidity,    check.humidity   )) humidity    = check.humidity;
+
+        if (nequals(airquality,  check.airquality )) airquality  = check.airquality;
+        if (nequals(lightlevel,  check.lightlevel )) lightlevel  = check.lightlevel;
+        if (nequals(noiselevel,  check.noiselevel )) noiselevel  = check.noiselevel;
+
+        if (nequals(hue,         check.hue        )) hue         = check.hue;
+        if (nequals(saturation,  check.saturation )) saturation  = check.saturation;
+        if (nequals(brightness,  check.brightness )) brightness  = check.brightness;
+        if (nequals(color_temp,  check.color_temp )) color_temp  = check.color_temp;
 
         if (nequals(positionLatCoarse, check.positionLatCoarse)) positionLatCoarse = check.positionLatCoarse;
         if (nequals(positionLonCoarse, check.positionLonCoarse)) positionLonCoarse = check.positionLonCoarse;

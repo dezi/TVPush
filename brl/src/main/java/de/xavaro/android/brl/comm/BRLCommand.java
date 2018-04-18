@@ -4,12 +4,16 @@ import android.support.annotation.Nullable;
 import android.os.Build;
 import android.util.Log;
 
+import org.json.JSONObject;
+
 import java.net.SocketTimeoutException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
+
+import de.xavaro.android.brl.simple.Json;
 
 public class BRLCommand
 {
@@ -18,7 +22,7 @@ public class BRLCommand
     private static final int DEFAULT_BYTES_SIZE = 56;
 
     private final static byte authCommand = 0x65;
-    private final static byte powerStateCommand = 0x6a;
+    private final static byte doitCommand = 0x6a;
 
     private final static Map<String, BRLCrypt> deviceCrypt = new HashMap<>();
 
@@ -87,17 +91,134 @@ public class BRLCommand
         return null;
     }
 
-    public static int getPowerStatus(String ipaddr, String macaddr)
+    @Nullable
+    public static JSONObject getSensorData(String ipaddr, String macaddr)
+    {
+        BRLCrypt crypt = getAuth(ipaddr, macaddr);
+
+        if (crypt == null)
+        {
+            Log.e(LOGTAG, "getSensorData: no crypt!");
+            return null;
+        }
+
+        byte[] message = cmdPacket(macaddr, doitCommand, getTempStatusPayload(), crypt);
+
+        byte[] response = sendToSocket(ipaddr, message);
+
+        if (response == null)
+        {
+            Log.e(LOGTAG, "getSensorData: no response!");
+
+            return null;
+        }
+
+        int err = (response[0x22] & 0xff) + ((response[0x23] & 0xff) << 8);
+
+        if (err == 0)
+        {
+            byte[] result = decryptFromDeviceMessage(response, crypt);
+
+            if (result == null)
+            {
+                Log.d(LOGTAG, "getSensorData: cannot decrypt!");
+
+                return null;
+            }
+
+            double temp = (float) (((result[0x4] & 0xff) * 10 + (result[0x5] & 0xff)) / 10.0);
+            double humi = (float) (((result[0x6] & 0xff) * 10 + (result[0x7] & 0xff)) / 10.0);
+            int light = result[0x8] & 0xff;
+            int airquality = result[0x0a] & 0xff;
+            int noise = result[0xc] & 0xff;
+
+            Log.d(LOGTAG, "getSensorData: received ok ipaddr=" + ipaddr
+                    + " temp=" + temp
+                    + " humi=" + humi
+                    + " light=" + light
+                    + " airquality=" + airquality
+                    + " noise=" + noise
+            );
+
+            JSONObject res = new JSONObject();
+
+            Json.put(res, "temperature", temp);
+            Json.put(res, "humidity", humi);
+            Json.put(res, "lightlevel", light);
+            Json.put(res, "noiselevel", noise);
+            Json.put(res, "airquality", airquality);
+
+            return res;
+        }
+        else
+        {
+            Log.e(LOGTAG, "getSensorData: received error=" + Integer.toHexString(err));
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static Double getTemperature(String ipaddr, String macaddr)
+    {
+        BRLCrypt crypt = getAuth(ipaddr, macaddr);
+
+        if (crypt == null)
+        {
+            Log.e(LOGTAG, "getTemperature: no crypt!");
+            return null;
+        }
+
+        byte[] message = cmdPacket(macaddr, doitCommand, getTempStatusPayload(), crypt);
+
+        byte[] response = sendToSocket(ipaddr, message);
+
+        if (response == null)
+        {
+            Log.e(LOGTAG, "getTemperature: no response!");
+
+            return null;
+        }
+
+        int err = (response[0x22] & 0xff) + ((response[0x23] & 0xff) << 8);
+
+        if (err == 0)
+        {
+            byte[] result = decryptFromDeviceMessage(response, crypt);
+
+            if (result == null)
+            {
+                Log.d(LOGTAG, "getTemperature: cannot decrypt!");
+
+                return null;
+            }
+
+            Double temp = ((result[4] & 0xff) * 10 + (result[5] & 0xff)) / 10.0;
+
+            Log.d(LOGTAG, "getTemperature: received ok ipaddr=" + ipaddr + " temp=" + temp);
+
+            return temp;
+        }
+        else
+        {
+            Log.e(LOGTAG, "getTemperature: received error=" + Integer.toHexString(err));
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static Integer getPowerStatus(String ipaddr, String macaddr)
     {
         BRLCrypt crypt = getAuth(ipaddr, macaddr);
 
         if (crypt == null)
         {
             Log.e(LOGTAG, "getPowerStatus: no crypt!");
-            return -1;
+            return null;
         }
 
-        byte[] message = cmdPacket(macaddr, powerStateCommand, getPowerStatusPayload(), crypt);
+        byte[] message = cmdPacket(macaddr, doitCommand, getPowerStatusPayload(), crypt);
 
         byte[] response = sendToSocket(ipaddr, message);
 
@@ -105,7 +226,7 @@ public class BRLCommand
         {
             Log.e(LOGTAG, "getPowerStatus: no response!");
 
-            return -1;
+            return null;
         }
 
         int err = (response[0x22] & 0xff) + ((response[0x23] & 0xff) << 8);
@@ -118,10 +239,10 @@ public class BRLCommand
             {
                 Log.d(LOGTAG, "getPowerStatus: cannot decrypt!");
 
-                return -1;
+                return null;
             }
 
-            int onoff = (result[0x4] == 1) ? 1 : 0;
+            Integer onoff = ((result[0x4] & 0xff) == 1) ? 1 : 0;
 
             Log.d(LOGTAG, "getPowerStatus: received ok ipaddr=" + ipaddr + " onoff=" + onoff);
 
@@ -132,20 +253,21 @@ public class BRLCommand
             Log.e(LOGTAG, "getPowerStatus: received error=" + Integer.toHexString(err));
         }
 
-        return -1;
+        return null;
     }
 
-    public static int setPowerStatus(String ipaddr, String macaddr, int onoff)
+    @Nullable
+    public static Integer setPowerStatus(String ipaddr, String macaddr, int onoff)
     {
         BRLCrypt crypt = getAuth(ipaddr, macaddr);
 
         if (crypt == null)
         {
             Log.e(LOGTAG, "setPowerStatus: no crypt!");
-            return -1;
+            return null;
         }
 
-        byte[] message = cmdPacket(macaddr, powerStateCommand, setPowerStatusPayload(onoff), crypt);
+        byte[] message = cmdPacket(macaddr, doitCommand, setPowerStatusPayload(onoff), crypt);
 
         byte[] response = sendToSocket(ipaddr, message);
 
@@ -153,7 +275,7 @@ public class BRLCommand
         {
             Log.e(LOGTAG, "setPowerStatus: no response!");
 
-            return -1;
+            return null;
         }
 
         int err = (response[0x22] & 0xff) + ((response[0x23] & 0xff) << 8);
@@ -166,7 +288,7 @@ public class BRLCommand
             {
                 Log.d(LOGTAG, "setPowerStatus: cannot decrypt!");
 
-                return -1;
+                return null;
             }
 
             Log.d(LOGTAG, "setPowerStatus: received ok ipaddr=" + ipaddr + " onoff=" + onoff);
@@ -178,7 +300,7 @@ public class BRLCommand
             Log.e(LOGTAG, "setPowerStatus: received error=" + Integer.toHexString(err));
         }
 
-        return -1;
+        return null;
     }
 
     @Nullable
@@ -271,6 +393,15 @@ public class BRLCommand
     }
 
     private static byte[] getPowerStatusPayload()
+    {
+        byte[] data = new byte[16];
+
+        data[0] = 1;
+
+        return data;
+    }
+
+    private static byte[] getTempStatusPayload()
     {
         byte[] data = new byte[16];
 
