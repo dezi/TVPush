@@ -490,6 +490,9 @@ public abstract class VideoStream extends MediaStream
 
         measureFramerate();
 
+        Surface surface = mMediaCodec.createInputSurface();
+        mEGLSurfaceView.addMediaCodecSurface(surface);
+
         MediaFormat mediaFormat = MediaFormat.createVideoFormat("video/avc", mQuality.resX, mQuality.resY);
         mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, mQuality.bitrate);
         mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, mQuality.framerate);
@@ -498,8 +501,6 @@ public abstract class VideoStream extends MediaStream
 
         mMediaCodec = MediaCodec.createEncoderByType("video/avc");
         mMediaCodec.configure(mediaFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
-        Surface surface = mMediaCodec.createInputSurface();
-        mEGLSurfaceView.addMediaCodecSurface(surface);
         mMediaCodec.start();
 
         mPacketizer.setInputStream(new MediaCodecInputStream(mMediaCodec));

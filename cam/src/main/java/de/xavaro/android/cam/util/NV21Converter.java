@@ -1,10 +1,9 @@
 package de.xavaro.android.cam.util;
 
 import android.media.MediaCodecInfo;
+import android.util.Log;
 
 import java.nio.ByteBuffer;
-
-import de.xavaro.android.cam.simple.Log;
 
 public class NV21Converter
 {
@@ -58,6 +57,11 @@ public class NV21Converter
         }
     }
 
+    public void setColorPanesReversed(boolean b)
+    {
+        mPanesReversed = b;
+    }
+
     public void setStride(int width)
     {
         mStride = width;
@@ -81,11 +85,6 @@ public class NV21Converter
     public int getBufferSize()
     {
         return 3 * mSize / 2;
-    }
-
-    public void setColorPanesReversed(boolean b)
-    {
-        mPanesReversed = b;
     }
 
     public int getStride()
@@ -122,7 +121,14 @@ public class NV21Converter
 
     public byte[] convert(byte[] data)
     {
-        if ((mSliceHeight == mHeight) || (mStride != mWidth))
+        Log.d(LOGTAG, "convert:"
+                + " data=" + data.length
+                + " planar=" + mPlanar
+                + " mSliceHeight=" + mSliceHeight + ":" + mHeight
+                + " mStride=" + mStride + ":" + mWidth
+        );
+
+        if ((mSliceHeight != mHeight) || (mStride != mWidth))
         {
             return data;
         }
@@ -132,9 +138,9 @@ public class NV21Converter
             mBuffer = new byte[3 * mSliceHeight * mStride / 2 + mYPadding];
         }
 
-        if (!mPlanar)
+        if (! mPlanar)
         {
-            if (!mPanesReversed)
+            if (! mPanesReversed)
             {
                 int end = mSize + mSize / 2;
                 byte tmp;
