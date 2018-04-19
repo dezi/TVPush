@@ -347,8 +347,29 @@ public class BRLDiscover
 
             if (sensor != null)
             {
+                Json.put(status, "temperature", Json.getDouble(sensor, "temperature"));
+                Json.put(status, "humidity", Json.getDouble(sensor, "humidity"));
 
+                Json.put(status, "lightlevel", Json.getInt(sensor, "lightlevel"));
+                Json.put(status, "noiselevel", Json.getInt(sensor, "noiselevel"));
+                Json.put(status, "airquality", Json.getInt(sensor, "airquality"));
             }
+        }
+
+        if (BRLUtil.containsCap("irremote", caps))
+        {
+            BRLCommand.enterLearning(ipaddr, macaddr);
+
+            try
+            {
+                Thread.sleep(10 * 1000);
+            }
+            catch (Exception ignore)
+            {
+            }
+
+            BRLCommand.getLearnedData(ipaddr, macaddr);
+
         }
 
         BRL.instance.onDeviceStatus(status);

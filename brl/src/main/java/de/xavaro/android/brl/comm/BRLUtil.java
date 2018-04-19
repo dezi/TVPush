@@ -17,7 +17,7 @@ public class BRLUtil
 
         if (model.startsWith("RM"))
         {
-            return "irremote|rfremote|fixed|tcp|wifi|stupid|temperature";
+            return "irremote|rfremote|fixed|tcp|wifi|stupid";
         }
 
         if (model.startsWith("SP"))
