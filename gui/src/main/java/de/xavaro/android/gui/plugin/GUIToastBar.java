@@ -106,7 +106,7 @@ public class GUIToastBar extends GUIPlugin implements OnSpeechHandler
             centerCont.setSizeDip(Simple.MP, Simple.MP);
             toastText.setSizeDip(Simple.MP, Simple.WC);
 
-            contentFrame.setPaddingDip(GUIDefs.PADDING_LARGE);
+            contentFrame.setPaddingDip(GUIDefs.PADDING_TINY);
             colorFrame.setPaddingDip(GUIDefs.PADDING_LARGE);
             centerCont.setPaddingDip(GUIDefs.PADDING_LARGE);
             toastText.setPaddingDip(GUIDefs.PADDING_LARGE);

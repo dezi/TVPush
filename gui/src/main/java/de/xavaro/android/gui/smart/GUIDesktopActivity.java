@@ -109,9 +109,9 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
                     160,
                     240,
-                    Gravity.TOP + Gravity.CENTER_HORIZONTAL);
+                    Gravity.BOTTOM + Gravity.CENTER_HORIZONTAL);
 
-            lp.topMargin = 250;
+            lp.bottomMargin = 100;
 
             surfaceFrame.setLayoutParams(lp);
 

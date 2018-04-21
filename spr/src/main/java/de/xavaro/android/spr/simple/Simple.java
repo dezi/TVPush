@@ -59,7 +59,7 @@ public class Simple
 
     public static void turnBeepOnOff(boolean on)
     {
-        if ((audioManager != null) && !Simple.isTV())
+        if ((audioManager != null) && ! Simple.isTV())
         {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             {

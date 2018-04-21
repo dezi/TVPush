@@ -1,6 +1,9 @@
 package de.xavaro.android.spr.base;
 
+import android.content.pm.ResolveInfo;
 import android.os.Build;
+import android.provider.Settings;
+import android.speech.RecognitionService;
 import android.support.annotation.Nullable;
 
 import android.speech.RecognitionListener;
@@ -15,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.xavaro.android.spr.simple.Log;
 import de.xavaro.android.spr.simple.Json;
@@ -52,8 +56,25 @@ public class SPRListener implements RecognitionListener
     private boolean isEnabled;
     private boolean isBeginn;
 
+    public static boolean isRecognitionAvailable(Context context)
+    {
+        final List<ResolveInfo> list = context.getPackageManager().queryIntentServices(
+                new Intent(RecognitionService.SERVICE_INTERFACE), 0);
+
+        Log.d(LOGTAG, "########" + list);
+
+        String serviceComponent = Settings.Secure.getString(context.getContentResolver(),
+                "voice_recognition_service");
+
+        Log.d(LOGTAG, "########" + serviceComponent);
+
+        return list != null && list.size() != 0;
+    }
+
     public SPRListener(Context context)
     {
+        isRecognitionAvailable(context);
+
         if (Simple.isSpeechIn())
         {
             Log.d(LOGTAG, "SpeechRecognizer: init.");
