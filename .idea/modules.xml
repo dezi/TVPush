@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/SmartHome.iml" filepath="$PROJECT_DIR$/SmartHome.iml" />
       <module fileurl="file://$PROJECT_DIR$/adb/adb.iml" filepath="$PROJECT_DIR$/adb/adb.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/awx/awx.iml" filepath="$PROJECT_DIR$/awx/awx.iml" />
       <module fileurl="file://$PROJECT_DIR$/bcn/bcn.iml" filepath="$PROJECT_DIR$/bcn/bcn.iml" />
       <module fileurl="file://$PROJECT_DIR$/brl/brl.iml" filepath="$PROJECT_DIR$/brl/brl.iml" />
       <module fileurl="file://$PROJECT_DIR$/cam/cam.iml" filepath="$PROJECT_DIR$/cam/cam.iml" />

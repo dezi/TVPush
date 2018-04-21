@@ -9,6 +9,7 @@ public class BCNDefs
     public final static int MANUFACTURER_SAMSUNG = 117;
     public final static int MANUFACTURER_GOOGLE = 224;
     public final static int MANUFACTURER_SONY = 301;
+    public final static int MANUFACTURER_AWOX = 352;
 
     public final static byte ADVERTISE_GPS_FINE = 1;
     public final static byte ADVERTISE_GPS_COARSE = 2;
@@ -47,6 +48,7 @@ public class BCNDefs
             case MANUFACTURER_APPLE: return "Apple, Inc.";
             case MANUFACTURER_SONY: return "Sony Corporation";
             case MANUFACTURER_SAMSUNG: return "Samsung Electronics Co. Ltd.";
+            case MANUFACTURER_AWOX: return "AwoX";
         }
 
         return null;

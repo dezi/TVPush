@@ -265,7 +265,6 @@ public class BCNScanner
             }
         }
 
-        /*
         ParcelUuid serviceUuid = null;
         List<ParcelUuid> serviceUuids = result.getScanRecord().getServiceUuids();
 
@@ -308,7 +307,6 @@ public class BCNScanner
                 + " data=" + serviceDataUuid
                 + " scan=" + result.getScanRecord()
         );
-        */
     }
 
     @SuppressWarnings("SameReturnValue")

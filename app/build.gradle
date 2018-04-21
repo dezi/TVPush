@@ -62,6 +62,7 @@ dependencies {
     implementation project(':tpl')
     implementation project(':edx')
     implementation project(':brl')
+    implementation project(':awx')
     implementation project(':zztop')
 }
 

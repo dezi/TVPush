@@ -34,6 +34,7 @@ public class Systems
         startSubsystem(application, "tpl");
         startSubsystem(application, "brl");
         startSubsystem(application, "edx");
+        startSubsystem(application, "awx");
         startSubsystem(application, "p2p");
     }
 
@@ -53,6 +54,7 @@ public class Systems
 
             case "sny" : return new SystemsSNY(application);
             case "tpl" : return new SystemsTPL(application);
+            case "awx" : return new SystemsAWX(application);
             case "brl" : return new SystemsBRL(application);
             case "edx" : return new SystemsEDX(application);
             case "p2p" : return new SystemsP2P(application);

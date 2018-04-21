@@ -1,0 +1,12 @@
+<resources>
+
+    <string name="subsystem_awx_name">AwoX Smart Home</string>
+
+    <string name="subsystem_awx_info">
+        Dieses System enthält eine Schnittstelle zu intelligenten
+        Leuchten des Herstellers Awox.
+        \n\n
+        Wenn dieses System aktiviert ist, können Sie diese Geräte per App bedienen.
+    </string>
+
+</resources>
