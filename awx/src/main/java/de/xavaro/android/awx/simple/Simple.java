@@ -1,6 +1,8 @@
 package de.xavaro.android.awx.simple;
 
 import android.app.Application;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.wifi.WifiManager;
@@ -23,11 +25,23 @@ public class Simple
 {
     private static Resources resources;
     private static WifiManager wifiManager;
+    private static BluetoothManager bluetoothManager;
+    private static BluetoothAdapter bluetoothAdapter;
 
     public static void initialize(Application app)
     {
         resources = app.getResources();
         wifiManager = (WifiManager) app.getSystemService(Context.WIFI_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+        {
+            bluetoothManager = (BluetoothManager) app.getSystemService(Context.BLUETOOTH_SERVICE);
+
+            if (bluetoothManager != null)
+            {
+                bluetoothAdapter = bluetoothManager.getAdapter();
+            }
+        }
     }
 
     @Nullable
@@ -135,5 +149,17 @@ public class Simple
         {
             runnable.run();
         }
+    }
+
+    @Nullable
+    public static BluetoothManager getBTManager()
+    {
+        return bluetoothManager;
+    }
+
+    @Nullable
+    public static BluetoothAdapter getBTAdapter()
+    {
+        return bluetoothAdapter;
     }
 }

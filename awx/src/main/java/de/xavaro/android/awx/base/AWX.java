@@ -25,9 +25,12 @@ public class AWX extends OnInterfacesStubs implements
     public static AWX instance;
 
     public AWXDiscover discover;
+    public Application appcontext;
 
     public AWX(Application application)
     {
+        appcontext = application;
+
         Simple.initialize(application);
     }
 
@@ -62,7 +65,7 @@ public class AWX extends OnInterfacesStubs implements
     @Override
     public void startSubsystem(String subsystem)
     {
-        AWXDiscover.startService();
+        AWXDiscover.startService(appcontext);
 
         onSubsystemStarted(subsystem, SubSystemHandler.SUBSYSTEM_RUN_STARTED);
     }
