@@ -5,12 +5,11 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
-add_library(awxaeslib SHARED src/main/cpp/awxaeslib.cpp)
+add_library(awxaes SHARED src/main/cpp/libawxaes.cpp)
 
-add_library(libTelinkCrypto SHARED IMPORTED)
-
-set_target_properties(libTelinkCrypto PROPERTIES IMPORTED_LOCATION
-${CMAKE_SOURCE_DIR}/src/main/jnilibs/${ANDROID_ABI}/libTelinkCrypto.so)
+add_library(extaes SHARED IMPORTED)
+set_target_properties(extaes PROPERTIES IMPORTED_LOCATION
+${CMAKE_SOURCE_DIR}/src/main/jnilibs/${ANDROID_ABI}/libextaes.so)
 
 find_library( # Sets the name of the path variable.
               log-lib
@@ -20,8 +19,8 @@ find_library( # Sets the name of the path variable.
               log )
 
 target_link_libraries( # Specifies the target library.
-                       awxaeslib
-                       libTelinkCrypto
+                       awxaes
+                       extaes
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib} )
