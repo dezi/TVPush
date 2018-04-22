@@ -5,14 +5,7 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
-add_library( # Sets the name of the library.
-             dummy-lib
-
-             # Sets the library as a shared library.
-             SHARED
-
-             # Provides a relative path to your source file(s).
-             src/main/cpp/dummy-lib.cpp )
+add_library(awxaeslib SHARED src/main/cpp/awxaeslib.cpp)
 
 add_library(libTelinkCrypto SHARED IMPORTED)
 
@@ -27,7 +20,7 @@ find_library( # Sets the name of the path variable.
               log )
 
 target_link_libraries( # Specifies the target library.
-                       dummy-lib
+                       awxaeslib
                        libTelinkCrypto
                        # Links the target library to the log library
                        # included in the NDK.
