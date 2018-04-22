@@ -139,9 +139,11 @@ public class AWXProtocol
     static byte[] encryptValue(String address, byte[] sessionKey, byte[] value)
     {
         byte[] vector = new byte[8];
+
         System.arraycopy(AWXByteUtils.reverse(AWXHardwareUtils.getAddress(address)), 0, vector, 0, 4);
         vector[4] = (byte) 1;
         System.arraycopy(value, 0, vector, 5, 3);
+
         return AES.encrypt(sessionKey, vector, value);
     }
 
