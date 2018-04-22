@@ -21,6 +21,7 @@ public class AWXProtocol
     public static final String CHARACTERISTIC_MESH_LIGHT_OTA = "00010203-0405-0607-0809-0a0b0c0d1913";
     public static final String CHARACTERISTIC_MESH_LIGHT_PAIR = "00010203-0405-0607-0809-0a0b0c0d1914";
     public static final String CHARACTERISTIC_MESH_LIGHT_STATUS = "00010203-0405-0607-0809-0a0b0c0d1911";
+
     static final byte COMMAND_GET_ALARMS_RECEIVED = (byte) -25;
     static final byte COMMAND_GET_ALARMS_SENT = (byte) -26;
     static final byte COMMAND_GET_DEVICE_ADDRESS = (byte) -21;
@@ -139,7 +140,6 @@ public class AWXProtocol
     static byte[] encryptValue(String address, byte[] sessionKey, byte[] value)
     {
         byte[] vector = new byte[8];
-
         System.arraycopy(AWXByteUtils.reverse(AWXHardwareUtils.getAddress(address)), 0, vector, 0, 4);
         vector[4] = (byte) 1;
         System.arraycopy(value, 0, vector, 5, 3);

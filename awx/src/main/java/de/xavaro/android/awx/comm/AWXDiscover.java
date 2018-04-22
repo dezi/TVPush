@@ -250,7 +250,7 @@ public class AWXDiscover
         Json.put(scanResult, "macaddr", result.getDevice().getAddress());
         Json.put(scanResult, "service", serviceUuid.toString());
 
-        macaddr = result.getDevice().getAddress();
+        macaddrkey = result.getDevice().getAddress();
 
         synchronized (scanResults)
         {
@@ -267,7 +267,7 @@ public class AWXDiscover
     }
 
     private short meshId;
-    private String macaddr;
+    private String macaddrkey;
     private byte[] mSessionKey;
     private byte[] mSessionRandom;
     private String mMeshNameStr = "pDmpKfcw";
@@ -291,12 +291,20 @@ public class AWXDiscover
                 Log.d(LOGTAG, "onConnectionStateChange: connected.");
 
                 gatt.discoverServices();
+
+                return;
             }
 
             if (newState == BluetoothProfile.STATE_DISCONNECTED)
             {
                 Log.d(LOGTAG, "onConnectionStateChange: disconnected.");
+
+                return;
             }
+
+            Log.d(LOGTAG, "onConnectionStateChange:"
+                    + " status=" + status
+                    + " newState=" + newState);
         }
 
         @Override
@@ -350,6 +358,8 @@ public class AWXDiscover
                     }
                 }
             }
+
+            Log.d(LOGTAG, "onServicesDiscovered: done...");
 
             //
             // Pairing
@@ -454,21 +464,18 @@ public class AWXDiscover
 
                     if (data[0] == 13)
                     {
-                        if (data[0] == 13)
-                        {
-                            byte[] sessionRandom = new byte[8];
-                            System.arraycopy(data, 1, sessionRandom, 0, sessionRandom.length);
+                        byte[] sessionRandom = new byte[8];
+                        System.arraycopy(data, 1, sessionRandom, 0, sessionRandom.length);
 
-                            byte[] meshName = Arrays.copyOf(mMeshNameStr.getBytes(), 16);
-                            byte[] meshPassword = Arrays.copyOf(mMeshPasswordStr.getBytes(), 16);
+                        byte[] meshName = Arrays.copyOf(mMeshNameStr.getBytes(), 16);
+                        byte[] meshPassword = Arrays.copyOf(mMeshPasswordStr.getBytes(), 16);
 
-                            mSessionKey = AWXProtocol.getSessionKey(meshName, meshPassword, mSessionRandom, sessionRandom);
+                        mSessionKey = AWXProtocol.getSessionKey(meshName, meshPassword, mSessionRandom, sessionRandom);
 
-                            Log.e(LOGTAG, "onCharacteristicRead: mSessionKey=" + getBytesToHexString(mSessionKey, 0, mSessionKey.length));
-                            Log.e(LOGTAG, "onCharacteristicRead: paired!!!!!!");
+                        Log.e(LOGTAG, "onCharacteristicRead: mSessionKey=" + getBytesToHexString(mSessionKey, 0, mSessionKey.length));
+                        Log.e(LOGTAG, "onCharacteristicRead: paired!!!!!!");
 
-                            setColor(gatt, ccommand, 0x880000);
-                        }
+                        setColor(gatt, ccommand, 0x880000);
                     }
                     else
                     {
@@ -504,7 +511,26 @@ public class AWXDiscover
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic chara)
         {
-            Log.d(LOGTAG, "onCharacteristicChanged: chara=" + chara.getUuid());
+            byte[] data = chara.getValue();
+            //Log.d(LOGTAG, "onCharacteristicChanged: crypt=" + getBytesToHexString(data, 0, data.length));
+
+            byte[] plain = AWXProtocol.decryptValue(macaddrkey, mSessionKey, data);
+            //Log.d(LOGTAG, "onCharacteristicChanged: plain=" + getBytesToHexString(plain, 0, plain.length));
+
+            byte command = AWXProtocol.getCommand(plain);
+            byte[] paylod = AWXProtocol.getData(plain);
+
+            short meshIdDev = Short.parseShort(Integer.toString((paylod[9] & 255) + 256, 16).substring(1) + Integer.toString((paylod[0] & 255) + 256, 16).substring(1), 16);
+            String meshIdStr = Short.toString(meshId);
+
+            Log.d(LOGTAG, "onCharacteristicChanged:"
+                    + " m1=" + meshId
+                    + " m2=" + meshIdDev
+                    + " " + ((byte) ((meshIdDev >> 8) & 0xff))
+                    + " " + ((byte) ((meshIdDev ) & 0xff))
+                    + " cmd=" + command
+                    + " paylod=" + getBytesToHexString(paylod, 0, paylod.length));
+
 
             executeNext(gatt);
         }
@@ -575,16 +601,27 @@ public class AWXDiscover
 
         if (currentRequest.mode == AWXGattRequest.MODE_ENABLE_NOTIFICATION)
         {
+            Log.d(LOGTAG, "executeNext: write desc 1:");
+
             if (gatt.setCharacteristicNotification(currentRequest.chara,true))
             {
-                BluetoothGattDescriptor descriptor = currentRequest.chara.getDescriptor(AWXDefs.UUID_NOTIFICATION_DESCRIPTOR);
+                Log.d(LOGTAG, "executeNext: write desc 2:");
+
+                /*
+                BluetoothGattDescriptor descriptor = currentRequest.chara.getDescriptor(AWXDefs.UUID_NOTIFICATION_DESCRIPTOR1);
+
+                Log.d(LOGTAG, "executeNext: write desc 3:");
 
                 if (descriptor != null)
                 {
+                    Log.d(LOGTAG, "executeNext: write desc 4:");
+
                     descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
                     gatt.writeDescriptor(descriptor);
                 }
+                */
 
+                executeNext(gatt);
             }
         }
 
@@ -592,7 +629,7 @@ public class AWXDiscover
         {
             if (gatt.setCharacteristicNotification(currentRequest.chara,false))
             {
-                BluetoothGattDescriptor descriptor = currentRequest.chara.getDescriptor(AWXDefs.UUID_NOTIFICATION_DESCRIPTOR);
+                BluetoothGattDescriptor descriptor = currentRequest.chara.getDescriptor(AWXDefs.UUID_NOTIFICATION_DESCRIPTOR1);
 
                 if (descriptor != null)
                 {
@@ -622,7 +659,7 @@ public class AWXDiscover
 
         Log.d(LOGTAG, "setColor: plain=" + getBytesToHexString(data, 0, data.length));
 
-        byte[] cryp = AWXProtocol.encryptValue(macaddr, mSessionKey, data);
+        byte[] cryp = AWXProtocol.encryptValue(macaddrkey, mSessionKey, data);
 
         Log.d(LOGTAG, "setColor: crypt=" + getBytesToHexString(cryp, 0, cryp.length));
 
@@ -631,15 +668,17 @@ public class AWXDiscover
 
     public static short getMeshId(byte[] manufData)
     {
-        if (manufData == null || manufData.length <= 12)
+        if (manufData == null || manufData.length <= 14)
         {
             Log.e(LOGTAG, "getMeshId: manufData not correct : " + manufData);
 
             return (short) 0;
         }
 
-        Log.d(LOGTAG, "getMeshId: fund");
+        short mid = (short) (((manufData[3] & 0xff) << 8) + (manufData[2] & 255));
 
-        return (short) ((manufData[12] << 8) | (manufData[11] & 255));
+        Log.d(LOGTAG, "getMeshId: fund=" + mid);
+
+        return mid;
     }
 }

@@ -26,7 +26,8 @@ public class AWXDefs
     public static final String CHARACTERISTIC_MESH_LIGHT_OTA        = "00010203-0405-0607-0809-0a0b0c0d1913";
     public static final String CHARACTERISTIC_MESH_LIGHT_PAIR       = "00010203-0405-0607-0809-0a0b0c0d1914";
 
-    public static final UUID UUID_NOTIFICATION_DESCRIPTOR = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
+    public static final UUID UUID_NOTIFICATION_DESCRIPTOR1 = UUID.fromString("00002901-0000-1000-8000-00805f9b34fb");
+    public static final UUID UUID_NOTIFICATION_DESCRIPTOR2 = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
     // @formatter:on
 
