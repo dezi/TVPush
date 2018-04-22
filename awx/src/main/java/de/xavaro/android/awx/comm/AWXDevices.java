@@ -1,5 +1,6 @@
 package de.xavaro.android.awx.comm;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -232,6 +233,37 @@ public class AWXDevices
     public static final String PROPERTY_TIMER_ON_FADE_DURATION = "timer_on_fade_duration";
     public static final String PROPERTY_WHITE_BRIGHTNESS = "white_brightness";
     public static final String PROPERTY_WHITE_TEMPERATURE = "white_temperature";
+
+    private static Map<String, String> device2friendly;
+
+    static
+    {
+        device2friendly = new HashMap<>();
+
+        for (Field field : AWXDevices.class.getFields())
+        {
+            if (field.getName().startsWith("MODEL_NAME"))
+            {
+                try
+                {   String name = field.get(null).toString();
+
+                    String search = name.replace("-", "_").toLowerCase();
+
+                    device2friendly.put(search, name);
+                }
+                catch (IllegalAccessException ignore)
+                {
+                }
+            }
+        }
+    }
+
+    public static String getFriendlyName(String model)
+    {
+        String search = model.replace("-", "_").toLowerCase();
+        String name = device2friendly.get(search);
+        return (name != null) ? name : model;
+    }
 
     public static String getModelNameFromProductId(byte[] productId)
     {

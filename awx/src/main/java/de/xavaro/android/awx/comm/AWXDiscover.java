@@ -19,9 +19,13 @@ import android.os.Build;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.telink.crypto.AES;
+
 import org.json.JSONObject;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +69,7 @@ public class AWXDiscover
     private final ArrayList<String> connecting = new ArrayList<>();
 
     private final Map<BluetoothGatt, String> gatt2macaddr = new HashMap<>();
-    private final Map<BluetoothGatt, ArrayList<BluetoothGattCharacteristic>> gatt2read = new HashMap<>();
+    private final Map<BluetoothGatt, ArrayList<AWXGattRequest>> gatt2execute = new HashMap<>();
 
     public AWXDiscover(Context context)
     {
@@ -102,6 +106,8 @@ public class AWXDiscover
         @Override
         public void run()
         {
+            AES.initialize();
+
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
             {
                 return;
@@ -274,14 +280,19 @@ public class AWXDiscover
             }
         }
 
+        private byte[] mSessionKey;
+        private byte[] mSessionRandom;
+        private String mMeshNameStr = "pDmpKfcw";
+        private String mMeshPasswordStr = "f6d292f5";
+
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status)
         {
             Log.d(LOGTAG, "onServicesDiscovered: status=" + status);
             if (status != 0) return;
 
-            ArrayList<BluetoothGattCharacteristic> readme = new ArrayList<>();
-            gatt2read.put(gatt,readme);
+            ArrayList<AWXGattRequest> executeme= new ArrayList<>();
+            gatt2execute.put(gatt,executeme);
 
             List<BluetoothGattService> services = gatt.getServices();
 
@@ -295,7 +306,31 @@ public class AWXDiscover
                 {
                     Log.d(LOGTAG, "onServicesDiscovered: characteristic=" + chara.getUuid());
 
-                    readme.add(chara);
+                    if (chara.getUuid().toString().equals(AWXDefs.CHARACTERISTIC_MESH_LIGHT_PAIR))
+                    {
+                        this.mSessionRandom = new byte[8];
+                        new SecureRandom().nextBytes(this.mSessionRandom);
+
+                        byte[] meshName = Arrays.copyOf(mMeshNameStr.getBytes(), 16);
+                        byte[] meshPassword = Arrays.copyOf(mMeshPasswordStr.getBytes(), 16);
+
+                        byte[] data = AWXProtocol.getPairValue(meshName, meshPassword, this.mSessionRandom);
+                        executeme.add(new AWXGattRequest(gatt, chara, data, AWXGattRequest.MODE_WRITE_CHARACTERISTIC));
+
+                        executeme.add(new AWXGattRequest(gatt, chara, null, AWXGattRequest.MODE_READ_CHARACTERISTIC));
+                    }
+                    else
+                    {
+                        if (chara.getUuid().toString().equals(AWXDefs.CHARACTERISTIC_MESH_LIGHT_STATUS))
+                        {
+                            executeme.add(new AWXGattRequest(gatt, chara, new byte[]{(byte) 1}, AWXGattRequest.MODE_WRITE_CHARACTERISTIC));
+                            executeme.add(new AWXGattRequest(gatt, chara, null, AWXGattRequest.MODE_ENABLE_NOTIFICATION));
+                        }
+                        else
+                        {
+                            executeme.add(new AWXGattRequest(gatt, chara, null, AWXGattRequest.MODE_READ_CHARACTERISTIC));
+                        }
+                    }
 
                     List<BluetoothGattDescriptor> descs = chara.getDescriptors();
 
@@ -306,7 +341,7 @@ public class AWXDiscover
                 }
             }
 
-            readNext(gatt);
+            executeNext(gatt);
         }
 
         @Override
@@ -331,6 +366,10 @@ public class AWXDiscover
                 case AWXDefs.chara_device_name:
                     tag = "name";
                     val = chara.getStringValue(0).trim();
+
+                    String friendly = AWXDevices.getFriendlyName(val);
+                    Log.d(LOGTAG, " onCharacteristicRead tag=" + tag + " val=" + val + " friendly=" + friendly);
+
                     break;
 
                 case AWXDefs.chara_appearance:
@@ -362,22 +401,155 @@ public class AWXDiscover
                     tag = "vendor";
                     val = chara.getStringValue(0).trim();
                     break;
+
+                case AWXDefs.CHARACTERISTIC_MESH_LIGHT_STATUS:
+                    tag = "light_status";
+                    val = getBytesToHexString(data, 0, data.length);
+                    break;
+
+                case AWXDefs.CHARACTERISTIC_MESH_LIGHT_COMMAND:
+                    tag = "light_command";
+                    val = getBytesToHexString(data, 0, data.length);
+                    break;
+
+                case AWXDefs.CHARACTERISTIC_MESH_LIGHT_OTA:
+                    tag = "light_ota";
+                    val = getBytesToHexString(data, 0, data.length);
+                    break;
+
+                case AWXDefs.CHARACTERISTIC_MESH_LIGHT_PAIR:
+                    tag = "light_pair";
+                    val = getBytesToHexString(data, 0, data.length);
+
+
+                    if (data[0] == 13)
+                    {
+                        if (data[0] == 13)
+                        {
+                            byte[] sessionRandom = new byte[8];
+                            System.arraycopy(data, 1, sessionRandom, 0, sessionRandom.length);
+
+                            byte[] meshName = Arrays.copyOf(mMeshNameStr.getBytes(), 16);
+                            byte[] meshPassword = Arrays.copyOf(mMeshPasswordStr.getBytes(), 16);
+
+                            mSessionKey = AWXProtocol.getSessionKey(meshName, meshPassword, this.mSessionRandom, sessionRandom);
+
+                            Log.e(LOGTAG, "onCharacteristicRead: mSessionKey=" + getBytesToHexString(mSessionKey, 0, mSessionKey.length));
+
+                        }
+                    }
+                    else
+                    {
+                        if (data[0] == 14)
+                        {
+                            Log.e(LOGTAG, "onCharacteristicRead: OPCODE_ENC_FAIL !");
+                        }
+                        else
+                        {
+                            if (data[0] == 7)
+                            {
+                                Log.e(LOGTAG, "onCharacteristicRead: IRGENDWAS !");
+                            }
+                        }
+                    }
+
+                    break;
             }
 
-            Log.d(LOGTAG, " onCharacteristicRead tag=" + tag + " val=" + val);
+            Log.d(LOGTAG, "onCharacteristicRead: tag=" + tag + " val=" + val);
 
-            readNext(gatt);
+            executeNext(gatt);
+        }
+
+        @Override
+        public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic chara, int status)
+        {
+            Log.d(LOGTAG, "onCharacteristicWrite: status=" + status + " chara=" + chara.getUuid());
+
+            executeNext(gatt);
+        }
+
+        @Override
+        public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic chara)
+        {
+            Log.d(LOGTAG, "onCharacteristicChanged: chara=" + chara.getUuid());
+
+            executeNext(gatt);
+        }
+
+        @Override
+        public void onDescriptorRead(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status)
+        {
+            Log.d(LOGTAG, "onDescriptorRead: descriptor=" + descriptor.getUuid());
+
+            executeNext(gatt);
+        }
+
+        @Override
+        public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status)
+        {
+            Log.d(LOGTAG, "onDescriptorWrite: descriptor=" + descriptor.getUuid());
+
+            executeNext(gatt);
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void readNext(BluetoothGatt gatt)
+    private class AWXGattRequest
     {
-        ArrayList<BluetoothGattCharacteristic> readme = gatt2read.get(gatt);
+        public static final int MODE_WRITE_CHARACTERISTIC = 0;
+        public static final int MODE_READ_CHARACTERISTIC = 1;
+        public static final int MODE_ENABLE_NOTIFICATION = 2;
+        public static final int MODE_DISABLE_NOTIFICATION = 3;
+
+        public BluetoothGatt gatt;
+        public BluetoothGattCharacteristic chara;
+        public byte[] data;
+        public int mode;
+
+        public AWXGattRequest(BluetoothGatt gatt, BluetoothGattCharacteristic chara, byte[] data, int mode)
+        {
+            this.gatt = gatt;
+            this.chara = chara;
+            this.data = data;
+            this.mode = mode;
+        }
+    }
+
+    private AWXGattRequest currentRequest;
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void executeNext(BluetoothGatt gatt)
+    {
+        ArrayList<AWXGattRequest> readme = gatt2execute.get(gatt);
         if ((readme == null) || (readme.size() == 0)) return;
 
-        BluetoothGattCharacteristic chara = readme.remove(0);
-        gatt.readCharacteristic(chara);
+        currentRequest = readme.remove(0);
+
+        if (currentRequest.mode == AWXGattRequest.MODE_READ_CHARACTERISTIC)
+        {
+            gatt.readCharacteristic(currentRequest.chara);
+        }
+
+        if (currentRequest.mode == AWXGattRequest.MODE_WRITE_CHARACTERISTIC)
+        {
+            currentRequest.chara.setValue(currentRequest.data);
+            gatt.writeCharacteristic(currentRequest.chara);
+        }
+
+        if (currentRequest.mode == AWXGattRequest.MODE_ENABLE_NOTIFICATION)
+        {
+            gatt.setCharacteristicNotification(currentRequest.chara,true);
+
+            executeNext(gatt);
+        }
+
+        if (currentRequest.mode == AWXGattRequest.MODE_DISABLE_NOTIFICATION)
+        {
+            gatt.setCharacteristicNotification(currentRequest.chara,false);
+
+            executeNext(gatt);
+        }
     }
 
     private static String getBytesToHexString(byte[] buffer, int start, int len)
