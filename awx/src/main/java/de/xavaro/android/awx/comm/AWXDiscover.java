@@ -107,8 +107,6 @@ public class AWXDiscover
         @Override
         public void run()
         {
-            AES.initialize();
-
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
             {
                 return;

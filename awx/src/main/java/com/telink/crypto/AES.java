@@ -16,10 +16,6 @@ public class AES
         Log.e(LOGTAG, "static: loaded TelinkCrypto");
     }
 
-    public static void initialize()
-    {
-    }
-
     public static byte[] encrypt(byte[] key, byte[] nonce, byte[] plaintext)
     {
         return encryptCmd(plaintext, nonce, key);

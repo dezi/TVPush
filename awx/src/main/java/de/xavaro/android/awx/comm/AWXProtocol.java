@@ -144,7 +144,7 @@ public class AWXProtocol
         vector[4] = (byte) 1;
         System.arraycopy(value, 0, vector, 5, 3);
 
-        return AES.encrypt(sessionKey, vector, value);
+        return AWXAES.encrypt(sessionKey, vector, value);
     }
 
     static byte[] decryptValue(String address, byte[] sessionKey, byte[] value)
@@ -152,7 +152,7 @@ public class AWXProtocol
         byte[] vector = new byte[8];
         System.arraycopy(AWXByteUtils.reverse(AWXHardwareUtils.getAddress(address)), 0, vector, 0, 3);
         System.arraycopy(value, 0, vector, 3, 5);
-        return AES.decrypt(sessionKey, vector, value);
+        return AWXAES.decrypt(sessionKey, vector, value);
     }
 
     static byte[] getValue(short dest, byte command, byte[] data)
