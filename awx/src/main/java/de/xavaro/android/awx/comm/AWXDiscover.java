@@ -1,6 +1,7 @@
 package de.xavaro.android.awx.comm;
 
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.support.annotation.RequiresApi;
 
@@ -21,7 +22,9 @@ import android.util.SparseArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.xavaro.android.awx.base.AWX;
 import de.xavaro.android.awx.simple.Json;
@@ -60,6 +63,9 @@ public class AWXDiscover
     private final Object mutex = new Object();
     private final ArrayList<JSONObject> scanResults = new ArrayList<>();
     private final ArrayList<String> connecting = new ArrayList<>();
+
+    private final Map<BluetoothGatt, String> gatt2macaddr = new HashMap<>();
+    private final Map<BluetoothGatt, ArrayList<BluetoothGattCharacteristic>> gatt2read = new HashMap<>();
 
     public AWXDiscover(Context context)
     {
@@ -148,6 +154,8 @@ public class AWXDiscover
 
                 BluetoothDevice device = adapter.getRemoteDevice(macaddr);
                 BluetoothGatt gatt = device.connectGatt(context, false, callback);
+
+                gatt2macaddr.put(gatt, macaddr);
             }
 
             stopLEScanner();
@@ -207,10 +215,6 @@ public class AWXDiscover
         {
             for (int inx = 0; inx < manufacturerData.size(); inx++)
             {
-                //
-                // Abuse certain devices as beacons.
-                //
-
                 vendor = manufacturerData.keyAt(inx);
             }
         }
@@ -250,9 +254,9 @@ public class AWXDiscover
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private static class AWXGattCallback extends BluetoothGattCallback
+    private class AWXGattCallback extends BluetoothGattCallback
     {
-        private static final String LOGTAG = AWXGattCallback.class.getSimpleName();
+        private final String LOGTAG = AWXGattCallback.class.getSimpleName();
 
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState)
@@ -274,6 +278,10 @@ public class AWXDiscover
         public void onServicesDiscovered(BluetoothGatt gatt, int status)
         {
             Log.d(LOGTAG, "onServicesDiscovered: status=" + status);
+            if (status != 0) return;
+
+            ArrayList<BluetoothGattCharacteristic> readme = new ArrayList<>();
+            gatt2read.put(gatt,readme);
 
             List<BluetoothGattService> services = gatt.getServices();
 
@@ -286,8 +294,101 @@ public class AWXDiscover
                 for (BluetoothGattCharacteristic chara : charas)
                 {
                     Log.d(LOGTAG, "onServicesDiscovered: characteristic=" + chara.getUuid());
+
+                    readme.add(chara);
+
+                    List<BluetoothGattDescriptor> descs = chara.getDescriptors();
+
+                    for (BluetoothGattDescriptor desc : descs)
+                    {
+                        Log.d(LOGTAG, "onServicesDiscovered: descriptor=" + desc.getUuid());
+                    }
                 }
             }
+
+            readNext(gatt);
         }
+
+        @Override
+        public void onCharacteristicRead(BluetoothGatt gatt,
+                                         BluetoothGattCharacteristic chara,
+                                         int status)
+        {
+            if (status != BluetoothGatt.GATT_SUCCESS)
+            {
+                Log.d(LOGTAG, " onCharacteristicRead status=" + status + " uuid=" + chara.getUuid());
+
+                return;
+            }
+
+            byte[] data = chara.getValue();
+
+            String tag = null;
+            String val = null;
+
+            switch(chara.getUuid().toString())
+            {
+                case AWXDefs.chara_device_name:
+                    tag = "name";
+                    val = chara.getStringValue(0).trim();
+                    break;
+
+                case AWXDefs.chara_appearance:
+                    tag = "type";
+                    val = getBytesToHexString(data, 0, data.length);
+                    break;
+
+                case AWXDefs.chara_model_number_string:
+                    tag = "modnum";
+                    val = chara.getStringValue(0).trim();
+                    break;
+
+                case AWXDefs.chara_serial_number_string:
+                    tag = "serial";
+                    val = chara.getStringValue(0).trim();
+                    break;
+
+                case AWXDefs.chara_firmware_revision_string:
+                    tag = "firmware";
+                    val = chara.getStringValue(0).trim();
+                    break;
+
+                case AWXDefs.chara_hardware_revision_string:
+                    tag = "hardware";
+                    val = chara.getStringValue(0).trim();
+                    break;
+
+                case AWXDefs.chara_manufacturer_name_string:
+                    tag = "vendor";
+                    val = chara.getStringValue(0).trim();
+                    break;
+            }
+
+            Log.d(LOGTAG, " onCharacteristicRead tag=" + tag + " val=" + val);
+
+            readNext(gatt);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void readNext(BluetoothGatt gatt)
+    {
+        ArrayList<BluetoothGattCharacteristic> readme = gatt2read.get(gatt);
+        if ((readme == null) || (readme.size() == 0)) return;
+
+        BluetoothGattCharacteristic chara = readme.remove(0);
+        gatt.readCharacteristic(chara);
+    }
+
+    private static String getBytesToHexString(byte[] buffer, int start, int len)
+    {
+        String c;
+        StringBuilder s = new StringBuilder();
+        for (int i = start; i < start + len; i++)
+        {
+            c = Integer.toHexString(buffer[i] & 0xFF);
+            s.append(c.length() < 2 ? "0" + c : c);
+        }
+        return s.toString();
     }
 }
