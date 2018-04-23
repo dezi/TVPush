@@ -1,5 +1,8 @@
 package de.xavaro.android.awx.comm;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.support.annotation.RequiresApi;
 
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -19,31 +22,45 @@ import java.util.List;
 
 import de.xavaro.android.awx.simple.Simple;
 
+@SuppressWarnings("WeakerAccess")
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class AWXDevice extends BluetoothGattCallback
 {
     private final String LOGTAG = AWXDevice.class.getSimpleName();
 
-    private short meshid;
-    private String meshname = "pDmpKfcw";
-    private String meshpass = "f6d292f5";
+    private final Context context;
 
-    private String macaddr;
+    private final short meshid;
+    private final String meshname;
+    private final String macaddr;
+
+    private String meshpass = "f6d292f5";
 
     private byte[] sessionKey;
     private byte[] sessionRand;
 
+    private BluetoothGatt gatt;
     private BluetoothGattCharacteristic cpair;
     private BluetoothGattCharacteristic cstatus;
     private BluetoothGattCharacteristic ccommand;
 
     private final ArrayList<AWXRequest> executeme = new ArrayList<>();
 
-    public AWXDevice(short meshid, String meshname, String macaddr)
+    public AWXDevice(Context context, short meshid, String meshname, String macaddr)
     {
+        this.context = context;
         this.meshid = meshid;
         this.meshname = meshname;
         this.macaddr = macaddr;
+    }
+
+    public void connect()
+    {
+        BluetoothAdapter adapter = Simple.getBTAdapter();
+        if (adapter == null) return;
+
+        BluetoothDevice device = adapter.getRemoteDevice(macaddr);
+        gatt = device.connectGatt(context, false, this);
     }
 
     @Override
@@ -139,7 +156,7 @@ public class AWXDevice extends BluetoothGattCallback
         executeme.add(new AWXRequest(gatt, cstatus, new byte[]{1}, AWXRequest.MODE_WRITE_CHARACTERISTIC));
         executeme.add(new AWXRequest(gatt, cstatus, null, AWXRequest.MODE_ENABLE_NOTIFICATION));
 
-        executeNext(gatt);
+        executeNext();
     }
 
     @Override
@@ -149,7 +166,7 @@ public class AWXDevice extends BluetoothGattCallback
     {
         if (status != BluetoothGatt.GATT_SUCCESS)
         {
-            Log.d(LOGTAG, " onCharacteristicRead status=" + status + " uuid=" + chara.getUuid());
+            Log.d(LOGTAG, "onCharacteristicRead: status=" + status + " uuid=" + chara.getUuid());
 
             return;
         }
@@ -166,7 +183,7 @@ public class AWXDevice extends BluetoothGattCallback
                 val = chara.getStringValue(0).trim();
 
                 String friendly = AWXDevices.getFriendlyName(val);
-                Log.d(LOGTAG, " onCharacteristicRead tag=" + tag + " val=" + val + " friendly=" + friendly);
+                Log.d(LOGTAG, "onCharacteristicRead: tag=" + tag + " val=" + val + " friendly=" + friendly);
 
                 break;
 
@@ -229,23 +246,19 @@ public class AWXDevice extends BluetoothGattCallback
 
                     sessionKey = AWXProtocol.getSessionKey(meshname16, meshpass16, this.sessionRand, sessionRandom);
 
-                    Log.d(LOGTAG, "onCharacteristicRead: paired!!!!!! sessionKey=" + Simple.getBytesToHexString(sessionKey));
+                    Log.d(LOGTAG, "onCharacteristicRead: paired sessionKey=" + Simple.getBytesToHexString(sessionKey));
 
-                    setColor(gatt, ccommand, 0x008800);
+                    setColor(0x008800);
                 }
-                else
+
+                if (data[0] == 14)
                 {
-                    if (data[0] == 14)
-                    {
-                        Log.e(LOGTAG, "onCharacteristicRead: OPCODE_ENC_FAIL !");
-                    }
-                    else
-                    {
-                        if (data[0] == 7)
-                        {
-                            Log.e(LOGTAG, "onCharacteristicRead: IRGENDWAS !");
-                        }
-                    }
+                    Log.e(LOGTAG, "onCharacteristicRead: pairing failed!");
+                }
+
+                if (data[0] == 7)
+                {
+                    Log.e(LOGTAG, "onCharacteristicRead: IRGENDWAS !");
                 }
 
                 break;
@@ -253,7 +266,7 @@ public class AWXDevice extends BluetoothGattCallback
 
         Log.d(LOGTAG, "onCharacteristicRead: tag=" + tag + " val=" + val);
 
-        executeNext(gatt);
+        executeNext();
     }
 
     @Override
@@ -261,7 +274,7 @@ public class AWXDevice extends BluetoothGattCallback
     {
         Log.d(LOGTAG, "onCharacteristicWrite: status=" + status + " chara=" + chara.getUuid());
 
-        executeNext(gatt);
+        executeNext();
     }
 
     @Override
@@ -283,7 +296,7 @@ public class AWXDevice extends BluetoothGattCallback
                 + " cmd=" + command
                 + " paylod=" + Simple.getBytesToHexString(payload));
 
-        executeNext(gatt);
+        executeNext();
     }
 
     @Override
@@ -291,7 +304,7 @@ public class AWXDevice extends BluetoothGattCallback
     {
         Log.d(LOGTAG, "onDescriptorRead: descriptor=" + descriptor.getUuid());
 
-        executeNext(gatt);
+        executeNext();
     }
 
     @Override
@@ -299,10 +312,10 @@ public class AWXDevice extends BluetoothGattCallback
     {
         Log.d(LOGTAG, "onDescriptorWrite: descriptor=" + descriptor.getUuid());
 
-        executeNext(gatt);
+        executeNext();
     }
 
-    private void executeNext(BluetoothGatt gatt)
+    private void executeNext()
     {
         if (executeme.size() == 0) return;
 
@@ -326,18 +339,18 @@ public class AWXDevice extends BluetoothGattCallback
         {
             gatt.setCharacteristicNotification(request.chara,true);
 
-            executeNext(gatt);
+            executeNext();
         }
 
         if (request.mode == AWXRequest.MODE_DISABLE_NOTIFICATION)
         {
             gatt.setCharacteristicNotification(request.chara,false);
 
-            executeNext(gatt);
+            executeNext();
         }
     }
 
-    private void setColor(BluetoothGatt gatt, BluetoothGattCharacteristic chara, int color)
+    private void setColor(int color)
     {
         byte[] data = AWXProtocol.getValue(meshid, (byte) -30, new byte[]{(byte) 4, (byte) Color.red(color), (byte) Color.green(color), (byte) Color.blue(color)});
 
@@ -347,6 +360,6 @@ public class AWXDevice extends BluetoothGattCallback
 
         Log.d(LOGTAG, "setColor: crypt=" + Simple.getBytesToHexString(cryp));
 
-        executeme.add(new AWXRequest(gatt, chara, cryp, AWXRequest.MODE_WRITE_CHARACTERISTIC));
+        executeme.add(new AWXRequest(gatt, ccommand, cryp, AWXRequest.MODE_WRITE_CHARACTERISTIC));
     }
 }

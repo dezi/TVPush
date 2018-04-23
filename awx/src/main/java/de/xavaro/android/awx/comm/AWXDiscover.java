@@ -135,9 +135,8 @@ public class AWXDiscover
 
                 Log.d(LOGTAG, "discoverRunnable: macaddr=" + macaddr + " meshname=" + meshname + " meshid=" + meshid);
 
-                AWXDevice awxdevice = new AWXDevice(meshid, meshname, macaddr);
-                BluetoothDevice device = adapter.getRemoteDevice(macaddr);
-                device.connectGatt(context, false, awxdevice);
+                AWXDevice awxdevice = new AWXDevice(context, meshid, meshname, macaddr);
+                awxdevice.connect();
             }
 
             stopLEScanner();
@@ -229,7 +228,7 @@ public class AWXDiscover
             scanResults.add(scanResult);
         };
 
-        Log.d(LOGTAG, "evaluateScan: ALT"
+        Log.d(LOGTAG, "evaluateScan: AWX"
                 + " addr=" + result.getDevice().getAddress()
                 + " vendor=" + vendor
                 + " name=" + result.getDevice().getName()
