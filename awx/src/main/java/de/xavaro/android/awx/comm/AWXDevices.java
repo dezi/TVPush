@@ -1387,6 +1387,7 @@ public class AWXDevices
                 }
                 */
                 break;
+
             case 27:
                 /*
                 light = (ILightDevice) DeviceScanner.getInstance().getGatewareDevicesByKey(this.uuid);
@@ -1424,6 +1425,7 @@ public class AWXDevices
                 }
                 */
                 break;
+
             case 28:
                 properties.add(PROPERTY_SWITCH_GROUP_1);
                 properties.add(PROPERTY_SWITCH_GROUP_2);
@@ -1438,6 +1440,7 @@ public class AWXDevices
                 properties.add(PROPERTY_SWITCH_COMMAND);
                 properties.add(PROPERTY_MESH_GROUPS);
                 break;
+
             case 29:
                 properties.add(PROPERTY_SWITCH_GROUP_1);
                 properties.add(PROPERTY_SWITCH_PRESET_LIST_1);

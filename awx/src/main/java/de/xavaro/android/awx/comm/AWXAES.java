@@ -11,8 +11,8 @@ public class AWXAES
 
     static
     {
-        Log.e(LOGTAG, "static: load awxaes");
+        Log.d(LOGTAG, "static: load awxaes");
         System.loadLibrary("awxaes");
-        Log.e(LOGTAG, "static: loaded awxaes");
+        Log.d(LOGTAG, "static: loaded awxaes");
     }
 }
