@@ -2,7 +2,6 @@ package de.xavaro.android.awx.comm;
 
 import android.support.annotation.RequiresApi;
 
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
@@ -241,10 +240,6 @@ public class AWXDiscover
     {
         if (manufData == null || manufData.length <= 14) return 0;
 
-        short mid = (short) (((manufData[3] & 0xff) << 8) + (manufData[2] & 255));
-
-        Log.d(LOGTAG, "getMeshId: fund=" + mid);
-
-        return mid;
+        return (short) (((manufData[3] & 0xff) << 8) + (manufData[2] & 255));
     }
 }

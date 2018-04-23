@@ -135,41 +135,48 @@ public class IOTGeopos implements LocationListener
     }
 
     @Override
-    public void onLocationChanged(Location location)
+    public void onLocationChanged(final Location location)
     {
         if (location == null) return;
 
-        if (location.getAltitude() == 0.0)
+        new Thread(new Runnable()
         {
-            Double altitude = getAltitude(location.getLatitude(), location.getLongitude());
-            if (altitude != null) location.setAltitude(altitude);
-        }
+            @Override
+            public void run()
+            {
+                if (location.getAltitude() == 0.0)
+                {
+                    Double altitude = getAltitude(location.getLatitude(), location.getLongitude());
+                    if (altitude != null) location.setAltitude(altitude);
+                }
 
-        if (IOT.device != null)
-        {
-            JSONObject locmeasurement = new JSONObject();
-            Json.put(locmeasurement, "akey", IOT.device.uuid);
-            Json.put(locmeasurement, "prov", location.getProvider());
-            Json.put(locmeasurement, "time", System.currentTimeMillis());
-            Json.put(locmeasurement, "mode", "coarse");
-            Json.put(locmeasurement, "lat", location.getLatitude());
-            Json.put(locmeasurement, "lon", location.getLongitude());
-            Json.put(locmeasurement, "alt", location.getAltitude());
+                if (IOT.device != null)
+                {
+                    JSONObject locmeasurement = new JSONObject();
+                    Json.put(locmeasurement, "akey", IOT.device.uuid);
+                    Json.put(locmeasurement, "prov", location.getProvider());
+                    Json.put(locmeasurement, "time", System.currentTimeMillis());
+                    Json.put(locmeasurement, "mode", "coarse");
+                    Json.put(locmeasurement, "lat", location.getLatitude());
+                    Json.put(locmeasurement, "lon", location.getLongitude());
+                    Json.put(locmeasurement, "alt", location.getAltitude());
 
-            JSONObject measurement = new JSONObject();
-            Json.put(measurement, "LOCMeasurement", locmeasurement);
+                    JSONObject measurement = new JSONObject();
+                    Json.put(measurement, "LOCMeasurement", locmeasurement);
 
-            addLocationMeasurement(measurement);
-        }
+                    addLocationMeasurement(measurement);
+                }
 
-        Log.d(LOGTAG, "onLocationChanged:"
-                + " lat=" + location.getLatitude()
-                + " lon=" + location.getLongitude()
-                + " alt=" + location.getAltitude()
-                + " age=" + Simple.getAgeInSeconds(location.getTime())
-                + " acc=" + location.getAccuracy()
-                + " pro=" + location.getProvider()
-        );
+                Log.d(LOGTAG, "onLocationChanged:"
+                        + " lat=" + location.getLatitude()
+                        + " lon=" + location.getLongitude()
+                        + " alt=" + location.getAltitude()
+                        + " age=" + Simple.getAgeInSeconds(location.getTime())
+                        + " acc=" + location.getAccuracy()
+                        + " pro=" + location.getProvider()
+                );
+            }
+        }).start();
     }
 
     private void updateLocalDeviceCoarsePosition(Double lat, Double lon, Double alt)

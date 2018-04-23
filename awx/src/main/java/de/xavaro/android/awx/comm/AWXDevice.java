@@ -1,8 +1,5 @@
 package de.xavaro.android.awx.comm;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.Context;
 import android.support.annotation.RequiresApi;
 
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -10,7 +7,10 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.util.Log;
@@ -52,6 +52,11 @@ public class AWXDevice extends BluetoothGattCallback
         this.meshid = meshid;
         this.meshname = meshname;
         this.macaddr = macaddr;
+
+        if (meshname.equals("unpaired"))
+        {
+            meshpass = "1234";
+        }
     }
 
     public void connect()
@@ -286,13 +291,16 @@ public class AWXDevice extends BluetoothGattCallback
 
         byte command = AWXProtocol.getCommand(plain);
 
-        short meshIdDev = Short.parseShort(Integer.toString((payload[9] & 255) + 256, 16).substring(1) + Integer.toString((payload[0] & 255) + 256, 16).substring(1), 16);
+        String byte1 = Integer.toString((payload[9] & 255) + 256, 16).substring(1);
+        String byte2 = Integer.toString((payload[0] & 255) + 256, 16).substring(1);
+
+        short meshIdDev = Short.parseShort( byte1 + byte2, 16);
+        short meshIdNew = (short) (((payload[9] & 0xff) << 8) + (payload[0] & 0xff));
 
         Log.d(LOGTAG, "onCharacteristicChanged:"
                 + " m1=" + meshid
                 + " m2=" + meshIdDev
-                + " " + ((byte) ((meshIdDev >> 8) & 0xff))
-                + " " + ((byte) ((meshIdDev ) & 0xff))
+                + " m3=" + meshIdNew
                 + " cmd=" + command
                 + " paylod=" + Simple.getBytesToHexString(payload));
 
