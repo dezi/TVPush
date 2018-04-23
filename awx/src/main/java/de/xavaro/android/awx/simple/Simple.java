@@ -162,4 +162,18 @@ public class Simple
     {
         return bluetoothAdapter;
     }
+
+    public static String getBytesToHexString(byte[] buffer)
+    {
+        StringBuilder hex = new StringBuilder();
+
+        for (int inx = 0; inx < buffer.length; inx++)
+        {
+            String ccc = Integer.toHexString(buffer[inx] & 0xff);
+            hex.append((ccc.length() < 2) ? "0" + ccc : ccc);
+        }
+
+        return hex.toString();
+    }
+
 }

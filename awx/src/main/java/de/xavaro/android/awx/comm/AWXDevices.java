@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.xavaro.android.awx.utils.AWXByteUtils;
+
 @SuppressWarnings("WeakerAccess")
 public class AWXDevices
 {

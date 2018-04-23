@@ -1,4 +1,4 @@
-package de.xavaro.android.awx.comm;
+package de.xavaro.android.awx.utils;
 
 import java.nio.charset.Charset;
 import java.util.Locale;

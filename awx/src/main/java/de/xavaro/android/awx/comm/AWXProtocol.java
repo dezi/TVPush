@@ -9,6 +9,9 @@ import java.util.Arrays;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
+import de.xavaro.android.awx.utils.AWXByteUtils;
+import de.xavaro.android.awx.utils.AWXHardwareUtils;
+
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class AWXProtocol
 {
