@@ -13,7 +13,13 @@ public class AWXHardwareUtils
 
     public static String getAddress(byte[] address)
     {
-        return String.format(Locale.US, "%02X:%02X:%02X:%02X:%02X:%02X", new Object[]{Byte.valueOf(address[0]), Byte.valueOf(address[1]), Byte.valueOf(address[2]), Byte.valueOf(address[3]), Byte.valueOf(address[4]), Byte.valueOf(address[5])});
+        return String.format(Locale.US, "%02X:%02X:%02X:%02X:%02X:%02X", new Object[]{
+                Byte.valueOf(address[0]),
+                Byte.valueOf(address[1]),
+                Byte.valueOf(address[2]),
+                Byte.valueOf(address[3]),
+                Byte.valueOf(address[4]),
+                Byte.valueOf(address[5])});
     }
 
     public static byte[] getAddress(String address)
@@ -40,5 +46,4 @@ public class AWXHardwareUtils
         }
         return (short) meshId;
     }
-
 }

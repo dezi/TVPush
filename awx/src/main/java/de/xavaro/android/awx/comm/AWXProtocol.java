@@ -1,9 +1,6 @@
 package de.xavaro.android.awx.comm;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
-
-import com.telink.crypto.AES;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -142,6 +139,7 @@ public class AWXProtocol
         byte[] vector = new byte[8];
         System.arraycopy(AWXByteUtils.reverse(AWXHardwareUtils.getAddress(address)), 0, vector, 0, 4);
         vector[4] = (byte) 1;
+        
         System.arraycopy(value, 0, vector, 5, 3);
 
         return AWXAES.encrypt(sessionKey, vector, value);

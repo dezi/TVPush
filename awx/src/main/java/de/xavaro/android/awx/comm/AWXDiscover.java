@@ -20,8 +20,6 @@ import android.os.Build;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.telink.crypto.AES;
-
 import org.json.JSONObject;
 
 import java.security.SecureRandom;
@@ -470,8 +468,7 @@ public class AWXDiscover
 
                         mSessionKey = AWXProtocol.getSessionKey(meshName, meshPassword, mSessionRandom, sessionRandom);
 
-                        Log.e(LOGTAG, "onCharacteristicRead: mSessionKey=" + getBytesToHexString(mSessionKey, 0, mSessionKey.length));
-                        Log.e(LOGTAG, "onCharacteristicRead: paired!!!!!!");
+                        Log.d(LOGTAG, "onCharacteristicRead: paired!!!!!! mSessionKey=" + getBytesToHexString(mSessionKey, 0, mSessionKey.length));
 
                         setColor(gatt, ccommand, 0x880000);
                     }
