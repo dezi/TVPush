@@ -178,24 +178,31 @@ public class IOTGeopos implements LocationListener
         {
             if (IOT.device.hasCapability("fixed"))
             {
-                IOTDevice device = new IOTDevice(IOT.device.uuid);
-                device.fixedLatCoarse = lat;
-                device.fixedLonCoarse = lon;
-                device.fixedAltCoarse = alt;
+                if ((IOT.device.fixedLatFine == null)
+                        && (IOT.device.fixedLonFine == null)
+                        && (IOT.device.fixedAltFine == null))
+                {
+                    IOTDevice device = new IOTDevice(IOT.device.uuid);
+                    device.fixedLatCoarse = lat;
+                    device.fixedLonCoarse = lon;
+                    device.fixedAltCoarse = alt;
 
-                IOTDevice.list.addEntry(device, false, true);
+                    IOTDevice.list.addEntry(device, false, true);
+                }
             }
-
-            IOTStatus status = new IOTStatus(IOT.device.uuid);
-            status.positionLatCoarse = lat;
-            status.positionLonCoarse = lon;
-            status.positionAltCoarse = alt;
-
-            IOTStatus.list.addEntry(status, false, true);
-
-            if (IOT.instance.proximServer != null)
+            else
             {
-                IOT.instance.proximServer.advertiseGPSCoarse();
+                IOTStatus status = new IOTStatus(IOT.device.uuid);
+                status.positionLatCoarse = lat;
+                status.positionLonCoarse = lon;
+                status.positionAltCoarse = alt;
+
+                IOTStatus.list.addEntry(status, false, true);
+
+                if (IOT.instance.proximServer != null)
+                {
+                    IOT.instance.proximServer.advertiseGPSCoarse();
+                }
             }
         }
     }

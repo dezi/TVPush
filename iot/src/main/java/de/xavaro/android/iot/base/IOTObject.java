@@ -22,6 +22,7 @@ import de.xavaro.android.iot.status.IOTStatus;
 import de.xavaro.android.iot.status.IOTMetadata;
 import de.xavaro.android.iot.status.IOTCredential;
 import de.xavaro.android.iot.things.IOTLocation;
+import de.xavaro.android.iot.things.IOTThing;
 
 
 @SuppressWarnings("WeakerAccess")
