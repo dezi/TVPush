@@ -6,6 +6,8 @@ import org.json.JSONObject;
 
 import de.xavaro.android.pub.interfaces.all.SubSystemHandler;
 
+import de.xavaro.android.pub.interfaces.ext.GetSpeechListenerHandler;
+import de.xavaro.android.pub.interfaces.pub.PUBSpeechListener;
 import de.xavaro.android.spr.simple.Simple;
 import de.xavaro.android.spr.simple.Json;
 import de.xavaro.android.spr.simple.Log;
@@ -14,7 +16,8 @@ import de.xavaro.android.pub.interfaces.ext.OnSpeechHandler;
 
 public class SPR implements
         SubSystemHandler,
-        OnSpeechHandler
+        OnSpeechHandler,
+        GetSpeechListenerHandler
 {
     private static final String LOGTAG = SPR.class.getSimpleName();
 
@@ -28,6 +31,8 @@ public class SPR implements
         appcontext = application;
         Simple.initialize(application);
     }
+
+    //region SubSystemHandler
 
     @Override
     public void setInstance()
@@ -110,6 +115,10 @@ public class SPR implements
         Log.d(LOGTAG, "onSubsystemStopped: STUB!");
     }
 
+    //endregion SubSystemHandler
+
+    //region OnSpeechHandler
+
     @Override
     public void onActivateRemote()
     {
@@ -127,4 +136,16 @@ public class SPR implements
     {
         Log.d(LOGTAG, "onSpeechResults: STUB!");
     }
+
+    //endregion OnSpeechHandler
+
+    //region GetSpeechListenerHandler
+
+    @Override
+    public PUBSpeechListener getSpeechListenerHandler()
+    {
+        return sprListener;
+    }
+
+    //endregion GetSpeechListenerHandler
 }

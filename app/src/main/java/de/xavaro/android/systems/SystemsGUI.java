@@ -4,8 +4,7 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
-import de.xavaro.android.brl.base.BRL;
-import de.xavaro.android.edx.base.EDX;
+import de.xavaro.android.pub.interfaces.pub.PUBSpeechListener;
 import de.xavaro.android.pub.interfaces.pub.PUBSmartBulb;
 import de.xavaro.android.pub.interfaces.pub.PUBSmartPlug;
 import de.xavaro.android.pub.interfaces.pub.PUBCamera;
@@ -14,7 +13,11 @@ import de.xavaro.android.gui.simple.Json;
 
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.iam.base.IAM;
+import de.xavaro.android.spr.base.SPR;
 import de.xavaro.android.tpl.base.TPL;
+import de.xavaro.android.brl.base.BRL;
+import de.xavaro.android.edx.base.EDX;
+
 import zz.top.p2p.base.P2P;
 
 public class SystemsGUI extends GUI
@@ -77,6 +80,17 @@ public class SystemsGUI extends GUI
         {
             IAM.instance.evaluateSpeech(speech);
         }
+    }
+
+    @Override
+    public PUBSpeechListener onSpeechListenerHandlerRequest()
+    {
+        if (SPR.instance != null)
+        {
+            return SPR.instance.getSpeechListenerHandler();
+        }
+
+        return null;
     }
 
     @Override

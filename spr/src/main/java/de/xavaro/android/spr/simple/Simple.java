@@ -33,7 +33,6 @@ public class Simple
         istv = (uiModeManager != null) && (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION);
 
         issony = istv && getDeviceModelName().startsWith("BRAVIA");
-
         isspeechin = SpeechRecognizer.isRecognitionAvailable(app);
     }
 
@@ -59,7 +58,7 @@ public class Simple
 
     public static void turnBeepOnOff(boolean on)
     {
-        if ((audioManager != null))
+        if ((audioManager != null) && ! Simple.isTV())
         {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             {

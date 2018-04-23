@@ -1,18 +1,18 @@
 package de.xavaro.android.spr.base;
 
-import android.content.pm.ResolveInfo;
-import android.os.Build;
-import android.provider.Settings;
-import android.speech.RecognitionService;
 import android.support.annotation.Nullable;
 
 import android.speech.RecognitionListener;
+import android.speech.RecognitionService;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.content.pm.ResolveInfo;
+import android.provider.Settings;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
+import android.os.Bundle;
+import android.os.Build;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,11 +20,14 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.xavaro.android.pub.interfaces.pub.PUBSpeechListener;
 import de.xavaro.android.spr.simple.Log;
 import de.xavaro.android.spr.simple.Json;
 import de.xavaro.android.spr.simple.Simple;
 
-public class SPRListener implements RecognitionListener
+public class SPRListener implements
+        RecognitionListener,
+        PUBSpeechListener
 {
     private static final String LOGTAG = SPRListener.class.getSimpleName();
 
@@ -54,6 +57,7 @@ public class SPRListener implements RecognitionListener
 
     private boolean lockStart;
     private boolean isEnabled;
+    private boolean isOndemand;
     private boolean isBeginn;
 
     public static boolean isRecognitionAvailable(Context context)
@@ -77,10 +81,6 @@ public class SPRListener implements RecognitionListener
 
         if (Simple.isSpeechIn())
         {
-            Log.d(LOGTAG, "SpeechRecognizer: init.");
-
-            Simple.turnBeepOnOff(true);
-
             recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
             recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
 
@@ -93,14 +93,16 @@ public class SPRListener implements RecognitionListener
                 recognizerIntent.putExtra("android.speech.extra.PREFER_OFFLINE", true);
             }
 
-            Log.d(LOGTAG, "startListening: create");
+            Log.d(LOGTAG, "SPRListener: create.");
 
             recognizer = SpeechRecognizer.createSpeechRecognizer(context);
             recognizer.setRecognitionListener(this);
+
+            isOndemand = Simple.isTV();
         }
         else
         {
-            Log.d(LOGTAG, "SpeechRecognizer: no speech available.");
+            Log.d(LOGTAG, "SPRListener: no speech available.");
         }
     }
 
@@ -121,54 +123,56 @@ public class SPRListener implements RecognitionListener
         }
     }
 
-    public void startListening()
+    public boolean startListening()
     {
-        if (recognizer == null)
+        Log.d(LOGTAG, "startListening:");
+
+        if (recognizer == null) return false;
+
+        isEnabled = ! isOndemand;
+
+        if (! lockStart)
         {
-            Log.d(LOGTAG, "startListening: no speech available.");
-            return;
-        }
-
-        handler.removeCallbacks(restartListeningRunnable);
-
-        isEnabled = true;
-
-        if (! lockStart && (recognizer != null))
-        {
-            Log.d(LOGTAG, "startListening:");
-
             lockStart = true;
 
             recognizer.startListening(recognizerIntent);
         }
 
-        //
-        // Turn off beep delayed, so the first
-        // beep is delivered to user.
-        //
-
-        handler.postDelayed(new Runnable()
+        if (! isOndemand)
         {
-            @Override
-            public void run()
+            //
+            // Turn off beep delayed, so the first
+            // beep is delivered to user.
+            //
+
+            handler.postDelayed(new Runnable()
             {
-                Simple.turnBeepOnOff(false);
-            }
-        }, 1000);
+                @Override
+                public void run()
+                {
+                    Simple.turnBeepOnOff(false);
+                }
+            }, 1000);
+        }
+
+        return true;
     }
 
-    public void stopListening()
+    public boolean stopListening()
     {
         Log.d(LOGTAG, "stopListening:");
 
-        Simple.turnBeepOnOff(true);
+        if (recognizer == null) return false;
+
+        if (! isOndemand)
+        {
+            Simple.turnBeepOnOff(true);
+        }
 
         isEnabled = false;
+        recognizer.stopListening();
 
-        if (recognizer != null)
-        {
-            recognizer.stopListening();
-        }
+        return true;
     }
 
     private final Runnable startListeningRunnable = new Runnable()
@@ -177,19 +181,6 @@ public class SPRListener implements RecognitionListener
         public void run()
         {
             startListening();
-        }
-    };
-
-    private final Runnable restartListeningRunnable = new Runnable()
-    {
-        @Override
-        public void run()
-        {
-            Log.d(LOGTAG, "restartListeningRunnable:");
-
-            stopListening();
-
-            handler.postDelayed(startListeningRunnable, 250);
         }
     };
 
@@ -303,7 +294,7 @@ public class SPRListener implements RecognitionListener
 
         lockStart = false;
 
-        if (isEnabled)
+        if (isEnabled && ! isOndemand)
         {
             handler.removeCallbacks(startListeningRunnable);
             handler.postDelayed(startListeningRunnable, millis);
@@ -336,13 +327,6 @@ public class SPRListener implements RecognitionListener
                 );
             }
         }
-
-        //
-        // Sometimes the speechListener hangs here forever.
-        //
-
-        //handler.removeCallbacks(restartListeningRunnable);
-        //handler.postDelayed(restartListeningRunnable, 10 * 1000);
     }
 
     @Override
@@ -365,7 +349,7 @@ public class SPRListener implements RecognitionListener
 
         lockStart = false;
 
-        if (isEnabled)
+        if (isEnabled && ! isOndemand)
         {
             handler.post(startListeningRunnable);
         }

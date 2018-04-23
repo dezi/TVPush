@@ -11,6 +11,7 @@ import de.xavaro.android.gui.simple.Json;
 import de.xavaro.android.gui.R;
 
 import de.xavaro.android.pub.interfaces.ext.OnSpeechHandler;
+import de.xavaro.android.pub.interfaces.gui.OnSpeechListenerHandlerRequest;
 import de.xavaro.android.pub.interfaces.pub.PUBCamera;
 import de.xavaro.android.pub.interfaces.pub.PUBSmartBulb;
 import de.xavaro.android.pub.interfaces.pub.PUBSmartPlug;
@@ -20,6 +21,7 @@ import de.xavaro.android.pub.interfaces.gui.OnCameraHandlerRequest;
 import de.xavaro.android.pub.interfaces.gui.OnSmartBulbHandlerRequest;
 import de.xavaro.android.pub.interfaces.gui.OnSmartPlugHandlerRequest;
 import de.xavaro.android.pub.interfaces.all.SubSystemHandler;
+import de.xavaro.android.pub.interfaces.pub.PUBSpeechListener;
 
 public class GUI implements
         SubSystemHandler,
@@ -28,7 +30,8 @@ public class GUI implements
         OnSubsystemRequest,
         OnCameraHandlerRequest,
         OnSmartPlugHandlerRequest,
-        OnSmartBulbHandlerRequest
+        OnSmartBulbHandlerRequest,
+        OnSpeechListenerHandlerRequest
 {
     private static final String LOGTAG = GUI.class.getSimpleName();
 
@@ -63,6 +66,8 @@ public class GUI implements
 
         return info;
     }
+
+    //region SubSystemHandler
 
     @Override
     public JSONObject getSubsystemSettings()
@@ -115,6 +120,8 @@ public class GUI implements
         return null;
     }
 
+    //endregion SubSystemHandler
+
     @Override
     public void onStartSubsystemRequest(String drv)
     {
@@ -125,6 +132,14 @@ public class GUI implements
     public void onStopSubsystemRequest(String drv)
     {
         Log.d(LOGTAG, "onStopSubsystemRequest: STUB!");
+    }
+
+    @Override
+    public PUBSpeechListener onSpeechListenerHandlerRequest()
+    {
+        Log.d(LOGTAG, "onSpeechListenerHandlerRequest: STUB!");
+
+        return null;
     }
 
     @Override
