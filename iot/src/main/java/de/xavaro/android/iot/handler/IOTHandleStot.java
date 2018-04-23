@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import de.xavaro.android.iot.base.IOT;
 
 import de.xavaro.android.iot.simple.Json;
+import de.xavaro.android.iot.simple.Simple;
 
 public class IOTHandleStot extends IOTHandle
 {
@@ -26,7 +27,7 @@ public class IOTHandleStot extends IOTHandle
     @Override
     public void onMessageReived(JSONObject message)
     {
-        JSONObject speech = Json.getObject(message, "speech");
+        final JSONObject speech = Json.getObject(message, "speech");
         JSONArray results = Json.getArray(speech, "results");
 
         if ((results == null) || (results.length() == 0))
@@ -47,5 +48,17 @@ public class IOTHandleStot extends IOTHandle
         //
 
         Log.d(LOGTAG, "receiveSTOT: conf=" + conf + " text=" + text);
+
+        if (Simple.isTV())
+        {
+            Simple.getHandler().post(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    IOT.instance.onSpeechResults(speech);
+                }
+            });
+        }
     }
 }

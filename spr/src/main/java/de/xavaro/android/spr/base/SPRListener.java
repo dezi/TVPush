@@ -36,7 +36,6 @@ public class SPRListener implements
         if (SPR.instance.sprListener == null)
         {
             SPR.instance.sprListener = new SPRListener(context);
-            SPR.instance.sprListener.startListening();
         }
     }
 
@@ -99,6 +98,11 @@ public class SPRListener implements
             recognizer.setRecognitionListener(this);
 
             isOndemand = Simple.isTV();
+
+            if (! isOndemand)
+            {
+                startListening();
+            }
         }
         else
         {

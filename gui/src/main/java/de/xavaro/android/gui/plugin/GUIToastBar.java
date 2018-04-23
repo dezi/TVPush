@@ -25,6 +25,7 @@ import de.xavaro.android.gui.R;
 
 import de.xavaro.android.gui.simple.Simple;
 import de.xavaro.android.gui.simple.Json;
+import de.xavaro.android.pub.interfaces.pub.PUBSpeechListener;
 
 public class GUIToastBar extends GUIPlugin implements OnSpeechHandler
 {
@@ -150,6 +151,12 @@ public class GUIToastBar extends GUIPlugin implements OnSpeechHandler
         super.onDetachedFromWindow();
     }
 
+    public void onVoiceButton()
+    {
+        PUBSpeechListener speech = GUI.instance.onSpeechListenerHandlerRequest();
+        if (speech != null) speech.startListening();
+    }
+
     @Override
     public void onActivateRemote()
     {
@@ -189,6 +196,8 @@ public class GUIToastBar extends GUIPlugin implements OnSpeechHandler
         colorFrame.start();
 
         hadResult = true;
+
+        makePost(toastDone, 4 * 1000);
     }
 
     public void displayPinCodeMessage(int timeout)
@@ -202,6 +211,8 @@ public class GUIToastBar extends GUIPlugin implements OnSpeechHandler
     {
         if (seconds <= 0) seconds = 2;
         if (seconds > 60) seconds = 60;
+
+        Log.d(LOGTAG, "displayToastMessage: emphasis=" + emphasis + " seconds=" + seconds + " message" + message);
 
         toastMessage = message;
 
@@ -228,10 +239,10 @@ public class GUIToastBar extends GUIPlugin implements OnSpeechHandler
         @Override
         public void run()
         {
+            Log.d(LOGTAG, "toastDone:");
+
             colorFrame.stop();
             toastMessage = null;
-
-            pleaseSpeekNow.run();
         }
     };
 

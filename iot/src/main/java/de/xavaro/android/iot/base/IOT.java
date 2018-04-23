@@ -22,6 +22,7 @@ import de.xavaro.android.iot.simple.Json;
 import de.xavaro.android.iot.R;
 
 import de.xavaro.android.pub.interfaces.all.SubSystemHandler;
+import de.xavaro.android.pub.interfaces.ext.OnSpeechHandler;
 import de.xavaro.android.pub.interfaces.iot.OnADBToolHandlerRequest;
 import de.xavaro.android.pub.interfaces.iot.OnStatusRequest;
 import de.xavaro.android.pub.interfaces.iot.GetDevices;
@@ -31,6 +32,7 @@ public class IOT implements
         SubSystemHandler,
         GetDevices,
         OnStatusRequest,
+        OnSpeechHandler,
         OnADBToolHandlerRequest
 {
     private static final String LOGTAG = IOT.class.getSimpleName();
@@ -281,6 +283,28 @@ public class IOT implements
     }
 
     //endregion OnADBToolHandlerRequest
+
+    //region OnSpeechHandler
+
+    @Override
+    public void onActivateRemote()
+    {
+        Log.d(LOGTAG, "onActivateRemote: STUB!");
+    }
+
+    @Override
+    public void onSpeechReady()
+    {
+        Log.d(LOGTAG, "onSpeechReady: STUB!");
+    }
+
+    @Override
+    public void onSpeechResults(JSONObject speech)
+    {
+        Log.d(LOGTAG, "onSpeechResults: STUB!");
+    }
+
+    //endregion OnSpeechHandler
 
     @Override
     public boolean onDeviceStatusRequest(JSONObject device)

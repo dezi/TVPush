@@ -53,6 +53,7 @@ import de.xavaro.android.gui.views.GUIDialogView;
 import de.xavaro.android.gui.base.GUIActivity;
 import de.xavaro.android.gui.base.GUI;
 import de.xavaro.android.pub.interfaces.ext.OnSpeechHandler;
+import de.xavaro.android.pub.interfaces.pub.PUBSpeechListener;
 
 public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
 {
@@ -103,9 +104,6 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
 
         if (! Simple.isTV())
         {
-            GUILinearLayout surfaceFrame = new GUILinearLayout(this);
-            surfaceFrame.setBackgroundColor(Color.YELLOW);
-
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
                     160,
                     240,
@@ -113,13 +111,11 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
 
             lp.bottomMargin = 100;
 
-            surfaceFrame.setLayoutParams(lp);
-
-            topframe.addView(surfaceFrame);
-
             surfaceView = new EGLSurfaceView(this, null);
-            //surfaceView.setVisibility(View.GONE);
-            surfaceFrame.addView(surfaceView);
+            surfaceView.setVisibility(View.GONE);
+            surfaceView.setLayoutParams(lp);
+
+            topframe.addView(surfaceView);
 
             Simple.getHandler().postDelayed(new Runnable()
             {
@@ -429,6 +425,13 @@ public class GUIDesktopActivity extends GUIActivity implements OnSpeechHandler
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
         String name = null;
+
+        if (keyCode == KeyEvent.KEYCODE_INFO)
+        {
+            toastBar.onVoiceButton();
+
+            return true;
+        }
 
         if (keyCode == KeyEvent.KEYCODE_PROG_RED) name = GUICamerasWizzard.class.getSimpleName();
         if (keyCode == KeyEvent.KEYCODE_PROG_GREEN) name = GUIPingWizzard.class.getSimpleName();

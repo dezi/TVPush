@@ -493,6 +493,29 @@ public class GUISetup
             catch (Exception ignore)
             {
             }
+
+            try
+            {
+                //
+                // Fucked up systems (SONY TV).
+                //
+
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+
+                intent.setComponent(new ComponentName(
+                        "com.google.android.katniss",
+                        "com.google.android.katniss.setting.SpeechSettingsActivity"));
+
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                context.startActivity(intent);
+
+                return;
+            }
+            catch (Exception ignore)
+            {
+                ignore.printStackTrace();
+            }
         }
 
         try

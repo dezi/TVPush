@@ -4,6 +4,7 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.iot.handler.IOTHandleStot;
 import de.xavaro.android.pub.interfaces.pub.PUBSpeechListener;
 import de.xavaro.android.pub.interfaces.pub.PUBSmartBulb;
 import de.xavaro.android.pub.interfaces.pub.PUBSmartPlug;
@@ -79,6 +80,15 @@ public class SystemsGUI extends GUI
         if (IAM.instance != null)
         {
             IAM.instance.evaluateSpeech(speech);
+        }
+        else
+        {
+            if (! Json.has(speech, "remote"))
+            {
+                Json.put(speech, "remote", true);
+
+                IOTHandleStot.sendSTOT(speech);
+            }
         }
     }
 

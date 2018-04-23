@@ -216,7 +216,6 @@ public class EGLSurfaceView extends android.view.SurfaceView implements Runnable
         }
     }
 
-
     public void requestAspectRatio(double aspectRatio)
     {
         if (mVARM.getAspectRatio() != aspectRatio)

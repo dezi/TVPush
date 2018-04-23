@@ -81,4 +81,10 @@ public class SystemsIOT extends IOT
 
         return false;
     }
+
+    @Override
+    public void onSpeechResults(JSONObject speech)
+    {
+        GUI.instance.onSpeechResults(speech);
+    }
 }
