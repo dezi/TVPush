@@ -13,6 +13,6 @@ public class AWXAES
     {
         Log.d(LOGTAG, "static: load awxaes");
         System.loadLibrary("awxaes");
-        Log.d(LOGTAG, "static: loaded awxaes");
+        Log.d(LOGTAG, "static: done awxaes");
     }
 }
