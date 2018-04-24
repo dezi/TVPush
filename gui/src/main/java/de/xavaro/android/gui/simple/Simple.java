@@ -478,6 +478,26 @@ public class Simple
         return Color.HSVToColor(hsv);
     }
 
+    public static int colorRGB(int rgbcolor, int brightness)
+    {
+        int r = (rgbcolor >> 16) & 0xff;
+        int g = (rgbcolor >> 8) & 0xff;
+        int b = rgbcolor& 0xff;
+
+        float scale = 255 / (float) Math.max(r, Math.max(g, b));
+        scale = scale * brightness / 100f;
+
+        r = Math.round(r * scale);
+        g = Math.round(g * scale);
+        b = Math.round(b * scale);
+
+        if (r > 255) r = 255;
+        if (g > 255) g = 255;
+        if (b > 255) b = 255;
+
+        return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
+    }
+
     public static void colorHSV(String color)
     {
         int rgbcolor = Integer.parseInt(color, 16);

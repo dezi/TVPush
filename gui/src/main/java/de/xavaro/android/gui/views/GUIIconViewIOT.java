@@ -92,14 +92,19 @@ public class GUIIconViewIOT extends GUIIconView
                 int color = GUIDefs.STATUS_COLOR_INACT;
 
                 if ((status != null)
-                        && (status.hue != null)
-                        && (status.saturation != null)
-                        && (status.brightness != null)
-                        && (status.bulbstate != null))
+                        && (status.bulbstate != null)
+                        && (status.bulbstate != 0)
+                        && (status.brightness != null))
                 {
-                    if (status.bulbstate != 0)
+                    if ((status.hue != null) && (status.saturation != null))
                     {
                         color = Simple.colorRGB(status.hue, status.saturation, 100);
+                        color = Simple.setRGBAlpha(color, status.brightness + 155);
+                    }
+
+                    if (status.rgb != null)
+                    {
+                        color = Simple.colorRGB(status.rgb, 100);
                         color = Simple.setRGBAlpha(color, status.brightness + 155);
                     }
                 }
