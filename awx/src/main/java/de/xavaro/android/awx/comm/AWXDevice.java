@@ -621,7 +621,7 @@ public class AWXDevice extends BluetoothGattCallback
                     + " wt=" + wtemp
                     + " cb=" + cbright
                     + " c=0x" + Integer.toHexString(color)
-                    + " paylod=" + Simple.getBytesToHexString(payload));
+                    + " paylod=" + Simple.getBytesToHexString(plain));
         }
     }
 }
