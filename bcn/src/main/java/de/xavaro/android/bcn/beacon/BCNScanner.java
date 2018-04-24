@@ -73,8 +73,8 @@ public class BCNScanner
         {
             BCN.instance.scanner.stopLEScanner();
 
-            BCN.instance.scanner.stopDiscovery();
-            BCN.instance.scanner.stopReceiver();
+            //BCN.instance.scanner.stopDiscovery();
+            //BCN.instance.scanner.stopReceiver();
 
             BCN.instance.scanner = null;
         }
@@ -107,7 +107,13 @@ public class BCNScanner
 
     private void stopReceiver()
     {
-        context.unregisterReceiver(receiver);
+        try
+        {
+            context.unregisterReceiver(receiver);
+        }
+        catch (Exception ignore)
+        {
+        }
     }
 
     private void startDiscovery()

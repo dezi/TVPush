@@ -26,9 +26,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.xavaro.android.awx.base.AWX;
 import de.xavaro.android.awx.simple.Json;
 import de.xavaro.android.awx.simple.Simple;
 import de.xavaro.android.awx.utils.AWXHardwareUtils;
+import de.xavaro.android.awx.utils.AWXMathUtils;
 
 @SuppressWarnings("WeakerAccess")
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -415,7 +417,7 @@ public class AWXDevice extends BluetoothGattCallback
         Json.put(device, "uuid", uuid);
         Json.put(device, "did", Integer.toString(meshid));
         Json.put(device, "type", "smartbulb");
-        Json.put(device, "name", name);
+        Json.put(device, "name", name + " #" + Integer.toString(meshid));
         Json.put(device, "model", model);
         Json.put(device, "brand", vendor);
         Json.put(device, "version", version);
@@ -435,7 +437,7 @@ public class AWXDevice extends BluetoothGattCallback
 
         Log.d(LOGTAG, "buildDeviceDescription json=" + Json.toPretty(awoxdev));
 
-        //AWX.instance.onDeviceFound(awoxdev);
+        AWX.instance.onDeviceFound(awoxdev);
     }
 
     private String getCapabilities()
@@ -487,12 +489,25 @@ public class AWXDevice extends BluetoothGattCallback
 
         if (command == AWXProtocol.COMMAND_NOTIFICATION_RECEIVED)
         {
-            int wbright = payload[3] & 0xff;
-            int wtemp = payload[4] & 0xff;
-            int cbright = payload[5] & 0xff;
-            int color = ((payload[6] & 0xff) << 16) + ((payload[7] & 0xff) << 8) + (payload[8] & 0xff);
             int powerstate = payload[2] & 0x01;
             int lightmode = (payload[2] >> 1) & 0x01;
+
+            int wbright = AWXMathUtils.valueToPercent(payload[3] & 0xff, 1, 127);
+            int wtemp = AWXMathUtils.valueToPercent(payload[4] & 0xff, 0, 127);
+            int cbright = AWXMathUtils.valueToPercent(payload[5] & 0xff, 10, 100);
+
+            int color = ((payload[6] & 0xff) << 16) + ((payload[7] & 0xff) << 8) + (payload[8] & 0xff);
+
+            JSONObject status = new JSONObject();
+
+            Json.put(status, "uuid", uuid);
+            Json.put(status, "rgb", color);
+            Json.put(status, "brightness", (lightmode == 0) ? wbright : cbright);
+            Json.put(status, "color_mode", lightmode);
+            Json.put(status, "color_temp", wtemp);
+            Json.put(status, "bulbstate", powerstate);
+
+            AWX.instance.onDeviceStatus(status);
 
             Log.d(LOGTAG, "evalNotification:"
                     + " mac=" + macaddr

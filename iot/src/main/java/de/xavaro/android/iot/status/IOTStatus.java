@@ -3,15 +3,12 @@ package de.xavaro.android.iot.status;
 import org.json.JSONObject;
 
 import de.xavaro.android.iot.base.IOT;
-import de.xavaro.android.iot.base.IOTAlive;
 import de.xavaro.android.iot.base.IOTList;
 import de.xavaro.android.iot.base.IOTObject;
 
 @SuppressWarnings("WeakerAccess")
 public class IOTStatus extends IOTObject
 {
-    private final static String LOGTAG = IOTStatus.class.getSimpleName();
-
     public static IOTList<IOTStatus> list;
 
     //
@@ -44,9 +41,8 @@ public class IOTStatus extends IOTObject
     public Integer hue;
     public Integer saturation;
     public Integer brightness;
+    public Integer color_mode;
     public Integer color_temp;
-    public Integer white_temp;
-    public Integer bulb_mode;
 
     public Double positionLatCoarse;
     public Double positionLonCoarse;
@@ -103,9 +99,11 @@ public class IOTStatus extends IOTObject
         if (nequals(lightlevel,  check.lightlevel )) lightlevel  = check.lightlevel;
         if (nequals(noiselevel,  check.noiselevel )) noiselevel  = check.noiselevel;
 
+        if (nequals(rgb,         check.rgb        )) rgb         = check.rgb;
         if (nequals(hue,         check.hue        )) hue         = check.hue;
         if (nequals(saturation,  check.saturation )) saturation  = check.saturation;
         if (nequals(brightness,  check.brightness )) brightness  = check.brightness;
+        if (nequals(color_mode,  check.color_mode )) color_mode  = check.color_mode;
         if (nequals(color_temp,  check.color_temp )) color_temp  = check.color_temp;
 
         if (nequals(positionLatCoarse, check.positionLatCoarse)) positionLatCoarse = check.positionLatCoarse;

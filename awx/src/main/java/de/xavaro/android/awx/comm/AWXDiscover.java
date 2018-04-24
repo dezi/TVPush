@@ -134,8 +134,11 @@ public class AWXDiscover
 
                 Log.d(LOGTAG, "discoverRunnable: macaddr=" + macaddr + " meshname=" + meshname + " meshid=" + meshid);
 
-                AWXDevice awxdevice = new AWXDevice(context, meshid, meshname, macaddr);
-                awxdevice.connect();
+                if (meshname != null)
+                {
+                    AWXDevice awxdevice = new AWXDevice(context, meshid, meshname, macaddr);
+                    awxdevice.connect();
+                }
             }
 
             stopLEScanner();
