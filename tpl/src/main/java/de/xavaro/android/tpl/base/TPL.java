@@ -264,7 +264,7 @@ public class TPL extends OnInterfacesStubs implements
                             //
 
                             new SmartBulbHandler(uuid, ipaddr).setBulbState(1);
-                            new SmartBulbHandler(uuid, ipaddr).setBulbHSOnly(hue, saturation);
+                            new SmartBulbHandler(uuid, ipaddr).setBulbHSB(hue, saturation);
                         }
 
                         return true;

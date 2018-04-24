@@ -4,11 +4,13 @@ public interface PUBSmartBulb
 {
     boolean setBulbState(int onoff);
 
-    boolean setBulb(int onoff, int hue, int saturation, int brightness);
-
-    boolean setBulbHSB(int hue, int saturation, int brightness);
-
-    boolean setBulbHSOnly(int hue, int saturation);
-
     boolean setBulbBrightness(int brightness);
+
+    boolean setBulbRGB(int rgbcolor);
+    boolean setBulbRGB(int rgbcolor, int brightness);
+    boolean setBulbRGB(int rgbcolor, int brightness, int onoff);
+
+    boolean setBulbHSB(int hue, int saturation);
+    boolean setBulbHSB(int hue, int saturation, int brightness);
+    boolean setBulbHSB(int hue, int saturation, int brightness, int onoff);
 }

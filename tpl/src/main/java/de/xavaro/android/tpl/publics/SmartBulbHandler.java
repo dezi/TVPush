@@ -1,5 +1,7 @@
 package de.xavaro.android.tpl.publics;
 
+import android.graphics.Color;
+
 import org.json.JSONObject;
 
 import de.xavaro.android.pub.interfaces.pub.PUBSmartBulb;
@@ -25,7 +27,68 @@ public class SmartBulbHandler implements PUBSmartBulb
     }
 
     @Override
-    public boolean setBulb(int onoff, int hue, int saturation, int brightness)
+    public boolean setBulbState(final int onoff)
+    {
+        return setBulbHSB(onoff, -1, -1, -1);
+    }
+
+    @Override
+    public boolean setBulbBrightness(int brightness)
+    {
+        return setBulbHSB(-1, -1, brightness, -1);
+    }
+
+    @Override
+    public boolean setBulbRGB(int rgbcolor)
+    {
+        float[] hsv = new float[3];
+        Color.colorToHSV(rgbcolor, hsv);
+
+        int hue = Math.round(hsv[0]);
+        int saturation = Math.round(hsv[1] * 100);
+        int brightness = Math.round(hsv[2] * 100);
+
+        return setBulbHSB(hue, saturation, -1, -1);
+    }
+
+    @Override
+    public boolean setBulbRGB(int rgbcolor, int brightness)
+    {
+        float[] hsv = new float[3];
+        Color.colorToHSV(rgbcolor, hsv);
+
+        int hue = Math.round(hsv[0]);
+        int saturation = Math.round(hsv[1] * 100);
+
+        return setBulbHSB(hue, saturation, brightness, -1);
+    }
+
+    @Override
+    public boolean setBulbRGB(int rgbcolor, int brightness, int onoff)
+    {
+        float[] hsv = new float[3];
+        Color.colorToHSV(rgbcolor, hsv);
+
+        int hue = Math.round(hsv[0]);
+        int saturation = Math.round(hsv[1] * 100);
+
+        return setBulbHSB(hue, saturation, brightness, onoff);
+    }
+
+    @Override
+    public boolean setBulbHSB(int hue, final int saturation)
+    {
+        return setBulbHSB(hue, saturation, -1, -1);
+    }
+
+    @Override
+    public boolean setBulbHSB(int hue, int saturation, int brightness)
+    {
+        return setBulbHSB(hue, saturation, brightness, -1);
+    }
+
+    @Override
+    public boolean setBulbHSB(int hue, int saturation, int brightness, int onoff)
     {
         if (hue > 360) hue = 360;
         if (saturation > 100) saturation = 100;
@@ -60,29 +123,5 @@ public class SmartBulbHandler implements PUBSmartBulb
         Simple.runBackground(runnable);
 
         return true;
-    }
-
-    @Override
-    public boolean setBulbState(final int onoff)
-    {
-        return setBulb(onoff, -1, -1, -1);
-    }
-
-    @Override
-    public boolean setBulbHSB(int hue, int saturation, int brightness)
-    {
-        return setBulb(-1, hue, saturation, brightness);
-    }
-
-    @Override
-    public boolean setBulbHSOnly(int hue, final int saturation)
-    {
-        return setBulb(-1, hue, saturation, -1);
-    }
-
-    @Override
-    public boolean setBulbBrightness(int brightness)
-    {
-        return setBulb(-1, -1, -1, brightness);
     }
 }
