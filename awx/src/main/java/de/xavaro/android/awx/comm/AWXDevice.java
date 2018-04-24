@@ -39,6 +39,7 @@ public class AWXDevice extends BluetoothGattCallback
     private final boolean debug = false;
 
     private final Context context;
+
     private final short meshid;
     private final String meshname;
     private final String macaddr;
@@ -72,6 +73,9 @@ public class AWXDevice extends BluetoothGattCallback
     public AWXDevice(Context context, short meshid, String meshname, String macaddr)
     {
         this.context = context;
+
+        this.uuid = Simple.hmacSha1UUID(meshname + ":" + meshid, macaddr);
+
         this.meshid = meshid;
         this.meshname = meshname;
         this.macaddr = macaddr;
@@ -503,8 +507,6 @@ public class AWXDevice extends BluetoothGattCallback
 
     private void buildDeviceDescription()
     {
-        uuid = Simple.hmacSha1UUID(model, macaddr);
-
         JSONObject awoxdev = new JSONObject();
 
         JSONObject device = new JSONObject();
