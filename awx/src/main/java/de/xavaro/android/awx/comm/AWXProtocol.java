@@ -173,6 +173,7 @@ public class AWXProtocol
     static byte[] getValue(byte[] dest, byte command, byte[] data)
     {
         sSequenceNumber++;
+
         ByteBuffer buffer = ByteBuffer.allocate(20);
         buffer.put((byte) (sSequenceNumber & 255));
         buffer.put((byte) ((sSequenceNumber >> 8) & 255));
@@ -182,6 +183,7 @@ public class AWXProtocol
         buffer.put(command);
         buffer.put(VENDOR_ID);
         buffer.put(data);
+
         return buffer.array();
     }
 

@@ -23,9 +23,9 @@ public class IOTStatus extends IOTObject
     public String wifi;
     public String ipaddr;
     public Integer ipport;
+    public String macaddr;
 
     public Integer txpower;
-    public String macaddr;
 
     public Integer camblind;
 
@@ -40,10 +40,13 @@ public class IOTStatus extends IOTObject
     public Integer lightlevel;
     public Integer noiselevel;
 
+    public Integer rgb;
     public Integer hue;
     public Integer saturation;
     public Integer brightness;
     public Integer color_temp;
+    public Integer white_temp;
+    public Integer bulb_mode;
 
     public Double positionLatCoarse;
     public Double positionLonCoarse;

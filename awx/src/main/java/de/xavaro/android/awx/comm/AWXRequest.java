@@ -10,14 +10,17 @@ public class AWXRequest
     public static final int MODE_ENABLE_NOTIFICATION = 2;
     public static final int MODE_DISABLE_NOTIFICATION = 3;
 
-    public BluetoothGatt gatt;
     public BluetoothGattCharacteristic chara;
     public byte[] data;
     public int mode;
 
-    public AWXRequest(BluetoothGatt gatt, BluetoothGattCharacteristic chara, byte[] data, int mode)
+    public AWXRequest(BluetoothGattCharacteristic chara, int mode)
     {
-        this.gatt = gatt;
+        this(chara, mode, null);
+    }
+
+    public AWXRequest(BluetoothGattCharacteristic chara, int mode, byte[] data)
+    {
         this.chara = chara;
         this.data = data;
         this.mode = mode;

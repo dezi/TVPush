@@ -187,6 +187,8 @@ public class AWXDiscover
     {
         if (result.getScanRecord() == null) return;
 
+        String name = result.getDevice().getName();
+
         int vendor = 0;
         byte[] manufdata = null;
 
@@ -216,24 +218,26 @@ public class AWXDiscover
 
         if (serviceUuid == null) return;
 
+        Log.d(LOGTAG, "evaluateScan: AWX"
+                + " addr=" + result.getDevice().getAddress()
+                + " vendor=" + vendor
+                + " name=" + name
+                //+ " service=" + serviceUuid.toString()
+                //+ " scan=" + result.getScanRecord()
+        );
+
+        if (name == null) return;
+
         JSONObject scanResult = new JSONObject();
 
         Json.put(scanResult, "macaddr", result.getDevice().getAddress());
-        Json.put(scanResult, "meshname", result.getDevice().getName());
+        Json.put(scanResult, "meshname", name);
         Json.put(scanResult, "meshid", getMeshId(manufdata));
 
         synchronized (scanResults)
         {
             scanResults.add(scanResult);
         };
-
-        Log.d(LOGTAG, "evaluateScan: AWX"
-                + " addr=" + result.getDevice().getAddress()
-                + " vendor=" + vendor
-                + " name=" + result.getDevice().getName()
-                //+ " service=" + serviceUuid.toString()
-                //+ " scan=" + result.getScanRecord()
-        );
     }
 
     private static short getMeshId(byte[] manufData)

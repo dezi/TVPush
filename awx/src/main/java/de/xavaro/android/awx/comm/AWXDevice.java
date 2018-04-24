@@ -15,11 +15,15 @@ import android.graphics.Color;
 import android.os.Build;
 import android.util.Log;
 
+import org.json.JSONObject;
+
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import de.xavaro.android.awx.base.AWX;
+import de.xavaro.android.awx.simple.Json;
 import de.xavaro.android.awx.simple.Simple;
 
 @SuppressWarnings("WeakerAccess")
@@ -28,11 +32,18 @@ public class AWXDevice extends BluetoothGattCallback
 {
     private final String LOGTAG = AWXDevice.class.getSimpleName();
 
-    private final Context context;
+    private final boolean debug = false;
 
+    private final Context context;
     private final short meshid;
     private final String meshname;
     private final String macaddr;
+
+    private String uuid;
+    private String name;
+    private String model;
+    private String vendor;
+    private String version;
 
     private String meshpass = "f6d292f5";
 
@@ -65,7 +76,7 @@ public class AWXDevice extends BluetoothGattCallback
         if (adapter == null) return;
 
         BluetoothDevice device = adapter.getRemoteDevice(macaddr);
-        gatt = device.connectGatt(context, false, this);
+        device.connectGatt(context, false, this);
     }
 
     @Override
@@ -73,71 +84,61 @@ public class AWXDevice extends BluetoothGattCallback
     {
         if (newState == BluetoothProfile.STATE_CONNECTED)
         {
-            Log.d(LOGTAG, "onConnectionStateChange: connected.");
+            Log.d(LOGTAG, "onConnectionStateChange: connected mac=" + macaddr);
+
+            this.gatt = gatt;
 
             gatt.discoverServices();
-
-            return;
         }
 
         if (newState == BluetoothProfile.STATE_DISCONNECTED)
         {
-            Log.d(LOGTAG, "onConnectionStateChange: disconnected.");
+            Log.d(LOGTAG, "onConnectionStateChange: disconnected mac=" + macaddr);
 
-            return;
+            this.gatt = null;
         }
-
-        Log.d(LOGTAG, "onConnectionStateChange:"
-                + " status=" + status
-                + " newState=" + newState);
     }
 
     @Override
     public void onServicesDiscovered(BluetoothGatt gatt, int status)
     {
-        Log.d(LOGTAG, "onServicesDiscovered: status=" + status);
+        Log.d(LOGTAG, "onServicesDiscovered: mac=" + macaddr + " status=" + status);
         if (status != 0) return;
 
         List<BluetoothGattService> services = gatt.getServices();
 
         for (BluetoothGattService service : services)
         {
-            Log.d(LOGTAG, "onServicesDiscovered: service=" + service.getUuid());
-
             List<BluetoothGattCharacteristic> charas = service.getCharacteristics();
 
             for (BluetoothGattCharacteristic chara : charas)
             {
-                Log.d(LOGTAG, "onServicesDiscovered: characteristic=" + chara.getUuid());
-
-                if (chara.getUuid().toString().equals(AWXDefs.CHARACTERISTIC_MESH_LIGHT_PAIR))
+                if (chara.getUuid().toString().equalsIgnoreCase(AWXDefs.CHARACTERISTIC_MESH_LIGHT_PAIR))
                 {
                     cpair = chara;
                     continue;
                 }
 
-                if (chara.getUuid().toString().equals(AWXDefs.CHARACTERISTIC_MESH_LIGHT_STATUS))
+                if (chara.getUuid().toString().equalsIgnoreCase(AWXDefs.CHARACTERISTIC_MESH_LIGHT_STATUS))
                 {
                     cstatus = chara;
                     continue;
                 }
 
-                if (chara.getUuid().toString().equals(AWXDefs.CHARACTERISTIC_MESH_LIGHT_COMMAND))
+                if (chara.getUuid().toString().equalsIgnoreCase(AWXDefs.CHARACTERISTIC_MESH_LIGHT_COMMAND))
                 {
                     ccommand = chara;
                     continue;
                 }
 
-                if (chara.getUuid().toString().equals(AWXDefs.CHARACTERISTIC_MESH_LIGHT_OTA))
+                if (chara.getUuid().toString().equalsIgnoreCase(AWXDefs.CHARACTERISTIC_MESH_LIGHT_OTA))
                 {
                     continue;
                 }
 
-                executeme.add(new AWXRequest(gatt, chara, null, AWXRequest.MODE_READ_CHARACTERISTIC));
+                executeme.add(new AWXRequest(chara, AWXRequest.MODE_READ_CHARACTERISTIC));
             }
         }
-
-        Log.d(LOGTAG, "onServicesDiscovered: done...");
 
         //
         // Pairing.
@@ -151,27 +152,28 @@ public class AWXDevice extends BluetoothGattCallback
 
         byte[] data = AWXProtocol.getPairValue(meshname16, meshpass16, sessionRand);
 
-        executeme.add(new AWXRequest(gatt, cpair, data, AWXRequest.MODE_WRITE_CHARACTERISTIC));
-        executeme.add(new AWXRequest(gatt, cpair, null, AWXRequest.MODE_READ_CHARACTERISTIC));
+        executeme.add(new AWXRequest(cpair, AWXRequest.MODE_WRITE_CHARACTERISTIC, data));
+        executeme.add(new AWXRequest(cpair, AWXRequest.MODE_READ_CHARACTERISTIC));
 
         //
         // Status.
         //
 
-        executeme.add(new AWXRequest(gatt, cstatus, new byte[]{1}, AWXRequest.MODE_WRITE_CHARACTERISTIC));
-        executeme.add(new AWXRequest(gatt, cstatus, null, AWXRequest.MODE_ENABLE_NOTIFICATION));
+        executeme.add(new AWXRequest(cstatus, AWXRequest.MODE_WRITE_CHARACTERISTIC, new byte[]{1}));
+        executeme.add(new AWXRequest(cstatus, AWXRequest.MODE_ENABLE_NOTIFICATION));
 
         executeNext();
     }
 
     @Override
+    @SuppressWarnings("UnusedAssignment")
     public void onCharacteristicRead(BluetoothGatt gatt,
                                      BluetoothGattCharacteristic chara,
                                      int status)
     {
         if (status != BluetoothGatt.GATT_SUCCESS)
         {
-            Log.d(LOGTAG, "onCharacteristicRead: status=" + status + " uuid=" + chara.getUuid());
+            Log.d(LOGTAG, "onCharacteristicRead: mac=" + macaddr + " status=" + status + " uuid=" + chara.getUuid());
 
             return;
         }
@@ -186,9 +188,9 @@ public class AWXDevice extends BluetoothGattCallback
             case AWXDefs.chara_device_name:
                 tag = "name";
                 val = chara.getStringValue(0).trim();
+                val = AWXDevices.getFriendlyName(val);
 
-                String friendly = AWXDevices.getFriendlyName(val);
-                Log.d(LOGTAG, "onCharacteristicRead: tag=" + tag + " val=" + val + " friendly=" + friendly);
+                name = val;
 
                 break;
 
@@ -198,8 +200,11 @@ public class AWXDevice extends BluetoothGattCallback
                 break;
 
             case AWXDefs.chara_model_number_string:
-                tag = "modnum";
+                tag = "model";
                 val = chara.getStringValue(0).trim();
+
+                model = val;
+
                 break;
 
             case AWXDefs.chara_serial_number_string:
@@ -210,6 +215,9 @@ public class AWXDevice extends BluetoothGattCallback
             case AWXDefs.chara_firmware_revision_string:
                 tag = "firmware";
                 val = chara.getStringValue(0).trim();
+
+                version = val;
+
                 break;
 
             case AWXDefs.chara_hardware_revision_string:
@@ -220,6 +228,9 @@ public class AWXDevice extends BluetoothGattCallback
             case AWXDefs.chara_manufacturer_name_string:
                 tag = "vendor";
                 val = chara.getStringValue(0).trim();
+
+                vendor = val;
+
                 break;
 
             case AWXDefs.CHARACTERISTIC_MESH_LIGHT_STATUS:
@@ -241,35 +252,37 @@ public class AWXDevice extends BluetoothGattCallback
                 tag = "light_pair";
                 val = Simple.getBytesToHexString(data);
 
-                if (data[0] == 13)
+                if (data[0] == AWXProtocol.OPCODE_ENC_RSP)
                 {
-                    byte[] sessionRandom = new byte[8];
-                    System.arraycopy(data, 1, sessionRandom, 0, sessionRandom.length);
+                    byte[] responseRand = new byte[8];
+                    System.arraycopy(data, 1, responseRand, 0, responseRand.length);
 
                     byte[] meshname16 = Arrays.copyOf(meshname.getBytes(), 16);
                     byte[] meshpass16 = Arrays.copyOf(meshpass.getBytes(), 16);
 
-                    sessionKey = AWXProtocol.getSessionKey(meshname16, meshpass16, this.sessionRand, sessionRandom);
+                    sessionKey = AWXProtocol.getSessionKey(meshname16, meshpass16, sessionRand, responseRand);
 
-                    Log.d(LOGTAG, "onCharacteristicRead: paired sessionKey=" + Simple.getBytesToHexString(sessionKey));
+                    Log.d(LOGTAG, "onCharacteristicRead: paired mac=" + macaddr + " sessionKey=" + Simple.getBytesToHexString(sessionKey));
 
-                    setColor(0x008800);
+                    buildDeviceDescription();
+
+                    break;
                 }
 
-                if (data[0] == 14)
+                if (data[0] == AWXProtocol.OPCODE_ENC_FAIL)
                 {
-                    Log.e(LOGTAG, "onCharacteristicRead: pairing failed!");
+                    Log.e(LOGTAG, "onCharacteristicRead: pairing failed! mac=" + macaddr);
+
+                    break;
                 }
 
-                if (data[0] == 7)
-                {
-                    Log.e(LOGTAG, "onCharacteristicRead: IRGENDWAS !");
-                }
+                Log.e(LOGTAG, "onCharacteristicRead: pairing unknown mac=" + macaddr + " opcode=" + data[0]);
 
                 break;
         }
 
-        Log.d(LOGTAG, "onCharacteristicRead: tag=" + tag + " val=" + val);
+        //noinspection ConstantConditions
+        if (debug) Log.d(LOGTAG, "onCharacteristicRead:  mac=" + macaddr + " tag=" + tag + " val=" + val);
 
         executeNext();
     }
@@ -277,7 +290,7 @@ public class AWXDevice extends BluetoothGattCallback
     @Override
     public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic chara, int status)
     {
-        Log.d(LOGTAG, "onCharacteristicWrite: status=" + status + " chara=" + chara.getUuid());
+        Log.d(LOGTAG, "onCharacteristicWrite: mac=" + macaddr + " status=" + status + " chara=" + chara.getUuid());
 
         executeNext();
     }
@@ -291,26 +304,42 @@ public class AWXDevice extends BluetoothGattCallback
 
         byte command = AWXProtocol.getCommand(plain);
 
-        String byte1 = Integer.toString((payload[9] & 255) + 256, 16).substring(1);
-        String byte2 = Integer.toString((payload[0] & 255) + 256, 16).substring(1);
+        short proxid = (short) (((payload[9] & 0xff) << 8) + (payload[0] & 0xff));
 
-        short meshIdDev = Short.parseShort( byte1 + byte2, 16);
-        short meshIdNew = (short) (((payload[9] & 0xff) << 8) + (payload[0] & 0xff));
+        payload[ 0 ] = 0;
+        payload[ 9 ] = 0;
 
-        Log.d(LOGTAG, "onCharacteristicChanged:"
-                + " m1=" + meshid
-                + " m2=" + meshIdDev
-                + " m3=" + meshIdNew
-                + " cmd=" + command
-                + " paylod=" + Simple.getBytesToHexString(payload));
+        if (command == AWXProtocol.COMMAND_NOTIFICATION_RECEIVED)
+        {
+            int wbright = payload[3] & 0xff;
+            int wtemp = payload[4] & 0xff;
+            int cbright = payload[5] & 0xff;
+            int color = ((payload[6] & 0xff) << 16) + ((payload[7] & 0xff) << 8) + (payload[8] & 0xff);
 
-        executeNext();
+            payload[ 3 ] = 0;
+            payload[ 4 ] = 0;
+            payload[ 5 ] = 0;
+            payload[ 6 ] = 0;
+            payload[ 7 ] = 0;
+            payload[ 8 ] = 0;
+
+            Log.d(LOGTAG, "onCharacteristicChanged:"
+                    + " mac=" + macaddr
+                    + " meshid=" + meshid
+                    + " proxid=" + proxid
+                    + " cmd=" + command
+                    + " wb=" + wbright
+                    + " wt=" + wtemp
+                    + " cb=" + cbright
+                    + " c=0x" + Integer.toHexString(color)
+                    + " paylod=" + Simple.getBytesToHexString(payload));
+        }
     }
 
     @Override
     public void onDescriptorRead(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status)
     {
-        Log.d(LOGTAG, "onDescriptorRead: descriptor=" + descriptor.getUuid());
+        Log.d(LOGTAG, "onDescriptorRead: mac=" + macaddr + " descriptor=" + descriptor.getUuid());
 
         executeNext();
     }
@@ -318,7 +347,7 @@ public class AWXDevice extends BluetoothGattCallback
     @Override
     public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status)
     {
-        Log.d(LOGTAG, "onDescriptorWrite: descriptor=" + descriptor.getUuid());
+        Log.d(LOGTAG, "onDescriptorWrite: mac=" + macaddr + " descriptor=" + descriptor.getUuid());
 
         executeNext();
     }
@@ -326,6 +355,14 @@ public class AWXDevice extends BluetoothGattCallback
     private void executeNext()
     {
         if (executeme.size() == 0) return;
+
+        try
+        {
+            Thread.sleep(50);
+        }
+        catch (Exception ignore)
+        {
+        }
 
         AWXRequest request = executeme.remove(0);
 
@@ -336,7 +373,7 @@ public class AWXDevice extends BluetoothGattCallback
 
         if (request.mode == AWXRequest.MODE_WRITE_CHARACTERISTIC)
         {
-            Log.d(LOGTAG, "executeNext: write: data=" + Simple.getBytesToHexString(request.data));
+            Log.d(LOGTAG, "executeNext: write: mac=" + macaddr + " data=" + Simple.getBytesToHexString(request.data));
 
             request.chara.setValue(request.data);
             request.chara.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
@@ -358,16 +395,84 @@ public class AWXDevice extends BluetoothGattCallback
         }
     }
 
+    @SuppressWarnings("SameParameterValue")
     private void setColor(int color)
     {
-        byte[] data = AWXProtocol.getValue(meshid, (byte) -30, new byte[]{(byte) 4, (byte) Color.red(color), (byte) Color.green(color), (byte) Color.blue(color)});
+        byte[] plain = AWXProtocol.getValue(
+                meshid,
+                AWXProtocol.COMMAND_SET_COLOR,
+                new byte[]{4, (byte) Color.red(color), (byte) Color.green(color), (byte) Color.blue(color)}
+        );
 
-        Log.d(LOGTAG, "setColor: plain=" + Simple.getBytesToHexString(data));
+        byte[] crypt = AWXProtocol.encryptValue(macaddr, sessionKey, plain);
 
-        byte[] cryp = AWXProtocol.encryptValue(macaddr, sessionKey, data);
+        executeme.add(new AWXRequest(ccommand, AWXRequest.MODE_WRITE_CHARACTERISTIC, crypt));
+    }
 
-        Log.d(LOGTAG, "setColor: crypt=" + Simple.getBytesToHexString(cryp));
+    private void buildDeviceDescription()
+    {
+        uuid = Simple.hmacSha1UUID(model, macaddr);
 
-        executeme.add(new AWXRequest(gatt, ccommand, cryp, AWXRequest.MODE_WRITE_CHARACTERISTIC));
+        JSONObject awoxdev = new JSONObject();
+
+        JSONObject device = new JSONObject();
+        Json.put(awoxdev, "device", device);
+
+        Json.put(device, "uuid", uuid);
+        Json.put(device, "did", Integer.toString(meshid));
+        Json.put(device, "type", "smartbulb");
+        Json.put(device, "name", name);
+        Json.put(device, "model", model);
+        Json.put(device, "brand", vendor);
+        Json.put(device, "version", version);
+        Json.put(device, "capabilities", getCapabilities());
+        Json.put(device, "driver", "awx");
+
+        JSONObject credentials = new JSONObject();
+        Json.put(awoxdev, "credentials", credentials);
+
+        Json.put(credentials, "meshname", meshname);
+        Json.put(credentials, "meshpass", meshpass);
+
+        JSONObject network = new JSONObject();
+        Json.put(awoxdev, "network", network);
+
+        Json.put(network, "mac", macaddr);
+
+        Log.d(LOGTAG, "buildDeviceDescription json=" + Json.toPretty(awoxdev));
+
+        //AWX.instance.onDeviceFound(awoxdev);
+    }
+
+    private String getCapabilities()
+    {
+        ArrayList<String> props = AWXDevices.getProperties(name);
+
+        String caps;
+
+        if (props.contains(AWXDevices.PROPERTY_PLUG_LED_STATE)
+                || props.contains(AWXDevices.PROPERTY_PLUG_SCHEDULE)
+                || props.contains(AWXDevices.PROPERTY_PLUG_MESH_SCHEDULE))
+        {
+            caps = "smartplug|plugonoff|ledonoff";
+        }
+        else
+        {
+            caps = "smartbulb|bulbonoff|dimmable|color|colorrgb";
+        }
+
+        caps += "|fixed|ble|stupid";
+
+        if (props.contains(AWXDevices.PROPERTY_LIGHT_MODE))
+        {
+            caps += "|colormode";
+        }
+
+        if (props.contains(AWXDevices.PROPERTY_WHITE_TEMPERATURE))
+        {
+            caps += "|colortemp";
+        }
+
+        return caps;
     }
 }
