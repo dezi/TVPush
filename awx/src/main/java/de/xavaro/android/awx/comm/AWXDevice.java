@@ -15,21 +15,17 @@ import android.graphics.Color;
 import android.os.Build;
 import android.util.Log;
 import android.util.SparseArray;
-import android.util.SparseIntArray;
 
 import org.json.JSONObject;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import de.xavaro.android.awx.base.AWX;
 import de.xavaro.android.awx.simple.Json;
 import de.xavaro.android.awx.simple.Simple;
-import de.xavaro.android.awx.utils.AWXHardwareUtils;
 import de.xavaro.android.awx.utils.AWXMathUtils;
 
 @SuppressWarnings("WeakerAccess")
@@ -52,6 +48,13 @@ public class AWXDevice extends BluetoothGattCallback
     private String model;
     private String vendor;
     private String version;
+
+    private int powerstate;
+    private int lightmode;
+    private int wbright;
+    private int wtemp;
+    private int cbright;
+    private int color;
 
     private String meshpass = "f6d292f5";
 
@@ -161,23 +164,26 @@ public class AWXDevice extends BluetoothGattCallback
         // Pairing.
         //
 
-        sessionRand = new byte[8];
-        new SecureRandom().nextBytes(sessionRand);
+        if (sessionKey == null)
+        {
+            sessionRand = new byte[8];
+            new SecureRandom().nextBytes(sessionRand);
 
-        byte[] meshname16 = Arrays.copyOf(meshname.getBytes(), 16);
-        byte[] meshpass16 = Arrays.copyOf(meshpass.getBytes(), 16);
+            byte[] meshname16 = Arrays.copyOf(meshname.getBytes(), 16);
+            byte[] meshpass16 = Arrays.copyOf(meshpass.getBytes(), 16);
 
-        byte[] data = AWXProtocol.getPairValue(meshname16, meshpass16, sessionRand);
+            byte[] data = AWXProtocol.getPairValue(meshname16, meshpass16, sessionRand);
 
-        executeme.add(new AWXRequest(cpair, AWXRequest.MODE_WRITE_CHARACTERISTIC, data));
-        executeme.add(new AWXRequest(cpair, AWXRequest.MODE_READ_CHARACTERISTIC));
+            executeme.add(new AWXRequest(AWXRequest.CHARA_PAIR, AWXRequest.MODE_WRITE_CHARACTERISTIC, data));
+            executeme.add(new AWXRequest(AWXRequest.CHARA_PAIR, AWXRequest.MODE_READ_CHARACTERISTIC));
+        }
 
         //
         // Status.
         //
 
-        executeme.add(new AWXRequest(cstat, AWXRequest.MODE_WRITE_CHARACTERISTIC, new byte[]{1}));
-        executeme.add(new AWXRequest(cstat, AWXRequest.MODE_ENABLE_NOTIFICATION));
+        executeme.add(new AWXRequest(AWXRequest.CHARA_STAT, AWXRequest.MODE_WRITE_CHARACTERISTIC, new byte[]{1}));
+        executeme.add(new AWXRequest(AWXRequest.CHARA_STAT, AWXRequest.MODE_ENABLE_NOTIFICATION));
 
         executeNext();
     }
@@ -362,6 +368,19 @@ public class AWXDevice extends BluetoothGattCallback
 
         AWXRequest request = executeme.remove(0);
 
+        if (request.chara == null)
+        {
+            if (request.cint == AWXRequest.CHARA_PAIR) request.chara = cpair;
+            if (request.cint == AWXRequest.CHARA_STAT) request.chara = cstat;
+            if (request.cint == AWXRequest.CHARA_COMM) request.chara = ccomm;
+        }
+
+        if (request.chara == null)
+        {
+            Log.e(LOGTAG, "executeNext: no characteristic!");
+            return;
+        }
+
         if (request.mode == AWXRequest.MODE_READ_CHARACTERISTIC)
         {
             gatt.readCharacteristic(request.chara);
@@ -372,6 +391,17 @@ public class AWXDevice extends BluetoothGattCallback
             Log.d(LOGTAG, "executeNext: write: mac=" + macaddr + " data=" + Simple.getBytesToHexString(request.data));
 
             request.chara.setValue(request.data);
+            request.chara.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+            gatt.writeCharacteristic(request.chara);
+        }
+
+        if (request.mode == AWXRequest.MODE_CRYPT_CHARACTERISTIC)
+        {
+            byte[] crypt = AWXProtocol.encryptValue(macaddr, sessionKey, request.data);
+
+            Log.d(LOGTAG, "executeNext: cryptwrite: mac=" + macaddr + " data=" + Simple.getBytesToHexString(crypt));
+
+            request.chara.setValue(crypt);
             request.chara.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
             gatt.writeCharacteristic(request.chara);
         }
@@ -391,18 +421,84 @@ public class AWXDevice extends BluetoothGattCallback
         }
     }
 
-    @SuppressWarnings("SameParameterValue")
+    private void setPowerState(int powerstate)
+    {
+        this.powerstate = powerstate;
+
+        byte[] plain = AWXProtocol.getValue(
+                meshid,
+                AWXProtocol.COMMAND_SET_POWER_STATE,
+                new byte[]{(byte) powerstate}
+        );
+
+        executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
+    }
+
+    private void setLightMode(int lightmode)
+    {
+        this.lightmode = lightmode;
+
+        byte[] plain = AWXProtocol.getValue(
+                meshid,
+                AWXProtocol.COMMAND_SET_LIGHT_MODE,
+                new byte[]{(byte) lightmode}
+        );
+
+        executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
+    }
+
+    private void setWhiteBrighness(int brightness)
+    {
+        wbright = brightness;
+
+        byte[] plain = AWXProtocol.getValue(
+                meshid,
+                AWXProtocol.COMMAND_SET_WHITE_BRIGHTNESS,
+                new byte[]{(byte) AWXMathUtils.percentToValue(brightness, 1, 127)}
+        );
+
+        executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
+    }
+
+    private void setWhiteTemperature(int temperature)
+    {
+        wtemp = temperature;
+
+        byte[] plain = AWXProtocol.getValue(
+                meshid,
+                AWXProtocol.COMMAND_SET_WHITE_TEMPERATURE,
+                new byte[]{(byte) AWXMathUtils.percentToValue(temperature, 0, 127)}
+        );
+
+        executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
+    }
+
+    private void setColorBrighness(int brightness)
+    {
+        cbright = brightness;
+
+        byte[] plain = AWXProtocol.getValue(
+                meshid,
+                AWXProtocol.COMMAND_SET_COLOR_BRIGHTNESS,
+                new byte[]{(byte) AWXMathUtils.percentToValue(brightness, 10, 100)}
+        );
+
+        executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
+    }
+
     private void setColor(int color)
     {
+        this.color = color;
+
         byte[] plain = AWXProtocol.getValue(
                 meshid,
                 AWXProtocol.COMMAND_SET_COLOR,
                 new byte[]{4, (byte) Color.red(color), (byte) Color.green(color), (byte) Color.blue(color)}
         );
 
-        byte[] crypt = AWXProtocol.encryptValue(macaddr, sessionKey, plain);
+        executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
 
-        executeme.add(new AWXRequest(ccomm, AWXRequest.MODE_WRITE_CHARACTERISTIC, crypt));
+        executeNext();
     }
 
     private void buildDeviceDescription()
@@ -423,6 +519,7 @@ public class AWXDevice extends BluetoothGattCallback
         Json.put(device, "version", version);
         Json.put(device, "capabilities", getCapabilities());
         Json.put(device, "driver", "awx");
+        Json.put(device, "macaddr", macaddr);
 
         JSONObject credentials = new JSONObject();
         Json.put(awoxdev, "credentials", credentials);
@@ -430,14 +527,18 @@ public class AWXDevice extends BluetoothGattCallback
         Json.put(credentials, "meshname", meshname);
         Json.put(credentials, "meshpass", meshpass);
 
-        JSONObject network = new JSONObject();
-        Json.put(awoxdev, "network", network);
-
-        Json.put(network, "mac", macaddr);
-
         Log.d(LOGTAG, "buildDeviceDescription json=" + Json.toPretty(awoxdev));
 
         AWX.instance.onDeviceFound(awoxdev);
+
+        Simple.getHandler().postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                setColor(0xff0000);
+            }
+        }, 1000);
     }
 
     private String getCapabilities()
@@ -489,14 +590,12 @@ public class AWXDevice extends BluetoothGattCallback
 
         if (command == AWXProtocol.COMMAND_NOTIFICATION_RECEIVED)
         {
-            int powerstate = payload[2] & 0x01;
-            int lightmode = (payload[2] >> 1) & 0x01;
-
-            int wbright = AWXMathUtils.valueToPercent(payload[3] & 0xff, 1, 127);
-            int wtemp = AWXMathUtils.valueToPercent(payload[4] & 0xff, 0, 127);
-            int cbright = AWXMathUtils.valueToPercent(payload[5] & 0xff, 10, 100);
-
-            int color = ((payload[6] & 0xff) << 16) + ((payload[7] & 0xff) << 8) + (payload[8] & 0xff);
+            powerstate = payload[2] & 0x01;
+            lightmode = (payload[2] >> 1) & 0x01;
+            wbright = AWXMathUtils.valueToPercent(payload[3] & 0xff, 1, 127);
+            wtemp = AWXMathUtils.valueToPercent(payload[4] & 0xff, 0, 127);
+            cbright = AWXMathUtils.valueToPercent(payload[5] & 0xff, 10, 100);
+            color = ((payload[6] & 0xff) << 16) + ((payload[7] & 0xff) << 8) + (payload[8] & 0xff);
 
             JSONObject status = new JSONObject();
 
@@ -506,6 +605,7 @@ public class AWXDevice extends BluetoothGattCallback
             Json.put(status, "color_mode", lightmode);
             Json.put(status, "color_temp", wtemp);
             Json.put(status, "bulbstate", powerstate);
+            Json.put(status, "macaddr", macaddr);
 
             AWX.instance.onDeviceStatus(status);
 

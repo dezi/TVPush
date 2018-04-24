@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.text.format.Formatter;
@@ -23,6 +24,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class Simple
 {
+    private static Handler handler;
     private static Resources resources;
     private static WifiManager wifiManager;
     private static BluetoothManager bluetoothManager;
@@ -30,6 +32,7 @@ public class Simple
 
     public static void initialize(Application app)
     {
+        handler = new Handler();
         resources = app.getResources();
         wifiManager = (WifiManager) app.getSystemService(Context.WIFI_SERVICE);
 
@@ -42,6 +45,11 @@ public class Simple
                 bluetoothAdapter = bluetoothManager.getAdapter();
             }
         }
+    }
+
+    public static Handler getHandler()
+    {
+        return handler;
     }
 
     @Nullable
