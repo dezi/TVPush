@@ -36,6 +36,7 @@ public class AWXHardwareUtils
     public static short getMeshId(String address)
     {
         int meshId = Integer.parseInt(address.substring(12, 14) + address.substring(15, 17), 16);
+
         if (meshId == 0 || meshId == 32768)
         {
             meshId = 1;
@@ -44,6 +45,7 @@ public class AWXHardwareUtils
         {
             meshId %= 32768;
         }
+
         return (short) meshId;
     }
 }

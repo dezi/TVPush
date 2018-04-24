@@ -14,23 +14,29 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.util.Log;
+import android.util.SparseArray;
+import android.util.SparseIntArray;
 
 import org.json.JSONObject;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import de.xavaro.android.awx.base.AWX;
 import de.xavaro.android.awx.simple.Json;
 import de.xavaro.android.awx.simple.Simple;
+import de.xavaro.android.awx.utils.AWXHardwareUtils;
 
 @SuppressWarnings("WeakerAccess")
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class AWXDevice extends BluetoothGattCallback
 {
     private final String LOGTAG = AWXDevice.class.getSimpleName();
+
+    public static final SparseArray<AWXDevice> meshid2device = new SparseArray<>();
 
     private final boolean debug = false;
 
@@ -51,9 +57,10 @@ public class AWXDevice extends BluetoothGattCallback
     private byte[] sessionRand;
 
     private BluetoothGatt gatt;
+
     private BluetoothGattCharacteristic cpair;
-    private BluetoothGattCharacteristic cstatus;
-    private BluetoothGattCharacteristic ccommand;
+    private BluetoothGattCharacteristic cstat;
+    private BluetoothGattCharacteristic ccomm;
 
     private final ArrayList<AWXRequest> executeme = new ArrayList<>();
 
@@ -68,6 +75,8 @@ public class AWXDevice extends BluetoothGattCallback
         {
             meshpass = "1234";
         }
+
+        meshid2device.put(meshid, this);
     }
 
     public void connect()
@@ -95,6 +104,12 @@ public class AWXDevice extends BluetoothGattCallback
         {
             Log.d(LOGTAG, "onConnectionStateChange: disconnected mac=" + macaddr);
 
+            executeme.clear();
+
+            this.cpair = null;
+            this.cstat = null;
+            this.ccomm = null;
+
             this.gatt = null;
         }
     }
@@ -121,13 +136,13 @@ public class AWXDevice extends BluetoothGattCallback
 
                 if (chara.getUuid().toString().equalsIgnoreCase(AWXDefs.CHARACTERISTIC_MESH_LIGHT_STATUS))
                 {
-                    cstatus = chara;
+                    cstat = chara;
                     continue;
                 }
 
                 if (chara.getUuid().toString().equalsIgnoreCase(AWXDefs.CHARACTERISTIC_MESH_LIGHT_COMMAND))
                 {
-                    ccommand = chara;
+                    ccomm = chara;
                     continue;
                 }
 
@@ -159,8 +174,8 @@ public class AWXDevice extends BluetoothGattCallback
         // Status.
         //
 
-        executeme.add(new AWXRequest(cstatus, AWXRequest.MODE_WRITE_CHARACTERISTIC, new byte[]{1}));
-        executeme.add(new AWXRequest(cstatus, AWXRequest.MODE_ENABLE_NOTIFICATION));
+        executeme.add(new AWXRequest(cstat, AWXRequest.MODE_WRITE_CHARACTERISTIC, new byte[]{1}));
+        executeme.add(new AWXRequest(cstat, AWXRequest.MODE_ENABLE_NOTIFICATION));
 
         executeNext();
     }
@@ -302,37 +317,16 @@ public class AWXDevice extends BluetoothGattCallback
         byte[] plain = AWXProtocol.decryptValue(macaddr, sessionKey, data);
         byte[] payload = AWXProtocol.getData(plain);
 
-        byte command = AWXProtocol.getCommand(plain);
+        short targetMeshid = (short) (((payload[9] & 0xff) << 8) + (payload[0] & 0xff));
+        AWXDevice targetDevice = meshid2device.get(targetMeshid, null);
 
-        short proxid = (short) (((payload[9] & 0xff) << 8) + (payload[0] & 0xff));
-
-        payload[ 0 ] = 0;
-        payload[ 9 ] = 0;
-
-        if (command == AWXProtocol.COMMAND_NOTIFICATION_RECEIVED)
+        if (targetDevice != null)
         {
-            int wbright = payload[3] & 0xff;
-            int wtemp = payload[4] & 0xff;
-            int cbright = payload[5] & 0xff;
-            int color = ((payload[6] & 0xff) << 16) + ((payload[7] & 0xff) << 8) + (payload[8] & 0xff);
-
-            payload[ 3 ] = 0;
-            payload[ 4 ] = 0;
-            payload[ 5 ] = 0;
-            payload[ 6 ] = 0;
-            payload[ 7 ] = 0;
-            payload[ 8 ] = 0;
-
-            Log.d(LOGTAG, "onCharacteristicChanged:"
-                    + " mac=" + macaddr
-                    + " meshid=" + meshid
-                    + " proxid=" + proxid
-                    + " cmd=" + command
-                    + " wb=" + wbright
-                    + " wt=" + wtemp
-                    + " cb=" + cbright
-                    + " c=0x" + Integer.toHexString(color)
-                    + " paylod=" + Simple.getBytesToHexString(payload));
+            targetDevice.evalNotification(plain);
+        }
+        else
+        {
+            Log.e(LOGTAG, "onCharacteristicChanged: offline " + " mac=" + macaddr + " targetMeshid=" + targetMeshid);
         }
     }
 
@@ -406,7 +400,7 @@ public class AWXDevice extends BluetoothGattCallback
 
         byte[] crypt = AWXProtocol.encryptValue(macaddr, sessionKey, plain);
 
-        executeme.add(new AWXRequest(ccommand, AWXRequest.MODE_WRITE_CHARACTERISTIC, crypt));
+        executeme.add(new AWXRequest(ccomm, AWXRequest.MODE_WRITE_CHARACTERISTIC, crypt));
     }
 
     private void buildDeviceDescription()
@@ -474,5 +468,43 @@ public class AWXDevice extends BluetoothGattCallback
         }
 
         return caps;
+    }
+
+    private void evalNotification(byte[] plain)
+    {
+        byte[] payload = AWXProtocol.getData(plain);
+
+        short targetMeshid = (short) (((payload[9] & 0xff) << 8) + (payload[0] & 0xff));
+
+        if (targetMeshid != meshid)
+        {
+            Log.e(LOGTAG, "evalNotification: wrong meshid=" + meshid + " targetMeshid=" + targetMeshid);
+
+            return;
+        }
+
+        byte command = AWXProtocol.getCommand(plain);
+
+        if (command == AWXProtocol.COMMAND_NOTIFICATION_RECEIVED)
+        {
+            int wbright = payload[3] & 0xff;
+            int wtemp = payload[4] & 0xff;
+            int cbright = payload[5] & 0xff;
+            int color = ((payload[6] & 0xff) << 16) + ((payload[7] & 0xff) << 8) + (payload[8] & 0xff);
+            int powerstate = payload[2] & 0x01;
+            int lightmode = (payload[2] >> 1) & 0x01;
+
+            Log.d(LOGTAG, "evalNotification:"
+                    + " mac=" + macaddr
+                    + " meshid=" + meshid
+                    + " cmd=" + command
+                    + " ps=" + powerstate
+                    + " lm=" + lightmode
+                    + " wb=" + wbright
+                    + " wt=" + wtemp
+                    + " cb=" + cbright
+                    + " c=0x" + Integer.toHexString(color)
+                    + " paylod=" + Simple.getBytesToHexString(payload));
+        }
     }
 }
