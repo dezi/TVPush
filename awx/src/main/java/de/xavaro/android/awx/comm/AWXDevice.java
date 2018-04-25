@@ -1,7 +1,6 @@
 package de.xavaro.android.awx.comm;
 
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
@@ -11,11 +10,10 @@ import android.bluetooth.BluetoothProfile;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
+import android.util.SparseArray;
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Build;
 import android.util.Log;
-import android.util.SparseArray;
 
 import org.json.JSONObject;
 
@@ -30,14 +28,11 @@ import de.xavaro.android.awx.simple.Simple;
 import de.xavaro.android.awx.utils.AWXMathUtils;
 
 @SuppressWarnings("WeakerAccess")
-@RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class AWXDevice extends BluetoothGattCallback
 {
     private final String LOGTAG = AWXDevice.class.getSimpleName();
 
     public static final SparseArray<AWXDevice> meshid2device = new SparseArray<>();
-
-    private final boolean debug = false;
 
     private final Context context;
 
@@ -325,8 +320,7 @@ public class AWXDevice extends BluetoothGattCallback
                 break;
         }
 
-        //noinspection ConstantConditions
-        if (debug) Log.d(LOGTAG, "onCharacteristicRead:  mac=" + macaddr + " tag=" + tag + " val=" + val);
+        Log.d(LOGTAG, "onCharacteristicRead:  mac=" + macaddr + " tag=" + tag + " val=" + val);
 
         executeNext();
     }
@@ -600,7 +594,7 @@ public class AWXDevice extends BluetoothGattCallback
         byte[] payload = AWXProtocol.getData(plain);
         byte command = AWXProtocol.getCommand(plain);
 
-        Log.d(LOGTAG, "evalNotification: command=" + command);
+        //Log.d(LOGTAG, "evalNotification: command=" + command);
 
         if (command == AWXProtocol.COMMAND_NOTIFICATION_RECEIVED)
         {

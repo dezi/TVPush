@@ -1,12 +1,11 @@
 package de.xavaro.android.awx.comm;
 
-import android.bluetooth.BluetoothGatt;
-import android.support.annotation.RequiresApi;
-
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
+import android.support.annotation.RequiresApi;
 import android.util.SparseArray;
 import android.content.Context;
 import android.os.ParcelUuid;
@@ -249,13 +248,13 @@ public class AWXDiscover
         synchronized (scanResults)
         {
             scanResults.add(scanResult);
-        };
+        }
     }
 
     private static short getMeshId(byte[] manufData)
     {
         if (manufData == null || manufData.length <= 14) return 0;
 
-        return (short) (((manufData[3] & 0xff) << 8) + (manufData[2] & 255));
+        return (short) (((manufData[3] & 0xff) << 8) + (manufData[2] & 0xff));
     }
 }
