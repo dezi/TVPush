@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import de.xavaro.android.awx.publics.SmartBulbHandler;
 import de.xavaro.android.awx.simple.Log;
+import de.xavaro.android.pub.interfaces.all.DoSomethingHandler;
 import de.xavaro.android.pub.interfaces.ext.GetDeviceStatusRequest;
 import de.xavaro.android.pub.interfaces.ext.GetDevicesRequest;
 import de.xavaro.android.pub.interfaces.ext.GetSmartBulbHandler;
@@ -25,7 +26,8 @@ public class AWX extends OnInterfacesStubs implements
         OnDeviceHandler,
         GetDevicesRequest,
         GetSmartBulbHandler,
-        GetDeviceStatusRequest
+        GetDeviceStatusRequest,
+        DoSomethingHandler
 {
     private static final String LOGTAG = AWX.class.getSimpleName();
 
@@ -148,4 +150,82 @@ public class AWX extends OnInterfacesStubs implements
     }
 
     //endregion GetDeviceStatusRequest
+
+    //region DoSomethingHandler
+
+    @Override
+    public boolean doSomething(JSONObject action, JSONObject device, JSONObject status, JSONObject credential)
+    {
+        JSONObject credentials = Json.getObject(credential, "credentials");
+
+        String uuid = Json.getString(device, "uuid");
+        String did = Json.getString(device, "did");
+        String meshname = Json.getString(credentials, "meshname");
+        String actioncmd = Json.getString(action, "action");
+
+        if ((actioncmd != null) && (uuid != null) && (did != null) && (meshname != null))
+        {
+            short meshid = (short) Integer.parseInt(did);
+
+            if (actioncmd.equals("switchonbulb"))
+            {
+                new SmartBulbHandler(uuid, meshname, meshid).setBulbState(1);
+                return true;
+            }
+
+            if (actioncmd.equals("switchoffbulb"))
+            {
+                new SmartBulbHandler(uuid, meshname, meshid).setBulbState(0);
+                return true;
+            }
+
+            if (actioncmd.equals("adjustpos"))
+            {
+                int brightness = Json.getInt(status, "brightness");
+                brightness += 50;
+
+                new SmartBulbHandler(uuid, meshname, meshid).setBulbState(1);
+                new SmartBulbHandler(uuid, meshname, meshid).setBulbBrightness(brightness);
+
+                return true;
+            }
+
+            if (actioncmd.equals("adjustneg"))
+            {
+                int brightness = Json.getInt(status, "brightness");
+                brightness -= 50;
+
+                new SmartBulbHandler(uuid, meshname, meshid).setBulbState(1);
+                new SmartBulbHandler(uuid, meshname, meshid).setBulbBrightness(brightness);
+
+                return true;
+            }
+
+            if (actioncmd.equals("color"))
+            {
+                String color = Json.getString(action, "actionData");
+
+                if (color != null)
+                {
+                    try
+                    {
+                        int rgbcolor = Integer.parseInt(color, 16);
+
+                        new SmartBulbHandler(uuid, meshname, meshid).setBulbState(1);
+                        new SmartBulbHandler(uuid, meshname, meshid).setBulbRGB(rgbcolor);
+
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    //endregion DoSomethingHandler
 }

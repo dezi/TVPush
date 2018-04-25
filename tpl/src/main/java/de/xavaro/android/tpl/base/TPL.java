@@ -232,40 +232,8 @@ public class TPL extends OnInterfacesStubs implements
                     {
                         int rgbcolor = Integer.parseInt(color, 16);
 
-                        float[] hsv = new float[3];
-                        Color.colorToHSV(rgbcolor, hsv);
-
-                        int hue = Math.round(hsv[0]);
-                        int saturation = Math.round(hsv[1] * 100);
-                        int brightness = Math.round(hsv[2] * 100);
-
-                        if ((rgbcolor == 0xffffff)
-                                || (rgbcolor == 0x888888)
-                                || (rgbcolor == 0x777777)
-                                || (rgbcolor == 0x666666)
-                                || (rgbcolor == 0x555555)
-                                || (rgbcolor == 0x444444)
-                                || (rgbcolor == 0x333333)
-                                || (rgbcolor == 0x222222)
-                                || (rgbcolor == 0x111111)
-                                || (rgbcolor == 0x000000))
-                        {
-                            //
-                            // Dimm intention.
-                            //
-
-                            new SmartBulbHandler(uuid, ipaddr).setBulbState(1);
-                            new SmartBulbHandler(uuid, ipaddr).setBulbBrightness(brightness);
-                        }
-                        else
-                        {
-                            //
-                            // Color intention. Leave brightness untouched.
-                            //
-
-                            new SmartBulbHandler(uuid, ipaddr).setBulbState(1);
-                            new SmartBulbHandler(uuid, ipaddr).setBulbHSB(hue, saturation);
-                        }
+                        new SmartBulbHandler(uuid, ipaddr).setBulbState(1);
+                        new SmartBulbHandler(uuid, ipaddr).setBulbRGB(rgbcolor);
 
                         return true;
                     }

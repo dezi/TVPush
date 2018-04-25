@@ -5,6 +5,7 @@ import android.app.Application;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import de.xavaro.android.awx.base.AWX;
 import de.xavaro.android.gui.base.GUI;
 
 import de.xavaro.android.iam.base.IAM;
@@ -192,6 +193,12 @@ public class SystemsIAM extends IAM
                     if (device.driver.equals("p2p") && (P2P.instance != null))
                     {
                         P2P.instance.doSomething(doaction, device.toJson(), status, credentials);
+                        continue;
+                    }
+
+                    if (device.driver.equals("awx") && (AWX.instance != null))
+                    {
+                        AWX.instance.doSomething(doaction, device.toJson(), status, credentials);
                         continue;
                     }
 
