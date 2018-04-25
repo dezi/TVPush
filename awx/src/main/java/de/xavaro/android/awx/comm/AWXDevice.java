@@ -115,7 +115,10 @@ public class AWXDevice extends BluetoothGattCallback
         {
             Log.d(LOGTAG, "onConnectionStateChange: disconnected mac=" + macaddr);
 
-            executeme.clear();
+            synchronized (executeme)
+            {
+                executeme.clear();
+            }
 
             this.cpair = null;
             this.cstat = null;
@@ -172,7 +175,10 @@ public class AWXDevice extends BluetoothGattCallback
                     continue;
                 }
 
-                executeme.add(new AWXRequest(chara, AWXRequest.MODE_READ_CHARACTERISTIC));
+                synchronized (executeme)
+                {
+                    executeme.add(new AWXRequest(chara, AWXRequest.MODE_READ_CHARACTERISTIC));
+                }
             }
         }
 
@@ -190,16 +196,22 @@ public class AWXDevice extends BluetoothGattCallback
 
             byte[] data = AWXProtocol.getPairValue(meshname16, meshpass16, sessionRand);
 
-            executeme.add(new AWXRequest(AWXRequest.CHARA_PAIR, AWXRequest.MODE_WRITE_CHARACTERISTIC, data));
-            executeme.add(new AWXRequest(AWXRequest.CHARA_PAIR, AWXRequest.MODE_READ_CHARACTERISTIC));
+            synchronized (executeme)
+            {
+                executeme.add(new AWXRequest(AWXRequest.CHARA_PAIR, AWXRequest.MODE_WRITE_CHARACTERISTIC, data));
+                executeme.add(new AWXRequest(AWXRequest.CHARA_PAIR, AWXRequest.MODE_READ_CHARACTERISTIC));
+            }
         }
 
         //
         // Status.
         //
 
-        executeme.add(new AWXRequest(AWXRequest.CHARA_STAT, AWXRequest.MODE_WRITE_CHARACTERISTIC, new byte[]{1}));
-        executeme.add(new AWXRequest(AWXRequest.CHARA_STAT, AWXRequest.MODE_ENABLE_NOTIFICATION));
+        synchronized (executeme)
+        {
+            executeme.add(new AWXRequest(AWXRequest.CHARA_STAT, AWXRequest.MODE_WRITE_CHARACTERISTIC, new byte[]{1}));
+            executeme.add(new AWXRequest(AWXRequest.CHARA_STAT, AWXRequest.MODE_ENABLE_NOTIFICATION));
+        }
 
         executeNext();
     }
@@ -363,17 +375,22 @@ public class AWXDevice extends BluetoothGattCallback
 
     public void executeNext()
     {
-        if (executeme.size() == 0) return;
-
         try
         {
-            Thread.sleep(50);
+            Thread.sleep(100);
         }
         catch (Exception ignore)
         {
         }
 
-        AWXRequest request = executeme.remove(0);
+        AWXRequest request = null;
+
+        synchronized (executeme)
+        {
+            if (executeme.size() > 0) request = executeme.remove(0);
+        }
+
+        if (request == null) return;
 
         if (request.chara == null)
         {
@@ -439,7 +456,10 @@ public class AWXDevice extends BluetoothGattCallback
                 new byte[]{(byte) 0}
         );
 
-        executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
+        synchronized (executeme)
+        {
+            executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
+        }
     }
 
     public void setPowerState(int powerstate)
@@ -452,7 +472,10 @@ public class AWXDevice extends BluetoothGattCallback
                 new byte[]{(byte) powerstate}
         );
 
-        executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
+        synchronized (executeme)
+        {
+            executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
+        }
     }
 
     public void setLightMode(int lightmode)
@@ -465,7 +488,10 @@ public class AWXDevice extends BluetoothGattCallback
                 new byte[]{(byte) lightmode}
         );
 
-        executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
+        synchronized (executeme)
+        {
+            executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
+        }
     }
 
     public void setWhiteBrighness(int brightness)
@@ -478,7 +504,10 @@ public class AWXDevice extends BluetoothGattCallback
                 new byte[]{(byte) AWXMathUtils.percentToValue(brightness, 1, 127)}
         );
 
-        executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
+        synchronized (executeme)
+        {
+            executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
+        }
     }
 
     public void setWhiteTemperature(int temperature)
@@ -491,7 +520,10 @@ public class AWXDevice extends BluetoothGattCallback
                 new byte[]{(byte) AWXMathUtils.percentToValue(temperature, 0, 127)}
         );
 
-        executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
+        synchronized (executeme)
+        {
+            executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
+        }
     }
 
     public void setColorBrighness(int brightness)
@@ -504,7 +536,10 @@ public class AWXDevice extends BluetoothGattCallback
                 new byte[]{(byte) AWXMathUtils.percentToValue(brightness, 10, 100)}
         );
 
-        executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
+        synchronized (executeme)
+        {
+            executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
+        }
     }
 
     public void setColor(int color)
@@ -517,9 +552,10 @@ public class AWXDevice extends BluetoothGattCallback
                 new byte[]{4, (byte) Color.red(color), (byte) Color.green(color), (byte) Color.blue(color)}
         );
 
-        executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
-
-        executeNext();
+        synchronized (executeme)
+        {
+            executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
+        }
     }
 
     private void buildDeviceDescription()
@@ -550,14 +586,14 @@ public class AWXDevice extends BluetoothGattCallback
 
         AWX.instance.onDeviceFound(awoxdev);
 
-        Simple.getHandler().postDelayed(new Runnable()
+        Simple.getHandler().post(new Runnable()
         {
             @Override
             public void run()
             {
-                setColor(0xff0000);
+                getStatus();
             }
-        }, 1000);
+        });
     }
 
     private String getCapabilities()

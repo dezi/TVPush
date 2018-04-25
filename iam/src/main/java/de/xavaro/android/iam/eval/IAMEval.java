@@ -502,7 +502,7 @@ public class IAMEval
 
             if (objname.equals("bulb") && (action.equals("color")))
             {
-                capability = "colorhsb";
+                capability = "color";
             }
 
             if (objname.equals("tvremote") && (action.equals("select")))
