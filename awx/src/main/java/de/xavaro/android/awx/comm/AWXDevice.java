@@ -336,10 +336,13 @@ public class AWXDevice extends BluetoothGattCallback
     @Override
     public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic chara)
     {
-        byte[] data = chara.getValue();
-        byte[] plain = AWXProtocol.decryptValue(macaddr, sessionKey, data);
+        if (sessionKey != null)
+        {
+            byte[] data = chara.getValue();
+            byte[] plain = AWXProtocol.decryptValue(macaddr, sessionKey, data);
 
-        evalNotification(plain);
+            evalNotification(plain);
+        }
     }
 
     @Override
