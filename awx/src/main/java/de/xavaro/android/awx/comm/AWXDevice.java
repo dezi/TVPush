@@ -344,19 +344,8 @@ public class AWXDevice extends BluetoothGattCallback
     {
         byte[] data = chara.getValue();
         byte[] plain = AWXProtocol.decryptValue(macaddr, sessionKey, data);
-        byte[] payload = AWXProtocol.getData(plain);
 
-        short targetMeshid = (short) (((payload[9] & 0xff) << 8) + (payload[0] & 0xff));
-        AWXDevice targetDevice = meshid2device.get(targetMeshid, null);
-
-        if (targetDevice != null)
-        {
-            targetDevice.evalNotification(plain);
-        }
-        else
-        {
-            Log.e(LOGTAG, "onCharacteristicChanged: offline " + " mac=" + macaddr + " targetMeshid=" + targetMeshid);
-        }
+        evalNotification(plain);
     }
 
     @Override
@@ -447,14 +436,10 @@ public class AWXDevice extends BluetoothGattCallback
 
     public void getStatus()
     {
-        powerstate = (powerstate == 1) ? 0 : 1;
-
-        Log.d(LOGTAG, "getStatus: powerstate=" + powerstate);
-
         byte[] plain = AWXProtocol.getValue(
                 meshid,
-                AWXProtocol.COMMAND_SET_POWER_STATE,
-                new byte[]{(byte) powerstate}
+                AWXProtocol.COMMAND_GET_STATUS_SENT,
+                new byte[]{(byte) 0}
         );
 
         executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
@@ -645,7 +630,39 @@ public class AWXDevice extends BluetoothGattCallback
             Json.put(status, "bulbstate", powerstate);
             Json.put(status, "macaddr", macaddr);
 
+            Log.d(LOGTAG, "evalNotification:"
+                    + " mac=" + macaddr
+                    + " meshid=" + meshid
+                    + " cmd=" + command
+                    + " ps=" + powerstate
+                    + " lm=" + lightmode
+                    + " wb=" + wbright
+                    + " wt=" + wtemp
+                    + " cb=" + cbright
+                    + " c=0x" + Integer.toHexString(color)
+                    + " paylod=" + Simple.getBytesToHexString(plain));
+
             AWX.instance.onDeviceStatus(status);
+        }
+
+        if (command == AWXProtocol.COMMAND_GET_STATUS_RECEIVED)
+        {
+            powerstate = payload[0] & 0x01;
+            lightmode = (payload[0] >> 1) & 0x01;
+            wbright = AWXMathUtils.valueToPercent(payload[1] & 0xff, 1, 127);
+            wtemp = AWXMathUtils.valueToPercent(payload[2] & 0xff, 0, 127);
+            cbright = AWXMathUtils.valueToPercent(payload[3] & 0xff, 10, 100);
+            color = ((payload[4] & 0xff) << 16) + ((payload[5] & 0xff) << 8) + (payload[6] & 0xff);
+
+            JSONObject status = new JSONObject();
+
+            Json.put(status, "uuid", uuid);
+            Json.put(status, "rgb", color);
+            Json.put(status, "brightness", (lightmode == 0) ? wbright : cbright);
+            Json.put(status, "color_mode", lightmode);
+            Json.put(status, "color_temp", wtemp);
+            Json.put(status, "bulbstate", powerstate);
+            Json.put(status, "macaddr", macaddr);
 
             Log.d(LOGTAG, "evalNotification:"
                     + " mac=" + macaddr
@@ -658,6 +675,8 @@ public class AWXDevice extends BluetoothGattCallback
                     + " cb=" + cbright
                     + " c=0x" + Integer.toHexString(color)
                     + " paylod=" + Simple.getBytesToHexString(plain));
+
+            AWX.instance.onDeviceStatus(status);
         }
     }
 }
