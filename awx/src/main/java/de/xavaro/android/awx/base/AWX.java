@@ -4,10 +4,13 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.awx.publics.SmartBulbHandler;
 import de.xavaro.android.pub.interfaces.ext.GetDevicesRequest;
+import de.xavaro.android.pub.interfaces.ext.GetSmartBulbHandler;
 import de.xavaro.android.pub.interfaces.ext.OnDeviceHandler;
 import de.xavaro.android.pub.interfaces.all.SubSystemHandler;
 
+import de.xavaro.android.pub.interfaces.pub.PUBSmartBulb;
 import de.xavaro.android.pub.stubs.OnInterfacesStubs;
 
 import de.xavaro.android.awx.comm.AWXDiscover;
@@ -18,7 +21,8 @@ import de.xavaro.android.awx.R;
 public class AWX extends OnInterfacesStubs implements
         SubSystemHandler,
         OnDeviceHandler,
-        GetDevicesRequest
+        GetDevicesRequest,
+        GetSmartBulbHandler
 {
     private static final String LOGTAG = AWX.class.getSimpleName();
 
@@ -79,4 +83,22 @@ public class AWX extends OnInterfacesStubs implements
     }
 
     //endregion SubSystemHandler
+
+    //region GetSmartBulbHandler
+
+    @Override
+    public PUBSmartBulb getSmartBulbHandler(JSONObject device, JSONObject status, JSONObject credential)
+    {
+        String uuid = Json.getString(device, "uuid");
+        String did = Json.getString(device, "did");
+        String meshname = Json.getString(credential, "meshname");
+
+        if ((uuid == null) || (did == null) || (meshname == null)) return null;
+
+        short meshid = (short) Integer.parseInt(did);
+
+        return new SmartBulbHandler(uuid, meshname, meshid);
+    }
+
+    //endregion GetSmartBulbHandler
 }

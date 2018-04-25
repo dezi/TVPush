@@ -4,11 +4,12 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
-import de.xavaro.android.iot.handler.IOTHandleStot;
 import de.xavaro.android.pub.interfaces.pub.PUBSpeechListener;
 import de.xavaro.android.pub.interfaces.pub.PUBSmartBulb;
 import de.xavaro.android.pub.interfaces.pub.PUBSmartPlug;
 import de.xavaro.android.pub.interfaces.pub.PUBCamera;
+
+import de.xavaro.android.iot.handler.IOTHandleStot;
 
 import de.xavaro.android.gui.simple.Json;
 
@@ -18,6 +19,7 @@ import de.xavaro.android.spr.base.SPR;
 import de.xavaro.android.tpl.base.TPL;
 import de.xavaro.android.brl.base.BRL;
 import de.xavaro.android.edx.base.EDX;
+import de.xavaro.android.awx.base.AWX;
 
 import zz.top.p2p.base.P2P;
 
@@ -162,6 +164,11 @@ public class SystemsGUI extends GUI
         if (driver.equals("tpl") && (TPL.instance != null))
         {
             return TPL.instance.getSmartBulbHandler(device, status, credentials);
+        }
+
+        if (driver.equals("awx") && (AWX.instance != null))
+        {
+            return AWX.instance.getSmartBulbHandler(device, status, credentials);
         }
 
         return null;
