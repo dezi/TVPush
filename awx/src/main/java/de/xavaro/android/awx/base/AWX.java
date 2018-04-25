@@ -5,6 +5,8 @@ import android.app.Application;
 import org.json.JSONObject;
 
 import de.xavaro.android.awx.publics.SmartBulbHandler;
+import de.xavaro.android.awx.simple.Log;
+import de.xavaro.android.pub.interfaces.ext.GetDeviceStatusRequest;
 import de.xavaro.android.pub.interfaces.ext.GetDevicesRequest;
 import de.xavaro.android.pub.interfaces.ext.GetSmartBulbHandler;
 import de.xavaro.android.pub.interfaces.ext.OnDeviceHandler;
@@ -22,7 +24,8 @@ public class AWX extends OnInterfacesStubs implements
         SubSystemHandler,
         OnDeviceHandler,
         GetDevicesRequest,
-        GetSmartBulbHandler
+        GetSmartBulbHandler,
+        GetDeviceStatusRequest
 {
     private static final String LOGTAG = AWX.class.getSimpleName();
 
@@ -89,11 +92,18 @@ public class AWX extends OnInterfacesStubs implements
     @Override
     public PUBSmartBulb getSmartBulbHandler(JSONObject device, JSONObject status, JSONObject credential)
     {
+        JSONObject credentials = Json.getObject(credential, "credentials");
+
         String uuid = Json.getString(device, "uuid");
         String did = Json.getString(device, "did");
-        String meshname = Json.getString(credential, "meshname");
+        String meshname = Json.getString(credentials, "meshname");
 
-        if ((uuid == null) || (did == null) || (meshname == null)) return null;
+        if ((uuid == null) || (did == null) || (meshname == null))
+        {
+            Log.e(LOGTAG, "getSmartBulbHandler: fail uuid=" + uuid + " did=" + did + " meshname=" + meshname);
+
+            return null;
+        }
 
         short meshid = (short) Integer.parseInt(did);
 
@@ -101,4 +111,41 @@ public class AWX extends OnInterfacesStubs implements
     }
 
     //endregion GetSmartBulbHandler
+
+    //region GetDeviceStatusRequest
+
+    @Override
+    public void discoverDevicesRequest()
+    {
+        AWXDiscover.startService(appcontext);
+    }
+
+    @Override
+    public boolean getDeviceStatusRequest(JSONObject device, JSONObject status, JSONObject credential)
+    {
+        if (Json.has(credential, "credentials"))
+        {
+            credential = Json.getObject(credential, "credentials");
+        }
+
+        String uuid = Json.getString(device, "uuid");
+        String did = Json.getString(device, "did");
+        String meshname = Json.getString(credential, "meshname");
+
+        if ((uuid == null) || (did == null) || (meshname == null))
+        {
+            Log.e(LOGTAG, "getDeviceStatusRequest: fail uuid=" + uuid + " did=" + did + " meshname=" + meshname);
+
+            return false;
+        }
+
+        short meshid = (short) Integer.parseInt(did);
+
+        SmartBulbHandler handler = new SmartBulbHandler(uuid, meshname, meshid);
+        handler.getState();
+
+        return true;
+    }
+
+    //endregion GetDeviceStatusRequest
 }

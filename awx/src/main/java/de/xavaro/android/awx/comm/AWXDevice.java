@@ -418,13 +418,16 @@ public class AWXDevice extends BluetoothGattCallback
 
         if (request.mode == AWXRequest.MODE_CRYPT_CHARACTERISTIC)
         {
-            byte[] crypt = AWXProtocol.encryptValue(macaddr, sessionKey, request.data);
+            if (sessionKey != null)
+            {
+                byte[] crypt = AWXProtocol.encryptValue(macaddr, sessionKey, request.data);
 
-            Log.d(LOGTAG, "executeNext: cryptwrite: mac=" + macaddr + " data=" + Simple.getBytesToHexString(crypt));
+                Log.d(LOGTAG, "executeNext: cryptwrite: mac=" + macaddr + " data=" + Simple.getBytesToHexString(crypt));
 
-            request.chara.setValue(crypt);
-            request.chara.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
-            gatt.writeCharacteristic(request.chara);
+                request.chara.setValue(crypt);
+                request.chara.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+                gatt.writeCharacteristic(request.chara);
+            }
         }
 
         if (request.mode == AWXRequest.MODE_ENABLE_NOTIFICATION)
@@ -440,6 +443,21 @@ public class AWXDevice extends BluetoothGattCallback
 
             executeNext();
         }
+    }
+
+    public void getStatus()
+    {
+        powerstate = (powerstate == 1) ? 0 : 1;
+
+        Log.d(LOGTAG, "getStatus: powerstate=" + powerstate);
+
+        byte[] plain = AWXProtocol.getValue(
+                meshid,
+                AWXProtocol.COMMAND_SET_POWER_STATE,
+                new byte[]{(byte) powerstate}
+        );
+
+        executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
     }
 
     public void setPowerState(int powerstate)
@@ -595,20 +613,21 @@ public class AWXDevice extends BluetoothGattCallback
     private void evalNotification(byte[] plain)
     {
         byte[] payload = AWXProtocol.getData(plain);
-
-        short targetMeshid = (short) (((payload[9] & 0xff) << 8) + (payload[0] & 0xff));
-
-        if (targetMeshid != meshid)
-        {
-            Log.e(LOGTAG, "evalNotification: wrong meshid=" + meshid + " targetMeshid=" + targetMeshid);
-
-            return;
-        }
-
         byte command = AWXProtocol.getCommand(plain);
+
+        Log.d(LOGTAG, "evalNotification: command=" + command);
 
         if (command == AWXProtocol.COMMAND_NOTIFICATION_RECEIVED)
         {
+            short targetMeshid = (short) (((payload[9] & 0xff) << 8) + (payload[0] & 0xff));
+
+            if (targetMeshid != meshid)
+            {
+                Log.e(LOGTAG, "evalNotification: wrong meshid=" + meshid + " targetMeshid=" + targetMeshid);
+
+                return;
+            }
+
             powerstate = payload[2] & 0x01;
             lightmode = (payload[2] >> 1) & 0x01;
             wbright = AWXMathUtils.valueToPercent(payload[3] & 0xff, 1, 127);

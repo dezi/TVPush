@@ -1,13 +1,7 @@
 package de.xavaro.android.awx.publics;
 
-import android.graphics.Color;
-
-import org.json.JSONObject;
-
 import de.xavaro.android.awx.comm.AWXDevice;
 import de.xavaro.android.pub.interfaces.pub.PUBSmartBulb;
-import de.xavaro.android.awx.base.AWX;
-import de.xavaro.android.awx.simple.Json;
 import de.xavaro.android.awx.simple.Simple;
 
 public class SmartBulbHandler implements PUBSmartBulb
@@ -102,6 +96,25 @@ public class SmartBulbHandler implements PUBSmartBulb
                 if (cbbrightness != null) awxdevice.setColorBrighness(cbbrightness);
                 if (cbbrightness != null) awxdevice.setWhiteBrighness(cbbrightness);
 
+                awxdevice.executeNext();
+            }
+        };
+
+        Simple.runBackground(runnable);
+
+        return true;
+    }
+
+    public boolean getState()
+    {
+        if (awxdevice == null) return false;
+
+        Runnable runnable = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                awxdevice.getStatus();
                 awxdevice.executeNext();
             }
         };

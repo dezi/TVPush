@@ -4,9 +4,10 @@ import android.app.Application;
 
 import org.json.JSONObject;
 
+import de.xavaro.android.pub.interfaces.pub.PUBADBTool;
+
 import de.xavaro.android.iot.status.IOTCredential;
 import de.xavaro.android.iot.status.IOTStatus;
-import de.xavaro.android.pub.interfaces.pub.PUBADBTool;
 
 import de.xavaro.android.adb.base.ADB;
 import de.xavaro.android.gui.base.GUI;
@@ -77,6 +78,11 @@ public class SystemsIOT extends IOT
         if (driver.equals("edx") && (SystemsEDX.instance != null))
         {
             return SystemsEDX.instance.getDeviceStatusRequest(device, status, credential);
+        }
+
+        if (driver.equals("awx") && (SystemsAWX.instance != null))
+        {
+            return SystemsAWX.instance.getDeviceStatusRequest(device, status, credential);
         }
 
         return false;
