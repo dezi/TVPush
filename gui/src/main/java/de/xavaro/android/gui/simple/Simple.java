@@ -513,7 +513,6 @@ public class Simple
         int brightness = Math.round(hsv[2] * 100);
     }
 
-
     public static void turnBeepOnOff(boolean on)
     {
         if ((audioManager != null) && !Simple.isTV())

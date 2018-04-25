@@ -4,7 +4,6 @@ import org.json.JSONObject;
 
 import de.xavaro.android.tpl.base.TPL;
 
-import de.xavaro.android.tpl.simple.Simple;
 import de.xavaro.android.tpl.simple.Json;
 import de.xavaro.android.tpl.simple.Log;
 

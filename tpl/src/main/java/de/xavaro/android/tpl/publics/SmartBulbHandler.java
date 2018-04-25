@@ -6,16 +6,14 @@ import org.json.JSONObject;
 
 import de.xavaro.android.pub.interfaces.pub.PUBSmartBulb;
 
-import de.xavaro.android.tpl.handler.TPLHandler;
+import de.xavaro.android.tpl.handler.TPLHandlerSmartBulb;
 import de.xavaro.android.tpl.simple.Simple;
 import de.xavaro.android.tpl.simple.Json;
 import de.xavaro.android.tpl.base.TPL;
 
-import de.xavaro.android.tpl.handler.TPLHandlerSmartBulb;
-
 public class SmartBulbHandler implements PUBSmartBulb
 {
-    private static final String LOGTAG = TPLHandler.class.getSimpleName();
+    private static final String LOGTAG = SmartBulbHandler.class.getSimpleName();
 
     private String uuid;
     private String ipaddr;
@@ -29,7 +27,7 @@ public class SmartBulbHandler implements PUBSmartBulb
     @Override
     public boolean setBulbState(final int onoff)
     {
-        return setBulbHSB(onoff, -1, -1, -1);
+        return setBulbHSB(-1, -1, -1, onoff);
     }
 
     @Override

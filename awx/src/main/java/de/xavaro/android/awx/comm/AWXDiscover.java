@@ -1,5 +1,6 @@
 package de.xavaro.android.awx.comm;
 
+import android.bluetooth.BluetoothGatt;
 import android.support.annotation.RequiresApi;
 
 import android.bluetooth.BluetoothAdapter;
@@ -96,7 +97,7 @@ public class AWXDiscover
             startLEScanner();
 
             long exittime = System.currentTimeMillis() + 120 * 1000;
-            ArrayList<String> connecting = new ArrayList<>();
+            final ArrayList<String> connecting = new ArrayList<>();
 
             while ((discoverThread != null) && (System.currentTimeMillis() < exittime))
             {
@@ -120,7 +121,7 @@ public class AWXDiscover
 
                 if (scanResult == null) continue;
 
-                String macaddr = Json.getString(scanResult, "macaddr");
+                final String macaddr = Json.getString(scanResult, "macaddr");
 
                 if (connecting.contains(macaddr))
                 {
@@ -136,7 +137,15 @@ public class AWXDiscover
 
                 if (meshname != null)
                 {
-                    AWXDevice awxdevice = new AWXDevice(context, meshid, meshname, macaddr);
+                    AWXDevice awxdevice = new AWXDevice(context, meshid, meshname, macaddr)
+                    {
+                        @Override
+                        public void onDeviceHandled(BluetoothGatt gatt, int status)
+                        {
+                            connecting.remove(macaddr);
+                        }
+                    };
+
                     awxdevice.connect();
                 }
             }

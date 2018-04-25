@@ -1,5 +1,6 @@
 package de.xavaro.android.awx.comm;
 
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -29,7 +30,7 @@ import de.xavaro.android.awx.simple.Simple;
 import de.xavaro.android.awx.utils.AWXMathUtils;
 
 @SuppressWarnings("WeakerAccess")
-@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+@RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class AWXDevice extends BluetoothGattCallback
 {
     private final String LOGTAG = AWXDevice.class.getSimpleName();
@@ -69,6 +70,12 @@ public class AWXDevice extends BluetoothGattCallback
     private BluetoothGattCharacteristic ccomm;
 
     private final ArrayList<AWXRequest> executeme = new ArrayList<>();
+
+    @Nullable
+    public static AWXDevice findDevice(short meshid)
+    {
+        return meshid2device.get(meshid, null);
+    }
 
     public AWXDevice(Context context, short meshid, String meshname, String macaddr)
     {
@@ -121,12 +128,22 @@ public class AWXDevice extends BluetoothGattCallback
 
             this.gatt = null;
         }
+
+        onDeviceHandled(gatt, status);
+    }
+
+    public void onDeviceHandled(BluetoothGatt gatt, int status)
+    {
+        //
+        // To be overridden.
+        //
     }
 
     @Override
     public void onServicesDiscovered(BluetoothGatt gatt, int status)
     {
         Log.d(LOGTAG, "onServicesDiscovered: mac=" + macaddr + " status=" + status);
+
         if (status != 0) return;
 
         List<BluetoothGattService> services = gatt.getServices();
@@ -358,7 +375,7 @@ public class AWXDevice extends BluetoothGattCallback
         executeNext();
     }
 
-    private void executeNext()
+    public void executeNext()
     {
         if (executeme.size() == 0) return;
 
@@ -425,7 +442,7 @@ public class AWXDevice extends BluetoothGattCallback
         }
     }
 
-    private void setPowerState(int powerstate)
+    public void setPowerState(int powerstate)
     {
         this.powerstate = powerstate;
 
@@ -438,7 +455,7 @@ public class AWXDevice extends BluetoothGattCallback
         executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
     }
 
-    private void setLightMode(int lightmode)
+    public void setLightMode(int lightmode)
     {
         this.lightmode = lightmode;
 
@@ -451,7 +468,7 @@ public class AWXDevice extends BluetoothGattCallback
         executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
     }
 
-    private void setWhiteBrighness(int brightness)
+    public void setWhiteBrighness(int brightness)
     {
         wbright = brightness;
 
@@ -464,7 +481,7 @@ public class AWXDevice extends BluetoothGattCallback
         executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
     }
 
-    private void setWhiteTemperature(int temperature)
+    public void setWhiteTemperature(int temperature)
     {
         wtemp = temperature;
 
@@ -477,7 +494,7 @@ public class AWXDevice extends BluetoothGattCallback
         executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
     }
 
-    private void setColorBrighness(int brightness)
+    public void setColorBrighness(int brightness)
     {
         cbright = brightness;
 
@@ -490,7 +507,7 @@ public class AWXDevice extends BluetoothGattCallback
         executeme.add(new AWXRequest(AWXRequest.CHARA_COMM, AWXRequest.MODE_CRYPT_CHARACTERISTIC, plain));
     }
 
-    private void setColor(int color)
+    public void setColor(int color)
     {
         this.color = color;
 

@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Handler;
@@ -26,7 +27,6 @@ public class Simple
 {
     private static Handler handler;
     private static Resources resources;
-    private static WifiManager wifiManager;
     private static BluetoothManager bluetoothManager;
     private static BluetoothAdapter bluetoothAdapter;
 
@@ -34,16 +34,12 @@ public class Simple
     {
         handler = new Handler();
         resources = app.getResources();
-        wifiManager = (WifiManager) app.getSystemService(Context.WIFI_SERVICE);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+        bluetoothManager = (BluetoothManager) app.getSystemService(Context.BLUETOOTH_SERVICE);
+
+        if (bluetoothManager != null)
         {
-            bluetoothManager = (BluetoothManager) app.getSystemService(Context.BLUETOOTH_SERVICE);
-
-            if (bluetoothManager != null)
-            {
-                bluetoothAdapter = bluetoothManager.getAdapter();
-            }
+            bluetoothAdapter = bluetoothManager.getAdapter();
         }
     }
 
@@ -77,44 +73,6 @@ public class Simple
         }
 
         return null;
-    }
-
-    @Nullable
-    public static String getConnectedWifiName()
-    {
-        if (wifiManager == null) return null;
-
-        String wifi = wifiManager.getConnectionInfo().getSSID();
-        return wifi.replace("\"", "");
-    }
-
-    @Nullable
-    @SuppressWarnings("deprecation")
-    public static String getConnectedWifiIPAddress()
-    {
-        if (wifiManager == null) return null;
-
-        int ipint = wifiManager.getConnectionInfo().getIpAddress();
-        return Formatter.formatIpAddress(ipint);
-    }
-
-    public static String getMapString(Map<String, String> map, String key)
-    {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-        {
-            return map.getOrDefault(key, null);
-        }
-        else
-        {
-            try
-            {
-                return map.get(key);
-            }
-            catch (Exception ignore)
-            {
-                return null;
-            }
-        }
     }
 
     public static String getTrans(int resid, Object... args)
@@ -184,4 +142,14 @@ public class Simple
         return hex.toString();
     }
 
+    public static int colorRGB(int hue, int saturation, int brightness)
+    {
+        float[] hsv = new float[3];
+
+        hsv[ 0 ] = hue;
+        hsv[ 1 ] = saturation / 100f;
+        hsv[ 2 ] = brightness / 100f;
+
+        return Color.HSVToColor(hsv);
+    }
 }
