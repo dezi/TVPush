@@ -64,7 +64,6 @@ public class AWXDevice extends BluetoothGattCallback
     private BluetoothGattCharacteristic cstat;
     private BluetoothGattCharacteristic ccomm;
 
-    private boolean executePending;
     private final ArrayList<AWXRequest> executeme = new ArrayList<>();
 
     @Nullable
@@ -335,7 +334,6 @@ public class AWXDevice extends BluetoothGattCallback
 
         Log.d(LOGTAG, "onCharacteristicRead:  mac=" + macaddr + " tag=" + tag + " val=" + val);
 
-        executePending = false;
         executeNext();
     }
 
@@ -344,7 +342,6 @@ public class AWXDevice extends BluetoothGattCallback
     {
         Log.d(LOGTAG, "onCharacteristicWrite: mac=" + macaddr + " status=" + status + " chara=" + chara.getUuid());
 
-        executePending = false;
         executeNext();
     }
 
@@ -365,7 +362,6 @@ public class AWXDevice extends BluetoothGattCallback
     {
         Log.d(LOGTAG, "onDescriptorRead: mac=" + macaddr + " descriptor=" + descriptor.getUuid());
 
-        executePending = false;
         executeNext();
     }
 
@@ -374,17 +370,14 @@ public class AWXDevice extends BluetoothGattCallback
     {
         Log.d(LOGTAG, "onDescriptorWrite: mac=" + macaddr + " descriptor=" + descriptor.getUuid());
 
-        executePending = false;
         executeNext();
     }
 
-    public void executeNext()
+    public synchronized void executeNext()
     {
-        if (executePending) return;
-
         try
         {
-            Thread.sleep(100);
+            Thread.sleep(250);
         }
         catch (Exception ignore)
         {
@@ -415,16 +408,12 @@ public class AWXDevice extends BluetoothGattCallback
 
         if (request.mode == AWXRequest.MODE_READ_CHARACTERISTIC)
         {
-            executePending = true;
-
             gatt.readCharacteristic(request.chara);
         }
 
         if (request.mode == AWXRequest.MODE_WRITE_CHARACTERISTIC)
         {
             Log.d(LOGTAG, "executeNext: write: mac=" + macaddr + " data=" + Simple.getBytesToHexString(request.data));
-
-            executePending = true;
 
             request.chara.setValue(request.data);
             request.chara.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
@@ -438,8 +427,6 @@ public class AWXDevice extends BluetoothGattCallback
                 byte[] crypt = AWXProtocol.encryptValue(macaddr, sessionKey, request.data);
 
                 Log.d(LOGTAG, "executeNext: cryptwrite: mac=" + macaddr + " data=" + Simple.getBytesToHexString(crypt));
-
-                executePending = true;
 
                 request.chara.setValue(crypt);
                 request.chara.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
