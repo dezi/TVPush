@@ -143,8 +143,7 @@ public class AWX extends OnInterfacesStubs implements
 
         short meshid = (short) Integer.parseInt(did);
 
-        SmartBulbHandler handler = new SmartBulbHandler(uuid, meshname, meshid);
-        handler.getState();
+        new SmartBulbHandler(uuid, meshname, meshid).getState();
 
         return true;
     }
